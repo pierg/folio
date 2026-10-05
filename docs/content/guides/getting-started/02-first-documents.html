@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your first documents</title>
+<meta name="genre" content="guide">
+<meta name="title" content="Your first documents">
+<meta name="description" content="You leave knowing how to ask for a document, what the agent does to write it, and where to read it.">
+<meta name="tags" content="using">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<h2 id="ask">Ask for a document in plain words</h2>
+<p>Say what you want: "add a concept for eventual consistency", "write a note on why we pinned the parser", "log that we chose Postgres". The agent matches the request to a <a class="defn-link" href="/content/concepts/genre/">genre</a> and confirms it in one line. It asks only when two genres fit equally well.</p>
+<p>The core has eight genres. A concept defines one term. A note states one idea with its reason. An entry argues a subject in sections. A guide, like this one, teaches in chapters. A map lists documents in reading order. A project page says where some work stands. A journal entry records an event. A paper is a LaTeX paper with a landing page.</p>
+
+<details class="check">
+<summary>You want to pin down what a term means, so other pages can point to it. Which genre?</summary>
+<div class="ans">A concept. It holds the definition once, and every other mention links to it.</div>
+</details>
+
+<h2 id="write">What the agent does to write it</h2>
+<p>The agent follows the write skill. It reads the genre's card, searches the library so the fact does not get a second home, and creates the document from the genre's skeleton. It writes the title and a one-line description into the metadata, and the body in the genre's voice.</p>
+<p>It links every term that has a concept, cites other documents by id, and puts the new document on a <a class="defn-link" href="/content/concepts/map/">map</a>. Where it writes something its sources did not say, such as an example of its own, it leaves a flag on the passage for you to keep or change. Then it runs the <a class="defn-link" href="/content/concepts/gate/">gate</a> and commits.</p>
+
+<details class="check">
+<summary>The agent invented an example to make a concept clearer. How will you know?</summary>
+<div class="ans">It leaves a flag on that passage, labelled "worked example". Flags wait for you on the rendered page.</div>
+</details>
+
+<h2 id="read">Read it</h2>
+<p>Ask your agent to serve the library. It runs <code>folio up</code>, and the library opens at <code>http://127.0.0.1:5170/</code>. The home page shows the top-level maps and the latest journal entries. Every page has the same shell: the library on the left, with the maps and every document by genre, a header drawn from the metadata, light and dark themes, search on the <kbd>/</kbd> key, a preview when you hover a link, and a panel listing what the page cites and what cites it.</p>
+
+<details class="check">
+<summary>Where does the list of pages that cite this one come from?</summary>
+<div class="ans">The shell generates it from the links. Nobody writes it, so it cannot go stale.</div>
+</details>
+
+</main>
+</body>
+</html>

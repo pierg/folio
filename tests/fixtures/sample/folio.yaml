@@ -1,0 +1,11 @@
+folio: 0.1.0
+name: Research notes
+purpose: What this library knows about attention, and what the lab measured.
+reader: One reader, the owner, who knows the field.
+packs: [lab, knowledge-base]
+home:
+  maps: [attention, lab-work]
+journal:
+  kinds: [meeting]
+checks:
+  uncited-number: error

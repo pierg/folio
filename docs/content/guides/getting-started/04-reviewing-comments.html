@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reviewing comments</title>
+<meta name="genre" content="guide">
+<meta name="title" content="Reviewing comments">
+<meta name="description" content="You leave knowing how to question a passage on the page, what the agent&#x27;s flags mean, and how your comments get answered.">
+<meta name="tags" content="using">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<h2 id="ask">Question a passage on the page</h2>
+<p>With the library served by <code>folio serve</code>, every page has a Comments button. Select a passage and ask about it: "is this still true?", "say why", "cut this". You can also comment on the whole page. There is no name to type: the server writes as you, your git user name. The comment is saved in a file beside the document and committed on its own. Nothing goes into the page itself.</p>
+
+<details class="check">
+<summary>Where is a comment stored?</summary>
+<div class="ans">In a file beside the document, <code>&lt;name&gt;.annotations.json</code>, committed by the server. The exported site leaves these files out.</div>
+</details>
+
+<h2 id="flags">Flags wait for you</h2>
+<p>Some threads were opened by the agent. Where it wrote something its sources did not say, such as its own example or a claim from general knowledge, it left a flag labelled with the kind of addition. A flag asks nothing. It rests until you press one of its two buttons. Keep closes it, and the passage stays. Change asks what to change, and your answer becomes a question the agent picks up.</p>
+<p>You do not have to visit every page to find them. The Review page lists every question waiting on the agent and every flag resting for you, newest first, and the home page shows one line counting them.</p>
+
+<details class="check">
+<summary>The agent left a flag on an example and you are happy with it. Does anything have to happen?</summary>
+<div class="ans">No. A flag rests until you act on it. Press Keep when you want it off your Review page.</div>
+</details>
+
+<h2 id="answer">Ask the agent to go through them</h2>
+<p>Say "go through my comments". The agent follows the address skill: for each waiting question it edits the document, or declines with a reason, and replies on the thread saying exactly what it did. Nothing is deleted. Each thread shows its state in plain words: waiting, resting, or closed, with how it closed: changed, kept, declined or withdrawn. Once the agent's reply is committed, a changed thread also shows the passage before and after.</p>
+<p>If the document is a <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, the agent does not edit it. It adds a correction that points back, and the record shows it as a banner. The <a class="defn-link" href="/content/concepts/gate/">gate</a> also fails while an open question quotes text that is no longer on its page, so a comment is never silently lost under an edit.</p>
+
+<details class="check">
+<summary>You asked a question about a journal entry. Will the agent edit the entry?</summary>
+<div class="ans">No. A journal entry is permanent. The agent writes a new entry of kind correction about it, which shows on it as a banner.</div>
+</details>
+
+</main>
+</body>
+</html>

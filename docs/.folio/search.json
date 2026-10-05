@@ -1,0 +1,585 @@
+[
+  {
+    "description": "What stands between an agent's edit and a commit.",
+    "genre": "concept",
+    "id": "gate",
+    "part": null,
+    "path": "content/concepts/gate/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Gate The gate is : one offline command that names every problem in a library in one pass and changes nothing. It passes only when no check reports an error. Why it matters Every skill runs the gate before it commits, and continuous integration runs the same command. So a broken link, an orphan, a missing field, a placeholder left in a page or an edited record never reaches a reader. The trap Expecting the gate to judge quality. It checks what can be checked: shape, links, fields, lifecycles, indices. Whether an argument holds is judged by the agent following its genre's card, and by the owner. Related The charter sets each check to error, warning or off. A pack adds rule checks of its own.",
+    "title": "Gate",
+    "url": "/content/concepts/gate/"
+  },
+  {
+    "description": "Why every document in a library has a fixed job, voice, format and set of checks.",
+    "genre": "concept",
+    "id": "genre",
+    "part": null,
+    "path": "content/concepts/genre/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Genre A genre is a kind of document, such as a concept, a note or a result. It fixes the document's job, its reader, its voice, its format, where it lives, which metadata it carries, how it may change over time, and which checks it must pass. Why it matters An agent writing a document reads its genre's card first, every time. So two documents of one genre read as if one author wrote them, and the gate can check what each genre promises. Voice is never set per document. The trap Treating a genre as a template. The skeleton is the smallest part of it. The card also says what the document is for and what it must never do, and most of that is judged by the agent, not checked. Related The core has eight genres. A pack adds more, and a library can override a genre or add a variant for a second audience.",
+    "title": "Genre",
+    "url": "/content/concepts/genre/"
+  },
+  {
+    "description": "Where a library keeps the dated record of what happened and why.",
+    "genre": "concept",
+    "id": "journal",
+    "part": null,
+    "path": "content/concepts/journal/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Journal The journal is a library's dated record of what happened and what was decided. Each entry is its own short Markdown file with a date, an optional kind, and the ids of the documents it is about. Why it matters Documents say what is true now; the journal says when it changed and why. An entry shows on every document it names, and the shell renders all entries as one timeline that filters by kind, tag, date or document. The trap Writing a decision only into the page it changed. The page will be revised again and the reason lost. The decision goes in the journal, about that page. Related Every entry is a permanent record , and the only document no map needs to list.",
+    "title": "Journal",
+    "url": "/content/concepts/journal/"
+  },
+  {
+    "description": "The unit folio works on: where it lives and what it holds.",
+    "genre": "concept",
+    "id": "library",
+    "part": null,
+    "path": "content/concepts/library/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Library A library is a folder holding a charter, a folder of linked documents, an folder, and the generated indices in . It can be a project's folder, a notes folder, or a whole repository. Why it matters Everything folio does is scoped to one library: the gate checks one library, the site exports one library, and ids are unique within one library. One project can hold several libraries, and a charter can list others to search alongside its own. The trap Reading the library as a website. The pages are plain HTML and Markdown in git, readable with no build step. The site is one view of them, written by export. Related Every document in a library has a genre , and readers enter through its maps .",
+    "title": "Library",
+    "url": "/content/concepts/library/"
+  },
+  {
+    "description": "How a reader finds their way into a library without a folder tree.",
+    "genre": "concept",
+    "id": "map",
+    "part": null,
+    "path": "content/concepts/map/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Map A map is a document that lists other documents in the order to read them, each row with an optional one-line reason to follow it. The maps the charter names as home maps are the library's topics, drawn on its home page. Why it matters A library has no folder tree for a reader to browse; folders follow genres, not subjects. Maps are the structure instead. A document can sit on several maps, and a map can list other maps, so one library can have as many front doors as it needs. The trap Using tags as structure. Tags are facets for filtering. A reader arriving cold needs an order and a reason, and only a map gives them. Related The gate checks that every document except a journal entry is reachable from a map.",
+    "title": "Map",
+    "url": "/content/concepts/map/"
+  },
+  {
+    "description": "How a library gains genres and workflows for one kind of work.",
+    "genre": "concept",
+    "id": "pack",
+    "part": null,
+    "path": "content/concepts/pack/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Pack A pack is a named set of genres, workflows, library-wide rules and journal kinds for one kind of work. Switching it on in the charter adds them to the whole library and rewrites nothing. Why it matters The core genres suit any library. A pack adds what one kind of work needs: the knowledge-base pack keeps sources and readings apart, and the lab pack gives every measured number one home. Several packs on at once still make one library, with one search and one graph. The trap Expecting a pack to bring new skills. A pack is data only. The same skills read its genres and follow its workflows, so a new pack never needs a new skill. Related Each pack adds genres under names no other genre uses; it never redefines a core one.",
+    "title": "Pack",
+    "url": "/content/concepts/pack/"
+  },
+  {
+    "description": "Why some documents are never edited once committed, and how they still change status.",
+    "genre": "concept",
+    "id": "permanent-record",
+    "part": null,
+    "path": "content/concepts/permanent-record/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Permanent record A permanent record is a document whose genre declares it is never edited once committed, such as a journal entry or a result. It writes no status of its own; its status is derived from the documents that point back to it. Why it matters A citation of a permanent record always shows what was cited, because the record cannot change under it. The gate compares each one with its first commit, so the promise is checked, not hoped for. The trap Thinking permanent means it can never be wrong. It can be wrong, and the library says so: a newer record supersedes it, or a journal entry retracts or corrects it, and a banner on the record links the correction. Related A frozen document is the near relative: edited freely until it reaches a state such as , then never again except its status.",
+    "title": "Permanent record",
+    "url": "/content/concepts/permanent-record/"
+  },
+  {
+    "description": "How an agent knows what to do with a library, step by step.",
+    "genre": "concept",
+    "id": "skill",
+    "part": null,
+    "path": "content/concepts/skill/index.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Skill A skill is a written procedure a coding agent follows to change a library: when to use it, its rules, its steps, when to stop, and when it is done. folio ships seven: set-up, configure, write, organise, address, publish and run. Why it matters The person using folio talks to their agent in plain words, and the agent picks the matching skill. The skills call the command the way an agent calls git, so the person never needs to learn it. The trap Thinking a new kind of document needs a new skill. Every skill starts by reading the charter, the genres and the workflows, so it already knows what a new genre or pack adds. Related Every skill that changes a document ends at the gate .",
+    "title": "Skill",
+    "url": "/content/concepts/skill/"
+  },
+  {
+    "description": "How a library corrects a document it may not edit, and what a reader sees, for anyone keeping records.",
+    "genre": "entry",
+    "id": "how-corrections-work",
+    "part": null,
+    "path": "content/entries/how-corrections-work/index.html",
+    "status": "live",
+    "tags": [
+      "design",
+      "records"
+    ],
+    "text": "A record that was wrong is never edited. A new document points back at it, and the engine shows the correction on the record itself, so old citations keep showing what they cited and every reader of the record sees what changed. Which documents are never edited A genre says how its documents change over time. Most are revised in place. A permanent record , such as a journal entry or a result, is never edited once committed. A frozen document, such as a locked protocol or a published report, is edited freely until it reaches its frozen state, and then never again except its status. The gate checks both against git history. A protocol was locked yesterday and has a typo in its hypothesis. Can the agent fix it in place? No. Once locked, the file must match the commit that locked it. A new protocol names it in , or a correction entry about it says what was meant. A newer record supersedes When a measurement is redone, the new result names the old one: . The engine marks the old result and shows a banner on it that links the new one. The old result keeps its id and its address, so a page that cited it still resolves, and with the lab pack on, the gate warns on each revised page that still cites it. A journal entry retracts or corrects When nothing replaces a record, a journal entry of kind names it in , and the record's status becomes . An entry of kind names a document and says what is true instead; its text shows as a banner on that document. Neither edits the original. Where does a retracted result's status come from, since the result writes no status? It is derived: the engine finds the retraction entry whose names the result. Why not just edit An edit erases the evidence that something was wrong. Anyone who read the old value has no way to learn it changed, and a page that quoted it now cites a document that says something else. A correction that points back keeps both, and the banner tells every later reader. It is the same idea as one fact, one home , applied over time.",
+    "title": "How corrections work",
+    "url": "/content/entries/how-corrections-work/"
+  },
+  {
+    "description": "Why each fact lives in exactly one document, and what the rest of the library does instead, for anyone writing in a library.",
+    "genre": "entry",
+    "id": "one-fact-one-home",
+    "part": null,
+    "path": "content/entries/one-fact-one-home/index.html",
+    "status": "live",
+    "tags": [
+      "design"
+    ],
+    "text": "A fact lives in exactly one document, and every other document cites that one by id. A library kept this way can be corrected in one place, and a reader can always follow a claim to where it is held. The rule A fact is a definition, a measured number or a decision. Its home is the document whose genre holds that kind of fact: a concept for a definition, a result for a number, a journal entry for a decision. Every other page links the home and says what the fact means for its own reader, in its own words. A guide chapter needs the definition of a term that a concept already holds. What does the chapter do? It links the concept with , so hovering shows the definition. It does not write the definition again. Why one home Two copies of a fact agree on the day they are written. Then one is revised and the other is not, and the library holds two answers with nothing to say which is right. With one home, a correction lands once and reaches every page that cites it. The rule also makes a library checkable. A number that cites its result can be followed in one click to its evidence and the command that re-derives it, as R-1 shows for the time this library takes to check. What is checked and what is judged Part of the rule is mechanical, and the gate checks it. No two concepts define the same term. With the lab pack on, a number shaped like a measurement must cite a result in the same sentence. The rest is judged by the agent: a paraphrase of a definition, or a decision restated as if it were new, is caught only by reading. Why does a concept's definition cite nothing? So it stays true when a number changes. Results are cited below the definition, never inside it. Siblings share ids, never sentences A journal entry, a report and a paper about the same result each cite the result and reuse its figure. None is generated from another, because each has a different reader. What they share is the id, so they cannot disagree about the number. How corrections work follows what happens when that number turns out wrong.",
+    "title": "One fact, one home",
+    "url": "/content/entries/one-fact-one-home/"
+  },
+  {
+    "description": "Why folio puts every fact the engine reads into metadata, and keeps the body as prose, for anyone writing or reviewing a library.",
+    "genre": "entry",
+    "id": "why-metadata-first",
+    "part": null,
+    "path": "content/entries/why-metadata-first/index.html",
+    "status": "live",
+    "tags": [
+      "design"
+    ],
+    "text": "Every fact the engine needs to render, search, filter or check a document lives in its metadata, and the body is prose that nothing parses back out. That keeps the body free for the reader, and it lets the engine draw everything that follows from the facts instead of trusting a writer to keep a copy in step. Two places, two jobs A document has two places to put things. The metadata is a short list of named fields: in HTML, tags in the head; in Markdown, front matter. The body is what a person reads. Each place has one job, and nothing is written in both. Five fields are core to every document: a title, a one-line description, the genre , a status and tags. A genre adds a field only when the engine renders, filters or checks it, such as a result's number or a project's date. Anything else stays in the body as prose. A project page wants to say when its state was last confirmed. Body or metadata? Metadata: the field. The shell shows it in the header, and the gate warns when it grows old, so the engine reads it. Why the body is never parsed A fact the engine has to dig out of prose is a fact a writer can phrase in a way the engine misses. Agents phrase things differently each time. A field has one spelling and one type, and the gate checks both. So the date in the header, the number on a result and the source a reading is about are read from fields, and are right or reported. What the shell draws Because the facts sit in fields, the shell draws the header of every page: the title, the description as its subtitle, the status, the dates from git, and the tags. A body never starts with its own title. Search results, link previews and map rows reuse the same description, so a document is summed up once, by its author, in its genre's voice. Why does a document's body have no ? The shell draws the title from the metadata. A second copy in the body could drift from the first. What follows from links is generated The same rule reaches past one document. Whatever follows from links is derived, never written: what a document cites, what cites it, the journal entries about it, a guide's chapter list, and the status of a permanent record . A hand-kept list of these goes stale the day after it is written. A generated one cannot. The rule that each fact is written once is argued in One fact, one home .",
+    "title": "Why metadata comes first",
+    "url": "/content/entries/why-metadata-first/"
+  },
+  {
+    "description": "By the end you have a library in your project, a few linked documents, and a way to review them.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": null,
+    "path": "content/guides/getting-started/index.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "How to read it In order, once. It is for someone who has a project and a coding agent, and wants the agent to keep a library of documents beside the code: notes, explanations, records of what was decided and measured. You need a git repository and an agent that can run commands in it. You do not need to learn the command: your agent runs it. Each chapter shows what to ask for, what the agent does in reply, and what you get.",
+    "title": "Getting started",
+    "url": "/content/guides/getting-started/"
+  },
+  {
+    "description": "You leave with folio installed, a library in your project, and the gate passing.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": "chapter",
+    "path": "content/guides/getting-started/01-install.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "Hand your agent the setup prompt folio is installed by your agent, not by you. Open your coding agent in the project where the library should live, and paste the setup prompt from SETUP.md . The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up skill . The agent asks you at most three questions in one message: what the library is called and who reads it, where it should live, and which packs to switch on. Every question comes with a default, so \"defaults\" is a full answer. How many rounds of questions does set-up take? One. The agent asks everything it still needs in one message, and skips what you already said. Or install the engine yourself If you prefer to install the engine first, run , or . The command it installs is . Then ask your agent, in plain words, to set up folio here. It finds the set-up skill and carries on from the questions. Either way, you do not run again yourself. The skills call it, the way an agent calls git. What is the package called, and what is the command called? The package is ; the command it installs is . What set-up leaves behind Set-up makes a library in the folder you chose and commits it: It ends by running the gate , which passes on a new library, and by telling you in two lines what you can now ask for. Which file holds what the library is for, and who writes it? , the charter. Only the set-up and configure skills write it, and each change is recorded in the journal.",
+    "title": "Install",
+    "url": "/content/guides/getting-started/01-install.html"
+  },
+  {
+    "description": "You leave knowing how to ask for a document, what the agent does to write it, and where to read it.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": "chapter",
+    "path": "content/guides/getting-started/02-first-documents.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "Ask for a document in plain words Say what you want: \"add a concept for eventual consistency\", \"write a note on why we pinned the parser\", \"log that we chose Postgres\". The agent matches the request to a genre and confirms it in one line. It asks only when two genres fit equally well. The core has eight genres. A concept defines one term. A note states one idea with its reason. An entry argues a subject in sections. A guide, like this one, teaches in chapters. A map lists documents in reading order. A project page says where some work stands. A journal entry records an event. A paper is a LaTeX paper with a landing page. You want to pin down what a term means, so other pages can point to it. Which genre? A concept. It holds the definition once, and every other mention links to it. What the agent does to write it The agent follows the write skill. It reads the genre's card, searches the library so the fact does not get a second home, and creates the document from the genre's skeleton. It writes the title and a one-line description into the metadata, and the body in the genre's voice. It links every term that has a concept, cites other documents by id, and puts the new document on a map . Where it writes something its sources did not say, such as an example of its own, it leaves a flag on the passage for you to keep or change. Then it runs the gate and commits. The agent invented an example to make a concept clearer. How will you know? It leaves a flag on that passage, labelled \"worked example\". Flags wait for you on the rendered page. Read it Ask your agent to serve the library. It runs , and the library opens at . The home page shows the top-level maps and the latest journal entries. Every page has the same shell: the library on the left, with the maps and every document by genre, a header drawn from the metadata, light and dark themes, search on the / key, a preview when you hover a link, and a panel listing what the page cites and what cites it. Where does the list of pages that cite this one come from? The shell generates it from the links. Nobody writes it, so it cannot go stale.",
+    "title": "Your first documents",
+    "url": "/content/guides/getting-started/02-first-documents.html"
+  },
+  {
+    "description": "You leave knowing how a library is structured by maps, and how to move, merge and retire documents without breaking links.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": "chapter",
+    "path": "content/guides/getting-started/03-organising.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "Maps are the structure A library's folders follow genres, so they do not tell a reader where to start. Maps do. Each map lists documents in the order to read them, under group headings, with an optional reason per row. The maps named in the charter as home maps appear on the home page as the library's topics. Every document except a journal entry must be on a map, or linked from a document that is. The gate reports any that are not. A page is on no map, but a page on a map links to it. Is it an orphan? No. A link from a document that is on a map makes it reachable, unless its genre requires a row of its own. Ask for the change, not the commands Say \"tidy the maps\", \"rename this page\", \"merge these two\", \"this note grew, make it an entry\", or \"retire this into that\". The agent follows the organise skill. It moves documents only through folio's own commands, so links are rewritten, comments and dates are kept, and a committed document keeps its id while its old address redirects to the new one. Why should the agent never move a page with a plain file move? A plain move breaks every link to the page and loses its comments. folio's move rewrites the links and keeps the comments, the id and the dates. Ask for a health pass From time to time, ask \"is the library healthy?\". The agent runs the gate, lists documents on no map, looks for thin documents and duplicates, finds drafts left for weeks and open comments, and reports what it changed and what is left for you. Structural choices, such as a new topic or retiring something you wrote, stay yours. Each reorganisation is recorded in the journal , so later you can see when a page moved and why. Who decides to add a new top-level map? You do. It is a change to the charter, made through the configure skill and recorded as a decision.",
+    "title": "Organising",
+    "url": "/content/guides/getting-started/03-organising.html"
+  },
+  {
+    "description": "You leave knowing how to question a passage on the page, what the agent's flags mean, and how your comments get answered.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": "chapter",
+    "path": "content/guides/getting-started/04-reviewing-comments.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "Question a passage on the page With the library served by , every page has a Comments button. Select a passage and ask about it: \"is this still true?\", \"say why\", \"cut this\". You can also comment on the whole page. There is no name to type: the server writes as you, your git user name. The comment is saved in a file beside the document and committed on its own. Nothing goes into the page itself. Where is a comment stored? In a file beside the document, , committed by the server. The exported site leaves these files out. Flags wait for you Some threads were opened by the agent. Where it wrote something its sources did not say, such as its own example or a claim from general knowledge, it left a flag labelled with the kind of addition. A flag asks nothing. It rests until you press one of its two buttons. Keep closes it, and the passage stays. Change asks what to change, and your answer becomes a question the agent picks up. You do not have to visit every page to find them. The Review page lists every question waiting on the agent and every flag resting for you, newest first, and the home page shows one line counting them. The agent left a flag on an example and you are happy with it. Does anything have to happen? No. A flag rests until you act on it. Press Keep when you want it off your Review page. Ask the agent to go through them Say \"go through my comments\". The agent follows the address skill: for each waiting question it edits the document, or declines with a reason, and replies on the thread saying exactly what it did. Nothing is deleted. Each thread shows its state in plain words: waiting, resting, or closed, with how it closed: changed, kept, declined or withdrawn. Once the agent's reply is committed, a changed thread also shows the passage before and after. If the document is a permanent record , the agent does not edit it. It adds a correction that points back, and the record shows it as a banner. The gate also fails while an open question quotes text that is no longer on its page, so a comment is never silently lost under an edit. You asked a question about a journal entry. Will the agent edit the entry? No. A journal entry is permanent. The agent writes a new entry of kind correction about it, which shows on it as a banner.",
+    "title": "Reviewing comments",
+    "url": "/content/guides/getting-started/04-reviewing-comments.html"
+  },
+  {
+    "description": "You leave knowing how to let others comment on a library served from a machine you share, and how each comment reaches git.",
+    "genre": "guide",
+    "id": "getting-started",
+    "part": "chapter",
+    "path": "content/guides/getting-started/05-deployed-comments.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "The server knows who is writing On your own machine, writes each comment as your git user name. On a machine others reach, the server cannot ask git: many people use it. It reads their name from the sign-in in front of it instead. Put the server behind a proxy that signs people in, and name the request header that proxy sets in : Ask your agent to set it; the configure skill changes the charter. Then start the server on an outside address: . Without the header in the charter, or on a request that lacks it, the panel shows the comments read-only and says why. A comment is never taken from someone the server cannot name. You run and forgot the charter setting. What happens when a reader comments? Nothing is saved. The panel says comments are read-only here, because the server cannot tell who is writing. Each comment is a commit Every new thread and every reply becomes one commit on the current branch. It holds only that page's comment file, its message is \"Comment on\" and the document's id, and its author is the commenter. Your own work in progress stays untouched, even what you have staged. On a deployed server, add . The server then pulls before it writes and pushes after it commits, so your copy of the library sees the comments with a plain . If the pull meets a conflict or the push fails, the server undoes its write, refuses the comment and shows the reader the error. The reader can send it again; nothing is half saved. The remote rejects a push while a reader comments. Where is the comment? Nowhere: the server rolled back its commit and its file change, and the reader saw the error. Nothing was lost in silence; the reader knows to try again. An exported site takes no comments writes plain files, with no server behind them. It leaves the comment files out, hides the Comments button and the Review page, and each page's panel says that comments are open where the library is served with . Publish the export for readers; serve the library for the people who review it. A reader of your exported site wants to ask about a passage. Where do they go? To the copy you serve with , signed in. The exported site shows no comments and takes none.",
+    "title": "Comments on a deployed library",
+    "url": "/content/guides/getting-started/05-deployed-comments.html"
+  },
+  {
+    "description": "How to use folio, what its ideas mean, and the record of how it is built, kept with folio itself.",
+    "genre": "map",
+    "id": "home",
+    "part": null,
+    "path": "content/index.html",
+    "status": "live",
+    "tags": [],
+    "text": "folio turns a coding agent into the librarian of a knowledge library that lives inside a project, or on its own. Every document has one genre , which fixes its job, its voice, its format and its checks. Documents link to each other, and maps give a reader the way in. You talk to your agent; it follows folio's seven skills and runs the gate before every commit. This documentation is itself a folio library. New here? Start with the guide. Getting started",
+    "title": "folio",
+    "url": "/content/"
+  },
+  {
+    "description": "Documents carry five core fields, and the body is prose the engine never parses.",
+    "genre": "journal",
+    "id": "2026-10-03-metadata-holds-every-fact-the-engine",
+    "part": null,
+    "path": "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
+    "status": "live",
+    "tags": [
+      "design"
+    ],
+    "text": "Every fact the engine renders, searches, filters or checks moved into metadata: title, description, genre, status, tags, and fields a genre declares only when the engine reads them. The shell now draws each page's header, and what follows from links is generated. The reasons are in Why metadata comes first .",
+    "title": "Metadata holds every fact the engine reads",
+    "url": "/content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md"
+  },
+  {
+    "description": "The journal became one short Markdown file per entry, permanent once committed.",
+    "genre": "journal",
+    "id": "2026-10-03-one-journal-entry-per-file",
+    "part": null,
+    "path": "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
+    "status": "live",
+    "tags": [
+      "records"
+    ],
+    "text": "Each entry is its own document under content/journal/, with a date, an optional kind and the ids it is about. Two agents writing at once never touch the same file, and every entry can be linked and searched on its own. See Journal .",
+    "title": "One journal entry per file",
+    "url": "/content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
+  },
+  {
+    "description": "A paper's source stays revised, and each frozen version is a permanent copy beside it.",
+    "genre": "journal",
+    "id": "2026-10-03-paper-versions-are-snapshots",
+    "part": null,
+    "path": "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+    "status": "live",
+    "tags": [
+      "papers"
+    ],
+    "text": "A frozen paper could never be revised, so the model changed: main.tex is revised, and freezing copies the source and the built PDF into a permanent versions// folder. A later change is frozen as a new version. See Permanent record .",
+    "title": "Paper versions are snapshots",
+    "url": "/content/journal/2026/2026-10-03-paper-versions-are-snapshots.md"
+  },
+  {
+    "description": "The home page now shows a fourth map, How folio is built, so the lab records have a topic of their own.",
+    "genre": "journal",
+    "id": "2026-10-04-added-how-folio-is-built-as",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
+    "status": "live",
+    "tags": [],
+    "text": "home.maps was using-folio, concepts, reference; it is now using-folio, concepts, reference, building-folio. The protocol and the results about the gate's speed were reachable only through the question's fields, so no map listed them and a reader focusing the library on a topic could not reach them. The new map lists the project, the question, the protocol and the results. The source of the As We May Think reading joined Using folio for the same reason.",
+    "title": "Added How folio is built as a home map",
+    "url": "/content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+  },
+  {
+    "description": "A comment has no name field, is one commit on the current branch, and is refused rather than taken anonymously.",
+    "genre": "journal",
+    "id": "2026-10-04-comments-are-committed-by-the-server",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "The server knows who is writing: the git user locally, and on a deployed server the header a sign-in proxy sets, named in the charter as comments.identity_header. Each new thread or reply is one commit holding only that page's comment file. With folio serve --push the server pulls before and pushes after, and on any failure it rolls back and refuses the comment. An exported site takes no comments. Readers see waiting, resting and closed, a Review page, Keep and Change on flags, and what changed once a thread is addressed. The chapter Comments on a deployed library explains it.",
+    "title": "Comments are committed by the server, as the commenter",
+    "url": "/content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md"
+  },
+  {
+    "description": "The home page shows three maps: Using folio, Concepts and Reference, in that order.",
+    "genre": "journal",
+    "id": "2026-10-04-home-maps-set",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-home-maps-set.md",
+    "status": "live",
+    "tags": [],
+    "text": "home.maps was empty; it is now using-folio, concepts, reference. A newcomer starts with how to use folio, then the terms, then the specifications.",
+    "title": "Home maps set",
+    "url": "/content/journal/2026/2026-10-04-home-maps-set.md"
+  },
+  {
+    "description": "Vannevar Bush's 1945 essay, filed as a source with a reading, as the knowledge-base pack's worked example.",
+    "genre": "journal",
+    "id": "2026-10-04-ingested-as-we-may-think",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+    "status": "live",
+    "tags": [
+      "hypertext"
+    ],
+    "text": "The source is filed with no identifier: its address in The Atlantic's archive could not be looked up from this session, and the source says so. The original is not kept: the article is public, and the source links it. The reading keeps to the memex and its trails, and is flagged for checking against the text.",
+    "title": "Ingested As We May Think",
+    "url": "/content/journal/2026/2026-10-04-ingested-as-we-may-think.md"
+  },
+  {
+    "description": "folio's own documentation became a folio library in docs/, with both packs on.",
+    "genre": "journal",
+    "id": "2026-10-04-library-set-up",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-library-set-up.md",
+    "status": "live",
+    "tags": [],
+    "text": "Purpose: how to use folio, what its ideas mean, and the record of how it is built. Reader: someone deciding whether to use folio, or using it through their agent. Packs: knowledge-base and lab, so each has a worked example here. Location: docs/ in the folio repository, with root set to the repository so results can cite its scripts.",
+    "title": "Library set up",
+    "url": "/content/journal/2026/2026-10-04-library-set-up.md"
+  },
+  {
+    "description": "The protocol timing folio check on two libraries is locked before any timed run.",
+    "genre": "journal",
+    "id": "2026-10-04-locked-the-check-time-protocol",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+    "status": "live",
+    "tags": [
+      "timing"
+    ],
+    "text": "Ten timed runs per arm, after one warm-up, with the gate passing on each. Decision rules D1 to D3 and predictions P1 and P2 are fixed from here.",
+    "title": "Locked the check-time protocol",
+    "url": "/content/journal/2026/2026-10-04-locked-the-check-time-protocol.md"
+  },
+  {
+    "description": "folio check took a median of 0.20 s on this documentation library.",
+    "genre": "journal",
+    "id": "2026-10-04-recorded-r-1",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-recorded-r-1.md",
+    "status": "live",
+    "tags": [
+      "timing"
+    ],
+    "text": "Re-derived from the timings with the protocol's script. D1 holds and P1 is a hit; Q-1 is answered for the library at its present size.",
+    "title": "Recorded R-1",
+    "url": "/content/journal/2026/2026-10-04-recorded-r-1.md"
+  },
+  {
+    "description": "folio check took a median of 0.21 s on the sample library.",
+    "genre": "journal",
+    "id": "2026-10-04-recorded-r-2",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-recorded-r-2.md",
+    "status": "live",
+    "tags": [
+      "timing"
+    ],
+    "text": "Re-derived from the same timings file. P2 missed: the larger library was not the slower one.",
+    "title": "Recorded R-2",
+    "url": "/content/journal/2026/2026-10-04-recorded-r-2.md"
+  },
+  {
+    "description": "The specs remain Markdown files in docs/spec/, linked from the Reference map by their GitHub addresses.",
+    "genre": "journal",
+    "id": "2026-10-04-specifications-stay-outside-the-library",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md",
+    "status": "live",
+    "tags": [],
+    "text": "The specs are the contract the engine is tested against, edited with the code, and read on GitHub. Making them documents would give them a genre they do not fit. The Reference map lists each one with a reason to read it.",
+    "title": "Specifications stay outside the library",
+    "url": "/content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md"
+  },
+  {
+    "description": "The skills folio init installs point at the repository's own skills/ folder instead of a copy.",
+    "genre": "journal",
+    "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+    "part": null,
+    "path": "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md",
+    "status": "live",
+    "tags": [],
+    "text": "folio init copied the seven skills into .agents/skills/. In folio's own repository that copy would drift from skills/, the source the package ships, so .agents/skills is a link to skills/ and .claude/skills links to it as usual.",
+    "title": "The library shares the repository's skills",
+    "url": "/content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+  },
+  {
+    "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
+    "genre": "map",
+    "id": "building-folio",
+    "part": null,
+    "path": "content/maps/building-folio.html",
+    "status": "live",
+    "tags": [
+      "building"
+    ],
+    "text": "Current take folio is built with its own lab pack. Each question it asks of itself gets a locked protocol before anything is measured, and each measurement becomes a result. One question is answered so far: the gate is fast enough to run before every commit. The project folio Where folio stands, and what comes next. How fast is the gate Does folio check finish in under two seconds on this documentation library? The question: can the skills afford to run the gate before every commit? Time folio check on two libraries The locked protocol: what was measured, and what each outcome would mean. folio check took a median of 0.20 s on this documentation library folio check took a median of 0.21 s on the test suite's sample library",
+    "title": "How folio is built",
+    "url": "/content/maps/building-folio.html"
+  },
+  {
+    "description": "The ideas folio is built on, each defined once.",
+    "genre": "map",
+    "id": "concepts",
+    "part": null,
+    "path": "content/maps/concepts.html",
+    "status": "live",
+    "tags": [
+      "concepts"
+    ],
+    "text": "Current take Eight terms carry the rest of this library. Read the library, genre and map first; the others make sense after them. Start here Library Genre Map How the work is done Skill Pack Gate The record Journal Permanent record",
+    "title": "Concepts",
+    "url": "/content/maps/concepts.html"
+  },
+  {
+    "description": "The specifications that define folio exactly, and what each one settles.",
+    "genre": "map",
+    "id": "reference",
+    "part": null,
+    "path": "content/maps/reference.html",
+    "status": "live",
+    "tags": [
+      "reference"
+    ],
+    "text": "Current take The specifications are the contract. When a skill, a genre card or a page in this library disagrees with them, they win and the other is fixed. They are Markdown files in the repository, outside this library, so they link to GitHub. The specifications The folio model Read first: documents, links, maps, the journal, genres, packs, the charter and the gate, in one contract. The genre format How a genre card is written: its settings, fields, parts and sections. The checks Every check the gate runs, its settings and its default severity. The folio command Every command the skills call, and what each one changes. The pack format How a pack and a workflow are written. The skill format The shape every skill follows: start, rules, steps, stops, done when. The shell The shell's components What the shell draws on every page, and the components a page may write.",
+    "title": "Reference",
+    "url": "/content/maps/reference.html"
+  },
+  {
+    "description": "How to install folio, write your first documents, organise them and review them, in reading order.",
+    "genre": "map",
+    "id": "using-folio",
+    "part": null,
+    "path": "content/maps/using-folio.html",
+    "status": "live",
+    "tags": [
+      "using"
+    ],
+    "text": "Current take Start with the guide: it takes you from installing folio to reviewing comments in four short chapters. The entries explain the three ideas behind the rules, and the worked examples show the two packs on real material. Start here Getting started Four short chapters, from installing folio to reviewing comments. folio Where folio itself stands, and what comes next. Why it works this way Why metadata comes first One fact, one home How corrections work Worked examples As We May Think The knowledge-base pack: a source and a reading of an essay from 1945. As We May Think The essay itself, as the source the reading rests on. Does folio check finish in under two seconds on this documentation library? The lab pack: a question, a locked protocol and a measured result about this library's own gate.",
+    "title": "Using folio",
+    "url": "/content/maps/using-folio.html"
+  },
+  {
+    "description": "The engine, the genres, the packs and the seven skills that let a coding agent keep a knowledge library.",
+    "genre": "project",
+    "id": "folio",
+    "part": null,
+    "path": "content/projects/folio/index.html",
+    "status": "live",
+    "tags": [
+      "project"
+    ],
+    "text": "folio 0.1.0 is written: the engine and its gate , the eight core genres, the knowledge-base and lab packs , the seven skills , and this documentation, which is itself a folio library and passes its own gate. Next Publish the package as and this library as the documentation site. Run the setup prompt in fresh projects, with different agents, and record what each trial finds in the journal. Repeat the timing in Q-1 as the library grows. Where the code lives github.com/pierg/folio : the engine, the genres, the packs, the skills and this library, in . docs/spec/ : the specifications, which win when anything else disagrees with them.",
+    "title": "folio",
+    "url": "/content/projects/folio/"
+  },
+  {
+    "description": "Varies the library checked, and measures the wall-clock time of folio check.",
+    "genre": "protocol",
+    "id": "check-time",
+    "part": null,
+    "path": "content/protocols/check-time.md",
+    "status": "locked",
+    "tags": [
+      "gate",
+      "timing"
+    ],
+    "text": "Hypothesis on this documentation library has a median wall-clock time under two seconds over ten runs. Intuition The gate reads every document once, resolves links against an in-memory catalog, and asks git about the few files with a lifecycle. A library of a few dozen documents should take about as long as starting Python and git. If it fails, the cost will come from reading git history or from rebuilding the indices to compare them. The one variable The library checked. Arms: , the small library the test suite uses (), and , this documentation library. Held fixed One machine, one Python, one engine version, both libraries in one working tree, run one after the other. One untimed warm-up run before each arm. The gate must pass on every timed run; a run that fails records nothing. Pinned configuration Allowed moves Nothing under test makes moves: the gate is fixed code and changes no file. Measures Wall-clock seconds per run of , from process start to exit, measured by with . Per arm, the median of ten runs. The script also records the number of documents the gate reports, to state the library's size beside the time. Decision rules D1: keep the hypothesis if the arm's median is under two seconds. D2: drop it if the arm's median is two seconds or more. D3 (kill): if any arm's slowest run is more than three times its fastest, the timings are too noisy on this machine; stop and find a quieter one before recording anything. Predictions P1: the arm's median is under two seconds. Confidence: 85%. P2: the arm's median is higher than the arm's. Confidence: 70%. What it cannot show How the time grows with library size beyond these two libraries, how it behaves on another machine or operating system, or how long the gate takes once the library has a long git history to read.",
+    "title": "Time folio check on two libraries",
+    "url": "/content/protocols/check-time.md"
+  },
+  {
+    "description": "Whether the skills can keep running the gate before every commit without anyone waiting on it.",
+    "genre": "question",
+    "id": "Q-1",
+    "part": null,
+    "path": "content/questions/Q-1.md",
+    "status": "answered",
+    "tags": [
+      "gate",
+      "timing"
+    ],
+    "text": "Why it matters Every skill runs before it commits, and continuous integration runs it on every push. If the gate takes long enough to notice, agents and people start to skip it, and the promise that nothing reaches a reader unchecked goes with it. What would settle it The median wall-clock time of over repeated runs on this library, on one machine, against the two-second line. A median under it answers yes for this library at its present size; a median over it answers no. What would make us drop it Timings that swing so widely from run to run on one machine that a median says nothing, or a gate so fast on every library we have that the question stops mattering. Answer Yes, at its present size: the median was well under the line (). The smaller sample library was no faster (), so at this scale start-up likely dominates, and the question is worth asking again once the library is several times larger.",
+    "title": "Does folio check finish in under two seconds on this documentation library?",
+    "url": "/content/questions/Q-1.md"
+  },
+  {
+    "description": "The memex's trails are the closest ancestor of a folio map: a path through linked records, kept so someone else can follow it.",
+    "genre": "reading",
+    "id": "1945-as-we-may-think-reading",
+    "part": null,
+    "path": "content/readings/1945-as-we-may-think-reading.html",
+    "status": "live",
+    "tags": [
+      "hypertext",
+      "linking"
+    ],
+    "text": "What it claims The record of what people know has outgrown the means of consulting it (the essay's opening argument). A device the essay names the memex, a desk that stores a person's books, records and letters, could hold everything that person consults and show any of it quickly (where the memex is introduced). The memex would join items by association, as the mind does, rather than file each one in a single place: any item can call up another, and a run of such joins forms a trail that is kept and can be followed again (where trails are described). A trail can be copied and handed to someone else, who adds it to their own memex (the same passage). My take The trail is the part that has aged best. A link joins two items; a trail is an ordered path through many, made by someone for a reason, and handed on so a reader can follow the same path. That is close to what a map is in a folio library : rows in reading order, each with a reason to follow it. What the essay leaves to the person, folio leaves to a gate . A memex trail can point at an item that was later changed or lost, and nothing notices. In a library, a link that no longer resolves fails the gate, and a record that was wrong is corrected by a new one that points back, as How corrections work explains. In \"As We May Think\", what is a trail? A run of items joined one to the next in the memex, kept so it can be followed again and passed to someone else. In \"As We May Think\", how does the memex join items? By association: any item can call up another, and a run of such joins forms a trail.",
+    "title": "As We May Think",
+    "url": "/content/readings/1945-as-we-may-think-reading.html"
+  },
+  {
+    "description": "Wall-clock time of the gate on this library, over ten runs, against the two-second line its protocol set.",
+    "genre": "result",
+    "id": "R-1",
+    "part": null,
+    "path": "content/results/R-1.md",
+    "status": "live",
+    "tags": [
+      "gate",
+      "timing"
+    ],
+    "text": "Why it matters The gate runs before every commit. At this size it costs a fifth of a second, so there is no reason for an agent or a person to skip it. Notes Decision rule D1 holds: the median is under two seconds. The slowest run was within 1.2 times the fastest, so the kill rule D3 did not fire.",
+    "title": "folio check took a median of 0.20 s on this documentation library",
+    "url": "/content/results/R-1.md"
+  },
+  {
+    "description": "Wall-clock time of the gate on the small sample library, the other arm of the same protocol.",
+    "genre": "result",
+    "id": "R-2",
+    "part": null,
+    "path": "content/results/R-2.md",
+    "status": "live",
+    "tags": [
+      "gate",
+      "timing"
+    ],
+    "text": "Why it matters The smaller library was not faster. Prediction P2 in the protocol, that the docs arm would be slower, missed. At these sizes, starting Python and git likely costs more than reading the documents.",
+    "title": "folio check took a median of 0.21 s on the test suite's sample library",
+    "url": "/content/results/R-2.md"
+  },
+  {
+    "description": "An essay proposing the memex, a desk that stores a person's records and joins them into trails of linked items.",
+    "genre": "source",
+    "id": "1945-as-we-may-think",
+    "part": null,
+    "path": "content/sources/1945-as-we-may-think/index.html",
+    "status": "live",
+    "tags": [
+      "hypertext",
+      "linking"
+    ],
+    "text": "About An essay published in The Atlantic Monthly in July 1945. It argues that the record of research has outgrown the means of consulting it, and describes the memex, a device that stores a person's records and joins items into associative trails. It is read online in The Atlantic's archive, at theatlantic.com . That address was not looked up when this source was filed, so it is not listed as a verified identifier.",
+    "title": "As We May Think",
+    "url": "/content/sources/1945-as-we-may-think/"
+  }
+]

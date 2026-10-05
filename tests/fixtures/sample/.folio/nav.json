@@ -1,0 +1,27 @@
+{
+  "content/guides/attention-from-scratch/index.html": {
+    "chapters": [
+      {
+        "description": "You can say what an attention score is.",
+        "name": "scores",
+        "number": 1,
+        "part": "chapter",
+        "path": "content/guides/attention-from-scratch/01-scores.html",
+        "title": "Scoring tokens",
+        "url": "/content/guides/attention-from-scratch/01-scores.html"
+      },
+      {
+        "description": "You can turn a row of scores into weights.",
+        "name": "softmax",
+        "number": 2,
+        "part": "chapter",
+        "path": "content/guides/attention-from-scratch/02-softmax.html",
+        "title": "The softmax",
+        "url": "/content/guides/attention-from-scratch/02-softmax.html"
+      }
+    ],
+    "id": "attention-from-scratch",
+    "title": "Attention, from scratch",
+    "url": "/content/guides/attention-from-scratch/"
+  }
+}

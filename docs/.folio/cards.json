@@ -1,0 +1,26 @@
+[
+  {
+    "answer": "A run of items joined one to the next in the memex, kept so it can be followed again and passed to someone else.",
+    "doc": "1945-as-we-may-think-reading",
+    "genre": "reading",
+    "path": "content/readings/1945-as-we-may-think-reading.html",
+    "question": "In \"As We May Think\", what is a trail?",
+    "tags": [
+      "hypertext",
+      "linking"
+    ],
+    "url": "/content/readings/1945-as-we-may-think-reading.html"
+  },
+  {
+    "answer": "By association: any item can call up another, and a run of such joins forms a trail.",
+    "doc": "1945-as-we-may-think-reading",
+    "genre": "reading",
+    "path": "content/readings/1945-as-we-may-think-reading.html",
+    "question": "In \"As We May Think\", how does the memex join items?",
+    "tags": [
+      "hypertext",
+      "linking"
+    ],
+    "url": "/content/readings/1945-as-we-may-think-reading.html"
+  }
+]

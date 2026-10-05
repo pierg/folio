@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the gate checks permanent and frozen documents against git history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Configure git for the tests' temporary repositories
+        run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.invalid"
+      - name: Tests
+        run: python -m pytest -q
+      - name: Documentation gate
+        working-directory: docs
+        run: python -m folio check

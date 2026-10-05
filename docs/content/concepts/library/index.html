@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library</title>
+<meta name="genre" content="concept">
+<meta name="title" content="Library">
+<meta name="description" content="The unit folio works on: where it lives and what it holds.">
+<meta name="tags" content="concepts">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<blockquote class="defn" id="library">
+<span class="defn-name">Library</span><br>
+A library is a folder holding a <code>folio.yaml</code> charter, a <code>content/</code> folder of linked documents, an <code>assets/</code> folder, and the generated indices in <code>.folio/</code>. It can be a project's <code>docs/</code> folder, a notes folder, or a whole repository.
+</blockquote>
+
+<h3>Why it matters</h3>
+<p>Everything folio does is scoped to one library: the gate checks one library, the site exports one library, and ids are unique within one library. One project can hold several libraries, and a charter can list others to search alongside its own.</p>
+
+<h3>The trap</h3>
+<p>Reading the library as a website. The pages are plain HTML and Markdown in git, readable with no build step. The site is one view of them, written by export.</p>
+
+<h3>Related</h3>
+<p>Every document in a library has a <a class="defn-link" href="/content/concepts/genre/">genre</a>, and readers enter through its <a class="defn-link" href="/content/concepts/map/">maps</a>.</p>
+
+</main>
+</body>
+</html>

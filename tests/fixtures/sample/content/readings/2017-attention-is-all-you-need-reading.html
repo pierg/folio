@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attention Is All You Need</title>
+<meta name="genre" content="reading">
+<meta name="title" content="Attention Is All You Need">
+<meta name="description" content="Convincing on translation, silent on long contexts.">
+<meta name="source" content="2017-attention-is-all-you-need">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+<section id="claims">
+<h2>What it claims</h2>
+<ul><li>Self-attention links any two positions in a constant number of steps (section 4).</li></ul>
+</section>
+<section id="take">
+<h2>My take</h2>
+<p>It holds for short sequences. It agrees with our <a class="defn-link" href="/content/concepts/softmax/">softmax</a> page.</p>
+<details class="card"><summary>Why does the paper scale the dot products?</summary>Large dot products push the softmax into regions with tiny gradients.</details>
+</section>
+</main>
+</body>
+</html>

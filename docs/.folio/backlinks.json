@@ -1,0 +1,753 @@
+{
+  "content/concepts/gate/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/map/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/index.html",
+      "content/maps/concepts.html",
+      "content/projects/folio/index.html",
+      "content/readings/1945-as-we-may-think-reading.html"
+    ],
+    "cites": [
+      "content/concepts/genre/index.html",
+      "content/concepts/pack/index.html"
+    ],
+    "fields": {},
+    "id": "gate",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/genre/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/gate/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/skill/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/index.html",
+      "content/maps/concepts.html"
+    ],
+    "cites": [
+      "content/concepts/pack/index.html"
+    ],
+    "fields": {},
+    "id": "genre",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/journal/index.html": {
+    "about": [
+      {
+        "date": "2026-10-03",
+        "id": "2026-10-03-one-journal-entry-per-file",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
+      }
+    ],
+    "cited_by": [
+      "content/concepts/map/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
+      "content/maps/concepts.html"
+    ],
+    "cites": [
+      "content/concepts/map/index.html",
+      "content/concepts/permanent-record/index.html"
+    ],
+    "fields": {},
+    "id": "journal",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/library/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/guides/getting-started/index.html",
+      "content/maps/concepts.html",
+      "content/readings/1945-as-we-may-think-reading.html"
+    ],
+    "cites": [
+      "content/concepts/genre/index.html",
+      "content/concepts/map/index.html"
+    ],
+    "fields": {},
+    "id": "library",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/map/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/journal/index.html",
+      "content/concepts/library/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/index.html",
+      "content/maps/concepts.html",
+      "content/readings/1945-as-we-may-think-reading.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/journal/index.html"
+    ],
+    "fields": {},
+    "id": "map",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/pack/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/skill/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/guides/getting-started/index.html",
+      "content/maps/concepts.html",
+      "content/projects/folio/index.html"
+    ],
+    "cites": [
+      "content/concepts/genre/index.html",
+      "content/concepts/skill/index.html"
+    ],
+    "fields": {},
+    "id": "pack",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/permanent-record/index.html": {
+    "about": [
+      {
+        "date": "2026-10-03",
+        "id": "2026-10-03-paper-versions-are-snapshots",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md"
+      }
+    ],
+    "cited_by": [
+      "content/concepts/journal/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+      "content/maps/concepts.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/journal/index.html"
+    ],
+    "fields": {},
+    "id": "permanent-record",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/skill/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/pack/index.html",
+      "content/guides/getting-started/index.html",
+      "content/index.html",
+      "content/maps/concepts.html",
+      "content/projects/folio/index.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/pack/index.html"
+    ],
+    "fields": {},
+    "id": "skill",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/entries/how-corrections-work/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/entries/one-fact-one-home/index.html",
+      "content/maps/using-folio.html",
+      "content/readings/1945-as-we-may-think-reading.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/entries/one-fact-one-home/index.html"
+    ],
+    "fields": {},
+    "id": "how-corrections-work",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/entries/one-fact-one-home/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/maps/using-folio.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/pack/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/results/R-1.md"
+    ],
+    "fields": {},
+    "id": "one-fact-one-home",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/entries/why-metadata-first/index.html": {
+    "about": [
+      {
+        "date": "2026-10-03",
+        "id": "2026-10-03-metadata-holds-every-fact-the-engine",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
+      "content/maps/using-folio.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/map/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/entries/one-fact-one-home/index.html"
+    ],
+    "fields": {},
+    "id": "why-metadata-first",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/guides/getting-started/index.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-comments-are-committed-by-the-server",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md"
+      }
+    ],
+    "cited_by": [
+      "content/index.html",
+      "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+      "content/maps/using-folio.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/map/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html"
+    ],
+    "fields": {},
+    "id": "getting-started",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/index.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+      },
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-library-set-up",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-library-set-up.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-library-set-up.md",
+      "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/map/index.html",
+      "content/concepts/skill/index.html",
+      "content/guides/getting-started/index.html"
+    ],
+    "fields": {},
+    "id": "home",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/entries/why-metadata-first/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-03-metadata-holds-every-fact-the-engine",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-03-one-journal-entry-per-file.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/journal/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-03-one-journal-entry-per-file",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/permanent-record/index.html",
+      "content/projects/folio/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-03-paper-versions-are-snapshots",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/maps/building-folio.html",
+      "content/maps/using-folio.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-added-how-folio-is-built-as",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/guides/getting-started/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-comments-are-committed-by-the-server",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-home-maps-set.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/maps/concepts.html",
+      "content/maps/reference.html",
+      "content/maps/using-folio.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-home-maps-set",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-ingested-as-we-may-think.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/readings/1945-as-we-may-think-reading.html",
+      "content/sources/1945-as-we-may-think/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-ingested-as-we-may-think",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-library-set-up.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-library-set-up",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/protocols/check-time.md",
+      "content/questions/Q-1.md"
+    ],
+    "fields": {},
+    "id": "2026-10-04-locked-the-check-time-protocol",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-recorded-r-1.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/protocols/check-time.md",
+      "content/results/R-1.md"
+    ],
+    "fields": {},
+    "id": "2026-10-04-recorded-r-1",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-recorded-r-2.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/protocols/check-time.md",
+      "content/results/R-2.md"
+    ],
+    "fields": {},
+    "id": "2026-10-04-recorded-r-2",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/maps/reference.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-specifications-stay-outside-the-library",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/building-folio.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-added-how-folio-is-built-as",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+    ],
+    "cites": [
+      "content/projects/folio/index.html",
+      "content/protocols/check-time.md",
+      "content/questions/Q-1.md",
+      "content/results/R-1.md",
+      "content/results/R-2.md"
+    ],
+    "fields": {},
+    "id": "building-folio",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/concepts.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-home-maps-set",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-home-maps-set.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-home-maps-set.md"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/genre/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/map/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html"
+    ],
+    "fields": {},
+    "id": "concepts",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/reference.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-specifications-stay-outside-the-library",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md"
+      },
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-home-maps-set",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-home-maps-set.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-home-maps-set.md",
+      "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md"
+    ],
+    "cites": [],
+    "fields": {},
+    "id": "reference",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/using-folio.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-home-maps-set",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-home-maps-set.md"
+      },
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-added-how-folio-is-built-as",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
+      "content/journal/2026/2026-10-04-home-maps-set.md"
+    ],
+    "cites": [
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/projects/folio/index.html",
+      "content/questions/Q-1.md",
+      "content/readings/1945-as-we-may-think-reading.html",
+      "content/sources/1945-as-we-may-think/index.html"
+    ],
+    "fields": {},
+    "id": "using-folio",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/projects/folio/index.html": {
+    "about": [
+      {
+        "date": "2026-10-03",
+        "id": "2026-10-03-paper-versions-are-snapshots",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+      "content/maps/building-folio.html",
+      "content/maps/using-folio.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/skill/index.html",
+      "content/questions/Q-1.md"
+    ],
+    "fields": {},
+    "id": "folio",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/protocols/check-time.md": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-recorded-r-2",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-recorded-r-2.md"
+      },
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-recorded-r-1",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-recorded-r-1.md"
+      },
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-locked-the-check-time-protocol",
+        "kind": "lock",
+        "path": "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+      "content/journal/2026/2026-10-04-recorded-r-1.md",
+      "content/journal/2026/2026-10-04-recorded-r-2.md",
+      "content/maps/building-folio.html",
+      "content/results/R-1.md",
+      "content/results/R-2.md"
+    ],
+    "cites": [
+      "content/questions/Q-1.md"
+    ],
+    "fields": {
+      "protocol": [
+        "content/results/R-1.md",
+        "content/results/R-2.md"
+      ]
+    },
+    "id": "check-time",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/questions/Q-1.md": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-locked-the-check-time-protocol",
+        "kind": "lock",
+        "path": "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+      "content/maps/building-folio.html",
+      "content/maps/using-folio.html",
+      "content/projects/folio/index.html",
+      "content/protocols/check-time.md"
+    ],
+    "cites": [
+      "content/results/R-1.md",
+      "content/results/R-2.md"
+    ],
+    "fields": {
+      "question": [
+        "content/protocols/check-time.md"
+      ]
+    },
+    "id": "Q-1",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/readings/1945-as-we-may-think-reading.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-ingested-as-we-may-think",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-ingested-as-we-may-think.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+      "content/maps/using-folio.html"
+    ],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/map/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/sources/1945-as-we-may-think/index.html"
+    ],
+    "fields": {},
+    "id": "1945-as-we-may-think-reading",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/results/R-1.md": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-recorded-r-1",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-recorded-r-1.md"
+      }
+    ],
+    "cited_by": [
+      "content/entries/one-fact-one-home/index.html",
+      "content/journal/2026/2026-10-04-recorded-r-1.md",
+      "content/maps/building-folio.html",
+      "content/questions/Q-1.md"
+    ],
+    "cites": [
+      "content/protocols/check-time.md"
+    ],
+    "fields": {},
+    "id": "R-1",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/results/R-2.md": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-recorded-r-2",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-recorded-r-2.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-recorded-r-2.md",
+      "content/maps/building-folio.html",
+      "content/questions/Q-1.md"
+    ],
+    "cites": [
+      "content/protocols/check-time.md"
+    ],
+    "fields": {},
+    "id": "R-2",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/sources/1945-as-we-may-think/index.html": {
+    "about": [
+      {
+        "date": "2026-10-04",
+        "id": "2026-10-04-ingested-as-we-may-think",
+        "kind": null,
+        "path": "content/journal/2026/2026-10-04-ingested-as-we-may-think.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+      "content/maps/using-folio.html",
+      "content/readings/1945-as-we-may-think-reading.html"
+    ],
+    "cites": [],
+    "fields": {
+      "source": [
+        "content/readings/1945-as-we-may-think-reading.html"
+      ]
+    },
+    "id": "1945-as-we-may-think",
+    "retracted_by": [],
+    "superseded_by": []
+  }
+}

@@ -1,0 +1,8 @@
+folio: 0.1.0
+name: folio
+purpose: How to use folio, what its ideas mean, and the record of how it is built, kept with folio itself.
+packs: [knowledge-base, lab]
+home:
+  maps: [using-folio, concepts, reference, building-folio]
+reader: Someone deciding whether to use folio, or already using it through their coding agent. They know what a git repository and a coding agent are.
+root: ..

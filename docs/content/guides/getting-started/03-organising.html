@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organising</title>
+<meta name="genre" content="guide">
+<meta name="title" content="Organising">
+<meta name="description" content="You leave knowing how a library is structured by maps, and how to move, merge and retire documents without breaking links.">
+<meta name="tags" content="using">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<h2 id="maps">Maps are the structure</h2>
+<p>A library's folders follow genres, so they do not tell a reader where to start. <a class="defn-link" href="/content/concepts/map/">Maps</a> do. Each map lists documents in the order to read them, under group headings, with an optional reason per row. The maps named in the charter as home maps appear on the home page as the library's topics.</p>
+<p>Every document except a journal entry must be on a map, or linked from a document that is. The <a class="defn-link" href="/content/concepts/gate/">gate</a> reports any that are not.</p>
+
+<details class="check">
+<summary>A page is on no map, but a page on a map links to it. Is it an orphan?</summary>
+<div class="ans">No. A link from a document that is on a map makes it reachable, unless its genre requires a row of its own.</div>
+</details>
+
+<h2 id="change">Ask for the change, not the commands</h2>
+<p>Say "tidy the maps", "rename this page", "merge these two", "this note grew, make it an entry", or "retire this into that". The agent follows the organise skill. It moves documents only through folio's own commands, so links are rewritten, comments and dates are kept, and a committed document keeps its id while its old address redirects to the new one.</p>
+
+<details class="check">
+<summary>Why should the agent never move a page with a plain file move?</summary>
+<div class="ans">A plain move breaks every link to the page and loses its comments. folio's move rewrites the links and keeps the comments, the id and the dates.</div>
+</details>
+
+<h2 id="health">Ask for a health pass</h2>
+<p>From time to time, ask "is the library healthy?". The agent runs the gate, lists documents on no map, looks for thin documents and duplicates, finds drafts left for weeks and open comments, and reports what it changed and what is left for you. Structural choices, such as a new topic or retiring something you wrote, stay yours.</p>
+<p>Each reorganisation is recorded in the <a class="defn-link" href="/content/concepts/journal/">journal</a>, so later you can see when a page moved and why.</p>
+
+<details class="check">
+<summary>Who decides to add a new top-level map?</summary>
+<div class="ans">You do. It is a change to the charter, made through the configure skill and recorded as a decision.</div>
+</details>
+
+</main>
+</body>
+</html>

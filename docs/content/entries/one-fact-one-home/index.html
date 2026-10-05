@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One fact, one home</title>
+<meta name="genre" content="entry">
+<meta name="title" content="One fact, one home">
+<meta name="description" content="Why each fact lives in exactly one document, and what the rest of the library does instead, for anyone writing in a library.">
+<meta name="tags" content="design">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<p class="thesis">A fact lives in exactly one document, and every other document cites that one by id. A library kept this way can be corrected in one place, and a reader can always follow a claim to where it is held.</p>
+
+<h2 id="the-rule">The rule</h2>
+<p>A fact is a definition, a measured number or a decision. Its home is the document whose <a class="defn-link" href="/content/concepts/genre/">genre</a> holds that kind of fact: a concept for a definition, a result for a number, a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry for a decision. Every other page links the home and says what the fact means for its own reader, in its own words.</p>
+
+<details class="check">
+<summary>A guide chapter needs the definition of a term that a concept already holds. What does the chapter do?</summary>
+<div class="ans">It links the concept with <code>class="defn-link"</code>, so hovering shows the definition. It does not write the definition again.</div>
+</details>
+
+<h2 id="why">Why one home</h2>
+<p>Two copies of a fact agree on the day they are written. Then one is revised and the other is not, and the library holds two answers with nothing to say which is right. With one home, a correction lands once and reaches every page that cites it.</p>
+<p>The rule also makes a library checkable. A number that cites its result can be followed in one click to its evidence and the command that re-derives it, as <a href="/content/results/R-1.md">R-1</a> shows for the time this library takes to check.</p>
+
+<h2 id="checked">What is checked and what is judged</h2>
+<p>Part of the rule is mechanical, and the <a class="defn-link" href="/content/concepts/gate/">gate</a> checks it. No two concepts define the same term. With the lab <a class="defn-link" href="/content/concepts/pack/">pack</a> on, a number shaped like a measurement must cite a result in the same sentence. The rest is judged by the agent: a paraphrase of a definition, or a decision restated as if it were new, is caught only by reading.</p>
+
+<details class="check">
+<summary>Why does a concept's definition cite nothing?</summary>
+<div class="ans">So it stays true when a number changes. Results are cited below the definition, never inside it.</div>
+</details>
+
+<h2 id="siblings">Siblings share ids, never sentences</h2>
+<p>A journal entry, a report and a paper about the same result each cite the result and reuse its figure. None is generated from another, because each has a different reader. What they share is the id, so they cannot disagree about the number. <a href="/content/entries/how-corrections-work/">How corrections work</a> follows what happens when that number turns out wrong.</p>
+
+</main>
+</body>
+</html>

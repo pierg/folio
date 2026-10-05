@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why metadata comes first</title>
+<meta name="genre" content="entry">
+<meta name="title" content="Why metadata comes first">
+<meta name="description" content="Why folio puts every fact the engine reads into metadata, and keeps the body as prose, for anyone writing or reviewing a library.">
+<meta name="tags" content="design">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<p class="thesis">Every fact the engine needs to render, search, filter or check a document lives in its metadata, and the body is prose that nothing parses back out. That keeps the body free for the reader, and it lets the engine draw everything that follows from the facts instead of trusting a writer to keep a copy in step.</p>
+
+<h2 id="two-places">Two places, two jobs</h2>
+<p>A document has two places to put things. The metadata is a short list of named fields: in HTML, <code>&lt;meta&gt;</code> tags in the head; in Markdown, front matter. The body is what a person reads. Each place has one job, and nothing is written in both.</p>
+<p>Five fields are core to every document: a title, a one-line description, the <a class="defn-link" href="/content/concepts/genre/">genre</a>, a status and tags. A genre adds a field only when the engine renders, filters or checks it, such as a result's number or a project's <code>reviewed</code> date. Anything else stays in the body as prose.</p>
+
+<details class="check">
+<summary>A project page wants to say when its state was last confirmed. Body or metadata?</summary>
+<div class="ans">Metadata: the <code>reviewed</code> field. The shell shows it in the header, and the gate warns when it grows old, so the engine reads it.</div>
+</details>
+
+<h2 id="parsing">Why the body is never parsed</h2>
+<p>A fact the engine has to dig out of prose is a fact a writer can phrase in a way the engine misses. Agents phrase things differently each time. A field has one spelling and one type, and the <a class="defn-link" href="/content/concepts/gate/">gate</a> checks both. So the date in the header, the number on a result and the source a reading is about are read from fields, and are right or reported.</p>
+
+<h2 id="header">What the shell draws</h2>
+<p>Because the facts sit in fields, the shell draws the header of every page: the title, the description as its subtitle, the status, the dates from git, and the tags. A body never starts with its own title. Search results, link previews and <a class="defn-link" href="/content/concepts/map/">map</a> rows reuse the same description, so a document is summed up once, by its author, in its genre's voice.</p>
+
+<details class="check">
+<summary>Why does a document's body have no <code>&lt;h1&gt;</code>?</summary>
+<div class="ans">The shell draws the title from the metadata. A second copy in the body could drift from the first.</div>
+</details>
+
+<h2 id="generated">What follows from links is generated</h2>
+<p>The same rule reaches past one document. Whatever follows from links is derived, never written: what a document cites, what cites it, the <a class="defn-link" href="/content/concepts/journal/">journal</a> entries about it, a guide's chapter list, and the status of a <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>. A hand-kept list of these goes stale the day after it is written. A generated one cannot. The rule that each fact is written once is argued in <a href="/content/entries/one-fact-one-home/">One fact, one home</a>.</p>
+
+</main>
+</body>
+</html>

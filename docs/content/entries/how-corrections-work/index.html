@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How corrections work</title>
+<meta name="genre" content="entry">
+<meta name="title" content="How corrections work">
+<meta name="description" content="How a library corrects a document it may not edit, and what a reader sees, for anyone keeping records.">
+<meta name="tags" content="design, records">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<p class="thesis">A record that was wrong is never edited. A new document points back at it, and the engine shows the correction on the record itself, so old citations keep showing what they cited and every reader of the record sees what changed.</p>
+
+<h2 id="which">Which documents are never edited</h2>
+<p>A genre says how its documents change over time. Most are revised in place. A <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, such as a journal entry or a result, is never edited once committed. A frozen document, such as a locked protocol or a published report, is edited freely until it reaches its frozen state, and then never again except its status. The <a class="defn-link" href="/content/concepts/gate/">gate</a> checks both against git history.</p>
+
+<details class="check">
+<summary>A protocol was locked yesterday and has a typo in its hypothesis. Can the agent fix it in place?</summary>
+<div class="ans">No. Once locked, the file must match the commit that locked it. A new protocol names it in <code>amends</code>, or a correction entry about it says what was meant.</div>
+</details>
+
+<h2 id="supersede">A newer record supersedes</h2>
+<p>When a measurement is redone, the new result names the old one: <code>supersedes: R-1</code>. The engine marks the old result <code>superseded</code> and shows a banner on it that links the new one. The old result keeps its id and its address, so a page that cited it still resolves, and with the lab <a class="defn-link" href="/content/concepts/pack/">pack</a> on, the gate warns on each revised page that still cites it.</p>
+
+<h2 id="retract">A journal entry retracts or corrects</h2>
+<p>When nothing replaces a record, a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry of kind <code>retraction</code> names it in <code>about</code>, and the record's status becomes <code>retracted</code>. An entry of kind <code>correction</code> names a document and says what is true instead; its text shows as a banner on that document. Neither edits the original.</p>
+
+<details class="check">
+<summary>Where does a retracted result's status come from, since the result writes no status?</summary>
+<div class="ans">It is derived: the engine finds the retraction entry whose <code>about</code> names the result.</div>
+</details>
+
+<h2 id="why">Why not just edit</h2>
+<p>An edit erases the evidence that something was wrong. Anyone who read the old value has no way to learn it changed, and a page that quoted it now cites a document that says something else. A correction that points back keeps both, and the banner tells every later reader. It is the same idea as <a href="/content/entries/one-fact-one-home/">one fact, one home</a>, applied over time.</p>
+
+</main>
+</body>
+</html>

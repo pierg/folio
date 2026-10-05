@@ -1,0 +1,960 @@
+{
+  "documents": [
+    {
+      "description": "What stands between an agent's edit and a commit.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "gate",
+      "parts": [],
+      "path": "content/concepts/gate/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Gate",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/concepts/gate/"
+    },
+    {
+      "description": "Why every document in a library has a fixed job, voice, format and set of checks.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "genre",
+      "parts": [],
+      "path": "content/concepts/genre/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Genre",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/concepts/genre/"
+    },
+    {
+      "description": "Where a library keeps the dated record of what happened and why.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "journal",
+      "parts": [],
+      "path": "content/concepts/journal/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Journal",
+      "topics": [
+        "using-folio",
+        "concepts"
+      ],
+      "url": "/content/concepts/journal/"
+    },
+    {
+      "description": "The unit folio works on: where it lives and what it holds.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "library",
+      "parts": [],
+      "path": "content/concepts/library/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Library",
+      "topics": [
+        "using-folio",
+        "concepts"
+      ],
+      "url": "/content/concepts/library/"
+    },
+    {
+      "description": "How a reader finds their way into a library without a folder tree.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "map",
+      "parts": [],
+      "path": "content/concepts/map/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Map",
+      "topics": [
+        "using-folio",
+        "concepts"
+      ],
+      "url": "/content/concepts/map/"
+    },
+    {
+      "description": "How a library gains genres and workflows for one kind of work.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "pack",
+      "parts": [],
+      "path": "content/concepts/pack/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Pack",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/concepts/pack/"
+    },
+    {
+      "description": "Why some documents are never edited once committed, and how they still change status.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "permanent-record",
+      "parts": [],
+      "path": "content/concepts/permanent-record/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Permanent record",
+      "topics": [
+        "using-folio",
+        "concepts"
+      ],
+      "url": "/content/concepts/permanent-record/"
+    },
+    {
+      "description": "How an agent knows what to do with a library, step by step.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "skill",
+      "parts": [],
+      "path": "content/concepts/skill/index.html",
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Skill",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/concepts/skill/"
+    },
+    {
+      "description": "How a library corrects a document it may not edit, and what a reader sees, for anyone keeping records.",
+      "field_order": [],
+      "fields": {},
+      "genre": "entry",
+      "id": "how-corrections-work",
+      "parts": [],
+      "path": "content/entries/how-corrections-work/index.html",
+      "status": "live",
+      "tags": [
+        "design",
+        "records"
+      ],
+      "title": "How corrections work",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/entries/how-corrections-work/"
+    },
+    {
+      "description": "Why each fact lives in exactly one document, and what the rest of the library does instead, for anyone writing in a library.",
+      "field_order": [],
+      "fields": {},
+      "genre": "entry",
+      "id": "one-fact-one-home",
+      "parts": [],
+      "path": "content/entries/one-fact-one-home/index.html",
+      "status": "live",
+      "tags": [
+        "design"
+      ],
+      "title": "One fact, one home",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/entries/one-fact-one-home/"
+    },
+    {
+      "description": "Why folio puts every fact the engine reads into metadata, and keeps the body as prose, for anyone writing or reviewing a library.",
+      "field_order": [],
+      "fields": {},
+      "genre": "entry",
+      "id": "why-metadata-first",
+      "parts": [],
+      "path": "content/entries/why-metadata-first/index.html",
+      "status": "live",
+      "tags": [
+        "design"
+      ],
+      "title": "Why metadata comes first",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/entries/why-metadata-first/"
+    },
+    {
+      "description": "By the end you have a library in your project, a few linked documents, and a way to review them.",
+      "field_order": [],
+      "fields": {},
+      "genre": "guide",
+      "id": "getting-started",
+      "parts": [
+        {
+          "description": "You leave with folio installed, a library in your project, and the gate passing.",
+          "name": "install",
+          "number": 1,
+          "part": "chapter",
+          "path": "content/guides/getting-started/01-install.html",
+          "title": "Install",
+          "url": "/content/guides/getting-started/01-install.html"
+        },
+        {
+          "description": "You leave knowing how to ask for a document, what the agent does to write it, and where to read it.",
+          "name": "first-documents",
+          "number": 2,
+          "part": "chapter",
+          "path": "content/guides/getting-started/02-first-documents.html",
+          "title": "Your first documents",
+          "url": "/content/guides/getting-started/02-first-documents.html"
+        },
+        {
+          "description": "You leave knowing how a library is structured by maps, and how to move, merge and retire documents without breaking links.",
+          "name": "organising",
+          "number": 3,
+          "part": "chapter",
+          "path": "content/guides/getting-started/03-organising.html",
+          "title": "Organising",
+          "url": "/content/guides/getting-started/03-organising.html"
+        },
+        {
+          "description": "You leave knowing how to question a passage on the page, what the agent's flags mean, and how your comments get answered.",
+          "name": "reviewing-comments",
+          "number": 4,
+          "part": "chapter",
+          "path": "content/guides/getting-started/04-reviewing-comments.html",
+          "title": "Reviewing comments",
+          "url": "/content/guides/getting-started/04-reviewing-comments.html"
+        },
+        {
+          "description": "You leave knowing how to let others comment on a library served from a machine you share, and how each comment reaches git.",
+          "name": "deployed-comments",
+          "number": 5,
+          "part": "chapter",
+          "path": "content/guides/getting-started/05-deployed-comments.html",
+          "title": "Comments on a deployed library",
+          "url": "/content/guides/getting-started/05-deployed-comments.html"
+        }
+      ],
+      "path": "content/guides/getting-started/index.html",
+      "status": "live",
+      "tags": [
+        "using"
+      ],
+      "title": "Getting started",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/guides/getting-started/"
+    },
+    {
+      "description": "How to use folio, what its ideas mean, and the record of how it is built, kept with folio itself.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "home",
+      "parts": [],
+      "path": "content/index.html",
+      "rows": [
+        "content/guides/getting-started/index.html"
+      ],
+      "status": "live",
+      "tags": [],
+      "title": "folio",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "reference",
+        "building-folio"
+      ],
+      "url": "/content/"
+    },
+    {
+      "description": "Documents carry five core fields, and the body is prose the engine never parses.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "why-metadata-first"
+        ],
+        "date": "2026-10-03",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-03-metadata-holds-every-fact-the-engine",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
+      "status": "live",
+      "tags": [
+        "design"
+      ],
+      "title": "Metadata holds every fact the engine reads",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md"
+    },
+    {
+      "description": "The journal became one short Markdown file per entry, permanent once committed.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "journal"
+        ],
+        "date": "2026-10-03",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-03-one-journal-entry-per-file",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
+      "status": "live",
+      "tags": [
+        "records"
+      ],
+      "title": "One journal entry per file",
+      "topics": [
+        "using-folio",
+        "concepts"
+      ],
+      "url": "/content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
+    },
+    {
+      "description": "A paper's source stays revised, and each frozen version is a permanent copy beside it.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "folio",
+          "permanent-record"
+        ],
+        "date": "2026-10-03",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-03-paper-versions-are-snapshots",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+      "status": "live",
+      "tags": [
+        "papers"
+      ],
+      "title": "Paper versions are snapshots",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-03-paper-versions-are-snapshots.md"
+    },
+    {
+      "description": "The home page now shows a fourth map, How folio is built, so the lab records have a topic of their own.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "building-folio",
+          "using-folio"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-added-how-folio-is-built-as",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
+      "status": "live",
+      "tags": [],
+      "title": "Added How folio is built as a home map",
+      "topics": [
+        "using-folio",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+    },
+    {
+      "description": "A comment has no name field, is one commit on the current branch, and is refused rather than taken anonymously.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "getting-started"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-comments-are-committed-by-the-server",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+      "status": "live",
+      "tags": [
+        "using"
+      ],
+      "title": "Comments are committed by the server, as the commenter",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md"
+    },
+    {
+      "description": "The home page shows three maps: Using folio, Concepts and Reference, in that order.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "using-folio",
+          "concepts",
+          "reference"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-home-maps-set",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-home-maps-set.md",
+      "status": "live",
+      "tags": [],
+      "title": "Home maps set",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "reference"
+      ],
+      "url": "/content/journal/2026/2026-10-04-home-maps-set.md"
+    },
+    {
+      "description": "Vannevar Bush's 1945 essay, filed as a source with a reading, as the knowledge-base pack's worked example.",
+      "field_order": [
+        "date",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "1945-as-we-may-think",
+          "1945-as-we-may-think-reading"
+        ],
+        "date": "2026-10-04"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-ingested-as-we-may-think",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+      "status": "live",
+      "tags": [
+        "hypertext"
+      ],
+      "title": "Ingested As We May Think",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-ingested-as-we-may-think.md"
+    },
+    {
+      "description": "folio's own documentation became a folio library in docs/, with both packs on.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "home"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-library-set-up",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-library-set-up.md",
+      "status": "live",
+      "tags": [],
+      "title": "Library set up",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "reference",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-library-set-up.md"
+    },
+    {
+      "description": "The protocol timing folio check on two libraries is locked before any timed run.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "check-time",
+          "Q-1"
+        ],
+        "date": "2026-10-04",
+        "kind": "lock"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-locked-the-check-time-protocol",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+      "status": "live",
+      "tags": [
+        "timing"
+      ],
+      "title": "Locked the check-time protocol",
+      "topics": [
+        "using-folio",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-locked-the-check-time-protocol.md"
+    },
+    {
+      "description": "folio check took a median of 0.20 s on this documentation library.",
+      "field_order": [
+        "date",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "R-1",
+          "check-time"
+        ],
+        "date": "2026-10-04"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-recorded-r-1",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-recorded-r-1.md",
+      "status": "live",
+      "tags": [
+        "timing"
+      ],
+      "title": "Recorded R-1",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-recorded-r-1.md"
+    },
+    {
+      "description": "folio check took a median of 0.21 s on the sample library.",
+      "field_order": [
+        "date",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "R-2",
+          "check-time"
+        ],
+        "date": "2026-10-04"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-recorded-r-2",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-recorded-r-2.md",
+      "status": "live",
+      "tags": [
+        "timing"
+      ],
+      "title": "Recorded R-2",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-recorded-r-2.md"
+    },
+    {
+      "description": "The specs remain Markdown files in docs/spec/, linked from the Reference map by their GitHub addresses.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "reference"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-specifications-stay-outside-the-library",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md",
+      "status": "live",
+      "tags": [],
+      "title": "Specifications stay outside the library",
+      "topics": [
+        "reference"
+      ],
+      "url": "/content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md"
+    },
+    {
+      "description": "The skills folio init installs point at the repository's own skills/ folder instead of a copy.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "home"
+        ],
+        "date": "2026-10-04",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md",
+      "status": "live",
+      "tags": [],
+      "title": "The library shares the repository's skills",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "reference",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+    },
+    {
+      "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "building-folio",
+      "parts": [],
+      "path": "content/maps/building-folio.html",
+      "rows": [
+        "content/projects/folio/index.html",
+        "content/questions/Q-1.md",
+        "content/protocols/check-time.md",
+        "content/results/R-1.md",
+        "content/results/R-2.md"
+      ],
+      "status": "live",
+      "tags": [
+        "building"
+      ],
+      "title": "How folio is built",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/maps/building-folio.html"
+    },
+    {
+      "description": "The ideas folio is built on, each defined once.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "concepts",
+      "parts": [],
+      "path": "content/maps/concepts.html",
+      "rows": [
+        "content/concepts/library/index.html",
+        "content/concepts/genre/index.html",
+        "content/concepts/map/index.html",
+        "content/concepts/skill/index.html",
+        "content/concepts/pack/index.html",
+        "content/concepts/gate/index.html",
+        "content/concepts/journal/index.html",
+        "content/concepts/permanent-record/index.html"
+      ],
+      "status": "live",
+      "tags": [
+        "concepts"
+      ],
+      "title": "Concepts",
+      "topics": [
+        "concepts"
+      ],
+      "url": "/content/maps/concepts.html"
+    },
+    {
+      "description": "The specifications that define folio exactly, and what each one settles.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "reference",
+      "parts": [],
+      "path": "content/maps/reference.html",
+      "rows": [],
+      "status": "live",
+      "tags": [
+        "reference"
+      ],
+      "title": "Reference",
+      "topics": [
+        "reference"
+      ],
+      "url": "/content/maps/reference.html"
+    },
+    {
+      "description": "How to install folio, write your first documents, organise them and review them, in reading order.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "using-folio",
+      "parts": [],
+      "path": "content/maps/using-folio.html",
+      "rows": [
+        "content/guides/getting-started/index.html",
+        "content/projects/folio/index.html",
+        "content/entries/why-metadata-first/index.html",
+        "content/entries/one-fact-one-home/index.html",
+        "content/entries/how-corrections-work/index.html",
+        "content/readings/1945-as-we-may-think-reading.html",
+        "content/sources/1945-as-we-may-think/index.html",
+        "content/questions/Q-1.md"
+      ],
+      "status": "live",
+      "tags": [
+        "using"
+      ],
+      "title": "Using folio",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/maps/using-folio.html"
+    },
+    {
+      "description": "The engine, the genres, the packs and the seven skills that let a coding agent keep a knowledge library.",
+      "field_order": [
+        "reviewed"
+      ],
+      "fields": {
+        "reviewed": "2026-10-04"
+      },
+      "genre": "project",
+      "id": "folio",
+      "parts": [],
+      "path": "content/projects/folio/index.html",
+      "status": "live",
+      "tags": [
+        "project"
+      ],
+      "title": "folio",
+      "topics": [
+        "using-folio",
+        "building-folio"
+      ],
+      "url": "/content/projects/folio/"
+    },
+    {
+      "description": "Varies the library checked, and measures the wall-clock time of folio check.",
+      "field_order": [
+        "question"
+      ],
+      "fields": {
+        "question": "Q-1"
+      },
+      "genre": "protocol",
+      "id": "check-time",
+      "parts": [],
+      "path": "content/protocols/check-time.md",
+      "status": "locked",
+      "tags": [
+        "gate",
+        "timing"
+      ],
+      "title": "Time folio check on two libraries",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/protocols/check-time.md"
+    },
+    {
+      "description": "Whether the skills can keep running the gate before every commit without anyone waiting on it.",
+      "field_order": [
+        "rank"
+      ],
+      "fields": {
+        "rank": 1
+      },
+      "genre": "question",
+      "id": "Q-1",
+      "parts": [],
+      "path": "content/questions/Q-1.md",
+      "status": "answered",
+      "tags": [
+        "gate",
+        "timing"
+      ],
+      "title": "Does folio check finish in under two seconds on this documentation library?",
+      "topics": [
+        "using-folio",
+        "building-folio"
+      ],
+      "url": "/content/questions/Q-1.md"
+    },
+    {
+      "description": "The memex's trails are the closest ancestor of a folio map: a path through linked records, kept so someone else can follow it.",
+      "field_order": [
+        "source"
+      ],
+      "fields": {
+        "source": "1945-as-we-may-think"
+      },
+      "genre": "reading",
+      "id": "1945-as-we-may-think-reading",
+      "parts": [],
+      "path": "content/readings/1945-as-we-may-think-reading.html",
+      "status": "live",
+      "tags": [
+        "hypertext",
+        "linking"
+      ],
+      "title": "As We May Think",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/readings/1945-as-we-may-think-reading.html"
+    },
+    {
+      "description": "Wall-clock time of the gate on this library, over ten runs, against the two-second line its protocol set.",
+      "field_order": [
+        "protocol",
+        "number",
+        "baseline",
+        "bound",
+        "evidence",
+        "rederive",
+        "date"
+      ],
+      "fields": {
+        "baseline": "the two-second line in check-time's D1, and the sample arm on the same machine (R-2)",
+        "bound": "One Linux machine with four cores, Python 3.11, the library at 30 documents before its first commit, so the git-history checks had no history to read; it says nothing about larger libraries or other machines.",
+        "date": "2026-10-04",
+        "evidence": "docs/assets/data/check-timings.csv",
+        "number": "median 0.20 s over 10 runs",
+        "protocol": "check-time",
+        "rederive": "python3 docs/tools/check_timing.py summarise docs/assets/data/check-timings.csv --arm docs"
+      },
+      "genre": "result",
+      "id": "R-1",
+      "parts": [],
+      "path": "content/results/R-1.md",
+      "status": "live",
+      "tags": [
+        "gate",
+        "timing"
+      ],
+      "title": "folio check took a median of 0.20 s on this documentation library",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/results/R-1.md"
+    },
+    {
+      "description": "Wall-clock time of the gate on the small sample library, the other arm of the same protocol.",
+      "field_order": [
+        "protocol",
+        "number",
+        "baseline",
+        "bound",
+        "evidence",
+        "rederive",
+        "date"
+      ],
+      "fields": {
+        "baseline": "the docs arm on the same machine, measured right after it (R-1)",
+        "bound": "One Linux machine with four cores, Python 3.11, the sample library at 23 documents with its committed history; it says nothing about larger libraries or other machines.",
+        "date": "2026-10-04",
+        "evidence": "docs/assets/data/check-timings.csv",
+        "number": "median 0.21 s over 10 runs",
+        "protocol": "check-time",
+        "rederive": "python3 docs/tools/check_timing.py summarise docs/assets/data/check-timings.csv --arm sample"
+      },
+      "genre": "result",
+      "id": "R-2",
+      "parts": [],
+      "path": "content/results/R-2.md",
+      "status": "live",
+      "tags": [
+        "gate",
+        "timing"
+      ],
+      "title": "folio check took a median of 0.21 s on the test suite's sample library",
+      "topics": [
+        "building-folio"
+      ],
+      "url": "/content/results/R-2.md"
+    },
+    {
+      "description": "An essay proposing the memex, a desk that stores a person's records and joins them into trails of linked items.",
+      "field_order": [
+        "authors",
+        "year",
+        "original"
+      ],
+      "fields": {
+        "authors": "Vannevar Bush",
+        "original": "Not kept: public article, link given.",
+        "year": "1945"
+      },
+      "genre": "source",
+      "id": "1945-as-we-may-think",
+      "parts": [],
+      "path": "content/sources/1945-as-we-may-think/index.html",
+      "status": "live",
+      "tags": [
+        "hypertext",
+        "linking"
+      ],
+      "title": "As We May Think",
+      "topics": [
+        "using-folio"
+      ],
+      "url": "/content/sources/1945-as-we-may-think/"
+    }
+  ]
+}

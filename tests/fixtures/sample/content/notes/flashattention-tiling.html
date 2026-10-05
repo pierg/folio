@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlashAttention tiling</title>
+<meta name="genre" content="note">
+<meta name="title" content="FlashAttention tiling">
+<meta name="description" content="Attention computed one tile of keys at a time is exact, if the softmax is rescaled as it goes.">
+
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+<p>Each tile of keys updates a running maximum and sum per row. A <a class="defn-link" href="/content/concepts/softmax/">softmax</a> rescaled this way gives the exact result.</p>
+</main>
+</body>
+</html>

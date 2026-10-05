@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install</title>
+<meta name="genre" content="guide">
+<meta name="title" content="Install">
+<meta name="description" content="You leave with folio installed, a library in your project, and the gate passing.">
+<meta name="tags" content="using">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<h2 id="prompt">Hand your agent the setup prompt</h2>
+<p>folio is installed by your agent, not by you. Open your coding agent in the project where the library should live, and paste the setup prompt from <a href="https://github.com/pierg/folio/blob/main/SETUP.md">SETUP.md</a>.</p>
+<p>The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up <a class="defn-link" href="/content/concepts/skill/">skill</a>. The agent asks you at most three questions in one message: what the library is called and who reads it, where it should live, and which <a class="defn-link" href="/content/concepts/pack/">packs</a> to switch on. Every question comes with a default, so "defaults" is a full answer.</p>
+
+<details class="check">
+<summary>How many rounds of questions does set-up take?</summary>
+<div class="ans">One. The agent asks everything it still needs in one message, and skips what you already said.</div>
+</details>
+
+<h2 id="pip">Or install the engine yourself</h2>
+<p>If you prefer to install the engine first, run <code>pip install folio-kb</code>, or <code>uv tool install folio-kb</code>. The command it installs is <code>folio</code>. Then ask your agent, in plain words, to set up folio here. It finds the set-up skill and carries on from the questions.</p>
+<p>Either way, you do not run <code>folio</code> again yourself. The skills call it, the way an agent calls git.</p>
+
+<details class="check">
+<summary>What is the package called, and what is the command called?</summary>
+<div class="ans">The package is <code>folio-kb</code>; the command it installs is <code>folio</code>.</div>
+</details>
+
+<h2 id="result">What set-up leaves behind</h2>
+<p>Set-up makes a <a class="defn-link" href="/content/concepts/library/">library</a> in the folder you chose and commits it:</p>
+<pre><code>docs/
+  folio.yaml        the charter: name, purpose, reader, packs
+  content/
+    index.html      the home page
+    journal/        one file per entry; the first records the setup
+  assets/           figures, the bibliography, data
+  .folio/           generated indices, committed
+.agents/skills/     the seven skills, at the project's root</code></pre>
+<p>It ends by running the <a class="defn-link" href="/content/concepts/gate/">gate</a>, which passes on a new library, and by telling you in two lines what you can now ask for.</p>
+
+<details class="check">
+<summary>Which file holds what the library is for, and who writes it?</summary>
+<div class="ans"><code>folio.yaml</code>, the charter. Only the set-up and configure skills write it, and each change is recorded in the journal.</div>
+</details>
+
+</main>
+</body>
+</html>

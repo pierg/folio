@@ -1,0 +1,195 @@
+[
+  {
+    "about": [
+      "home"
+    ],
+    "date": "2026-10-04",
+    "description": "The skills folio init installs point at the repository's own skills/ folder instead of a copy.",
+    "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md",
+    "tags": [],
+    "title": "The library shares the repository's skills",
+    "url": "/content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+  },
+  {
+    "about": [
+      "reference"
+    ],
+    "date": "2026-10-04",
+    "description": "The specs remain Markdown files in docs/spec/, linked from the Reference map by their GitHub addresses.",
+    "id": "2026-10-04-specifications-stay-outside-the-library",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md",
+    "tags": [],
+    "title": "Specifications stay outside the library",
+    "url": "/content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md"
+  },
+  {
+    "about": [
+      "R-2",
+      "check-time"
+    ],
+    "date": "2026-10-04",
+    "description": "folio check took a median of 0.21 s on the sample library.",
+    "id": "2026-10-04-recorded-r-2",
+    "kind": null,
+    "path": "content/journal/2026/2026-10-04-recorded-r-2.md",
+    "tags": [
+      "timing"
+    ],
+    "title": "Recorded R-2",
+    "url": "/content/journal/2026/2026-10-04-recorded-r-2.md"
+  },
+  {
+    "about": [
+      "R-1",
+      "check-time"
+    ],
+    "date": "2026-10-04",
+    "description": "folio check took a median of 0.20 s on this documentation library.",
+    "id": "2026-10-04-recorded-r-1",
+    "kind": null,
+    "path": "content/journal/2026/2026-10-04-recorded-r-1.md",
+    "tags": [
+      "timing"
+    ],
+    "title": "Recorded R-1",
+    "url": "/content/journal/2026/2026-10-04-recorded-r-1.md"
+  },
+  {
+    "about": [
+      "check-time",
+      "Q-1"
+    ],
+    "date": "2026-10-04",
+    "description": "The protocol timing folio check on two libraries is locked before any timed run.",
+    "id": "2026-10-04-locked-the-check-time-protocol",
+    "kind": "lock",
+    "path": "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+    "tags": [
+      "timing"
+    ],
+    "title": "Locked the check-time protocol",
+    "url": "/content/journal/2026/2026-10-04-locked-the-check-time-protocol.md"
+  },
+  {
+    "about": [
+      "home"
+    ],
+    "date": "2026-10-04",
+    "description": "folio's own documentation became a folio library in docs/, with both packs on.",
+    "id": "2026-10-04-library-set-up",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-library-set-up.md",
+    "tags": [],
+    "title": "Library set up",
+    "url": "/content/journal/2026/2026-10-04-library-set-up.md"
+  },
+  {
+    "about": [
+      "1945-as-we-may-think",
+      "1945-as-we-may-think-reading"
+    ],
+    "date": "2026-10-04",
+    "description": "Vannevar Bush's 1945 essay, filed as a source with a reading, as the knowledge-base pack's worked example.",
+    "id": "2026-10-04-ingested-as-we-may-think",
+    "kind": null,
+    "path": "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+    "tags": [
+      "hypertext"
+    ],
+    "title": "Ingested As We May Think",
+    "url": "/content/journal/2026/2026-10-04-ingested-as-we-may-think.md"
+  },
+  {
+    "about": [
+      "using-folio",
+      "concepts",
+      "reference"
+    ],
+    "date": "2026-10-04",
+    "description": "The home page shows three maps: Using folio, Concepts and Reference, in that order.",
+    "id": "2026-10-04-home-maps-set",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-home-maps-set.md",
+    "tags": [],
+    "title": "Home maps set",
+    "url": "/content/journal/2026/2026-10-04-home-maps-set.md"
+  },
+  {
+    "about": [
+      "getting-started"
+    ],
+    "date": "2026-10-04",
+    "description": "A comment has no name field, is one commit on the current branch, and is refused rather than taken anonymously.",
+    "id": "2026-10-04-comments-are-committed-by-the-server",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+    "tags": [
+      "using"
+    ],
+    "title": "Comments are committed by the server, as the commenter",
+    "url": "/content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md"
+  },
+  {
+    "about": [
+      "building-folio",
+      "using-folio"
+    ],
+    "date": "2026-10-04",
+    "description": "The home page now shows a fourth map, How folio is built, so the lab records have a topic of their own.",
+    "id": "2026-10-04-added-how-folio-is-built-as",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
+    "tags": [],
+    "title": "Added How folio is built as a home map",
+    "url": "/content/journal/2026/2026-10-04-added-how-folio-is-built-as.md"
+  },
+  {
+    "about": [
+      "folio",
+      "permanent-record"
+    ],
+    "date": "2026-10-03",
+    "description": "A paper's source stays revised, and each frozen version is a permanent copy beside it.",
+    "id": "2026-10-03-paper-versions-are-snapshots",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+    "tags": [
+      "papers"
+    ],
+    "title": "Paper versions are snapshots",
+    "url": "/content/journal/2026/2026-10-03-paper-versions-are-snapshots.md"
+  },
+  {
+    "about": [
+      "journal"
+    ],
+    "date": "2026-10-03",
+    "description": "The journal became one short Markdown file per entry, permanent once committed.",
+    "id": "2026-10-03-one-journal-entry-per-file",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
+    "tags": [
+      "records"
+    ],
+    "title": "One journal entry per file",
+    "url": "/content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
+  },
+  {
+    "about": [
+      "why-metadata-first"
+    ],
+    "date": "2026-10-03",
+    "description": "Documents carry five core fields, and the body is prose the engine never parses.",
+    "id": "2026-10-03-metadata-holds-every-fact-the-engine",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
+    "tags": [
+      "design"
+    ],
+    "title": "Metadata holds every fact the engine reads",
+    "url": "/content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md"
+  }
+]

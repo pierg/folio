@@ -1,0 +1,520 @@
+{
+  "documents": [
+    {
+      "description": "Only for this estimator, and only over the sizes that were run.",
+      "field_order": [
+        "strength"
+      ],
+      "fields": {
+        "strength": "indicative"
+      },
+      "genre": "claim",
+      "id": "C-1",
+      "parts": [],
+      "path": "content/claims/C-1.md",
+      "status": "live",
+      "tags": [],
+      "title": "The pi estimate's error falls as 1/sqrt(n)",
+      "topics": [
+        "lab-work"
+      ],
+      "url": "/content/claims/C-1.md"
+    },
+    {
+      "description": "The layer in which every token attends to every other token.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "self-attention",
+      "parts": [],
+      "path": "content/concepts/self-attention/index.html",
+      "status": "live",
+      "tags": [
+        "attention"
+      ],
+      "title": "Self-attention",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/concepts/self-attention/"
+    },
+    {
+      "description": "The function that turns attention scores into weights.",
+      "field_order": [],
+      "fields": {},
+      "genre": "concept",
+      "id": "softmax",
+      "parts": [],
+      "path": "content/concepts/softmax/index.html",
+      "status": "live",
+      "tags": [
+        "attention"
+      ],
+      "title": "Softmax",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/concepts/softmax/"
+    },
+    {
+      "description": "Where the cost of self-attention comes from, for someone who knows matrix products.",
+      "field_order": [],
+      "fields": {},
+      "genre": "entry",
+      "id": "attention-is-quadratic",
+      "parts": [],
+      "path": "content/entries/attention-is-quadratic/index.html",
+      "status": "live",
+      "tags": [
+        "attention",
+        "long-context"
+      ],
+      "title": "Why attention is quadratic",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/entries/attention-is-quadratic/"
+    },
+    {
+      "description": "By the end you can compute one attention layer by hand.",
+      "field_order": [],
+      "fields": {},
+      "genre": "guide",
+      "id": "attention-from-scratch",
+      "parts": [
+        {
+          "description": "You can say what an attention score is.",
+          "name": "scores",
+          "number": 1,
+          "part": "chapter",
+          "path": "content/guides/attention-from-scratch/01-scores.html",
+          "title": "Scoring tokens",
+          "url": "/content/guides/attention-from-scratch/01-scores.html"
+        },
+        {
+          "description": "You can turn a row of scores into weights.",
+          "name": "softmax",
+          "number": 2,
+          "part": "chapter",
+          "path": "content/guides/attention-from-scratch/02-softmax.html",
+          "title": "The softmax",
+          "url": "/content/guides/attention-from-scratch/02-softmax.html"
+        }
+      ],
+      "path": "content/guides/attention-from-scratch/index.html",
+      "status": "live",
+      "tags": [],
+      "title": "Attention, from scratch",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/guides/attention-from-scratch/"
+    },
+    {
+      "description": "The front door: what this library knows about attention, and what the lab measured.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "home",
+      "parts": [],
+      "path": "content/index.html",
+      "rows": [
+        "content/projects/attention-kernel/index.html"
+      ],
+      "status": "live",
+      "tags": [],
+      "title": "Research notes",
+      "topics": [
+        "attention",
+        "lab-work"
+      ],
+      "url": "/content/"
+    },
+    {
+      "description": "The library keeps what we know about attention.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "home"
+        ],
+        "date": "2026-10-01",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-01-set-up-the-library",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-01-set-up-the-library.md",
+      "status": "live",
+      "tags": [
+        "setup"
+      ],
+      "title": "Set up the library",
+      "topics": [
+        "attention",
+        "lab-work"
+      ],
+      "url": "/content/journal/2026/2026-10-01-set-up-the-library.md"
+    },
+    {
+      "description": "Agreed to write the report next.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "attention-kernel"
+        ],
+        "date": "2026-10-02",
+        "kind": "meeting"
+      },
+      "genre": "journal",
+      "id": "2026-10-02-lab-meeting",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-02-lab-meeting.md",
+      "status": "live",
+      "tags": [],
+      "title": "Lab meeting",
+      "topics": [],
+      "url": "/content/journal/2026/2026-10-02-lab-meeting.md"
+    },
+    {
+      "description": "The RMS slope, which supersedes R-3.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "R-4",
+          "pi-error-scaling"
+        ],
+        "date": "2026-10-02",
+        "kind": "run"
+      },
+      "genre": "journal",
+      "id": "2026-10-02-recorded-r-4",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-02-recorded-r-4.md",
+      "status": "live",
+      "tags": [],
+      "title": "Recorded R-4",
+      "topics": [],
+      "url": "/content/journal/2026/2026-10-02-recorded-r-4.md"
+    },
+    {
+      "description": "What this library knows about attention in transformers, and where to start.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "attention",
+      "parts": [],
+      "path": "content/maps/attention.html",
+      "rows": [
+        "content/concepts/softmax/index.html",
+        "content/notes/flashattention-tiling.html",
+        "content/entries/attention-is-quadratic/index.html",
+        "content/guides/attention-from-scratch/index.html",
+        "content/readings/2017-attention-is-all-you-need-reading.html",
+        "content/surveys/exact-attention.html",
+        "content/papers/tiled-attention/main.tex"
+      ],
+      "status": "live",
+      "tags": [
+        "attention"
+      ],
+      "title": "Attention",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/maps/attention.html"
+    },
+    {
+      "description": "The questions, claims and reports of the Monte Carlo experiments.",
+      "field_order": [],
+      "fields": {},
+      "genre": "map",
+      "id": "lab-work",
+      "parts": [],
+      "path": "content/maps/lab-work.html",
+      "rows": [
+        "content/questions/Q-1.md",
+        "content/claims/C-1.md",
+        "content/reports/pi-error-scaling-report/index.html"
+      ],
+      "status": "live",
+      "tags": [],
+      "title": "Lab work",
+      "topics": [
+        "lab-work"
+      ],
+      "url": "/content/maps/lab-work.html"
+    },
+    {
+      "description": "Attention computed one tile of keys at a time is exact, if the softmax is rescaled as it goes.",
+      "field_order": [],
+      "fields": {},
+      "genre": "note",
+      "id": "flashattention-tiling",
+      "parts": [],
+      "path": "content/notes/flashattention-tiling.html",
+      "status": "live",
+      "tags": [],
+      "title": "FlashAttention tiling",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/notes/flashattention-tiling.html"
+    },
+    {
+      "abstract": "Attention computed one tile of keys at a time is exact when the softmax is rescaled.",
+      "description": "Tiled attention is exact when the softmax is rescaled per tile.",
+      "field_order": [],
+      "fields": {},
+      "genre": "paper",
+      "id": "tiled-attention",
+      "parts": [
+        {
+          "description": "Tiled attention is exact when the softmax is rescaled per tile.",
+          "part": "landing",
+          "path": "content/papers/tiled-attention/index.html",
+          "title": "Tiled attention",
+          "url": "/content/papers/tiled-attention/"
+        }
+      ],
+      "path": "content/papers/tiled-attention/main.tex",
+      "status": "live",
+      "tags": [],
+      "title": "Tiled attention",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/papers/tiled-attention/",
+      "versions": []
+    },
+    {
+      "description": "A tiled attention kernel for long sequences.",
+      "field_order": [
+        "reviewed"
+      ],
+      "fields": {
+        "reviewed": "2026-09-20"
+      },
+      "genre": "project",
+      "id": "attention-kernel",
+      "parts": [],
+      "path": "content/projects/attention-kernel/index.html",
+      "status": "live",
+      "tags": [],
+      "title": "Attention kernel",
+      "topics": [],
+      "url": "/content/projects/attention-kernel/"
+    },
+    {
+      "description": "The number of points is varied; the RMS error over 100 seeds is measured.",
+      "field_order": [
+        "question"
+      ],
+      "fields": {
+        "question": "Q-1"
+      },
+      "genre": "protocol",
+      "id": "pi-error-scaling",
+      "parts": [],
+      "path": "content/protocols/pi-error-scaling.md",
+      "status": "locked",
+      "tags": [],
+      "title": "How the error of the pi estimate scales with the sample size",
+      "topics": [],
+      "url": "/content/protocols/pi-error-scaling.md"
+    },
+    {
+      "description": "The answer says how many samples a given accuracy costs.",
+      "field_order": [
+        "rank"
+      ],
+      "fields": {
+        "rank": 1
+      },
+      "genre": "question",
+      "id": "Q-1",
+      "parts": [],
+      "path": "content/questions/Q-1.md",
+      "status": "answered",
+      "tags": [
+        "monte-carlo"
+      ],
+      "title": "Does the error of a Monte Carlo estimate of pi shrink as 1/sqrt(n)?",
+      "topics": [
+        "lab-work"
+      ],
+      "url": "/content/questions/Q-1.md"
+    },
+    {
+      "description": "Convincing on translation, silent on long contexts.",
+      "field_order": [
+        "source"
+      ],
+      "fields": {
+        "source": "2017-attention-is-all-you-need"
+      },
+      "genre": "reading",
+      "id": "2017-attention-is-all-you-need-reading",
+      "parts": [],
+      "path": "content/readings/2017-attention-is-all-you-need-reading.html",
+      "status": "live",
+      "tags": [],
+      "title": "Attention Is All You Need",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/readings/2017-attention-is-all-you-need-reading.html"
+    },
+    {
+      "description": "The RMS error of a Monte Carlo estimate of pi, at five sample sizes.",
+      "field_order": [],
+      "fields": {},
+      "genre": "report",
+      "id": "pi-error-scaling-report",
+      "parts": [],
+      "path": "content/reports/pi-error-scaling-report/index.html",
+      "status": "live",
+      "tags": [],
+      "title": "The error of the pi estimate fell as 1/sqrt(n)",
+      "topics": [
+        "lab-work"
+      ],
+      "url": "/content/reports/pi-error-scaling-report/"
+    },
+    {
+      "description": "The slope of the error against the number of points, first fold.",
+      "field_order": [
+        "protocol",
+        "number",
+        "baseline",
+        "bound",
+        "evidence",
+        "rederive",
+        "date"
+      ],
+      "fields": {
+        "baseline": "the theoretical slope of -0.5",
+        "bound": "64 to 16,384 points, 100 seeds per size.",
+        "date": "2026-09-30",
+        "evidence": "assets/data/pi-errors.csv",
+        "number": "-0.483",
+        "protocol": "pi-error-scaling",
+        "rederive": "python3 -c 'print(-0.483)'"
+      },
+      "genre": "result",
+      "id": "R-3",
+      "parts": [],
+      "path": "content/results/R-3.md",
+      "status": "superseded",
+      "tags": [],
+      "title": "The error of the pi estimate fell with a fitted log-log slope of -0.483",
+      "topics": [],
+      "url": "/content/results/R-3.md"
+    },
+    {
+      "description": "The slope of the RMS error against the number of points, re-folded.",
+      "field_order": [
+        "protocol",
+        "number",
+        "baseline",
+        "bound",
+        "evidence",
+        "rederive",
+        "date",
+        "supersedes"
+      ],
+      "fields": {
+        "baseline": "the theoretical slope of -0.5",
+        "bound": "64 to 16,384 points, 100 seeds per size.",
+        "date": "2026-10-02",
+        "evidence": "assets/data/pi-errors.csv",
+        "number": "-0.493",
+        "protocol": "pi-error-scaling",
+        "rederive": "python3 -c 'print(-0.493)'",
+        "supersedes": "R-3"
+      },
+      "genre": "result",
+      "id": "R-4",
+      "parts": [],
+      "path": "content/results/R-4.md",
+      "status": "live",
+      "tags": [
+        "convergence"
+      ],
+      "title": "The RMS error of the pi estimate fell with a fitted log-log slope of -0.493",
+      "topics": [],
+      "url": "/content/results/R-4.md"
+    },
+    {
+      "description": "The paper that introduces the Transformer, a sequence model built on attention alone.",
+      "field_order": [
+        "authors",
+        "year",
+        "original"
+      ],
+      "fields": {
+        "authors": "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin",
+        "original": "original.pdf",
+        "year": "2017"
+      },
+      "genre": "source",
+      "id": "2017-attention-is-all-you-need",
+      "parts": [],
+      "path": "content/sources/2017-attention-is-all-you-need/index.html",
+      "status": "live",
+      "tags": [],
+      "title": "Attention Is All You Need",
+      "topics": [],
+      "url": "/content/sources/2017-attention-is-all-you-need/"
+    },
+    {
+      "description": "An exact attention algorithm that reads and writes memory in tiles.",
+      "field_order": [
+        "authors",
+        "year",
+        "original"
+      ],
+      "fields": {
+        "authors": "Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, Christopher Ré",
+        "original": "Not kept: the licence forbids a private copy.",
+        "year": "2022"
+      },
+      "genre": "source",
+      "id": "2022-flashattention",
+      "parts": [],
+      "path": "content/sources/2022-flashattention/index.html",
+      "status": "live",
+      "tags": [],
+      "title": "FlashAttention",
+      "topics": [],
+      "url": "/content/sources/2022-flashattention/"
+    },
+    {
+      "description": "Which ways of computing attention give the exact result, according to the works we keep?",
+      "field_order": [],
+      "fields": {},
+      "genre": "survey",
+      "id": "exact-attention",
+      "parts": [],
+      "path": "content/surveys/exact-attention.html",
+      "status": "live",
+      "tags": [],
+      "title": "Which attention methods are exact",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/surveys/exact-attention.html"
+    }
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "content/claims/C-1.md": {
+    "about": [],
+    "cited_by": [
+      "content/maps/lab-work.html",
+      "content/questions/Q-1.md"
+    ],
+    "cites": [
+      "content/results/R-4.md"
+    ],
+    "fields": {},
+    "id": "C-1",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/self-attention/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/concepts/softmax/index.html",
+      "content/entries/attention-is-quadratic/index.html"
+    ],
+    "cites": [],
+    "fields": {},
+    "id": "self-attention",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/concepts/softmax/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/entries/attention-is-quadratic/index.html",
+      "content/guides/attention-from-scratch/index.html",
+      "content/maps/attention.html",
+      "content/notes/flashattention-tiling.html",
+      "content/papers/tiled-attention/main.tex",
+      "content/readings/2017-attention-is-all-you-need-reading.html"
+    ],
+    "cites": [
+      "content/concepts/self-attention/index.html"
+    ],
+    "fields": {},
+    "id": "softmax",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/entries/attention-is-quadratic/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/concepts/self-attention/index.html",
+      "content/concepts/softmax/index.html"
+    ],
+    "fields": {},
+    "id": "attention-is-quadratic",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/guides/attention-from-scratch/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/concepts/softmax/index.html"
+    ],
+    "fields": {},
+    "id": "attention-from-scratch",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/index.html": {
+    "about": [
+      {
+        "date": "2026-10-01",
+        "id": "2026-10-01-set-up-the-library",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-01-set-up-the-library.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-01-set-up-the-library.md"
+    ],
+    "cites": [
+      "content/projects/attention-kernel/index.html"
+    ],
+    "fields": {},
+    "id": "home",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-01-set-up-the-library.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-01-set-up-the-library",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-02-lab-meeting.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/projects/attention-kernel/index.html",
+      "content/reports/pi-error-scaling-report/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-02-lab-meeting",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-02-recorded-r-4.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/protocols/pi-error-scaling.md",
+      "content/results/R-3.md",
+      "content/results/R-4.md"
+    ],
+    "fields": {},
+    "id": "2026-10-02-recorded-r-4",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/attention.html": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/softmax/index.html",
+      "content/entries/attention-is-quadratic/index.html",
+      "content/guides/attention-from-scratch/index.html",
+      "content/notes/flashattention-tiling.html",
+      "content/papers/tiled-attention/main.tex",
+      "content/readings/2017-attention-is-all-you-need-reading.html",
+      "content/surveys/exact-attention.html"
+    ],
+    "fields": {},
+    "id": "attention",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/maps/lab-work.html": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/claims/C-1.md",
+      "content/questions/Q-1.md",
+      "content/reports/pi-error-scaling-report/index.html"
+    ],
+    "fields": {},
+    "id": "lab-work",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/notes/flashattention-tiling.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/concepts/softmax/index.html"
+    ],
+    "fields": {},
+    "id": "flashattention-tiling",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/papers/tiled-attention/main.tex": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/concepts/softmax/index.html"
+    ],
+    "fields": {},
+    "id": "tiled-attention",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/projects/attention-kernel/index.html": {
+    "about": [
+      {
+        "date": "2026-10-02",
+        "id": "2026-10-02-lab-meeting",
+        "kind": "meeting",
+        "path": "content/journal/2026/2026-10-02-lab-meeting.md"
+      }
+    ],
+    "cited_by": [
+      "content/index.html",
+      "content/journal/2026/2026-10-02-lab-meeting.md"
+    ],
+    "cites": [],
+    "fields": {},
+    "id": "attention-kernel",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/protocols/pi-error-scaling.md": {
+    "about": [
+      {
+        "date": "2026-10-02",
+        "id": "2026-10-02-recorded-r-4",
+        "kind": "run",
+        "path": "content/journal/2026/2026-10-02-recorded-r-4.md"
+      }
+    ],
+    "cited_by": [
+      "content/journal/2026/2026-10-02-recorded-r-4.md",
+      "content/reports/pi-error-scaling-report/index.html",
+      "content/results/R-3.md",
+      "content/results/R-4.md"
+    ],
+    "cites": [
+      "content/questions/Q-1.md"
+    ],
+    "fields": {
+      "protocol": [
+        "content/results/R-3.md",
+        "content/results/R-4.md"
+      ]
+    },
+    "id": "pi-error-scaling",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/questions/Q-1.md": {
+    "about": [],
+    "cited_by": [
+      "content/maps/lab-work.html",
+      "content/protocols/pi-error-scaling.md",
+      "content/reports/pi-error-scaling-report/index.html"
+    ],
+    "cites": [
+      "content/claims/C-1.md",
+      "content/results/R-4.md"
+    ],
+    "fields": {
+      "question": [
+        "content/protocols/pi-error-scaling.md"
+      ]
+    },
+    "id": "Q-1",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/readings/2017-attention-is-all-you-need-reading.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/concepts/softmax/index.html",
+      "content/sources/2017-attention-is-all-you-need/index.html"
+    ],
+    "fields": {},
+    "id": "2017-attention-is-all-you-need-reading",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/reports/pi-error-scaling-report/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/journal/2026/2026-10-02-lab-meeting.md",
+      "content/maps/lab-work.html"
+    ],
+    "cites": [
+      "content/protocols/pi-error-scaling.md",
+      "content/questions/Q-1.md",
+      "content/results/R-4.md"
+    ],
+    "fields": {},
+    "id": "pi-error-scaling-report",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/results/R-3.md": {
+    "about": [],
+    "cited_by": [
+      "content/journal/2026/2026-10-02-recorded-r-4.md",
+      "content/results/R-4.md"
+    ],
+    "cites": [
+      "content/protocols/pi-error-scaling.md"
+    ],
+    "fields": {
+      "supersedes": [
+        "content/results/R-4.md"
+      ]
+    },
+    "id": "R-3",
+    "retracted_by": [],
+    "superseded_by": [
+      "content/results/R-4.md"
+    ]
+  },
+  "content/results/R-4.md": {
+    "about": [
+      {
+        "date": "2026-10-02",
+        "id": "2026-10-02-recorded-r-4",
+        "kind": "run",
+        "path": "content/journal/2026/2026-10-02-recorded-r-4.md"
+      }
+    ],
+    "cited_by": [
+      "content/claims/C-1.md",
+      "content/journal/2026/2026-10-02-recorded-r-4.md",
+      "content/questions/Q-1.md",
+      "content/reports/pi-error-scaling-report/index.html"
+    ],
+    "cites": [
+      "content/protocols/pi-error-scaling.md",
+      "content/results/R-3.md"
+    ],
+    "fields": {},
+    "id": "R-4",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/sources/2017-attention-is-all-you-need/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/readings/2017-attention-is-all-you-need-reading.html",
+      "content/surveys/exact-attention.html"
+    ],
+    "cites": [],
+    "fields": {
+      "source": [
+        "content/readings/2017-attention-is-all-you-need-reading.html"
+      ]
+    },
+    "id": "2017-attention-is-all-you-need",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/sources/2022-flashattention/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/surveys/exact-attention.html"
+    ],
+    "cites": [],
+    "fields": {},
+    "id": "2022-flashattention",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/surveys/exact-attention.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/sources/2017-attention-is-all-you-need/index.html",
+      "content/sources/2022-flashattention/index.html"
+    ],
+    "fields": {},
+    "id": "exact-attention",
+    "retracted_by": [],
+    "superseded_by": []
+  }
+}

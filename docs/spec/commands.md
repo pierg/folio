@@ -1,0 +1,48 @@
+# The folio command
+
+Only skills call these. A person never needs to. Every command that changes files prints what it changed; `check` changes nothing. Every command that takes a document (`<doc>`, `<id>`) accepts its id or its path from the library's root.
+
+The `--json` output of `folio cite`, `folio maps`, `folio cards`, `folio genres`, `folio workflows` and `folio annotations list` is a stable interface for tools built on folio. Within a major version, fields are only added, never renamed or removed.
+
+| Command | Does |
+| --- | --- |
+| `folio init [dir] [--name ..] [--purpose ..]` | Creates a library: `folio.yaml` (with the name and purpose given), `content/`, `assets/`, the home page, a `.gitignore` for `_site/`, the local server's runtime files and `.folio/build/`, and copies the skills into `.agents/skills/` (with `.claude/skills` linked to it). The name defaults to the folder's name. |
+| `folio check` | The gate. Names every problem in one pass. Exit 0 only when there is no error. |
+| `folio index` | Regenerates `.folio/`: the catalog, backlinks, search index, guide navigation, journal timeline and flashcards. |
+| `folio genres [--json]` | The genres available, with where each comes from (library, pack, core), its path and its card's file. Outside a library, the genres folio ships, core and packs. |
+| `folio genre add <name> [--extends <parent>]` | Scaffolds a new genre, or a variant, in the library's `genres/`. |
+| `folio genre override <name>` | Scaffolds an empty override for a genre in the library's `genres/`, to hold only what changes. |
+| `folio genre <name>` | Prints the merged card for one genre, overrides applied. |
+| `folio workflows [--json]` | The workflows available, with where each comes from and its file path. |
+| `folio workflow add <name>` | Scaffolds a workflow in the library's `workflows/`. |
+| `folio new <genre> <slug> [--part <part> <name>] [--title ..] [--description ..] [--tags ..] [--status <state>] [--<field> ..]` | Creates a document from the genre's skeleton, filling `{genre}` (the genre asked for, a variant included), `{slug}`, `{n}`, `{nn}`, `{name}`, `{date}` and `{yyyy}`, and writing the metadata given. `--<field> value` works for any field the genre declares; `--help` lists them. Record genres take the next free id instead of a slug. It refuses an id already taken anywhere in the library. Without `--status`, no status is written, so the document is `live`; `--status draft` holds it. `--part` adds a part, such as a guide's chapter, to an existing document. For a paper, `--title` also fills the LaTeX source's `\title`. |
+| `folio maps [--json]` | The maps, what each lists, and the documents on no map. |
+| `folio cards [--map <map>] [--tag <tag>] [--doc <doc>] [--json]` | The flashcards in scope (default: all), each with its question, answer and document. Read from the files as they are now. |
+| `folio map add <map> <doc> [--reason ".."] [--group <heading>] [--after <doc>\|<heading>]` | Adds a row to a map, at the end, or under the group heading given (a new group goes at the end of the map), or after the row given. `--after` may name a group heading instead, to put a new `--group` right after that group. The first row on a fresh map replaces the skeleton's placeholder group. The row's link text is the document's title, a fallback: the shell draws it from the catalog. Without a reason, the row shows the document's description. |
+| `folio map reason <map> <doc> ".."` | Changes a row's reason. |
+| `folio map rm <map> <doc>` | Removes a row from a map. |
+| `folio tags [rename <old> <new>]` | The tags in use, and renames one everywhere. |
+| `folio mv <doc> <to>` | Moves a document: links rewritten, comments and dates kept. A committed document keeps its id and its old address is redirected; a document never committed takes its new slug as its id, with no redirect. It stages the rename, and every file it changed, in git and says so. |
+| `folio promote <doc> <genre>` | Changes a document's genre, keeping its id, links, comments and dates. It stages its changes in git, like `mv`. |
+| `folio rm <doc> --to <doc>` | Retires a document into another: links and address go with it. It stages its changes in git, like `mv`, and names every link whose text still names the retired document's title, to review. |
+| `folio journal add --title ".." --description ".." --body ".." [--kind <kind>] [--about <id>,..] [--date <date>] [--tags ..]` | Writes a new journal entry, one file, dated today unless `--date` says otherwise. The file's slug comes from the title's first six words. The kind must be one the library accepts (model.md §6). It never edits an existing entry. |
+| `folio journal [--kind ..] [--about <id>] [--tag ..] [--since <date>] [--json]` | Lists journal entries, newest first, or says "No journal entries match." |
+| `folio annotations list [--state <s>] [--json]` | Threads across the library. Default: open ones. |
+| `folio annotations show <doc>` | Every thread on one document. |
+| `folio annotations add <doc> --kind flag\|question [--quote ".."] --body ".." [--label ".."] --author <who>` | Opens a thread on a passage, or, without `--quote`, on the whole document. A flag starts `noted`; a question starts `open`. |
+| `folio annotations reply <doc> <id> --body ".." --author <who> [--state <s>]` | Replies, and optionally moves the thread to a new state. |
+| `folio annotations resolve [--doc ..] [--label ..] --state <s> --body ".." [--author <who>]` | Moves every thread the filters select to one state, with one reply each. |
+| `folio cite <id> [--json]` | Prints a document's path, title, description, status (derived for a permanent document) and the citation markup for HTML, Markdown and LaTeX, always in the same form for each. |
+| `folio search <words> [--all]` | Searches this library, or every library the charter lists with `--all`. It reindexes in memory first, so a document just created is found. Titles, descriptions, ids, tags and text are searched. A word matches a whole word or the start of one, and words under two characters are ignored; with several words, a document must match all of them. Each hit shows its status, and retired documents come last. |
+| `folio config get [<key>]` / `folio config set <key> <value>` | Reads or changes the charter. Keys are dotted (`home.maps`, `genres.concept.max_words`, `checks.uncited-number`, `journal.kinds`, `site_url`, `comments.identity_header`); a list is given as comma-separated values. `set` keeps the charter's key order. Only set-up and configure use `set`. |
+| `folio pack list` | The packs available: shipped, in the library's `packs/`, or pinned. Outside a library, the packs folio ships. |
+| `folio pack on <name> \| --git <url> --ref <commit>` | Switches a pack on in the charter; a git pack is fetched and pinned. |
+| `folio pack off <name>` | Switches a pack off. |
+| `folio pack add <name> --genres .. --workflows ..` | Moves library genres and workflows into a new pack in the library's `packs/`. |
+| `folio paper build <slug>` | Compiles a paper with latexmk in `.folio/build/<slug>/`, with `assets/figures/` and `assets/refs.bib` on the search paths. It writes `folio-cites.tex` there first, so `\fcite{<id>}` links each id to its document on the site at the charter's `site_url` (plain text without one). It fails on an `\fcite` that names no document, on a missing latexmk, and on a LaTeX error, naming the first error and the log. `folio serve` and `folio export` publish the current build as `content/papers/<slug>/paper.pdf`. |
+| `folio paper freeze <slug> --version <v>` | Builds the paper, then copies `main.tex` and the PDF into `content/papers/<slug>/versions/<v>/` (`main.tex`, `paper.pdf`), a permanent part of the paper. It refuses a version name already used. The source stays revised. It writes no journal entry: the publish skill records the freeze. |
+| `folio paper versions <slug> [--json]` | Lists a paper's versions: name, the date of the commit that froze it (or `uncommitted`), and folder. |
+| `folio serve [--host <address>] [--port <n>] [--push]` | Serves the library in the foreground, at 127.0.0.1:5170 by default, with the comment panel. Each comment is committed on the current branch, authored as the commenter (model §12). `--host` listens on another address; there, comments need the charter's `comments.identity_header` and are read-only without it. `--push` pulls with rebase before each comment and pushes after it, and refuses the comment, with nothing left behind, when either fails. The startup line says how comments are kept. |
+| `folio up [--host ..] [--port ..] [--push]` / `folio down` | Serves the library in the background, with the same options, and stops it. |
+| `folio export [--out dir] [--base /path/]` | Writes the static site (default `_site/`) and prints the number of pages and the folder. It leaves out kept originals (`original.*`), annotation files and the review page. |
+| `folio version` | The engine version. |

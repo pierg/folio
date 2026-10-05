@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comments on a deployed library</title>
+<meta name="genre" content="guide">
+<meta name="title" content="Comments on a deployed library">
+<meta name="description" content="You leave knowing how to let others comment on a library served from a machine you share, and how each comment reaches git.">
+<meta name="tags" content="using">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+
+<h2 id="who">The server knows who is writing</h2>
+<p>On your own machine, <code>folio serve</code> writes each comment as your git user name. On a machine others reach, the server cannot ask git: many people use it. It reads their name from the sign-in in front of it instead. Put the server behind a proxy that signs people in, and name the request header that proxy sets in <code>folio.yaml</code>:</p>
+<pre><code>comments:
+  identity_header: X-Forwarded-User</code></pre>
+<p>Ask your agent to set it; the configure skill changes the charter. Then start the server on an outside address: <code>folio serve --host 0.0.0.0</code>. Without the header in the charter, or on a request that lacks it, the panel shows the comments read-only and says why. A comment is never taken from someone the server cannot name.</p>
+
+<details class="check">
+<summary>You run <code>folio serve --host 0.0.0.0</code> and forgot the charter setting. What happens when a reader comments?</summary>
+<div class="ans">Nothing is saved. The panel says comments are read-only here, because the server cannot tell who is writing.</div>
+</details>
+
+<h2 id="git">Each comment is a commit</h2>
+<p>Every new thread and every reply becomes one commit on the current branch. It holds only that page's comment file, its message is "Comment on" and the document's id, and its author is the commenter. Your own work in progress stays untouched, even what you have staged.</p>
+<p>On a deployed server, add <code>--push</code>. The server then pulls before it writes and pushes after it commits, so your copy of the <a class="defn-link" href="/content/concepts/library/">library</a> sees the comments with a plain <code>git pull</code>. If the pull meets a conflict or the push fails, the server undoes its write, refuses the comment and shows the reader the error. The reader can send it again; nothing is half saved.</p>
+
+<details class="check">
+<summary>The remote rejects a push while a reader comments. Where is the comment?</summary>
+<div class="ans">Nowhere: the server rolled back its commit and its file change, and the reader saw the error. Nothing was lost in silence; the reader knows to try again.</div>
+</details>
+
+<h2 id="static">An exported site takes no comments</h2>
+<p><code>folio export</code> writes plain files, with no server behind them. It leaves the comment files out, hides the Comments button and the Review page, and each page's panel says that comments are open where the library is served with <code>folio serve</code>. Publish the export for readers; serve the library for the people who review it.</p>
+
+<details class="check">
+<summary>A reader of your exported site wants to ask about a passage. Where do they go?</summary>
+<div class="ans">To the copy you serve with <code>folio serve</code>, signed in. The exported site shows no comments and takes none.</div>
+</details>
+
+</main>
+</body>
+</html>
