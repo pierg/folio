@@ -30,7 +30,6 @@ CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("cites", "card", "error"),
     CheckSpec("defined_once", "card", "error"),
     CheckSpec("min_links", "card", "error"),
-    CheckSpec("check_each_section", "card", "error"),
     CheckSpec("forward_links", "card", "error"),
     CheckSpec("stale_after_days", "card", "warning"),
     CheckSpec("permanent", "lifecycle", "error"),

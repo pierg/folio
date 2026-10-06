@@ -10,9 +10,7 @@ states: [draft, live, historical]
 frozen_in: [live, historical]
 frozen_exits: [historical]
 checks:
-  require: [question, expected, did, happened, learned, not]
   cites: results
-  max_words: 1500
 on_map: required
 ---
 
@@ -36,16 +34,16 @@ No fields beyond the core. The `title` is the outcome, in one plain line. The `d
 
 ## Shape
 
-The shell draws the title, the description, the status and the dates above the body. The generated panels list every result, protocol, question and claim the report cites, what cites it, and the journal entries about it. So the body has no list of links.
+The shell draws the title, the description, the status and the dates above the body. The generated panels list every result, protocol, question and claim the report cites, what cites it, and the journal entries about it. So the body has no list of links. Below the header the page is a canvas: a report can lead with the figure that carries its answer.
 
-The body is six `<h2>` sections with these ids, in this order:
+What a good report covers, usually in this order, judged, not checked:
 
-1. **The question, in words** (`question`): what was asked, in one short paragraph, linking the question it serves.
-2. **What we expected, and why** (`expected`): the protocol's intuition in plain words, then the hypothesis and predictions as they stood before the run. Link the protocol.
-3. **What we did** (`did`): what was run: the setup, the one variable and its arms, and what was held fixed. Any voided run or re-run is said plainly here.
-4. **What happened** (`happened`): the results, each number citing its result by id, and how each decision rule (`D1`...) and each prediction (`P1`...) came out.
-5. **What we learned** (`learned`): the lesson: why it did or did not work. Not a restatement of the numbers.
-6. **What this does not show** (`not`): every bound the results carry, what was not measured, and what is untested rather than disproven.
+1. **The question, in words**: what was asked, in one short paragraph, linking the question it serves.
+2. **What we expected, and why**: the protocol's intuition in plain words, then the hypothesis and predictions as they stood before the run. Link the protocol.
+3. **What we did**: what was run: the setup, the one variable and its arms, and what was held fixed. Any voided run or re-run is said plainly here.
+4. **What happened**: the results, each number citing its result by id, and how each decision rule (`D1`...) and each prediction (`P1`...) came out.
+5. **What we learned**: why it did or did not work. Not a restatement of the numbers.
+6. **What this does not show**: every bound the results carry, what was not measured, and what is untested rather than disproven.
 
 Figures come from `assets/figures/`, the same files any sibling page or paper uses.
 
@@ -57,7 +55,7 @@ Figures come from `assets/figures/`, the same files any sibling page or paper us
 - A report that cites no result. Caught by `cites: results`.
 - A null or a miss told more quietly than a win: later, shorter, or hedged. Judged, not checked.
 - An id, a file path or a command as the subject of a sentence. Judged, not checked.
-- A bound from a result missing from "What this does not show". Judged, not checked.
+- A bound from a result left unsaid. Judged, not checked.
 - A sentence a claim's "Must not be said" forbids. Judged, not checked.
 - A rolling update: new runs added to an old report. Judged, not checked; a new experiment gets its own report.
 

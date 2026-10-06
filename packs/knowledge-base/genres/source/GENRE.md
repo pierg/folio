@@ -12,8 +12,7 @@ fields:
   - { name: year, type: integer, required: true }
   - { name: original, type: string, required: true }
 checks:
-  require: [identifiers, about]
-  max_words: 200
+  require: [identifiers]
   cites: none
   original_beside: true
 on_map: optional
@@ -47,8 +46,11 @@ The citation is metadata, so the shell can render it and search can filter by it
 
 The shell draws the title, the description and the citation fields above the body. Readings and surveys of this source are not listed by hand: the generated panels show them.
 
-1. **Identifiers** (`identifiers`): a `<ul class="identifiers">`, one `<li>` per identifier, each an `<a class="identifier">` as the pack's rule describes. A DOI, an arXiv id, an ISBN, a handle or a URL.
-2. **About** (`about`): `<section id="about">`, one to three sentences on what the work is, where it appeared and what it covers.
+One part is required, because the pack's rule reads it:
+
+- `identifiers`: a `<ul class="identifiers">`, one `<li>` per identifier, each an `<a class="identifier">` as the pack's rule describes. A DOI, an arXiv id, an ISBN, a handle or a URL.
+
+What a good source page usually adds, judged, not checked: a few sentences on what the work is, where it appeared and what it covers.
 
 ## Forbidden
 

@@ -7,7 +7,6 @@ skeleton: skeleton.html
 lives: revised
 states: [draft, live, historical, retired]
 checks:
-  require: [thesis, h2]
   cites: any
 on_map: required
 ---
@@ -18,7 +17,7 @@ An entry explains or analyses one subject in depth, takes a position on it, and 
 
 ## Reader
 
-Interested and capable, but not an expert in this subject. They will read for several minutes and want to navigate by section.
+Interested and capable, but not an expert in this subject. They will spend several minutes, and want to see the shape of the argument before they read it.
 
 ## Voice
 
@@ -32,20 +31,22 @@ No fields beyond the core. The `title` is the subject. The `description` says in
 
 ## Shape
 
-The shell draws the title and description above the body, and the generated panels list what the entry cites and what cites it. So the body has no list of what it rests on.
+The shell draws the title and description above the body, and the generated panels list what the entry cites and what cites it. So the body has no list of what it rests on. Below the header the page is a canvas: lay the argument out in the form that shows it (`craft/layout.md`). A comparison can be lanes side by side, a mechanism a figure with a control, a sequence a stepper.
 
-1. `thesis`: a `<p class="thesis">` that opens the body. It states the entry's position in one to three sentences.
-2. `h2`: sections, each under an `<h2 id="...">`. The sections carry the argument, one step each. A figure goes where it carries a step.
-3. Check-yourself, optional: `<details class="check"><summary>question</summary><div class="ans">answer</div></details>` at the end of a section.
+What a good entry usually does, judged, not checked:
 
-Files only this entry uses, such as a source's full text, may sit beside `index.html` in its folder. A figure other documents also use lives in `assets/figures/`.
+- It opens with its position, in one to three sentences, where the reader sees it first. A `<p class="thesis">` sets it apart.
+- It moves in steps the reader can navigate, usually `<h2>` sections, each carrying one step of the argument. The outline in the page panel is built from the `<h2>` and `<h3>` headings.
+- It shows what a figure shows better than prose, and puts the figure where it carries a step.
+- It may end a step with a check-yourself, `<details class="check">`.
+
+Files only this entry uses, such as a source's full text or a figure's data, may sit beside `index.html` in its folder. A figure other documents also use lives in `assets/figures/`.
 
 ## Forbidden
 
-- A wall of prose with no sections. Caught by `require: [h2]`.
 - An entry that cites nothing. Caught by `cites: any`, which needs at least one resolving citation.
+- An entry with no position. Judged, not checked: an entry that only describes is a note or a concept.
 - A closing "What this rests on" list. The generated panel shows what the entry cites. Judged, not checked.
-- A missing statement of position. Caught by `require: [thesis]`. Whether it is a real position is judged, not checked.
 - A claim with no support where it is made. Judged, not checked.
 - A definition written out again when a concept holds it. A second `defn` is caught by `defined_once`, which compares every `defn` in the library. A prose re-explanation is judged, not checked. Link the concept instead.
 - A number restated as the entry's own when another document holds it. Judged, not checked; a pack can make it a check.
@@ -53,13 +54,13 @@ Files only this entry uses, such as a source's full text, may sit beside `index.
 ## Steps
 
 - Before writing, list the concepts the subject needs. Link each with `class="defn-link"`. A term the entry must define, and another page also needs, becomes a concept first.
-- Write the thesis last, then move it to the top. It must match where the sections actually land.
+- Write the position last, then move it to the top. It must match where the argument actually lands.
 - Anything the sources did not say (an example, a framing, a claim from general knowledge) gets a flag.
 - Add the entry to at least one map: `folio map add <map> <doc>`. Give a `--reason` only when it says more than the description.
 
 ## Lifecycle
 
-Revised in place, and the most revised genre. A note that grew sections is promoted into an entry. An entry that has become a teaching sequence is split into a guide, with the entry left as the reference or retired into it. An entry overtaken by a better one is `retired` into it with `folio rm --to`. One that was true of its time is `historical`, with its description saying when.
+Revised in place, and the most revised genre. A note that grew into an argument is promoted into an entry. An entry that has become a teaching sequence is split into a guide, with the entry left as the reference or retired into it. An entry overtaken by a better one is `retired` into it with `folio rm --to`. One that was true of its time is `historical`, with its description saying when.
 
 ## Example
 

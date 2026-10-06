@@ -9,9 +9,7 @@ states: [draft, live, paused, done, historical, retired]
 fields:
   - { name: reviewed, type: date, required: true }
 checks:
-  require: [state, next]
   stale_after_days: 90
-  max_words: 800
 on_map: required
 ---
 
@@ -36,20 +34,23 @@ Operational, present tense. Short lines. It says what is true on the date it was
 
 ## Shape
 
-The shell draws the title, description, status and `reviewed` date above the body. The generated panels show the journal entries about the project, what it cites and what cites it. So the body never lists its decisions or its documents.
+The shell draws the title, description, status and `reviewed` date above the body. The generated panels show the journal entries about the project, what it cites and what cites it. So the body never lists its decisions or its documents. Below the header the page is a canvas.
 
-1. `state`: a `<p class="state">` that opens the body. It says, in one or two sentences, what is true on the `reviewed` date.
-2. `next`: `<h2 id="next">Next</h2>` and a short list of the next steps.
-3. Blocked, optional: `<h2 id="blocked">Blocked</h2>`, what is waiting, and on what.
-4. Code, optional: `<h2 id="code">Where the code lives</h2>`, links to the repositories and other places outside the library where the work happens.
+What a good project page usually does, judged, not checked:
 
-A page that belongs to this project, such as a plan, is a document of the genre that fits it, in that genre's folder. The state or the next steps link it where it matters.
+- It opens with its state: what is true on the `reviewed` date, in one or two sentences. A `<p class="state">` sets it in a box.
+- It says what comes next, as a short list.
+- It says what is blocked, and on what.
+- It links where the work happens: the repositories and other places outside the library.
+- It may show the work at a glance: a figure of the parts and how far each has come.
+
+A page that belongs to this project, such as a plan, is a document of the genre that fits it, in that genre's folder. The project page links it where it matters.
 
 ## Forbidden
 
 - A missing or malformed `reviewed` date. Caught by `fields`.
 - A `reviewed` date older than 90 days on a `live` project. Caught by `stale_after_days`, as a warning. Review it, or set the status to `paused` or `done`.
-- History and narrative. The journal holds what happened and what was decided. Caught in part by `max_words`; the rest is judged, not checked.
+- History and narrative. The journal holds what happened and what was decided. Judged, not checked.
 - A list of decisions, lessons or the project's documents. The generated panels show them. Judged, not checked.
 - A decision recorded only here. Decisions go in the journal, about this project. Judged, not checked.
 - A definition or number restated as this page's own. Link the document that holds it. Judged, not checked.
@@ -58,7 +59,7 @@ A page that belongs to this project, such as a plan, is a document of the genre 
 
 - Every revision sets `reviewed` to today, even when only the next steps changed.
 - Record each decision in the journal first, then update this page: `folio journal add --kind decision --about <slug> --title ".." --description ".." --body ".."`. A lesson is an entry of kind `lesson` about the project.
-- Keep `next` short. Five items is plenty; the rest belongs in a plan the page links.
+- Keep the next steps short. Five items is plenty; the rest belongs in a plan the page links.
 - Add the project to at least one map, often a map of the projects.
 
 ## Lifecycle

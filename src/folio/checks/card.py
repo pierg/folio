@@ -9,7 +9,7 @@ import yaml
 
 from .. import regions
 from ..documents import DocFile, Document
-from ..html import NOT_PROSE, Element, elements_in, section_of
+from ..html import NOT_PROSE, Element, elements_in
 from ..library import Library
 from ..links import Link, links_in
 from ..util import parse_date, today
@@ -134,19 +134,6 @@ def check_min_links(lib: Library, doc: Document, df: DocFile, setting: Any) -> l
     return []
 
 
-def check_check_each_section(lib: Library, doc: Document, df: DocFile, setting: Any) -> list[str]:
-    if not setting or df.body is None:
-        return []
-    out = []
-    for h2 in df.body.find_all("h2"):
-        elements = [n for n in section_of(h2)[1:] if isinstance(n, Element)]
-        last = elements[-1] if elements else None
-        if last is None or last.tag != "details" or "check" not in last.classes:
-            title = " ".join(h2.text().split())
-            out.append(f"section `{title}` does not end with a <details class=\"check\">")
-    return out
-
-
 def check_forward_links(lib: Library, doc: Document, df: DocFile, setting: Any) -> list[str]:
     if setting != "marked" or "nn" not in df.captures:
         return []
@@ -258,19 +245,9 @@ def check_original_beside(lib: Library, doc: Document, df: DocFile, setting: Any
 def check_min_sources(lib: Library, doc: Document, df: DocFile, setting: Any) -> list[str]:
     if df.body is None:
         return []
-    tables = [t for t in df.body.find_all("table") if "compare" in t.classes] or df.body.find_all("table")
-    count = 0
-    for table in tables:
-        for row in table.find_all("tr"):
-            cells = [c for c in row.element_children() if c.tag in ("td", "th")]
-            if not cells or not any(c.tag == "td" for c in cells):
-                continue
-            for link in links_in(lib, df, [cells[0]]):
-                if any(d.is_a("source") or d.is_a("reading") for d in link.docs):
-                    count += 1
-                    break
-    if count < int(setting):
-        return [f"the table has {count} rows linking a source; it needs at least {setting}"]
+    cited = {d.key for d in _cited(lib.links.get(df.path, []), doc) if d.is_a("source") or d.is_a("reading")}
+    if len(cited) < int(setting):
+        return [f"cites {len(cited)} sources or readings; it needs at least {setting}"]
     return []
 
 
@@ -351,7 +328,6 @@ CARD_CHECKS: dict[str, CardCheck] = {
     "cites": check_cites,
     "defined_once": check_defined_once,
     "min_links": check_min_links,
-    "check_each_section": check_check_each_section,
     "forward_links": check_forward_links,
     "stale_after_days": check_stale_after_days,
     "kinds": check_kinds,

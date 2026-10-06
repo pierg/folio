@@ -8,7 +8,6 @@ skeleton: skeleton.html
 lives: revised
 states: [draft, live, historical, retired]
 checks:
-  require: [works, table, reading]
   cites: any
   min_sources: 2
 on_map: required
@@ -37,24 +36,26 @@ No fields beyond the core.
 
 ## Shape
 
-The shell draws the title and the question above the body. The body starts with the works.
+The shell draws the title and the question above the body. Below it the page is a canvas: a survey is a comparison, so lay it out as one (`craft/comparison.md`).
 
-1. **The works** (`works`): `<section id="works">`. Which works are in, each linked to its source, and the rule for what was left out.
-2. **The table** (`table`): `<table class="compare">`. One row per work, its first cell linking the work's source or reading. One column per criterion. Each cell is a short fact from that work.
-3. **My reading** (`reading`): `<section id="reading">`, `<h2>My reading</h2>`. What the table shows when you read across it, and where you land.
-4. **Gaps** (optional): `<section id="gaps">`. What none of the works answers.
+What a good survey usually holds, judged, not checked:
+
+- **The works**: which works are in, each linked to its source or reading, and the rule for what was left out.
+- **The comparison**: the works against the same criteria, so the eye scans down one criterion. A `<table class="compare">` with a row per work is the plain form; a matrix, lanes or a chart may show it better. Each cell is a short fact from that work.
+- **My reading**: what the comparison shows when you read across it, and where you land.
+- **Gaps**: what none of the works answers.
 
 ## Forbidden
 
-- Fewer than two works, or a table row that links no source. Caught by `min_sources`.
-- An opinion inside the table. Judged, not checked; it goes in "My reading".
+- Fewer than two works cited. Caught by `min_sources`, which counts the distinct sources and readings the survey links.
+- An opinion inside the comparison. Judged, not checked; it goes in your reading.
 - A cell that states something its work did not. Judged, not checked; the write skill flags it.
 - Two questions in one survey. Judged, not checked; write two surveys.
-- A work that is not filed as a source. Caught by `min_sources`, which counts only rows linking a source, or a reading of one; file it first with the ingest workflow.
+- A work that is not filed as a source. Judged, not checked; file it first with the ingest workflow.
 
 ## Steps
 
-- File every work as a source before it enters the table. Ingest any that are missing.
+- File every work as a source before it enters the comparison. Ingest any that are missing.
 - Fix the columns before filling the rows, and fill every cell. Write "not reported" where a work is silent.
 - State the inclusion rule, so a reader can tell a missing work from an excluded one.
 - Link each criterion that needs explaining to its concept, with `class="defn-link"`.

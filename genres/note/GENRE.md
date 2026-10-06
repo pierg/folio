@@ -7,8 +7,6 @@ skeleton: skeleton.html
 lives: revised
 states: [draft, live, historical, retired]
 checks:
-  forbid: [h2]
-  max_words: 400
   cites: any
   min_links: 1
 on_map: optional
@@ -34,17 +32,18 @@ No fields beyond the core. The `title` is a short name for the idea. The `descri
 
 ## Shape
 
-The shell draws the title and the claim above the body. The body starts with the reason.
+The shell draws the title and the claim above the body. Below it the page is a canvas, and a note usually needs little of it.
 
-1. The body: one to three paragraphs, or one figure with a sentence or two beside it. It gives the reason and the consequence.
-2. Links: at least one link to another document. Terms link to their concepts with `class="defn-link"`.
+What a good note usually does, judged, not checked:
+
+- It gives the reason and the consequence in a few paragraphs, or shows them in one figure or contrast with a sentence or two beside it.
+- It links at least one other document. Terms link to their concepts with `class="defn-link"`.
 
 ## Forbidden
 
-- An `<h2>` section. A note with sections has become an entry. Caught by `forbid: [h2]`.
-- More than 400 words. Caught by `max_words`.
 - A note that links to nothing. Caught by `min_links`.
 - More than one claim. Judged, not checked. Split it into two notes.
+- A note that has grown into an argument in several steps. Judged, not checked: promote it into an entry.
 - Scaffolding such as "In this note I will". Judged, not checked.
 - Hedging the claim into a question. Judged, not checked. An open question belongs on a map or a project.
 

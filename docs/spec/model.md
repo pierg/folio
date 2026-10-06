@@ -4,7 +4,7 @@ This is the contract every other spec builds on: the genre cards, the packs, the
 
 ## 1. What folio is
 
-folio lets a coding agent build and keep a knowledge library inside any project. A library is a graph of documents. Each document has one genre, and the genre fixes its job, its voice, its format and its checks. Every change to a library goes through one of seven skills. The `folio` command exists, but only skills call it, the way an agent calls git.
+folio lets a coding agent build and keep a knowledge library inside any project. A library is a graph of documents. Each document has one genre, and the genre fixes its job, its reader, its voice, its format and its checks. A genre gives structure and voice, never form: how a page looks is the author's, on a free canvas (§14). Every change to a library goes through one of seven skills. The `folio` command exists, but only skills call it, the way an agent calls git.
 
 ## 2. The library
 
@@ -57,6 +57,7 @@ HTML documents carry metadata in `<meta>` tags in `<head>`, Markdown documents i
 | `genre` | Its genre; must match its folder | yes |
 | `status` | One of the states its card declares; absent means `live` | when the card's states do not include `live` |
 | `tags` | Lowercase slugs: a YAML list, or comma-separated in HTML | no |
+| `layout` | An HTML page's layout: `canvas`, the whole room between the rail and the page panel (the default), or `column`, the reading column (§14) | no |
 
 A record genre adds `id`. The engine adds `created` and `updated` from git, and nobody writes them.
 
@@ -153,6 +154,8 @@ The first one found wins, but an override in the library holds only what it chan
 - **Knowledge-base pack (3):** source, reading, survey.
 - **Lab pack (5):** question, protocol, result, claim, report.
 
+**What a card checks.** A card checks substance: where a document lives, its metadata and lifecycle, its place on the maps, and its duties to other documents (what it cites, what it must not restate, what it links). It never checks markup or size, except the few parts the machine reads: a concept's definition, a map's rows, a guide's chapters as parts, and the sections of Markdown records that tools parse. Word limits are for short records only (a journal entry, a result, a claim). Everything else in a card is guidance on what a good document of the genre holds, judged, not checked (`genre-format.md`).
+
 **Variants.** A genre can `extend` another (`paper-workshop` extends `paper`). It inherits everything and overrides only what it states: usually the voice, the reader and the limits. A variant is for a second audience. Voice is never set per document.
 
 **Promotion.** A document changes genre only by promotion (a note that grew sections becomes an entry), done by the organise skill, which keeps its id, links, comments and dates.
@@ -197,7 +200,7 @@ packs:
 home:
   maps: [proof-repair, solvers]   # the top-level maps, in order
 genres:                            # optional per-genre settings
-  concept: { max_words: 250 }
+  journal: { max_words: 120 }
   survey: { enabled: false }
 checks:                            # which checks fail the gate and which only warn
   uncited-number: error
@@ -257,7 +260,7 @@ Every skill starts the same way: it reads the charter, the genres available (lib
 `folio check` runs offline, names every problem in one pass and never changes a file. CI runs the same command. It checks:
 
 - every link and citation resolves, the way the exported site serves it;
-- every document meets its genre's card: location, metadata and fields, status words, required parts, word limits and the card's other checks;
+- every document meets its genre's card: location, metadata and fields, status words, the parts the machine reads, word limits on short records and the card's other checks;
 - no placeholder is left in a document;
 - each document keeps its lifecycle: permanent and frozen documents against git history;
 - no orphans; every top-level map in the charter exists;
@@ -272,6 +275,16 @@ Every check has a name, listed with its settings and default severity in `checks
 ## 14. The shell
 
 Every HTML document uses the shared shell: one stylesheet, light and dark themes, the library rail, the header drawn from metadata, the search palette, link previews, concept popovers, the page panel (outline, metadata, the generated link panels), the comment panel and the Review page (§12). Markdown records are rendered in the same shell.
+
+**The canvas.** Below the header, an HTML page is a free canvas: it has all the room between the library rail and the page panel, with no measure, and it lays itself out for what it must show, with figures, diagrams, interactive controls and its own grid. A page may carry its own `<style>` and `<script>` in its `<head>` or body. The canvas is a size container named `folio-canvas`, so a page adapts to its room with `@container folio-canvas (...)` queries, since the panels share the window with it. Five things stay fixed, because the library reads them:
+
+- **The words are in the markup.** A script may arrange, reveal, highlight and animate the page's words, never write them: comments are anchored, and search and the gate read the text, from the file.
+- **The genre's hooks stay:** a concept's `defn`, a map's `rows`, and the rest its card names.
+- **The voice stays:** the genre's register, every claim supported where it is made, every number cited, a flag on what goes beyond the sources.
+- **Colours come from the shell's tokens,** never a hex value, so a page reads in both themes.
+- **The header is the shell's:** a page writes no `<h1>` and no subtitle of its own.
+
+A page that is one line of argument may opt into the reading column with `<meta name="layout" content="column">`; a Markdown record is always rendered in it. The shell offers colour registers, a few shared components and KaTeX math (`$…$`, `\[…\]`, on a page carrying `<meta name="math" content="katex">`), all described in `shell/COMPONENTS.md`. How to choose a page's form is in `craft/layout.md`.
 
 The library rail is on the left of every page, the home page, the journal and the Review page included. It links home, the journal and, when served, the Review page. Then it lists the charter's home maps in order, each a group of the documents it lists, and then every document other than a journal entry, grouped by genre. It is drawn from the indices alone (`catalog.json`, `nav.json`) and the site data, so no page lists the library by hand. The current page is marked and scrolled into view, and a guide being read shows its chapters. A group the reader opens or closes stays so in that browser. On a wide screen the rail sits beside the page and the page panel; the `[` key or the top bar's library button hides or shows it, and that choice is remembered. On a narrow screen it is a drawer that the same button or key opens and Escape, a click outside or a link closes.
 

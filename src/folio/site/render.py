@@ -127,6 +127,7 @@ def record(lib: "Library", rel: str) -> str:
         "status": doc.status if doc is not None else front.get("status"),
         "tags": ", ".join(str(t) for t in tags) if isinstance(tags, list) else tags,
         "folio-source": rel,
+        "layout": "column",  # a record is read top to bottom, in the reading column
     }
     if front.get("id") is not None:
         metas["id"] = front["id"]

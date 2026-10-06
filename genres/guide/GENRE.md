@@ -6,18 +6,11 @@ id: slug
 skeleton: skeleton.html
 lives: revised
 states: [draft, live, historical, retired]
-checks:
-  require: [start]
-  max_words: 800
 on_map: required
 parts:
   chapter:
     path: content/guides/{slug}/{nn}-{name}.html
     skeleton: skeleton-chapter.html
-    checks:
-      require: [h2, check]
-      check_each_section: true
-      forward_links: marked
     on_map: never
 ---
 
@@ -43,25 +36,22 @@ No fields beyond the core. On the front page, the `title` is the guide's title, 
 
 ## Shape
 
-The shell draws the title and description above the body. On the front page it also draws the chapter list.
+The shell draws the title and description above the body. On the front page it also draws the chapter list, and on each chapter its place and links to the previous and next chapter. The chapters are parts of the guide (`content/guides/{slug}/{nn}-{name}.html`), so the machine finds them by their files; nothing in the body lists them.
 
-The front page:
+Every page of a guide is a canvas. A chapter that teaches a mechanism can put a stepper beside its prose, or a figure the reader drives.
 
-1. `start`: `<h2 id="start">How to read it</h2>`, who the guide is for and what it assumes.
+What a good guide usually does, judged, not checked:
 
-A chapter:
-
-1. `h2`: sections, each under an `<h2 id="...">`, one idea each.
-2. `check`: a `<details class="check"><summary>question</summary><div class="ans">answer</div></details>` at the end of every section.
-3. A term the guide defines and other pages need is a concept, linked with `class="defn-link"`. A term only this guide uses may be defined in place.
+- The front page says who the guide is for, what it assumes and how to read it, and teaches nothing.
+- A chapter teaches one idea at a time, usually under `<h2>` sections, and checks it: a `<details class="check"><summary>question</summary><div class="ans">answer</div></details>` after the idea it tests.
+- A term the guide defines and other pages need is a concept, linked with `class="defn-link"`. A term only this guide uses may be defined in place.
 
 ## Forbidden
 
 - A hand-written chapter list on the front page. The shell draws it from the chapter files. Judged, not checked.
-- Teaching on the front page. Its length is capped by `max_words`; the rest is judged, not checked.
-- A chapter section without a check-yourself at its end. Caught by `check_each_section`.
-- A link to a later chapter. Caught by `forward_links: marked`. A deliberate one carries `data-fwd`, as in `<a data-fwd href="05-merging.html">`.
-- Using an idea before the chapter that introduces it. Judged, not checked.
+- Teaching on the front page. Judged, not checked.
+- A chapter with nothing that checks the reader. Judged, not checked.
+- A link to a later chapter, or an idea used before the chapter that introduces it. Judged, not checked. A deliberate forward link carries `data-fwd`, as in `<a data-fwd href="05-merging.html">`; a library that wants it checked sets `forward_links: marked` on the chapter part.
 - A chapter listed on a map. Maps list the guide's front page; the shell lists the chapters under it. Caught by the chapter's `on_map: never`.
 
 ## Steps

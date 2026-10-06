@@ -10,7 +10,6 @@ states: [draft, live, historical, retired]
 fields:
   - { name: source, type: id, genre: source, required: true }
 checks:
-  require: [claims, take]
   cites: any
 on_map: required
 ---
@@ -37,18 +36,20 @@ Neutral in what the work claims, then opinionated in your take. In the claims, r
 
 ## Shape
 
-The shell draws the title, the description and the source above the body. The body starts with the claims.
+The shell draws the title, the description and the source above the body. Below it the page is a canvas.
 
-1. **What it claims** (`claims`): `<section id="claims">`, `<h2>What it claims</h2>`. The work's main claims, each with where it is made (a section, a page, a timestamp).
-2. **What it rests on** (optional): `<section id="evidence">`. The evidence and method behind the claims, as the work presents them.
-3. **My take** (`take`): `<section id="take">`, `<h2>My take</h2>`. What you think: what holds, what does not, what it changes for you.
-4. **What it leaves open** (optional): `<section id="open">`. Questions the work raises and does not answer.
-5. **Cards** (optional): flashcards, `<details class="card"><summary>question</summary>answer</details>`, inside any section.
+What a good reading usually holds, judged, not checked:
+
+- **What it claims**: the work's main claims, each with where it is made (a section, a page, a timestamp). A reading often leads with the work's own central figure or argument, redrawn so the claim is obvious.
+- **What it rests on**: the evidence and method behind the claims, as the work presents them.
+- **My take**: what holds, what does not, what it changes for you. Set apart from the claims, so a reader never mistakes the one for the other.
+- **What it leaves open**: questions the work raises and does not answer.
+- **Cards**: flashcards, `<details class="card"><summary>question</summary>answer</details>`, for what is worth remembering a month from now.
 
 ## Forbidden
 
 - A reading of two works. The `source` field names one; a second work discussed as an equal is judged, not checked. Compare works in a survey.
-- Your opinion inside "What it claims". Judged, not checked.
+- Your opinion mixed into the work's claims. Judged, not checked.
 - A claim the work did not make. Judged, not checked; the write skill flags what the source did not say.
 - A term defined here that another page needs. Caught by `defined_once` once a concept defines it; make it a concept and link it with `class="defn-link"`.
 - The take written by an agent and left unflagged. Judged, not checked. The take is the owner's; an agent's draft of it carries a flag until the owner keeps it.
