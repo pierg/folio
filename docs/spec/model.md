@@ -241,7 +241,7 @@ Under `genres:`, a genre takes `enabled` and any setting of its card's checks. U
 | --- | --- |
 | set-up | Installs folio in a project or a new repository, asks what the library is for, writes the charter, creates the home page, records the setup in the journal, runs the gate. |
 | configure | Changes the charter: packs, maps on the home page, a genre's limits, a new genre, a variant, a workflow, a pack made from existing genres. |
-| write | Adds or revises any document, in its genre's voice and format, links its concepts, flags what goes beyond its sources, updates the maps, runs the gate. |
+| write | Adds or revises any document, in its genre's voice and format, links its concepts, flags only what needs the owner's judgement, updates the maps, runs the gate. |
 | organise | Moves, merges, promotes and retires documents and maps, with every link, comment and date intact. Runs health passes, and audits documents against the current cards: whether each still earns its page (§3), and in what form. |
 | address | Answers the comments readers left on rendered pages, on the page they were left on. |
 | publish | Exports the static site, and builds a paper and freezes versions of it. Freezing copies the paper's source and built PDF into a permanent `versions/<name>/` folder and adds a journal entry; the source stays revised, and a later change is frozen as a new version. |
@@ -251,7 +251,7 @@ Every skill starts the same way: it reads the charter, the genres available (lib
 
 ## 12. The review loop
 
-- **Flags.** Where an agent writes something its sources did not say (an example, a framing, a claim from general knowledge), it leaves a flag on the passage, labelled with its kind. A flag asks nothing; it rests until the owner keeps it or asks for a change.
+- **Flags.** A flag marks only what needs the owner's judgement: a claim stated as fact that its sources do not support and the owner may know better (an inference about someone else's result, a claim from general knowledge the argument rests on), a number or name not verified against its source, or a passage the agent could not settle (text it may not rewrite, a source to find). The flag's body says what there is to decide. Routine work raises none: the agent's own framing, layout, wording and captions, an example that illustrates without asserting a new fact, the library's synthesis that is the page's job, and corrections of plain errors (the commit records those). A flag rests until the owner keeps it or asks for a change.
 - **Questions.** A reader selects a passage on the rendered page and asks a question. It is saved in a file beside the document. The address skill answers it, edits the document and replies.
 - A document whose quoted passage changed under an open question fails the gate.
 - **Thread states:** `open` (waits for an answer), `noted` (a flag at rest), `addressed` (answered or kept), `declined` (not acted on, with a reason), `withdrawn` (taken back by its author). Nothing is deleted.
@@ -294,7 +294,7 @@ Every HTML document uses the shared shell: one stylesheet, light and dark themes
 
 - **The words are in the markup.** A script may arrange, reveal, highlight and animate the page's words, never write them: comments are anchored, and search and the gate read the text, from the file.
 - **The genre's hooks stay:** a concept's `defn`, a map's `rows`, and the rest its card names.
-- **The voice stays:** the genre's register, every claim supported where it is made, every number cited, a flag on what goes beyond the sources.
+- **The voice stays:** the genre's register, every claim supported where it is made, every number cited, a flag only where the owner has something to decide.
 - **Colours come from the shell's tokens,** never a hex value, so a page reads in both themes.
 - **The header is the shell's:** a page writes no `<h1>` and no subtitle of its own.
 

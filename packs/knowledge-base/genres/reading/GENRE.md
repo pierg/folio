@@ -54,9 +54,9 @@ What a good reading usually holds, judged, not checked:
 
 - A reading of two works. The `source` field names one; a second work discussed as an equal is judged, not checked. Compare works in a survey.
 - Your opinion mixed into the work's claims. Judged, not checked.
-- A claim the work did not make. Judged, not checked; the write skill flags what the source did not say.
+- A claim the work did not make, in the part that reports the work. Judged, not checked.
 - A term defined here that another page needs. Caught by `defined_once` once a concept defines it; make it a concept and link it with `class="defn-link"`.
-- The take written by an agent and left unflagged. Judged, not checked. The take is the owner's; an agent's draft of it carries a flag until the owner keeps it.
+- A take that passes off a claim the work did not make. Judged, not checked. The take is the library's reading and an agent may draft it; it is set apart from the work's claims, so it needs no flag. A point in it the owner must decide gets one (the write skill's rule 11).
 
 ## Steps
 

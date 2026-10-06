@@ -53,7 +53,7 @@ What a good survey usually holds, judged, not checked:
 
 - Fewer than two works cited. Caught by `min_sources`, which counts the distinct sources and readings the survey links.
 - An opinion inside the comparison. Judged, not checked; it goes in your reading.
-- A cell that states something its work did not. Judged, not checked; the write skill flags it.
+- A cell that states something its work did not. Judged, not checked.
 - Two questions in one survey. Judged, not checked; write two surveys.
 - A work that is not filed as a source. Judged, not checked; file it first with the ingest workflow.
 

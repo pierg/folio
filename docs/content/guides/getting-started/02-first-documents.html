@@ -174,9 +174,9 @@ main .gs-fd-genres > li { min-width: 0; margin: 0; padding: .7rem .8rem .75rem; 
 <p>Every term that has a concept of its own links to it, and every other document is cited by its id. The agent runs <code>folio cite</code> to get the right markup, so a citation always takes the same form.</p>
 </li>
 <li class="gs-frame">
-<p class="gs-k">Step 6 · Flag what it added</p>
-<pre><code>folio annotations add eventual-consistency --kind flag --label "worked example" --quote "..." --body "Added: an example of my own." --author agent:writer</code></pre>
-<p>Where the agent writes something its sources did not say, such as an example of its own, it leaves a flag on that passage for you to keep or change.</p>
+<p class="gs-k">Step 6 · Flag what needs you</p>
+<pre><code>folio annotations add eventual-consistency --kind flag --label "unsourced" --quote "..." --body "No source gives this timing: cite one or cut it." --author agent:writer</code></pre>
+<p>Where the agent states something its sources do not support, or a number it could not check, it leaves a flag on that passage saying what you have to decide. Its own examples, framing and wording raise none, so the flags that reach you are few.</p>
 </li>
 <li class="gs-frame">
 <p class="gs-k">Step 7 · Put it on a map</p>
@@ -196,22 +196,22 @@ folio check</code></pre>
 </ol>
 </div>
 
-<figure class="gs-fig gs-stick" aria-label="The concept as the write skill builds it: metadata first, then the definition, then links, a flagged example, a row on a map, a passing gate and a commit.">
+<figure class="gs-fig gs-stick" aria-label="The concept as the write skill builds it: metadata first, then the definition, then links, a flagged claim, a row on a map, a passing gate and a commit.">
 <p class="gs-k">The document</p>
 <div class="gs-fd-doc">
 <div data-from="3"><span class="gs-fd-genre">Concept</span><p class="gs-fd-title">Eventual consistency</p><span class="gs-fd-desc">When replicas of one store agree, and why they may not yet.</span></div>
 <div data-from="4"><p class="gs-fd-def"><b>Eventual consistency</b>A store is eventually consistent when, once writes stop, every replica returns the same value.</p></div>
 <div data-from="5"><span class="gs-fd-line">Each <span class="gs-fd-term">replica</span> links to its own concept; hovering it shows the definition.</span></div>
-<div data-from="6"><span class="gs-fd-line"><span class="gs-fd-flag">worked example</span><span class="gs-fd-mark">Two phones edit one note offline; both show the same text once they sync.</span></span></div>
+<div data-from="6"><span class="gs-fd-line"><span class="gs-fd-flag">unsourced</span><span class="gs-fd-mark">Two phones that edit offline agree within a second of reconnecting.</span></span></div>
 <div class="gs-fd-foot"><span data-from="7"><b>Map</b>a row on Concepts</span><span data-from="8"><b>Gate</b>passes</span><span data-from="9"><b>Git</b>one commit</span></div>
 </div>
-<figcaption>Each part lights in the step that adds it. The flagged example is the agent's own, so it waits for your word.</figcaption>
+<figcaption>Each part lights in the step that adds it. The flagged claim has no source, so it waits for your word.</figcaption>
 </figure>
 </div>
 
 <details class="check">
-<summary>The agent invented an example to make a concept clearer. How will you know?</summary>
-<div class="ans">It leaves a flag on that passage, labelled "worked example". Flags wait for you on the rendered page.</div>
+<summary>The agent wrote a claim its sources do not support. How will you know?</summary>
+<div class="ans">It leaves a flag on that passage saying what to decide, labelled "unsourced". Flags wait for you on the rendered page; an example of its own raises none.</div>
 </details>
 <details class="check">
 <summary>You ask for a concept, but a note already defines the term. What does the agent do?</summary>

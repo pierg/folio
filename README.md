@@ -68,7 +68,7 @@ A pack is switched on in the charter and rewrites nothing. A library can overrid
 | --- | --- |
 | set-up | Create a library in a project or a new repository, write its charter, and leave the gate passing. |
 | configure | Change the charter: packs, home maps, a genre's limits, a new genre, a variant, a workflow. |
-| write | Add or revise any document in its genre's voice, link its concepts, flag what goes beyond its sources, put it on a map. |
+| write | Add or revise any document in its genre's voice, link its concepts, flag only what needs your judgement, put it on a map. |
 | organise | Move, merge, promote and retire documents and maps with every link, comment and date intact; run health passes. |
 | address | Answer the comments readers left on rendered pages, on the page they were left on. |
 | publish | Export the static site; build a paper and freeze versions of it. |

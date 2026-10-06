@@ -3,7 +3,7 @@ name: write
 description: >-
   Add or revise any document in a folio library, in its genre's voice and format.
   It picks the genre, checks the fact has no home yet, writes from the sources,
-  links concepts, cites by id, flags what goes beyond the sources, puts the document
+  links concepts, cites by id, flags only what needs the owner, puts the document
   on a map, runs the gate and commits. Use when the user says "add", "write", "draft",
   "log", "record", "note down", "explain", "define", "revise", "rewrite", "update",
   "expand", "fix this page", "add a section", "write up", "turn this into a page",
@@ -35,7 +35,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 8. Codes are links, not content. An id, a path or a hash rides beside the sentence it supports and is never its subject.
 9. Define a term once and link it everywhere. When a term earns its own page (the concept card says when), it gets a definition document, and every mention links to it with `class="defn-link"`. Until then, explain it in a clause where it is used.
 10. Siblings share ids, figures and the bibliography, never sentences. A page, a report and a paper on the same fact each cite it in their own words.
-11. Flag what goes beyond the sources. Your example, framing or general-knowledge claim gets a labelled flag, so the owner can review it at a glance.
+11. Flag only what needs the owner's judgement. A flag is a request for a decision, and every flag costs the owner attention: a claim stated as fact that your sources do not support and the owner may know better, a number or name you could not verify against its source, or a passage you could not settle. Never flag routine work: your framing, layout, wording or captions, an example that illustrates without asserting a new fact, a synthesis that is the page's job, or a correction of a plain error (say it in the commit message). When in doubt, do not flag.
 12. Address open questions on a document before you edit it. An open question whose quoted text you rewrite fails the gate.
 13. One paragraph per line. Never hard-wrap prose, because wrapped lines break quoting and diffs.
 14. Use the shared shell's tokens only: the ink, surface and state tokens and the colour registers. No hex values, so pages work in light and dark.
@@ -76,16 +76,16 @@ Add a document to the library, or revise one in place, in its genre's voice and 
    - Math is LaTeX in the markup, with `<meta name="math" content="katex">` in the head.
    - Check the page at a wide canvas and at phone width: nothing overflows, nothing is clipped, every control can be reached.
    - Put the page in the reading column (`<meta name="layout" content="column">`) only when the material is one line of argument, not a structure.
-8. **Flag additions.** For each passage that goes beyond its sources, add a flag:
-   `folio annotations add <doc> --kind flag --label "<kind>" --quote "<passage>" --body "Added: <what and why>" --author agent:<name>`.
-   Labels name the kind: "worked example", "framing", "general knowledge", "inference". A document drafted wholly from general knowledge stays `live`. It gets its flags and one document-level question asking the owner to check it: the same command with `--kind question`, without `--quote`.
+8. **Flag what needs the owner, and nothing else** (rule 11). For each such passage:
+   `folio annotations add <doc> --kind flag --label "<kind>" --quote "<passage>" --body "<what to decide, in one or two sentences>" --author agent:<name>`.
+   Labels name the decision: "verify", "unsourced", "inference", "unsettled". A document drafted wholly from general knowledge stays `live`, with one document-level question asking the owner to check it (the same command with `--kind question`, without `--quote`) instead of a flag per passage.
 9. **Ask only what needs an answer.** Open a question (`folio annotations add <doc> --kind question --quote "<passage>" --body "<question>" --author agent:<name>`) only where the owner's answer changes the document. More than three means one document-level question instead.
 10. **Put it on a map.** Read the card's `on_map`. `required`: add a row. `optional`: add a row, or link the document from one that is already on a map. `never` and `exempt`: nothing to do. A row: `folio map add <map> <doc> [--reason "<why follow it>"] [--group "<heading>"] [--after <doc>]`. `folio maps` shows the maps. Place the row where a newcomer would want it. A reason is optional and one line, written for a reader choosing where to go; without one, the row shows the document's description.
 11. **Record it.** When the change is worth a dated record, add a journal entry: `folio journal add --title "<title>" --description "<one line>" --body "<what changed, linking the documents touched>" [--kind <kind>] [--about <id>,..]`. Name the documents it concerns in `--about`, so it shows on each. Use a kind the library accepts. Each entry is a new file; never edit an old one.
 12. **Check a long document.** Re-read it against its sources only. Check every number, id, verdict word and bound. Fix what does not match, then re-read.
 13. **Run the gate.** `folio index`, then `folio check`. Fix everything it names and run it again.
 14. **Commit.** Add exactly: the documents touched, their annotation files (`<stem>.annotations.json`), `.folio/`, and any assets or evidence the documents cite. Never `git add -A`. Commit with one line saying what changed.
-15. **Report.** Tell the user, in a few lines, what changed, where it lives, and what flags or questions wait for them.
+15. **Report.** Tell the user, in a few lines, what changed, where it lives, and the few flags or questions that wait for them.
 
 ## Stops
 
@@ -99,7 +99,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 - The document meets its card: format, location, metadata and fields, required parts, limits, status words.
 - An HTML page is laid out for what it shows, and reads at a wide canvas and at phone width.
 - Every number and fact cites its home, and every defined term links to its definition.
-- Every addition beyond the sources carries a flag.
+- Every flag asks the owner for a decision; routine work carries none.
 - The document is on a map, or linked from one, unless its card says it never is.
 - `folio index` has run and `folio check` passes.
 - The change is committed, with `.folio/`.
