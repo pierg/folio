@@ -148,7 +148,8 @@
     ],
     "cites": [
       "content/concepts/gate/index.html",
-      "content/concepts/journal/index.html"
+      "content/concepts/journal/index.html",
+      "content/entries/how-corrections-work/index.html"
     ],
     "fields": {},
     "id": "permanent-record",
@@ -177,6 +178,7 @@
   "content/entries/how-corrections-work/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/permanent-record/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/maps/using-folio.html",
       "content/readings/1945-as-we-may-think-reading.html"
