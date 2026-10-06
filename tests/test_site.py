@@ -48,6 +48,7 @@ def test_records_render_in_the_shell(sample: Path, tmp_path: Path) -> None:
     assert '<meta name="folio-source" content="content/results/R-4.md">' in page
     assert '<link rel="stylesheet" href="/shell/folio.css">' in page
     assert "<h1" not in page
+    assert '<meta name="layout" content="column">' in page  # a record reads in the column; pages are canvases
     # an id in backticks links to the record it names, at its rendered page
     assert '<a class="f-cite" href="/content/results/R-3.html"' in page and '><code>R-3</code></a>' in page
     # the derived status, not a written one
@@ -178,3 +179,14 @@ def test_up_and_down(sample: Path, monkeypatch) -> None:
     finally:
         assert "stopped" in serve.down(sample)
     assert serve.down(sample) == "no server running"
+
+
+def test_the_shell_carries_math_and_the_canvas(sample: Path, tmp_path: Path) -> None:
+    export(sample, tmp_path / "site")
+    site = tmp_path / "site"
+    for name in ("katex.min.js", "katex.min.css", "contrib/auto-render.min.js"):
+        assert (site / "shell/vendor/katex" / name).is_file()
+    css = (site / "shell/folio.css").read_text()
+    assert "container: folio-canvas / inline-size" in css and "--teal:" in css
+    js = (site / "shell/folio.js").read_text()
+    assert 'meta[name="math"]' in js and 'meta("layout") === "column"' in js

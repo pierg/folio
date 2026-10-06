@@ -36,7 +36,7 @@ Write the SVG inside the page so it can use the shell's tokens:
 - Use the accent for the one part the caption names. Everything else is ink or rule.
 - Text is at least 12 units at the `viewBox` width, so it stays legible on a phone.
 - Give the SVG `role="img"` and an `aria-label` that says what it shows.
-- Keep a `viewBox` and no fixed width, so it scales to the column.
+- Keep a `viewBox` and no fixed width, so it scales to its box.
 
 ## Before you keep it
 

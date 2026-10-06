@@ -25,7 +25,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 
 ## Rules
 
-1. The genre fixes the job, the voice, the format and the checks. A document never sets its own voice, so the library reads as one author.
+1. The genre fixes the job, the reader, the voice, the format and the checks. A document never sets its own voice, so the library reads as one author. The genre does not fix the form: an HTML page is a free canvas, and you lay it out for what it must show.
 2. The house voice in the charter sits under every genre's voice. Both apply.
 3. One fact has one home. Search before you write, and cite the home instead of restating its value.
 4. Write from the sources, never from another page, a summary or memory. A number quoted forward from a summary is a rumour.
@@ -38,7 +38,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 11. Flag what goes beyond the sources. Your example, framing or general-knowledge claim gets a labelled flag, so the owner can review it at a glance.
 12. Address open questions on a document before you edit it. An open question whose quoted text you rewrite fails the gate.
 13. One paragraph per line. Never hard-wrap prose, because wrapped lines break quoting and diffs.
-14. Use the shared shell's tokens only. No new colours, fonts or hex values, so pages work in light and dark.
+14. Use the shared shell's tokens only: the ink, surface and state tokens and the colour registers. No hex values, so pages work in light and dark.
 15. Respect the card's `lives`. A `permanent` document, such as a journal entry or a result, is never edited once committed, and writes no `status`: the engine derives it. A `frozen` document is never edited once its status is in the card's `frozen_in`, except its `status` field.
 16. Correct a record with a new document, never an edit. A newer record names the old one in `supersedes`. A retraction or a correction is a journal entry of kind `retraction` or `correction`, with the old document's id in `about`. The engine shows each as a banner on the document it names.
 17. Metadata holds every fact the engine needs. Fill `title` and `description` (one line, in the genre's voice) in the metadata, and every field the card declares. Never write a fact into the body that the engine must read back out.
@@ -56,17 +56,20 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 4. **Open the document.**
    - New: `folio new <genre> <slug> --title "<title>" --description "<one line>" --tags <a,b> [--<field> <value>]`. `folio new --help` lists the fields a genre takes. A record genre with a prefix takes the next free id; give no slug. If the slug is taken, choose another. A new part of a multi-part document, such as a chapter: `folio new <genre> <slug> --part <part> <name>`.
    - Revise: open the file. First run `folio annotations show <doc>`. If a question is open, use the address skill on it before editing. If the card says `permanent`, or the document is in a `frozen_in` state, do not open it for editing: write a new document that supersedes it, or a journal entry that corrects or retracts it.
-5. **Write it.** Follow the card's Reader, Voice and Shape. Fill the title, the description and every required field in the metadata, and every required part in the body. Start the body with content, never with its own title or subtitle. Replace every `{{...}}` placeholder, because the gate reports each one.
+5. **Write it.** Follow the card's Reader and Voice. Its Shape names the parts the machine reads, which the body must hold, and what a good document of the genre usually holds, which is guidance. Fill the title, the description and every required field in the metadata, and every required part in the body. Start the body with content, never with its own title or subtitle. Replace every `{{...}}` placeholder, because the gate reports each one.
 6. **Link and cite.**
    - Link each term that has a definition document with `class="defn-link"`.
    - Cite every other document by id. Run `folio cite <id>` to get its path and the right markup for this format.
    - A number cites the document that holds it. If nothing holds it yet, say so and leave the number out, or write its home first.
-7. **Show it.** Ask what one figure carries the idea, and build the document around it. Lead with the figure, then the prose it cannot show.
-   - A figure has one home in `assets/figures/`. Every document and paper embeds that same file.
-   - Its alt text says what it shows. Its caption says what to look for, and carries the ids of what it draws.
+7. **Design the page.** An HTML page is a canvas: read `craft/layout.md` (`folio genre <name>` names where the craft guides are) and pick the form that shows the material, from its "Choosing a form" table. Lead with the figure, control or contrast that carries the idea, then the prose it cannot show.
+   - Lay it out with the page's own `<style>`, behind one short class prefix, and adapt with `@container folio-canvas` queries, never `@media`.
+   - The words stay in the markup. A script may arrange, reveal and highlight them, never write them, and only toggles classes and attributes.
+   - Draw figures as inline SVG in the page, or keep a figure other documents share in `assets/figures/`, where every document and paper embeds the same file.
+   - A figure's `aria-label` or alt text says what it shows. Its caption says what to look for, and carries the ids of what it draws.
    - One colour register per figure. Label every box, arrow and colour.
-   - Nothing overflows at phone width. The words stay in the markup; a script may arrange them, never write them.
-   - Use the reading column only when the material is a line of argument, not a structure.
+   - Math is LaTeX in the markup, with `<meta name="math" content="katex">` in the head.
+   - Check the page at a wide canvas and at phone width: nothing overflows, nothing is clipped, every control can be reached.
+   - Put the page in the reading column (`<meta name="layout" content="column">`) only when the material is one line of argument, not a structure.
 8. **Flag additions.** For each passage that goes beyond its sources, add a flag:
    `folio annotations add <doc> --kind flag --label "<kind>" --quote "<passage>" --body "Added: <what and why>" --author agent:<name>`.
    Labels name the kind: "worked example", "framing", "general knowledge", "inference". A document drafted wholly from general knowledge stays `live`. It gets its flags and one document-level question asking the owner to check it: the same command with `--kind question`, without `--quote`.
@@ -88,6 +91,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 ## Done when
 
 - The document meets its card: format, location, metadata and fields, required parts, limits, status words.
+- An HTML page is laid out for what it shows, and reads at a wide canvas and at phone width.
 - Every number and fact cites its home, and every defined term links to its definition.
 - Every addition beyond the sources carries a flag.
 - The document is on a map, or linked from one, unless its card says it never is.
