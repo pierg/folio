@@ -10,36 +10,326 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* Getting started: the guide's shared chapter vocabulary (.gs-), the same in every chapter; this chapter's own rules follow it.
+   Every word is in the markup. The script only hides frames, moves aria-current and aria-pressed, and sets classes and data-v. */
+.gs-sec { margin: 0 0 3.5rem; min-width: 0; }
+.gs-sec > h2:first-child { margin-top: 0; }
+.gs-sec > p, .gs-sec > ul, .gs-sec > ol, .gs-sec > pre, .gs-sec > details, .gs-sec > .note, .gs-prose > p, .gs-prose > pre, .gs-prose > details { max-width: 44rem; }
+.gs-prose { min-width: 0; }
+.gs-prose > h2:first-child { margin-top: 0; }
+.gs-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.gs-band > * { min-width: 0; }
+.gs-stick { position: sticky; top: calc(var(--top) + 1.25rem); }
+.gs-fig { margin: 0 0 1.15em; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fig svg { display: block; width: 100%; height: auto; }
+.gs-fig > figcaption { margin-top: .75rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-k { margin: 0 0 .4rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-scroll { overflow-x: auto; }
+
+/* the stepper: controls, a rail of steps, one frame per step; scripts off, the frames read as a list */
+.gs-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 .7rem; }
+.gs-rail { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; padding: 0; }
+.gs-rail button { display: inline-flex; align-items: baseline; gap: .3rem; padding: .28rem .6rem; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-3); font: 600 .74rem/1.2 var(--sans); cursor: pointer; }
+.gs-rail button b { font: 700 .72rem/1 var(--mono); }
+.gs-rail button:hover { color: var(--ink); border-color: var(--ink-3); }
+.gs-rail button[aria-current="step"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.gs-frames { list-style: none; margin: 0; padding: 0; }
+main .gs-frames > .gs-frame { margin: 0 0 1.1rem; padding: 0 0 0 .9rem; border-left: 2px solid var(--rule-strong); }
+main .gs-live .gs-frames > .gs-frame { margin: 0; padding: 0; border: 0; }
+.gs-step [hidden] { display: none !important; }
+.gs-step:not(.gs-live) .gs-ctl, .gs-step:not(.gs-live) .gs-rail { display: none; }
+.gs-frame > p { margin: 0 0 .65rem; font-size: .98rem; }
+.gs-frame > p.gs-k { margin-bottom: .35rem; }
+.gs-frame > pre { margin: 0 0 .65rem; font-size: .82rem; }
+.gs-frame > :last-child { margin-bottom: 0; }
+.gs-live [data-from] { transition: opacity .25s, background-color .25s, border-color .25s; }
+.gs-live .gs-later { opacity: .32; }
+
+/* a picker: buttons set data-v on the wrapper; scripts off, every state shows with its own label */
+.gs-pick-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 .9rem; }
+.gs-pick:not(.gs-live) .gs-pick-ctl { display: none; }
+.gs-pick.gs-live[data-v="a"] [data-for]:not([data-for~="a"]), .gs-pick.gs-live[data-v="b"] [data-for]:not([data-for~="b"]), .gs-pick.gs-live[data-v="c"] [data-for]:not([data-for~="c"]) { display: none; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-band { grid-template-columns: minmax(0, 1fr); }
+  .gs-stick { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-live [data-from], .gs-live * { transition: none !important; }
+}
+
+/* 02 only (.gs-fd-): the genre grid, the document as it is built, the shell's parts */
+.gs-fd-genres { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; margin: 0; padding: 0; list-style: none; }
+main .gs-fd-genres > li { min-width: 0; margin: 0; padding: .7rem .8rem .75rem; border: 1px solid var(--rule); border-top: 3px solid var(--fd-hue, var(--rule-strong)); border-radius: 8px; background: var(--paper); font: .84rem/1.45 var(--sans); color: var(--ink-2); }
+.gs-fd-genres b { display: block; margin-bottom: .2rem; font: 650 .95rem/1.3 var(--sans); color: var(--ink); }
+.gs-fd-genres .gs-fd-fmt { display: inline-block; margin-top: .4rem; padding: 0 .45rem; border-radius: 999px; font: 600 .66rem/1.6 var(--sans); letter-spacing: .05em; text-transform: uppercase; background: var(--sunk); color: var(--ink-3); }
+.gs-fd-html { --fd-hue: var(--teal); }
+.gs-fd-md { --fd-hue: var(--amber); }
+.gs-fd-tex { --fd-hue: var(--indigo); }
+.gs-fd-key { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; margin: .8rem 0 0; font: .82rem/1.4 var(--sans); color: var(--ink-2); }
+.gs-fd-key span::before { content: ""; display: inline-block; width: .8rem; height: .2rem; margin-right: .4rem; vertical-align: middle; background: var(--fd-hue); }
+
+.gs-fd-doc { border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--paper); overflow: hidden; font-family: var(--sans); }
+.gs-fd-doc > div { padding: .7rem 1rem; border-top: 1px solid var(--rule); border-left: 3px solid transparent; }
+.gs-fd-doc > div:first-child { border-top: 0; }
+.gs-fd-doc .gs-now { border-left-color: var(--teal); background: color-mix(in srgb, var(--teal) 9%, var(--paper)); }
+.gs-fd-genre { font: 650 .66rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-fd-title { margin: .2rem 0 .1rem; font: 600 1.15rem/1.3 var(--serif); color: var(--ink); }
+.gs-fd-desc { font: .86rem/1.45 var(--serif); color: var(--ink-2); }
+.gs-fd-def { padding: .45rem .7rem; border-left: 3px solid var(--accent); background: var(--accent-soft); font: .9rem/1.5 var(--serif); color: var(--ink); }
+.gs-fd-def b { display: block; font: 650 .7rem/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.gs-fd-line { font: .88rem/1.5 var(--serif); color: var(--ink-2); }
+.gs-fd-term { border-bottom: 1.5px dotted var(--link); color: var(--link); }
+.gs-fd-flag { display: inline-block; margin-right: .35rem; padding: 0 .4rem; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font: 650 .66rem/1.6 var(--sans); letter-spacing: .04em; text-transform: uppercase; }
+.gs-fd-mark { background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.gs-fd-foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; font: .78rem/1.4 var(--sans); color: var(--ink-2); }
+.gs-fd-foot > span { min-width: 0; padding: .3rem .45rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); }
+.gs-fd-foot > span.gs-now { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 12%, var(--surface)); color: var(--ink); }
+.gs-fd-foot b { display: block; font: 650 .62rem/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+
+.gs-fd-shell svg { min-width: 0; }
+@container folio-canvas (max-width: 52rem) {
+  .gs-fd-genres { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container folio-canvas (max-width: 40rem) {
+  .gs-fd-shell svg { min-width: 36rem; }
+}
+@container folio-canvas (max-width: 24rem) {
+  .gs-fd-genres, .gs-fd-foot { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gs-sec">
 <h2 id="ask">Ask for a document in plain words</h2>
 <p>Say what you want: "add a concept for eventual consistency", "write a note on why we pinned the parser", "log that we chose Postgres". The agent matches the request to a <a class="defn-link" href="/content/concepts/genre/">genre</a> and confirms it in one line. It asks only when two genres fit equally well.</p>
-<p>The core has eight genres. A concept defines one term. A note states one idea with its reason. An entry argues a subject in sections. A guide, like this one, teaches in chapters. A map lists documents in reading order. A project page says where some work stands. A journal entry records an event. A paper is a LaTeX paper with a landing page.</p>
+<p>A genre is a kind of document. It fixes the document's job, its reader, its voice and its format. The core has eight.</p>
+
+<figure class="gs-fig" aria-label="The eight core genres, each with its one job: concept, note, entry and guide explain; map, project and journal entry keep the library in order; a paper is LaTeX with a landing page. Seven are HTML or Markdown, one is LaTeX.">
+<ul class="gs-fd-genres">
+<li class="gs-fd-html"><b>Concept</b>Defines one term, so every other page can link to it.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-html"><b>Note</b>States one idea, with its reason.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-html"><b>Entry</b>Argues a subject in sections.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-html"><b>Guide</b>Teaches in chapters, like this one.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-html"><b>Map</b>Lists documents in reading order.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-html"><b>Project</b>Says where some work stands.<br><span class="gs-fd-fmt">HTML</span></li>
+<li class="gs-fd-md"><b>Journal entry</b>Records an event or a decision, on its date.<br><span class="gs-fd-fmt">Markdown</span></li>
+<li class="gs-fd-tex"><b>Paper</b>A LaTeX paper, with a landing page.<br><span class="gs-fd-fmt">LaTeX</span></li>
+</ul>
+<p class="gs-fd-key"><span class="gs-fd-html">a page, in HTML</span><span class="gs-fd-md">a record, in Markdown</span><span class="gs-fd-tex">a paper, in LaTeX</span></p>
+<figcaption>Pick by the job, not the length: a short definition is a concept, and a long one is still a concept. Packs add more genres, such as the lab pack's results.</figcaption>
+</figure>
 
 <details class="check">
 <summary>You want to pin down what a term means, so other pages can point to it. Which genre?</summary>
 <div class="ans">A concept. It holds the definition once, and every other mention links to it.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="write">What the agent does to write it</h2>
-<p>The agent follows the write skill. It reads the genre's card, searches the library so the fact does not get a second home, and creates the document from the genre's skeleton. It writes the title and a one-line description into the metadata, and the body in the genre's voice.</p>
-<p>It links every term that has a concept, cites other documents by id, and puts the new document on a <a class="defn-link" href="/content/concepts/map/">map</a>. Where it writes something its sources did not say, such as an example of its own, it leaves a flag on the passage for you to keep or change. Then it runs the <a class="defn-link" href="/content/concepts/gate/">gate</a> and commits.</p>
+<p>The agent follows the write <a class="defn-link" href="/content/concepts/skill/">skill</a>. Follow one request through it: "add a concept for eventual consistency". On the right, the document fills in as each step adds its part.</p>
+
+<div class="gs-step gs-band" id="gs-fd-step">
+<div>
+<div class="gs-ctl">
+<button type="button" class="tbtn" data-go="prev">Back</button>
+<button type="button" class="tbtn" data-go="next">Next step</button>
+</div>
+<div class="gs-rail" role="group" aria-label="The steps of the write skill">
+<button type="button"><b>1</b>genre</button>
+<button type="button"><b>2</b>search</button>
+<button type="button"><b>3</b>new</button>
+<button type="button"><b>4</b>write</button>
+<button type="button"><b>5</b>link</button>
+<button type="button"><b>6</b>flag</button>
+<button type="button"><b>7</b>map</button>
+<button type="button"><b>8</b>gate</button>
+<button type="button"><b>9</b>commit</button>
+</div>
+<ol class="gs-frames" aria-live="polite">
+<li class="gs-frame">
+<p class="gs-k">Step 1 · Pick the genre</p>
+<p>The request names a term to define, so the genre is a concept. The agent says so in one line and carries on. It would ask you only if a note fit just as well.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 2 · Check for a home</p>
+<pre><code>folio search eventual consistency</code></pre>
+<p>Before writing, the agent searches the library. If the term already lives in some document, it revises that one or cites it. A fact gets one home, never two.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 3 · Open the document</p>
+<pre><code>folio new concept eventual-consistency --title "Eventual consistency" --description "When replicas of one store agree, and why they may not yet."</code></pre>
+<p>The document is created from the genre's skeleton, in the genre's folder. The title and the one-line description go into the metadata, where the shell, search and link previews read them.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 4 · Write it</p>
+<p>The agent reads the genre's card and writes the body in its voice. For a concept, that means one definition, set apart, then what the term is not and where it is used. The body starts with content, never with its own title.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 5 · Link and cite</p>
+<p>Every term that has a concept of its own links to it, and every other document is cited by its id. The agent runs <code>folio cite</code> to get the right markup, so a citation always takes the same form.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 6 · Flag what it added</p>
+<pre><code>folio annotations add eventual-consistency --kind flag --label "worked example" --quote "..." --body "Added: an example of my own." --author agent:writer</code></pre>
+<p>Where the agent writes something its sources did not say, such as an example of its own, it leaves a flag on that passage for you to keep or change.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 7 · Put it on a map</p>
+<pre><code>folio map add concepts eventual-consistency</code></pre>
+<p>The new document gets a row on a <a class="defn-link" href="/content/concepts/map/">map</a>, where a newcomer would look for it, so it is never an orphan.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 8 · Run the gate</p>
+<pre><code>folio index
+folio check</code></pre>
+<p>The indices are rebuilt and the <a class="defn-link" href="/content/concepts/gate/">gate</a> runs. The agent fixes everything it names and runs it again, until it passes.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 9 · Commit</p>
+<p>The agent adds exactly what it touched: the document, its comment file, the indices. Then it commits, and tells you in a few lines what changed, where it lives, and what flags wait for you.</p>
+</li>
+</ol>
+</div>
+
+<figure class="gs-fig gs-stick" aria-label="The concept as the write skill builds it: metadata first, then the definition, then links, a flagged example, a row on a map, a passing gate and a commit.">
+<p class="gs-k">The document</p>
+<div class="gs-fd-doc">
+<div data-from="3"><span class="gs-fd-genre">Concept</span><p class="gs-fd-title">Eventual consistency</p><span class="gs-fd-desc">When replicas of one store agree, and why they may not yet.</span></div>
+<div data-from="4"><p class="gs-fd-def"><b>Eventual consistency</b>A store is eventually consistent when, once writes stop, every replica returns the same value.</p></div>
+<div data-from="5"><span class="gs-fd-line">Each <span class="gs-fd-term">replica</span> links to its own concept; hovering it shows the definition.</span></div>
+<div data-from="6"><span class="gs-fd-line"><span class="gs-fd-flag">worked example</span><span class="gs-fd-mark">Two phones edit one note offline; both show the same text once they sync.</span></span></div>
+<div class="gs-fd-foot"><span data-from="7"><b>Map</b>a row on Concepts</span><span data-from="8"><b>Gate</b>passes</span><span data-from="9"><b>Git</b>one commit</span></div>
+</div>
+<figcaption>Each part lights in the step that adds it. The flagged example is the agent's own, so it waits for your word.</figcaption>
+</figure>
+</div>
 
 <details class="check">
 <summary>The agent invented an example to make a concept clearer. How will you know?</summary>
 <div class="ans">It leaves a flag on that passage, labelled "worked example". Flags wait for you on the rendered page.</div>
 </details>
+<details class="check">
+<summary>You ask for a concept, but a note already defines the term. What does the agent do?</summary>
+<div class="ans">It revises the note or cites it, instead of writing a second definition. The search in step 2 is there to catch exactly this.</div>
+</details>
+</section>
 
+<section class="gs-sec">
 <h2 id="read">Read it</h2>
-<p>Ask your agent to serve the library. It runs <code>folio up</code>, and the library opens at <code>http://127.0.0.1:5170/</code>. The home page shows the top-level maps and the latest journal entries. Every page has the same shell: the library on the left, with the maps and every document by genre, a header drawn from the metadata, light and dark themes, search on the <kbd>/</kbd> key, a preview when you hover a link, and a panel listing what the page cites and what cites it.</p>
+<p>Ask your agent to serve the library. It runs <code>folio up</code>, and the library opens at <code>http://127.0.0.1:5170/</code>. The home page shows the top-level maps and the latest journal entries. When you are done, the agent stops it with <code>folio down</code>.</p>
+
+<figure class="gs-fig gs-fd-shell" aria-label="Every page sits in the same shell: a top bar with search, the library rail on the left, a header drawn from the metadata, the page itself, and a panel on the right listing what the page cites and what cites it.">
+<div class="gs-scroll">
+<svg viewBox="0 0 680 330" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The shell around every page</title>
+<rect x="10" y="10" width="660" height="310" rx="10" fill="var(--paper)" stroke="var(--rule-strong)"/>
+<!-- top bar -->
+<rect x="10" y="10" width="660" height="34" rx="10" fill="var(--sunk)"/>
+<rect x="10" y="30" width="660" height="14" fill="var(--sunk)"/>
+<rect x="470" y="18" width="150" height="18" rx="9" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.5"/>
+<text x="482" y="31" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">Search  ·  press /</text>
+<circle cx="645" cy="27" r="8" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/>
+<text x="24" y="31" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--ink)">Field notes</text>
+<!-- rail -->
+<rect x="10" y="44" width="140" height="276" style="fill: color-mix(in srgb, var(--teal) 9%, var(--paper))"/>
+<line x1="150" y1="44" x2="150" y2="320" stroke="var(--rule-strong)"/>
+<text x="24" y="70" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--teal)">Library rail</text>
+<text x="24" y="92" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">Home · Journal</text>
+<text x="24" y="114" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">The home maps</text>
+<text x="24" y="136" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">Every document,</text>
+<text x="24" y="151" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">by genre</text>
+<!-- header -->
+<rect x="166" y="58" width="340" height="66" rx="6" style="fill: color-mix(in srgb, var(--amber) 10%, var(--paper))" stroke="var(--amber)" stroke-width="1.5"/>
+<text x="180" y="78" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--amber)">Header, from the metadata</text>
+<text x="180" y="98" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">genre · title · description</text>
+<text x="180" y="115" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">status · dates from git · tags</text>
+<!-- page -->
+<rect x="166" y="136" width="340" height="170" rx="6" fill="none" stroke="var(--indigo)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="180" y="158" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--indigo)">The page itself</text>
+<text x="180" y="180" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">what the document holds, laid out</text>
+<text x="180" y="196" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">for what it shows</text>
+<line x1="180" y1="222" x2="410" y2="222" stroke="var(--rule-strong)" stroke-width="5" stroke-linecap="round"/>
+<line x1="180" y1="240" x2="470" y2="240" stroke="var(--rule-strong)" stroke-width="5" stroke-linecap="round"/>
+<line x1="180" y1="258" x2="300" y2="258" stroke="var(--link)" stroke-width="5" stroke-linecap="round"/>
+<rect x="306" y="250" width="150" height="40" rx="5" fill="var(--surface)" stroke="var(--blue)" stroke-width="1.2"/>
+<text x="316" y="266" font-family="system-ui, sans-serif" font-size="10.5" font-weight="700" fill="var(--blue)">Preview on hover</text>
+<text x="316" y="281" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-2)">genre, title, description</text>
+<!-- panel -->
+<rect x="522" y="58" width="134" height="248" rx="6" style="fill: color-mix(in srgb, var(--red) 7%, var(--paper))" stroke="var(--red)" stroke-width="1.5"/>
+<text x="534" y="78" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--red)">Page panel</text>
+<text x="534" y="102" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">Outline</text>
+<text x="534" y="126" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">What it cites</text>
+<text x="534" y="150" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">What cites it</text>
+<text x="534" y="174" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">Journal entries</text>
+<text x="534" y="189" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">about it</text>
+<text x="534" y="290" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">all generated</text>
+</svg>
+</div>
+<figcaption>The page writes only its own content. Everything around it, the rail, the header, the search, the previews and the panel, the shell draws from the metadata and the links. Light and dark themes come with it.</figcaption>
+</figure>
 
 <details class="check">
 <summary>Where does the list of pages that cite this one come from?</summary>
 <div class="ans">The shell generates it from the links. Nobody writes it, so it cannot go stale.</div>
 </details>
+</section>
 
+<script>
+(function () {
+  /* Steppers: hide every frame but the current one, mark its chip, and grey what later steps add. */
+  var steps = document.querySelectorAll(".gs-step");
+  for (var s = 0; s < steps.length; s++) wireStep(steps[s]);
+  function wireStep(box) {
+    var frames = box.querySelectorAll(".gs-frame");
+    if (!frames.length) return;
+    var chips = box.querySelectorAll(".gs-rail button");
+    var marks = box.querySelectorAll("[data-from]");
+    var prev = box.querySelector("[data-go='prev']"), next = box.querySelector("[data-go='next']");
+    var at = 0;
+    function show(i) {
+      at = Math.max(0, Math.min(frames.length - 1, i));
+      var n = at + 1;
+      for (var k = 0; k < frames.length; k++) frames[k].hidden = k !== at;
+      for (var c = 0; c < chips.length; c++) {
+        if (c === at) chips[c].setAttribute("aria-current", "step"); else chips[c].removeAttribute("aria-current");
+      }
+      for (var m = 0; m < marks.length; m++) {
+        var from = +marks[m].getAttribute("data-from");
+        var now = (marks[m].getAttribute("data-now") || String(from)).split(" ");
+        marks[m].classList.toggle("gs-later", from > n);
+        marks[m].classList.toggle("gs-now", now.indexOf(String(n)) !== -1);
+      }
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === frames.length - 1;
+      box.setAttribute("data-step", String(n));
+    }
+    box.classList.add("gs-live");
+    if (prev) prev.addEventListener("click", function () { show(at - 1); });
+    if (next) next.addEventListener("click", function () { show(at + 1); });
+    for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", (function (i) { return function () { show(i); }; })(c));
+    show(0);
+  }
+  /* Pickers: set data-v on the wrapper and aria-pressed on the buttons. */
+  var picks = document.querySelectorAll(".gs-pick");
+  for (var p = 0; p < picks.length; p++) wirePick(picks[p]);
+  function wirePick(box) {
+    var buttons = box.querySelectorAll(".gs-pick-ctl button[data-v]");
+    if (!buttons.length) return;
+    function pick(v) {
+      box.setAttribute("data-v", v);
+      for (var b = 0; b < buttons.length; b++) buttons[b].setAttribute("aria-pressed", String(buttons[b].getAttribute("data-v") === v));
+    }
+    for (var b = 0; b < buttons.length; b++) buttons[b].addEventListener("click", function () { pick(this.getAttribute("data-v")); });
+    box.classList.add("gs-live");
+    pick(buttons[0].getAttribute("data-v"));
+  }
+})();
+</script>
 </main>
 </body>
 </html>

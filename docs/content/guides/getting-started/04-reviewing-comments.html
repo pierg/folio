@@ -10,36 +10,303 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* Getting started: the guide's shared chapter vocabulary (.gs-), the same in every chapter; this chapter's own rules follow it.
+   Every word is in the markup. The script only hides frames, moves aria-current and aria-pressed, and sets classes and data-v. */
+.gs-sec { margin: 0 0 3.5rem; min-width: 0; }
+.gs-sec > h2:first-child { margin-top: 0; }
+.gs-sec > p, .gs-sec > ul, .gs-sec > ol, .gs-sec > pre, .gs-sec > details, .gs-sec > .note, .gs-prose > p, .gs-prose > pre, .gs-prose > details { max-width: 44rem; }
+.gs-prose { min-width: 0; }
+.gs-prose > h2:first-child { margin-top: 0; }
+.gs-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.gs-band > * { min-width: 0; }
+.gs-stick { position: sticky; top: calc(var(--top) + 1.25rem); }
+.gs-fig { margin: 0 0 1.15em; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fig svg { display: block; width: 100%; height: auto; }
+.gs-fig > figcaption { margin-top: .75rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-k { margin: 0 0 .4rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-scroll { overflow-x: auto; }
+
+/* the stepper: controls, a rail of steps, one frame per step; scripts off, the frames read as a list */
+.gs-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 .7rem; }
+.gs-rail { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; padding: 0; }
+.gs-rail button { display: inline-flex; align-items: baseline; gap: .3rem; padding: .28rem .6rem; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-3); font: 600 .74rem/1.2 var(--sans); cursor: pointer; }
+.gs-rail button b { font: 700 .72rem/1 var(--mono); }
+.gs-rail button:hover { color: var(--ink); border-color: var(--ink-3); }
+.gs-rail button[aria-current="step"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.gs-frames { list-style: none; margin: 0; padding: 0; }
+main .gs-frames > .gs-frame { margin: 0 0 1.1rem; padding: 0 0 0 .9rem; border-left: 2px solid var(--rule-strong); }
+main .gs-live .gs-frames > .gs-frame { margin: 0; padding: 0; border: 0; }
+.gs-step [hidden] { display: none !important; }
+.gs-step:not(.gs-live) .gs-ctl, .gs-step:not(.gs-live) .gs-rail { display: none; }
+.gs-frame > p { margin: 0 0 .65rem; font-size: .98rem; }
+.gs-frame > p.gs-k { margin-bottom: .35rem; }
+.gs-frame > pre { margin: 0 0 .65rem; font-size: .82rem; }
+.gs-frame > :last-child { margin-bottom: 0; }
+.gs-live [data-from] { transition: opacity .25s, background-color .25s, border-color .25s; }
+.gs-live .gs-later { opacity: .32; }
+
+/* a picker: buttons set data-v on the wrapper; scripts off, every state shows with its own label */
+.gs-pick-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 .9rem; }
+.gs-pick:not(.gs-live) .gs-pick-ctl { display: none; }
+.gs-pick.gs-live[data-v="a"] [data-for]:not([data-for~="a"]), .gs-pick.gs-live[data-v="b"] [data-for]:not([data-for~="b"]), .gs-pick.gs-live[data-v="c"] [data-for]:not([data-for~="c"]) { display: none; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-band { grid-template-columns: minmax(0, 1fr); }
+  .gs-stick { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-live [data-from], .gs-live * { transition: none !important; }
+}
+
+/* 04 only (.gs-cm-): the page with a selection, the flag and its two buttons, the life of a thread */
+.gs-cm-page { margin: 0; border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--paper); overflow: hidden; font-family: var(--sans); }
+.gs-cm-page > p { margin: 0; padding: .9rem 1rem; font: .95rem/1.6 var(--serif); color: var(--ink-2); }
+.gs-cm-sel { background: color-mix(in srgb, var(--blue) 22%, transparent); color: var(--ink); border-radius: 2px; }
+.gs-cm-pop { display: inline-block; margin: 0 1rem .9rem; padding: .3rem .7rem; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--surface); box-shadow: var(--shadow); font: 600 .78rem/1.4 var(--sans); color: var(--ink); }
+.gs-cm-thread { padding: .75rem 1rem .85rem; border-top: 1px solid var(--rule); background: var(--surface); font-size: .86rem; line-height: 1.5; color: var(--ink-2); }
+.gs-cm-thread q { display: block; margin: 0 0 .45rem; padding-left: .6rem; border-left: 3px solid var(--blue); font: italic .84rem/1.45 var(--serif); quotes: none; color: var(--ink-3); }
+.gs-cm-who { font-weight: 650; color: var(--ink); }
+.gs-cm-st { display: inline-block; margin-left: .4rem; padding: 0 .45rem; border-radius: 999px; font: 650 .64rem/1.6 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.gs-cm-wait { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); }
+.gs-cm-rest { background: color-mix(in srgb, var(--blue) 16%, transparent); color: var(--blue); }
+.gs-cm-closed { background: color-mix(in srgb, var(--teal) 16%, transparent); color: var(--teal); }
+
+.gs-cm-flag { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2rem 1.8rem; align-items: start; }
+.gs-cm-flag > * { min-width: 0; }
+.gs-cm-card { border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--paper); font: .87rem/1.5 var(--sans); color: var(--ink-2); overflow: hidden; }
+.gs-cm-card > div { padding: .7rem .9rem; }
+.gs-cm-card > div + div { border-top: 1px solid var(--rule); }
+.gs-cm-label { display: inline-block; padding: 0 .45rem; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font: 650 .66rem/1.6 var(--sans); letter-spacing: .04em; text-transform: uppercase; }
+.gs-cm-says > p { margin: 0 0 .7rem; font-size: .95rem; }
+.gs-cm-says > p:last-child { margin-bottom: 0; }
+
+.gs-cm-dia svg .gs-cm-node rect { transition: fill .25s, stroke-width .25s; }
+.gs-cm-dia svg .gs-now rect { stroke-width: 3.5; }
+.gs-cm-dia svg .gs-cm-n-wait.gs-now rect { fill: color-mix(in srgb, var(--amber) 18%, transparent); }
+.gs-cm-dia svg .gs-cm-n-rest.gs-now rect { fill: color-mix(in srgb, var(--blue) 16%, transparent); }
+.gs-cm-dia svg .gs-cm-n-changed.gs-now rect { fill: color-mix(in srgb, var(--teal) 20%, transparent); }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-cm-flag { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gs-sec">
 <h2 id="ask">Question a passage on the page</h2>
+<div class="gs-band">
+<div class="gs-prose">
 <p>With the library served by <code>folio serve</code>, every page has a Comments button. Select a passage and ask about it: "is this still true?", "say why", "cut this". You can also comment on the whole page. There is no name to type: the server writes as you, your git user name. The comment is saved in a file beside the document and committed on its own. Nothing goes into the page itself.</p>
+</div>
+<figure class="gs-fig" aria-label="A reader selects a sentence on a served page and comments on it. The comment panel shows the quoted sentence, the question, the commenter's name taken from git, and the state: waiting.">
+<div class="gs-cm-page">
+<p>The importer retries a failed batch three times, then <span class="gs-cm-sel">moves the batch to a holding folder and carries on</span> with the next one.</p>
+<span class="gs-cm-pop">Comment on this passage</span>
+<div class="gs-cm-thread">
+<q>moves the batch to a holding folder and carries on</q>
+<span class="gs-cm-who">Ada</span><span class="gs-cm-st gs-cm-wait">waiting</span><br>
+Is this still true since the last release?
+</div>
+</div>
+<figcaption>Select, comment, done. The name comes from the server, and the thread is saved beside the page, not in it.</figcaption>
+</figure>
+</div>
 
 <details class="check">
 <summary>Where is a comment stored?</summary>
 <div class="ans">In a file beside the document, <code>&lt;name&gt;.annotations.json</code>, committed by the server. The exported site leaves these files out.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="flags">Flags wait for you</h2>
 <p>Some threads were opened by the agent. Where it wrote something its sources did not say, such as its own example or a claim from general knowledge, it left a flag labelled with the kind of addition. A flag asks nothing. It rests until you press one of its two buttons. Keep closes it, and the passage stays. Change asks what to change, and your answer becomes a question the agent picks up.</p>
+
+<figure class="gs-fig gs-pick" aria-label="A flag on a worked example has two buttons. Until you press one it rests. Keep closes it as kept and the passage stays. Change turns your answer into a question, and the thread waits on the agent.">
+<div class="gs-pick-ctl" role="group" aria-label="What you do with the flag">
+<button type="button" class="tbtn" data-v="a" aria-pressed="false">Leave it</button>
+<button type="button" class="tbtn" data-v="b" aria-pressed="false">Press Keep</button>
+<button type="button" class="tbtn" data-v="c" aria-pressed="false">Press Change</button>
+</div>
+<div class="gs-cm-flag">
+<div class="gs-cm-card">
+<div><span class="gs-cm-label">worked example</span> <span class="gs-cm-who">agent</span>
+<span class="gs-cm-st gs-cm-rest" data-for="a">resting</span><span class="gs-cm-st gs-cm-closed" data-for="b">closed · kept</span><span class="gs-cm-st gs-cm-wait" data-for="c">waiting</span></div>
+<div>Added: an example of my own, two phones syncing one note, to show the definition at work.</div>
+<div data-for="b"><span class="gs-cm-who">You</span> Kept.</div>
+<div data-for="c"><span class="gs-cm-who">You</span> Use our own sync service as the example instead.</div>
+</div>
+<div class="gs-cm-says" aria-live="polite">
+<p data-for="a"><b>Resting.</b> The flag asks nothing. It sits on the Review page under the flags for you, and the passage stays as it is.</p>
+<p data-for="b"><b>Keep.</b> One reply, "Kept.", closes the thread as kept. The passage stays, and the flag leaves your Review page.</p>
+<p data-for="c"><b>Change.</b> What you type becomes a reply that turns the flag into a question. It now waits on the agent, which picks it up the next time it goes through your comments.</p>
+</div>
+</div>
+<figcaption>Pick what you do with the flag; the card shows the thread as the panel would. With scripts off, all three outcomes are listed.</figcaption>
+</figure>
+
 <p>You do not have to visit every page to find them. The Review page lists every question waiting on the agent and every flag resting for you, newest first, and the home page shows one line counting them.</p>
 
 <details class="check">
 <summary>The agent left a flag on an example and you are happy with it. Does anything have to happen?</summary>
 <div class="ans">No. A flag rests until you act on it. Press Keep when you want it off your Review page.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="answer">Ask the agent to go through them</h2>
 <p>Say "go through my comments". The agent follows the address skill: for each waiting question it edits the document, or declines with a reason, and replies on the thread saying exactly what it did. Nothing is deleted. Each thread shows its state in plain words: waiting, resting, or closed, with how it closed: changed, kept, declined or withdrawn. Once the agent's reply is committed, a changed thread also shows the passage before and after.</p>
+
+<div class="gs-step gs-band" id="gs-cm-step">
+<div>
+<div class="gs-ctl">
+<button type="button" class="tbtn" data-go="prev">Back</button>
+<button type="button" class="tbtn" data-go="next">Next step</button>
+</div>
+<div class="gs-rail" role="group" aria-label="The life of one question">
+<button type="button"><b>1</b>ask</button>
+<button type="button"><b>2</b>wait</button>
+<button type="button"><b>3</b>hand over</button>
+<button type="button"><b>4</b>answer</button>
+<button type="button"><b>5</b>see the change</button>
+</div>
+<ol class="gs-frames" aria-live="polite">
+<li class="gs-frame">
+<p class="gs-k">Step 1 · You ask</p>
+<p>You select the sentence about the holding folder and ask whether it is still true. The server saves the thread beside the page and commits it on its own. The thread is waiting.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 2 · It waits on Review</p>
+<p>The question joins the Review page, under the questions waiting on the agent, and the home page's line counts it. It stays there until it is answered or withdrawn.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 3 · You hand it over</p>
+<p>You say "go through my comments". The agent lists every waiting thread and takes them one at a time, on the page each was left on.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 4 · The agent answers</p>
+<p>It edits the sentence to match the code, and replies on the thread with what it changed. The thread closes as changed. Had it disagreed, it would have declined with its reason, and closed the thread that way.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 5 · You see what changed</p>
+<p>Once the reply is committed, the thread shows the passage before and after, computed from git. You read the answer and the edit side by side, without opening a diff.</p>
+</li>
+</ol>
+</div>
+
+<figure class="gs-fig gs-stick gs-cm-dia" aria-label="The states a thread can be in. A question starts waiting. A flag starts resting; Keep closes it as kept, Change sends it to waiting. From waiting a thread closes as changed, declined or withdrawn. A closed thread can be reopened.">
+<svg viewBox="0 0 440 300" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>A thread's states: waiting, resting and closed</title>
+<defs><marker id="gs-cm-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker></defs>
+<g class="gs-cm-node gs-cm-n-rest" data-from="1" data-now="0">
+<rect x="14" y="24" width="150" height="58" rx="9" fill="none" stroke="var(--blue)" stroke-width="2"/>
+<text x="89" y="49" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--blue)">resting</text>
+<text x="89" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">a flag; asks nothing</text>
+</g>
+<g class="gs-cm-node gs-cm-n-wait" data-from="1" data-now="1 2 3">
+<rect x="14" y="196" width="150" height="58" rx="9" fill="none" stroke="var(--amber)" stroke-width="2"/>
+<text x="89" y="221" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--amber)">waiting</text>
+<text x="89" y="240" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">a question for the agent</text>
+</g>
+<rect x="262" y="14" width="164" height="272" rx="10" fill="none" stroke="var(--teal)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="344" y="38" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--teal)">closed</text>
+<g class="gs-cm-node" data-from="1" data-now="0">
+<rect x="280" y="52" width="128" height="38" rx="7" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+<text x="344" y="76" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">kept</text>
+</g>
+<g class="gs-cm-node gs-cm-n-changed" data-from="1" data-now="4 5">
+<rect x="280" y="112" width="128" height="38" rx="7" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+<text x="344" y="136" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">changed</text>
+</g>
+<g class="gs-cm-node" data-from="1" data-now="0">
+<rect x="280" y="172" width="128" height="38" rx="7" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+<text x="344" y="196" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">declined</text>
+</g>
+<g class="gs-cm-node" data-from="1" data-now="0">
+<rect x="280" y="232" width="128" height="38" rx="7" fill="none" stroke="var(--teal)" stroke-width="1.5"/>
+<text x="344" y="256" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">withdrawn</text>
+</g>
+<path d="M166 50 C 210 50, 230 70, 276 71" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-cm-arr)"/>
+<text x="212" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">Keep</text>
+<path d="M89 84 V192" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-cm-arr)"/>
+<text x="96" y="142" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">Change</text>
+<path d="M166 214 C 220 210, 230 140, 276 131" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-cm-arr)"/>
+<path d="M166 222 C 220 222, 240 192, 276 191" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-cm-arr)"/>
+<path d="M166 236 C 220 240, 240 251, 276 251" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-cm-arr)"/>
+<text x="200" y="166" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">answered</text>
+<path d="M276 280 C 200 296, 120 290, 89 258" fill="none" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#gs-cm-arr)"/>
+<text x="190" y="296" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">it can be reopened</text>
+</svg>
+<figcaption>Three words a reader sees: waiting, resting and closed, with how it closed. The state the question is in lights up as you step. Nothing is ever deleted.</figcaption>
+</figure>
+</div>
+
 <p>If the document is a <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, the agent does not edit it. It adds a correction that points back, and the record shows it as a banner. The <a class="defn-link" href="/content/concepts/gate/">gate</a> also fails while an open question quotes text that is no longer on its page, so a comment is never silently lost under an edit.</p>
 
 <details class="check">
 <summary>You asked a question about a journal entry. Will the agent edit the entry?</summary>
 <div class="ans">No. A journal entry is permanent. The agent writes a new entry of kind correction about it, which shows on it as a banner.</div>
 </details>
+<details class="check">
+<summary>The agent disagrees with your question and leaves the page as it is. What does the thread show?</summary>
+<div class="ans">Closed, declined, with the agent's reply giving its reason. The thread stays on the page; a closed thread takes a reply and can be reopened.</div>
+</details>
+</section>
 
+<script>
+(function () {
+  /* Steppers: hide every frame but the current one, mark its chip, and grey what later steps add. */
+  var steps = document.querySelectorAll(".gs-step");
+  for (var s = 0; s < steps.length; s++) wireStep(steps[s]);
+  function wireStep(box) {
+    var frames = box.querySelectorAll(".gs-frame");
+    if (!frames.length) return;
+    var chips = box.querySelectorAll(".gs-rail button");
+    var marks = box.querySelectorAll("[data-from]");
+    var prev = box.querySelector("[data-go='prev']"), next = box.querySelector("[data-go='next']");
+    var at = 0;
+    function show(i) {
+      at = Math.max(0, Math.min(frames.length - 1, i));
+      var n = at + 1;
+      for (var k = 0; k < frames.length; k++) frames[k].hidden = k !== at;
+      for (var c = 0; c < chips.length; c++) {
+        if (c === at) chips[c].setAttribute("aria-current", "step"); else chips[c].removeAttribute("aria-current");
+      }
+      for (var m = 0; m < marks.length; m++) {
+        var from = +marks[m].getAttribute("data-from");
+        var now = (marks[m].getAttribute("data-now") || String(from)).split(" ");
+        marks[m].classList.toggle("gs-later", from > n);
+        marks[m].classList.toggle("gs-now", now.indexOf(String(n)) !== -1);
+      }
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === frames.length - 1;
+      box.setAttribute("data-step", String(n));
+    }
+    box.classList.add("gs-live");
+    if (prev) prev.addEventListener("click", function () { show(at - 1); });
+    if (next) next.addEventListener("click", function () { show(at + 1); });
+    for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", (function (i) { return function () { show(i); }; })(c));
+    show(0);
+  }
+  /* Pickers: set data-v on the wrapper and aria-pressed on the buttons. */
+  var picks = document.querySelectorAll(".gs-pick");
+  for (var p = 0; p < picks.length; p++) wirePick(picks[p]);
+  function wirePick(box) {
+    var buttons = box.querySelectorAll(".gs-pick-ctl button[data-v]");
+    if (!buttons.length) return;
+    function pick(v) {
+      box.setAttribute("data-v", v);
+      for (var b = 0; b < buttons.length; b++) buttons[b].setAttribute("aria-pressed", String(buttons[b].getAttribute("data-v") === v));
+    }
+    for (var b = 0; b < buttons.length; b++) buttons[b].addEventListener("click", function () { pick(this.getAttribute("data-v")); });
+    box.classList.add("gs-live");
+    pick(buttons[0].getAttribute("data-v"));
+  }
+})();
+</script>
 </main>
 </body>
 </html>

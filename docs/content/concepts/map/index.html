@@ -10,23 +10,219 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: how maps nest from the home page, with a focus control. Every word is in the markup; the script only picks which topic is in focus. */
+.mp-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; margin-bottom: 2.4rem; }
+.mp-top > * { min-width: 0; }
+.mp-top .defn { margin-top: .2rem; }
+.mp-top > div > p { max-width: 44rem; }
+.mp-band { margin: 0 0 3rem; }
+.mp-band > h2 { margin-top: 0; }
+.mp-band > p { max-width: 44rem; }
+
+/* the nest */
+.mp-nest { margin: 0; }
+.mp-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: 0 0 1rem; }
+.mp-ctl > span { font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-right: .3rem; }
+.mp-home { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1rem; padding: .8rem 1rem; border: 2px solid var(--ink-2); border-radius: 10px; background: var(--surface); }
+.mp-home b { font: 700 1rem/1.3 var(--sans); }
+.mp-home span { font-size: .9rem; color: var(--ink-2); }
+.mp-home code { font-size: .8rem; }
+.mp-stem { height: 1.2rem; margin-left: 2rem; border-left: 2px solid var(--rule-strong); }
+.mp-maps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; padding-top: 1.1rem; border-top: 2px solid var(--rule-strong); }
+.mp-map { min-width: 0; border: 1.5px solid var(--hue); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.mp-map[data-t="using"] { --hue: var(--teal); }
+.mp-map[data-t="concepts"] { --hue: var(--indigo); }
+.mp-map[data-t="reference"] { --hue: var(--blue); }
+.mp-map[data-t="building"] { --hue: var(--amber); }
+.mp-mh { padding: .55rem .75rem; background: color-mix(in srgb, var(--hue) 12%, transparent); border-bottom: 1px solid var(--rule); transition: opacity .2s; }
+.mp-mh b { display: block; font: 700 .9rem/1.3 var(--sans); color: var(--hue); }
+.mp-mh code { font-size: .72rem; color: var(--ink-3); }
+.mp-map ol { list-style: none; margin: 0; padding: .35rem 0; }
+.mp-map li { margin: 0; padding: .3rem .75rem; font-size: .86rem; line-height: 1.35; transition: opacity .2s, background .2s; }
+.mp-map li small { display: block; font: .68rem/1.3 var(--sans); color: var(--ink-3); letter-spacing: .04em; }
+.mp-nest[data-t] .mp-map li, .mp-nest[data-t] .mp-mh { opacity: .3; }
+.mp-nest[data-t="using"] [data-t~="using"],
+.mp-nest[data-t="concepts"] [data-t~="concepts"],
+.mp-nest[data-t="reference"] [data-t~="reference"],
+.mp-nest[data-t="building"] [data-t~="building"] { opacity: 1; }
+.mp-nest[data-t="using"] li[data-t~="using"],
+.mp-nest[data-t="concepts"] li[data-t~="concepts"],
+.mp-nest[data-t="reference"] li[data-t~="reference"],
+.mp-nest[data-t="building"] li[data-t~="building"] { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+.mp-says { margin-top: 1rem; max-width: 44rem; }
+.mp-says p { margin: 0; font-size: .95rem; }
+.mp-says p + p { margin-top: .5rem; }
+.mp-nest[data-t] .mp-says p { display: none; }
+.mp-nest[data-t="using"] .mp-says [data-t="using"],
+.mp-nest[data-t="concepts"] .mp-says [data-t="concepts"],
+.mp-nest[data-t="reference"] .mp-says [data-t="reference"],
+.mp-nest[data-t="building"] .mp-says [data-t="building"] { display: block; }
+.mp-nest figcaption { margin-top: .8rem; }
+
+.mp-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.mp-pair > div { min-width: 0; }
+.mp-row { margin: 0; max-width: 40rem; padding: .8rem 1rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.mp-row dt { font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: .55rem; }
+.mp-row dt:first-child { margin-top: 0; }
+.mp-row dd { margin: .15rem 0 0; font-size: .95rem; }
+
+.mp-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.mp-foot > * { min-width: 0; }
+.mp-foot h3 { margin-top: 0; }
+.mp-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 48rem) {
+  .mp-maps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container folio-canvas (max-width: 40rem) {
+  .mp-top, .mp-pair, .mp-foot { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+}
+@container folio-canvas (max-width: 26rem) {
+  .mp-maps { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .mp-map li, .mp-mh { transition: none; } }
+</style>
 </head>
 <body>
 <main>
 
+<section class="mp-top">
+<div>
 <blockquote class="defn" id="map">
 <span class="defn-name">Map</span><br>
 A map is a document that lists other documents in the order to read them, each row with an optional one-line reason to follow it. The maps the charter names as home maps are the library's topics, drawn on its home page.
 </blockquote>
-
-<h3>Why it matters</h3>
+</div>
+<div>
 <p>A library has no folder tree for a reader to browse; folders follow genres, not subjects. Maps are the structure instead. A document can sit on several maps, and a map can list other maps, so one library can have as many front doors as it needs.</p>
+<p>What falls under a topic follows from the maps. Nothing on a document declares its topic.</p>
+</div>
+</section>
 
-<h3>The trap</h3>
-<p>Using tags as structure. Tags are facets for filtering. A reader arriving cold needs an order and a reason, and only a map gives them.</p>
+<section class="mp-band">
+<h2>How the maps nest, in this library</h2>
+<p>The home page is a map. The charter names four home maps under <code>home.maps</code>, and each lists its rows in reading order. Pick a topic to focus on it, as the Focus control in the top bar does: what falls under it stays lit, wherever it sits.</p>
 
+<figure class="mp-nest" id="mp-nest" aria-label="This library's maps as a tree. The home page sits at the top. Below it are the four home maps, the topics: Using folio, Concepts, Reference and How folio is built. Each lists its rows. The folio project and the question Q-1 sit on two maps, Using folio and How folio is built, so they fall under both topics. Focusing a topic lights what falls under it.">
+<div class="mp-ctl" role="group" aria-label="Focus on a topic">
+<span>Focus</span>
+<button type="button" class="tbtn" data-t="all" aria-pressed="false">Whole library</button>
+<button type="button" class="tbtn" data-t="using" aria-pressed="false">Using folio</button>
+<button type="button" class="tbtn" data-t="concepts" aria-pressed="false">Concepts</button>
+<button type="button" class="tbtn" data-t="reference" aria-pressed="false">Reference</button>
+<button type="button" class="tbtn" data-t="building" aria-pressed="false">How folio is built</button>
+</div>
+
+<div class="mp-home"><b>Home page</b><code>content/index.html</code><span>The map named <code>home</code>, under every topic. The shell draws a card for each home map, in the charter's order.</span></div>
+<div class="mp-stem"></div>
+<div class="mp-maps">
+<div class="mp-map" data-t="using">
+<div class="mp-mh" data-t="using"><b>Using folio</b><code>maps/using-folio.html</code></div>
+<ol>
+<li data-t="using"><a href="/content/guides/getting-started/">Getting started</a><small>guide</small></li>
+<li data-t="using building" class="mp-both"><a href="/content/projects/folio/">folio</a><small>project · on two maps</small></li>
+<li data-t="using"><a href="/content/entries/why-metadata-first/">Why metadata comes first</a><small>entry</small></li>
+<li data-t="using"><a href="/content/entries/one-fact-one-home/">One fact, one home</a><small>entry</small></li>
+<li data-t="using"><a href="/content/entries/how-corrections-work/">How corrections work</a><small>entry</small></li>
+<li data-t="using"><a href="/content/readings/1945-as-we-may-think-reading.html">As We May Think</a><small>reading</small></li>
+<li data-t="using"><a href="/content/sources/1945-as-we-may-think/">As We May Think</a><small>source</small></li>
+<li data-t="using building" class="mp-both"><a href="/content/questions/Q-1.md">Q-1</a><small>question · on two maps</small></li>
+</ol>
+</div>
+<div class="mp-map" data-t="concepts">
+<div class="mp-mh" data-t="concepts"><b>Concepts</b><code>maps/concepts.html</code></div>
+<ol>
+<li data-t="concepts"><a href="/content/concepts/library/">Library</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/genre/">Genre</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/map/">Map</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/skill/">Skill</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/pack/">Pack</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/gate/">Gate</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/journal/">Journal</a><small>concept</small></li>
+<li data-t="concepts"><a href="/content/concepts/permanent-record/">Permanent record</a><small>concept</small></li>
+</ol>
+</div>
+<div class="mp-map" data-t="reference">
+<div class="mp-mh" data-t="reference"><b>Reference</b><code>maps/reference.html</code></div>
+<ol>
+<li data-t="reference">The folio model<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The genre format<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The checks<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The folio command<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The pack format<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The skill format<small>a spec, linked outside the library</small></li>
+<li data-t="reference">The shell's components<small>linked outside the library</small></li>
+</ol>
+</div>
+<div class="mp-map" data-t="building">
+<div class="mp-mh" data-t="building"><b>How folio is built</b><code>maps/building-folio.html</code></div>
+<ol>
+<li data-t="using building" class="mp-both"><a href="/content/projects/folio/">folio</a><small>project · on two maps</small></li>
+<li data-t="using building" class="mp-both"><a href="/content/questions/Q-1.md">Q-1</a><small>question · on two maps</small></li>
+<li data-t="building"><a href="/content/protocols/check-time.md">check-time</a><small>protocol</small></li>
+<li data-t="building"><a href="/content/results/R-1.md">R-1</a><small>result</small></li>
+<li data-t="building"><a href="/content/results/R-2.md">R-2</a><small>result</small></li>
+</ol>
+</div>
+</div>
+
+<div class="mp-says" aria-live="polite">
+<p data-t="using"><b>Using folio.</b> The guide, the project, three entries, a source with its reading, and the open question. The project and the question are lit on How folio is built too: a document is on every map that lists it.</p>
+<p data-t="concepts"><b>Concepts.</b> The eight concepts. A concept is filed under no topic of its own: it also falls under every topic whose documents link it, so a focus on Using folio still reaches the concepts its entries use.</p>
+<p data-t="reference"><b>Reference.</b> The specifications. They stay Markdown files outside the library, so this map links them by their addresses on GitHub, and they fall under no topic.</p>
+<p data-t="building"><b>How folio is built.</b> The lab records: the question, the protocol that tests it, and the two results. The project and the question are shared with Using folio.</p>
+</div>
+<figcaption>The tree is drawn from this library's own maps. Rows that sit on two maps say so; with a topic in focus, they stay lit on both.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("mp-nest");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-t]");
+  function pick(t) {
+    if (t === "all") box.removeAttribute("data-t"); else box.setAttribute("data-t", t);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-t") === t));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-t")); });
+  pick("all");
+})();
+</script>
+
+<section class="mp-band">
+<h2>Maps, not folders</h2>
+<div class="mp-pair">
+<div class="lane lane-baseline"><h4>Folders follow genres</h4><p>Every concept is under <code>content/concepts/</code>, every entry under <code>content/entries/</code>. That tells the engine what a file is. It tells a reader nothing about where to start on a subject.</p></div>
+<div class="lane lane-teal"><h4>Maps follow subjects</h4><p>A map picks documents of any genre, puts them in order, and says why each is worth following from here. The same document can be on a map for newcomers and on a map for one project.</p></div>
+</div>
+</section>
+
+<section class="mp-band">
+<h2>What one row holds</h2>
+<dl class="mp-row">
+<dt>A link</dt><dd>To the document. The shell draws the link's text from the document's title, so a renamed document reads right on every map.</dd>
+<dt>A reason, optional</dt><dd>One line on why to follow it from this map. Without one, the shell shows the document's description.</dd>
+<dt>A place</dt><dd>Its order and its group heading, which the map keeps as written.</dd>
+</dl>
+</section>
+
+<section class="mp-band">
+<div class="note note-warn">
+<b>The trap: using tags as structure.</b> Tags are facets for filtering. A reader arriving cold needs an order and a reason, and only a map gives them.
+</div>
+</section>
+
+<section class="mp-foot">
+<div>
 <h3>Related</h3>
 <p>The <a class="defn-link" href="/content/concepts/gate/">gate</a> checks that every document except a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry is reachable from a map.</p>
+</div>
+<div>
+<h3>Who keeps them</h3>
+<p>The write skill puts each new document on a map in the same change. The organise skill moves, merges and splits maps with every link kept.</p>
+</div>
+</section>
 
 </main>
 </body>

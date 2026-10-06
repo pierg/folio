@@ -149,8 +149,16 @@ def test_index_current(sample: Path) -> None:
 
 
 def test_require(sample: Path) -> None:
+    edit(sample / "content/concepts/softmax/index.html", 'class="defn"', 'class="lede"')
+    assert any("defn" in p.message for p in found(sample, "require"))
+
+
+def test_cards_leave_form_to_the_page(sample: Path) -> None:
+    """A page genre prescribes no markup: an entry with no thesis or sections, and a concept with h2, pass."""
     edit(sample / "content/entries/attention-is-quadratic/index.html", 'class="thesis"', 'class="lede"')
-    assert any("thesis" in p.message for p in found(sample, "require"))
+    edit(sample / "content/concepts/softmax/index.html", "<h3>The trap</h3>", "<h2>The trap</h2>")
+    edit(sample / "content/guides/attention-from-scratch/02-softmax.html", '<details class="check">', '<details class="note">')
+    assert not {"require", "forbid", "max_words"} & names(sample)
 
 
 def test_require_markdown_section(sample: Path) -> None:
@@ -169,6 +177,8 @@ def test_require_latex(sample: Path) -> None:
 
 
 def test_forbid(sample: Path) -> None:
+    (sample / "genres/concept").mkdir(parents=True)
+    (sample / "genres/concept/GENRE.md").write_text("---\nname: concept\nchecks:\n  forbid: [h2]\n---\n")
     edit(sample / "content/concepts/softmax/index.html", "<h3>The trap</h3>", "<h2>The trap</h2>")
     assert "forbid" in names(sample)
 
@@ -212,14 +222,18 @@ def test_min_links(sample: Path) -> None:
     assert "min_links" in names(sample)
 
 
-def test_check_each_section(sample: Path) -> None:
-    edit(sample / "content/guides/attention-from-scratch/02-softmax.html", '<details class="check">', '<details class="note">')
-    assert "check_each_section" in names(sample)
-
-
 def test_forward_links(sample: Path) -> None:
     edit(sample / "content/guides/attention-from-scratch/01-scores.html", "<a data-fwd ", "<a ")
+    assert "forward_links" not in names(sample)  # judged by default
+    (sample / "genres/guide").mkdir(parents=True)
+    (sample / "genres/guide/GENRE.md").write_text(
+        "---\nname: guide\nparts:\n  chapter:\n    checks:\n      forward_links: marked\n---\n")
     assert "forward_links" in names(sample)
+
+
+def test_layout(sample: Path) -> None:
+    edit(sample / "content/notes/flashattention-tiling.html", "</head>", '<meta name="layout" content="wide">\n</head>')
+    assert any("layout" in p.message for p in found(sample, "fields"))
 
 
 def test_stale_after_days(sample: Path) -> None:

@@ -10,23 +10,212 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: the seven skills around the one command they call. Every word is in the markup; the script only picks which command is traced. */
+.sk-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 2.5rem; align-items: start; margin-bottom: 3rem; }
+.sk-hero > * { min-width: 0; }
+.sk-hero .defn { margin-top: .2rem; }
+.sk-band { margin: 0 0 3rem; }
+.sk-band > h2 { margin-top: 0; }
+.sk-band > p { max-width: 44rem; }
+
+.sk-fig { margin: 0; }
+.sk-ring { padding: .8rem 1rem .6rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.sk-ring svg { display: block; width: 100%; height: auto; }
+.sk-n, .sk-l { transition: opacity .2s; }
+.sk-ctl { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .9rem; }
+.sk-ctl .tbtn code { font-size: .8rem; background: none; padding: 0; }
+.sk-says { margin: .8rem 0 0; min-height: 3em; }
+.sk-says p { margin: 0; font-size: .95rem; max-width: 44rem; }
+.sk-says p + p { margin-top: .4rem; }
+.sk-fig[data-c] .sk-says p { display: none; }
+/* which skills call the picked command */
+.sk-fig[data-c] .sk-n, .sk-fig[data-c] .sk-l, .sk-fig[data-c] .sk-card { opacity: .25; }
+.sk-fig[data-c="check"] [data-u~="check"],
+.sk-fig[data-c="journal"] [data-u~="journal"],
+.sk-fig[data-c="new"] [data-u~="new"],
+.sk-fig[data-c="map"] [data-u~="map"],
+.sk-fig[data-c="mv"] [data-u~="mv"],
+.sk-fig[data-c="ann"] [data-u~="ann"],
+.sk-fig[data-c="config"] [data-u~="config"],
+.sk-fig[data-c="export"] [data-u~="export"] { opacity: 1; }
+.sk-fig[data-c="check"] .sk-says [data-c="check"],
+.sk-fig[data-c="journal"] .sk-says [data-c="journal"],
+.sk-fig[data-c="new"] .sk-says [data-c="new"],
+.sk-fig[data-c="map"] .sk-says [data-c="map"],
+.sk-fig[data-c="mv"] .sk-says [data-c="mv"],
+.sk-fig[data-c="ann"] .sk-says [data-c="ann"],
+.sk-fig[data-c="config"] .sk-says [data-c="config"],
+.sk-fig[data-c="export"] .sk-says [data-c="export"] { display: block; }
+
+/* the seven cards */
+.sk-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; margin-top: 1.2rem; }
+.sk-card { min-width: 0; padding: .75rem .85rem; border: 1px solid var(--rule); border-top: 3px solid var(--violet); border-radius: 8px; background: var(--surface); transition: opacity .2s; }
+.sk-card .sk-h { margin: 0 0 .25rem; font: 700 .92rem/1.3 var(--mono); color: var(--violet); }
+.sk-card p:not(.sk-h) { margin: 0 0 .45rem; font-size: .88rem; line-height: 1.45; color: var(--ink-2); }
+.sk-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .25rem; }
+.sk-card li { margin: 0; }
+.sk-card li code { font-size: .72rem; }
+.sk-fig figcaption { margin-top: .8rem; }
+
+/* who talks to whom */
+.sk-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; counter-reset: sk; }
+.sk-flow li { min-width: 0; margin: 0; padding: .85rem 1rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); position: relative; }
+.sk-flow li b { display: block; font: 700 .95rem/1.3 var(--sans); margin-bottom: .2rem; }
+.sk-flow li:nth-child(1) b { color: var(--azure); }
+.sk-flow li:nth-child(2) b, .sk-flow li:nth-child(3) b { color: var(--violet); }
+.sk-flow li:nth-child(4) b { color: var(--orange); }
+.sk-flow li p { margin: 0; font-size: .92rem; color: var(--ink-2); }
+.sk-start { margin: 0; padding-left: 1.3rem; max-width: 44rem; }
+.sk-start li { margin: 0 0 .4rem; }
+
+.sk-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.sk-foot > * { min-width: 0; }
+.sk-foot h3 { margin-top: 0; }
+.sk-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 48rem) {
+  .sk-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sk-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container folio-canvas (max-width: 40rem) {
+  .sk-hero, .sk-foot { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+}
+@container folio-canvas (max-width: 26rem) {
+  .sk-cards, .sk-flow { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .sk-n, .sk-l, .sk-card { transition: none; } }
+</style>
 </head>
 <body>
 <main>
 
+<section class="sk-hero">
+<div>
 <blockquote class="defn" id="skill">
 <span class="defn-name">Skill</span><br>
 A skill is a written procedure a coding agent follows to change a library: when to use it, its rules, its steps, when to stop, and when it is done. folio ships seven: set-up, configure, write, organise, address, publish and run.
 </blockquote>
-
-<h3>Why it matters</h3>
+</div>
+<div>
 <p>The person using folio talks to their agent in plain words, and the agent picks the matching skill. The skills call the <code>folio</code> command the way an agent calls git, so the person never needs to learn it.</p>
+<p>The set is fixed. What is specific to a kind of document lives in its <a class="defn-link" href="/content/concepts/genre/">genre's</a> card, and what is specific to a procedure lives in a workflow, so neither needs a skill of its own.</p>
+</div>
+</section>
 
-<h3>The trap</h3>
-<p>Thinking a new kind of document needs a new skill. Every skill starts by reading the charter, the <a class="defn-link" href="/content/concepts/genre/">genres</a> and the workflows, so it already knows what a new genre or <a class="defn-link" href="/content/concepts/pack/">pack</a> adds.</p>
+<section class="sk-band">
+<h2>Seven skills around one command</h2>
+<p>Every skill acts on the library through the same command. Pick a command to see which skills call it.</p>
+<figure class="sk-fig" id="sk-fig" aria-label="The folio command in the middle, with the seven skills around it, each joined to it: set-up, configure, write, organise, address, publish and run. Every skill calls folio check before it is done. Most calls are shared, such as folio journal add; a few belong to one skill, such as folio new to write and folio export to publish.">
+<div class="sk-ctl" role="group" aria-label="Pick a command">
+<button type="button" class="tbtn" data-c="all" aria-pressed="false">Every skill</button>
+<button type="button" class="tbtn" data-c="check" aria-pressed="false"><code>check</code></button>
+<button type="button" class="tbtn" data-c="journal" aria-pressed="false"><code>journal add</code></button>
+<button type="button" class="tbtn" data-c="new" aria-pressed="false"><code>new</code></button>
+<button type="button" class="tbtn" data-c="map" aria-pressed="false"><code>map add</code></button>
+<button type="button" class="tbtn" data-c="mv" aria-pressed="false"><code>mv</code></button>
+<button type="button" class="tbtn" data-c="ann" aria-pressed="false"><code>annotations</code></button>
+<button type="button" class="tbtn" data-c="config" aria-pressed="false"><code>config set</code></button>
+<button type="button" class="tbtn" data-c="export" aria-pressed="false"><code>export</code></button>
+</div>
+<div class="sk-ring">
+<svg viewBox="0 0 480 320" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The seven skills, each joined to the folio command in the middle</title>
+<g stroke="var(--ink-3)" stroke-width="1.5">
+<line class="sk-l" data-u="check journal config" x1="240" y1="160" x2="240" y2="42"/>
+<line class="sk-l" data-u="check journal config" x1="240" y1="160" x2="340" y2="90"/>
+<line class="sk-l" data-u="check journal new map ann" x1="240" y1="160" x2="365" y2="198"/>
+<line class="sk-l" data-u="check journal map mv ann" x1="240" y1="160" x2="296" y2="284"/>
+<line class="sk-l" data-u="check ann" x1="240" y1="160" x2="184" y2="284"/>
+<line class="sk-l" data-u="check journal export" x1="240" y1="160" x2="115" y2="198"/>
+<line class="sk-l" data-u="check journal" x1="240" y1="160" x2="140" y2="90"/>
+</g>
+<circle cx="240" cy="160" r="50" fill="var(--surface)" stroke="var(--orange)" stroke-width="2.5"/>
+<text x="240" y="158" text-anchor="middle" font-family="ui-monospace, monospace" font-size="19" font-weight="700" fill="var(--orange)">folio</text>
+<text x="240" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">the command</text>
+<g class="sk-n" data-u="check journal config"><rect x="186" y="23" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="240" y="48" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">set-up</text></g>
+<g class="sk-n" data-u="check journal config"><rect x="286" y="71" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="340" y="95" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">configure</text></g>
+<g class="sk-n" data-u="check journal new map ann"><rect x="311" y="179" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="365" y="203" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">write</text></g>
+<g class="sk-n" data-u="check journal map mv ann"><rect x="242" y="265" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="296" y="289" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">organise</text></g>
+<g class="sk-n" data-u="check ann"><rect x="130" y="265" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="184" y="289" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">address</text></g>
+<g class="sk-n" data-u="check journal export"><rect x="61" y="179" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="115" y="203" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">publish</text></g>
+<g class="sk-n" data-u="check journal"><rect x="86" y="71" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="140" y="95" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">run</text></g>
+</svg>
+</div>
+<div class="sk-says" aria-live="polite">
+<p data-c="check"><code>folio check</code>: every skill. A change is done only when the gate passes.</p>
+<p data-c="journal"><code>folio journal add</code>: six of the seven. Each records a decision as a new entry; address answers comments instead.</p>
+<p data-c="new"><code>folio new</code>: write alone. Every document any skill produces goes through write.</p>
+<p data-c="map"><code>folio map add</code>: write, which puts a new document on a map, and organise, which keeps the maps current.</p>
+<p data-c="mv"><code>folio mv</code>: organise alone, with <code>promote</code> and <code>rm --to</code>, so a move keeps every link, comment and date.</p>
+<p data-c="ann"><code>folio annotations</code>: address answers threads, write reads them and leaves flags, organise checks them before a move.</p>
+<p data-c="config"><code>folio config set</code>: set-up and configure, the only two skills that write the charter.</p>
+<p data-c="export"><code>folio export</code>: publish alone, after the gate.</p>
+</div>
 
+<div class="sk-cards">
+<div class="sk-card" data-u="check journal config"><p class="sk-h">set-up</p><p>Installs a library once: the charter, the home page, the first journal entry.</p><ul><li><code>init</code></li><li><code>config</code></li><li><code>pack on</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal config"><p class="sk-h">configure</p><p>Changes the charter: packs, home maps, genres, variants, workflows.</p><ul><li><code>config</code></li><li><code>pack</code></li><li><code>genre add</code></li><li><code>workflow add</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal new map ann"><p class="sk-h">write</p><p>Adds or revises any document, in its genre's voice, and puts it on a map.</p><ul><li><code>search</code></li><li><code>new</code></li><li><code>cite</code></li><li><code>map add</code></li><li><code>annotations</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal map mv ann"><p class="sk-h">organise</p><p>Moves, merges, promotes and retires, with every link kept; runs health passes.</p><ul><li><code>maps</code></li><li><code>map add</code></li><li><code>mv</code></li><li><code>promote</code></li><li><code>rm --to</code></li><li><code>tags</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check ann"><p class="sk-h">address</p><p>Answers the comments readers left, on the page each was left on.</p><ul><li><code>annotations</code></li><li><code>genre</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal export"><p class="sk-h">publish</p><p>Exports the static site, and builds and freezes papers.</p><ul><li><code>up</code></li><li><code>export</code></li><li><code>paper build</code></li><li><code>paper freeze</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal"><p class="sk-h">run</p><p>Follows a workflow step by step; every document it makes goes through write.</p><ul><li><code>workflows</code></li><li><code>genre</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+</div>
+<figcaption>Each card lists the main commands its skill names, without the <code>folio</code> prefix. The command is shared; what differs between skills is which calls they make and in what order.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("sk-fig");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-c]");
+  function pick(c) {
+    if (c === "all") box.removeAttribute("data-c"); else box.setAttribute("data-c", c);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-c") === c));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-c")); });
+  pick("all");
+})();
+</script>
+
+<section class="sk-band">
+<h2>Who talks to whom</h2>
+<ol class="sk-flow">
+<li><b>The person</b><p>Asks in plain words: "add a concept for this", "tidy the maps".</p></li>
+<li><b>The agent</b><p>Matches the words to a skill by its description, and reads it.</p></li>
+<li><b>The skill</b><p>Its steps, rules and stops, followed in order.</p></li>
+<li><b>folio</b><p>The command the skill calls, ending at the <a class="defn-link" href="/content/concepts/gate/">gate</a>.</p></li>
+</ol>
+</section>
+
+<section class="sk-band">
+<h2>Every skill starts the same way</h2>
+<p>This is why a new genre, workflow or <a class="defn-link" href="/content/concepts/pack/">pack</a> never needs a new skill: each one reads what the library offers before it acts.</p>
+<ol class="sk-start">
+<li>Find the library: the nearest <code>folio.yaml</code>.</li>
+<li>Read the charter.</li>
+<li>List the genres and workflows available, from the library, its packs and the core.</li>
+<li>Read the card for the genre in hand.</li>
+</ol>
+</section>
+
+<section class="sk-band">
+<div class="note note-warn">
+<b>The trap: thinking a new kind of document needs a new skill.</b> Every skill starts by reading the charter, the <a class="defn-link" href="/content/concepts/genre/">genres</a> and the workflows, so it already knows what a new genre or <a class="defn-link" href="/content/concepts/pack/">pack</a> adds.
+</div>
+</section>
+
+<section class="sk-foot">
+<div>
 <h3>Related</h3>
-<p>Every skill that changes a document ends at the <a class="defn-link" href="/content/concepts/gate/">gate</a>.</p>
+<p>Every skill that changes a document ends at the <a class="defn-link" href="/content/concepts/gate/">gate</a>, then commits exactly the files it touched.</p>
+</div>
+<div>
+<h3>Where they live</h3>
+<p>The skills are installed in a library's <code>.agents/skills/</code>, for any coding agent that reads that folder.</p>
+</div>
+</section>
 
 </main>
 </body>

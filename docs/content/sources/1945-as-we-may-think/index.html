@@ -13,18 +13,83 @@
 <meta name="original" content="Not kept: public article, link given.">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A source laid out as a catalogue card beside the record of what this library holds of the work. */
+.sr-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 2.5rem; align-items: start; margin: 0 0 2rem; }
+.sr-wrap > * { min-width: 0; }
+.sr-card { margin: 0; }
+.sr-index { position: relative; padding: 1.3rem 1.4rem 1.1rem; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--surface); background-image: repeating-linear-gradient(to bottom, transparent 0 1.85rem, color-mix(in srgb, var(--blue) 14%, transparent) 1.85rem calc(1.85rem + 1px)); background-position: 0 3.6rem; box-shadow: 0 1px 0 var(--rule), 0 6px 18px -12px color-mix(in srgb, var(--ink) 40%, transparent); }
+.sr-index::before { content: ""; position: absolute; left: 0; right: 0; top: 3.3rem; border-top: 2px solid color-mix(in srgb, var(--red) 45%, transparent); }
+.sr-call { margin: 0 0 1.5rem; font: 650 .7rem/1.3 var(--mono); letter-spacing: .08em; color: var(--ink-3); }
+.sr-index dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0 1rem; margin: 0; }
+.sr-index dt { font: 650 .7rem/1.85rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.sr-index dd { margin: 0; font: 1rem/1.85rem var(--serif); color: var(--ink); overflow-wrap: anywhere; }
+.sr-index dd.sr-t { font-style: italic; }
+.sr-card figcaption { margin-top: .7rem; }
+
+.sr-body h2 { margin-top: 0; }
+.sr-body p { max-width: 40rem; }
+
+.sr-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 0 0 2.25rem; padding: 0; list-style: none; }
+.sr-slots li { min-width: 0; margin: 0; padding: .75rem .85rem; border-radius: 8px; font: .86rem/1.45 var(--sans); color: var(--ink-2); }
+.sr-slots b { display: block; margin-bottom: .25rem; font: 650 .68rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.sr-slots .sr-yes { border: 1px solid var(--ok); background: var(--ok-soft); }
+.sr-slots .sr-yes b { color: var(--ok); }
+.sr-slots .sr-no { border: 1px dashed var(--rule-strong); background: transparent; }
+.sr-slots .sr-no b { color: var(--ink-3); }
+
+.sr-ids { margin: 0 0 2rem; max-width: 44rem; }
+.sr-ids h2 { margin-top: 0; }
+.sr-none { color: var(--ink-2); }
+
+@container folio-canvas (max-width: 44rem) {
+  .sr-wrap { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+}
+@container folio-canvas (max-width: 30rem) {
+  .sr-slots { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
 <article>
 
-<ul class="identifiers">
+<div class="sr-wrap">
+<figure class="sr-card" aria-label="The catalogue card for the work: As We May Think, an essay by Vannevar Bush, published in The Atlantic Monthly in July 1945, kept here as a citation with no verified identifier and no kept original.">
+<div class="sr-index">
+<p class="sr-call">SOURCE · 1945-as-we-may-think</p>
+<dl>
+<dt>Title</dt><dd class="sr-t">As We May Think</dd>
+<dt>Author</dt><dd>Vannevar Bush</dd>
+<dt>Year</dt><dd>1945</dd>
+<dt>Form</dt><dd>Essay</dd>
+<dt>Venue</dt><dd>The Atlantic Monthly, July issue</dd>
+<dt>Original</dt><dd>Not kept: public article</dd>
+</dl>
+</div>
+<figcaption>The citation as filed. The work is read where it was published; this library keeps only the card.</figcaption>
+</figure>
+
+<section class="sr-body" id="about">
+<h2>About</h2>
+<p>An essay published in The Atlantic Monthly in July 1945. It argues that the record of research has outgrown the means of consulting it, and describes the memex, a device that stores a person's records and joins items into associative trails.</p>
+<p>It is read online in The Atlantic's archive, at <a href="https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/">theatlantic.com</a>. That address was not looked up when this source was filed, so it is not listed as a verified identifier.</p>
+
+</section>
+</div>
+
+<ul class="sr-slots" aria-label="What this library holds of the work">
+<li class="sr-yes"><b>Citation</b>Title, author and year, filed.</li>
+<li class="sr-no"><b>Verified identifier</b>None yet. The archive address waits to be looked up.</li>
+<li class="sr-no"><b>Kept original</b>Not kept. The essay is public; the link is given.</li>
 </ul>
 
-<section id="about">
-<h2>About</h2>
-<p>An essay published in The Atlantic Monthly in July 1945. It argues that the record of research has outgrown the means of consulting it, and describes the memex, a device that stores a person's records and joins items into associative trails. It is read online in The Atlantic's archive, at <a href="https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/">theatlantic.com</a>. That address was not looked up when this source was filed, so it is not listed as a verified identifier.</p>
+<section class="sr-ids" id="identifiers">
+<h2>Identifiers</h2>
+<ul class="identifiers">
+</ul>
+<p class="sr-none">No identifier is verified yet. Once the archive address is looked up, it is listed here with the date it was checked.</p>
 </section>
 
 </article>

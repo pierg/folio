@@ -1,6 +1,6 @@
 # folio
 
-folio turns your coding agent into the librarian of a knowledge library: fast, good-looking HTML pages and Markdown records that live inside any project (lab notes, study notes, a project's docs) or stand on their own. Every document has one genre, and the genre fixes its job, its voice, its format and its checks. Documents link to each other like a Zettelkasten, and maps give a reader the way in.
+folio turns your coding agent into the librarian of a knowledge library: fast, good-looking HTML pages and Markdown records that live inside any project (lab notes, study notes, a project's docs) or stand on their own. Every document has one genre, and the genre fixes its job, its reader, its voice, its format and its checks. The genre gives structure and voice, never form: every HTML page is a free canvas, and the agent lays it out for what it must show, with figures, diagrams, interactive controls and math. Documents link to each other like a Zettelkasten, and maps give a reader the way in.
 
 You do not run folio yourself. You install it by handing your agent a setup prompt, and from then on you ask in plain words: "add a concept for X", "tidy the maps", "go through my comments", "build the site". The agent follows folio's seven skills, calls the `folio` command, and runs the gate before every commit. folio is the method and the checks that keep an agent-written library honest and consistent, plus the shell that makes it pleasant to read.
 
@@ -43,7 +43,7 @@ Each document keeps its facts in metadata and its prose in the body. The shell d
   <img alt="Anatomy of a document: the metadata in one file (genre, title, description, status, tags) becomes the page header; the body is shown as written; dates come from git; the cites, cited-by and journal panels come from the generated indices." src="docs/assets/figures/anatomy-light.svg">
 </picture>
 
-Pages are plain HTML in git, readable with no build step. `folio serve` shows them locally with search, link previews, concept popovers, light and dark themes, and a comment panel; `folio export` writes a static site.
+Pages are plain HTML in git, readable with no build step. Each page gets the whole room between the library rail and the page panel, and may carry its own style and script; a page that is one line of argument can ask for the reading column instead. `folio serve` shows them locally with search, link previews, concept popovers, light and dark themes, and a comment panel; `folio export` writes a static site.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/figures/popover-dark.png">

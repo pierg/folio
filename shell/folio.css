@@ -23,12 +23,19 @@
   --info: #23557f;   --info-soft: #e2ecf6;
   --shadow: 0 1px 2px rgba(31, 29, 26, .06), 0 10px 30px rgba(31, 29, 26, .10);
 
+  /* Colour registers, for a page's own figures and layout (COMPONENTS.md). Never mix two in one figure.
+     SET: the parts of one picture. ROLE: the actors of one process. Verdicts: how a thing came out. */
+  --teal: #0f766e;  --indigo: #4f46e5;  --blue: #2563eb;  --amber: #b45309;  --red: #dc2626;
+  --azure: #2a78d6; --violet: #4a3aa7;  --orange: #d9541e;
+  --kept: #15803d;  --discarded: #b7791f; --rejected: #c53030; --untested: #898781;
+
   --serif: "Iowan Old Style", "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
   --sans: system-ui, -apple-system, "Segoe UI", "Inter", Roboto, "Helvetica Neue", "Liberation Sans", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
 
   --measure: 40rem;           /* about 68 characters of body text */
-  --wide: 52rem;              /* tables, figures and code may use this much */
+  --wide: 52rem;              /* in the reading column, tables, figures and code may use this much */
+  --canvas: 92rem;            /* the widest a canvas page and its panel grow on a very wide screen */
   --panel: 16.5rem;
   --rail: 15rem;              /* the library rail on the left */
   --top: 3.25rem;
@@ -50,6 +57,9 @@
     --bad: #f0958c; --bad-soft: #3d1f1c;
     --info: #9cc3ea; --info-soft: #1d2b3a;
     --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .5);
+    --teal: #5eead4;  --indigo: #8f9bff;  --blue: #60a5fa;  --amber: #fbbf24;  --red: #f87171;
+    --azure: #5aa2f0; --violet: #a499f0;  --orange: #f08a5d;
+    --kept: #4ade80;  --discarded: #f6c453; --rejected: #f58a8a; --untested: #a19c92;
   }
 }
 :root[data-theme="dark"] {
@@ -65,6 +75,9 @@
   --bad: #f0958c; --bad-soft: #3d1f1c;
   --info: #9cc3ea; --info-soft: #1d2b3a;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .5);
+  --teal: #5eead4;  --indigo: #8f9bff;  --blue: #60a5fa;  --amber: #fbbf24;  --red: #f87171;
+  --azure: #5aa2f0; --violet: #a499f0;  --orange: #f08a5d;
+  --kept: #4ade80;  --discarded: #f6c453; --rejected: #f58a8a; --untested: #a19c92;
 }
 
 @media (min-width: 40rem) { :root { --gutter: 2rem; } }
@@ -166,27 +179,33 @@ img, svg, video { max-width: 100%; height: auto; }
 }
 
 /* ----------------------------------------------------------------- layout */
+/* A page is a canvas: all the room between the library rail and the page panel, no measure.
+   It lays itself out, and adapts to its room with @container folio-canvas queries.
+   A page with <meta name="layout" content="column">, a Markdown record and the shell's
+   own views sit in the reading column instead (.f-column). */
 .f-layout {
-  --lw: calc(var(--measure) + 2 * var(--gutter));
+  --lw: var(--canvas);
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 3rem;
   max-width: var(--lw); margin: 0 auto;
   padding: 2.5rem var(--gutter) 5rem;
 }
+.f-column .f-layout { --lw: calc(var(--measure) + 2 * var(--gutter)); }
 @media (min-width: 72rem) {
-  .f-layout { --lw: calc(var(--measure) + var(--panel) + 3rem + 2 * var(--gutter));
-              grid-template-columns: minmax(0, var(--measure)) var(--panel); }
+  .f-layout { grid-template-columns: minmax(0, 1fr) var(--panel); }
+  .f-column .f-layout { --lw: calc(var(--measure) + var(--panel) + 3rem + 2 * var(--gutter));
+                        grid-template-columns: minmax(0, var(--measure)) var(--panel); }
   .f-panel { position: sticky; top: calc(var(--top) + 2rem); align-self: start;
              max-height: calc(100vh - var(--top) - 3rem); overflow-y: auto; padding-top: .35rem;
              scrollbar-width: thin; }
 }
-.f-page { min-width: 0; }
-.f-wide .f-layout { --lw: calc(var(--measure) + 2 * var(--gutter)); grid-template-columns: minmax(0, 1fr); }
+.f-page { min-width: 0; container: folio-canvas / inline-size; }
+.f-wide .f-layout { grid-template-columns: minmax(0, 1fr); }
+.f-column.f-wide .f-layout { --lw: calc(var(--measure) + 2 * var(--gutter)); }
 /* With the library rail docked, the page and its panel centre in the space to its right. */
 @media (min-width: 78rem) {
   html:not([data-rail="closed"]) .f-has-rail .f-layout {
     margin-left: calc(var(--rail) + max(0px, (100% - var(--rail) - var(--lw)) / 2)); margin-right: auto; }
 }
-.f-wide .f-foot { max-width: calc(var(--measure) + 2 * var(--gutter)); }
 
 /* ------------------------------------------------------- the library rail */
 .f-rail-btn { padding: 0 .5rem; margin-left: -.5rem; }
@@ -499,10 +518,11 @@ main ul.rows .f-genre { grid-column: 2; grid-row: 1; align-self: baseline; }
 }
 
 /* -------------------------------------------------------------- footer */
-.f-foot { max-width: calc(var(--measure) + 2 * var(--gutter)); margin: 0 auto; padding: 1.5rem var(--gutter) 3rem;
+.f-foot { max-width: var(--canvas); margin: 0 auto; padding: 1.5rem var(--gutter) 3rem;
           font: .75rem/1.5 var(--sans); color: var(--ink-3); display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
 .f-foot code { font: .72rem var(--mono); }
-@media (min-width: 72rem) { .f-foot { max-width: calc(var(--measure) + var(--panel) + 3rem + 2 * var(--gutter)); } }
+.f-column .f-foot { max-width: calc(var(--measure) + 2 * var(--gutter)); }
+@media (min-width: 72rem) { .f-column:not(.f-wide) .f-foot { max-width: calc(var(--measure) + var(--panel) + 3rem + 2 * var(--gutter)); } }
 
 /* -------------------------------------------------------- the journal view */
 .f-filters { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0 0 1.75rem; padding: .75rem;
@@ -657,6 +677,49 @@ mark.f-anno[data-w="closed"] { background: transparent; border-bottom: 1px dashe
 .f-inbox-msg strong { color: var(--ink); font-weight: 600; }
 .f-inbox-go { display: inline-block; margin-top: .4rem; font-size: .82rem; }
 .f-review .f-filters { padding: .5rem .75rem; }
+
+/* ------------------------------------------------- shared page components */
+/* A canvas page builds its own layout; these are the few pieces pages share (COMPONENTS.md). */
+main .sw-teal { color: var(--teal); }     main .sw-indigo { color: var(--indigo); } main .sw-blue { color: var(--blue); }
+main .sw-amber { color: var(--amber); }   main .sw-red { color: var(--red); }       main .sw-azure { color: var(--azure); }
+main .sw-violet { color: var(--violet); } main .sw-orange { color: var(--orange); }
+main :is(.sw-teal, .sw-indigo, .sw-blue, .sw-amber, .sw-red, .sw-azure, .sw-violet, .sw-orange) { font-weight: 650; }
+
+main .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin: 0 0 1.5em; }
+main .cols > * { min-width: 0; }
+main .lane { --hue: var(--rule-strong); padding: .9rem 1.1rem; border: 1px solid var(--rule); border-top: 3px solid var(--hue);
+             border-radius: var(--radius); background: var(--surface); font-family: var(--sans); font-size: .95rem; }
+main .lane > :last-child { margin-bottom: 0; }
+main .lane > h4:first-child, main .lane > h3:first-child { margin-top: 0; }
+main .lane-teal { --hue: var(--teal); }   main .lane-indigo { --hue: var(--indigo); } main .lane-blue { --hue: var(--blue); }
+main .lane-amber { --hue: var(--amber); } main .lane-red { --hue: var(--red); }       main .lane-azure { --hue: var(--azure); }
+main .lane-violet { --hue: var(--violet); } main .lane-orange { --hue: var(--orange); }
+main .lane-kept { --hue: var(--kept); }   main .lane-baseline { --hue: var(--untested); }
+
+main .note { padding: .85rem 1.1rem; border-left: 3px solid var(--info); border-radius: 0 var(--radius) var(--radius) 0;
+             background: var(--info-soft); font: .95rem/1.55 var(--sans); }
+main .note-warn { border-left-color: var(--warn); background: var(--warn-soft); }
+main .note > :last-child { margin-bottom: 0; }
+main .law { padding: 1rem 1.25rem; border: 1px solid color-mix(in srgb, var(--violet) 35%, transparent); border-radius: var(--radius);
+            background: color-mix(in srgb, var(--violet) 7%, var(--surface)); font: 500 1.05rem/1.55 var(--serif); }
+main .law > :last-child { margin-bottom: 0; }
+
+main .chip, main .v { display: inline-block; padding: .05rem .5rem; border-radius: 999px; border: 1px solid var(--rule-strong);
+                      font: 650 .72rem/1.6 var(--sans); letter-spacing: .03em; color: var(--ink-2); white-space: nowrap; }
+main .v-kept { color: var(--kept); border-color: var(--kept); }
+main .v-disc { color: var(--discarded); border-color: var(--discarded); }
+main .v-rej { color: var(--rejected); border-color: var(--rejected); }
+main .v-unt { color: var(--untested); border-color: var(--untested); }
+
+main .tbtn { display: inline-flex; align-items: center; gap: .35rem; min-height: 2rem; padding: .25rem .75rem; cursor: pointer;
+             border: 1px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-2);
+             font: 600 .82rem/1.2 var(--sans); }
+main .tbtn:hover { color: var(--ink); border-color: var(--ink-3); }
+main .tbtn[aria-pressed="true"], main .tbtn[aria-selected="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+main .formula { overflow-x: auto; overflow-y: hidden; }
+main .katex { font-size: 1.05em; }
+main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 
 /* -------------------------------------------------------------- print */
 @media print {

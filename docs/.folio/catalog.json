@@ -55,7 +55,8 @@
       "title": "Journal",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/journal/"
     },
@@ -74,7 +75,8 @@
       "title": "Library",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/library/"
     },
@@ -93,7 +95,8 @@
       "title": "Map",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/map/"
     },
@@ -132,7 +135,8 @@
       "title": "Permanent record",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/permanent-record/"
     },
@@ -350,7 +354,8 @@
       "title": "One journal entry per file",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
     },
@@ -665,6 +670,34 @@
         "building-folio"
       ],
       "url": "/content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+    },
+    {
+      "description": "Genre cards settle structure and voice; the author designs each page's form.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "genre"
+        ],
+        "date": "2026-10-06",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-06-every-page-is-a-free-canvas",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md",
+      "status": "live",
+      "tags": [],
+      "title": "Every page is a free canvas",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md"
     },
     {
       "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",

@@ -8,7 +8,6 @@ lives: revised
 states: [draft, live, historical, retired]
 checks:
   require: [rows]
-  max_words: 1500
 on_map: required
 ---
 
@@ -34,16 +33,23 @@ No fields beyond the core. The `title` is the scope of the map, such as a topic,
 
 The shell draws the title and description above the body.
 
-1. Current take, optional: `<h2 id="take">`, a few sentences of stance. What the library holds now, and what is still unsettled.
-2. `rows`: one or more `<ul class="rows">`, each under an optional `<h2>` that names a group. Each row is `<li><a href="...">Title</a></li>`, with an optional `<span class="why">reason</span>` after the link. The shell draws the link text from the catalog's title, so the title in the file is only a fallback for reading without the shell, and the gate's number rules never read it. Without a reason, the shell shows the target's description. A row can point to any document, including another map.
-3. Open, optional: `<h2 id="open">`, the questions this part of the library has not answered yet.
+One part is required, because the machine reads it:
 
-**The home page is a map.** It is the map with the id `home`, and it lives at `content/index.html`, not under `content/maps/`. It has no title of its own: the shell and the indices use the charter's `name`, so `folio config set name` renames it. The shell draws the top-level maps the charter names under `home.maps`, in that order, so the home page never lists them by hand. It may still hold a short intro and rows of its own. It is the root: nothing needs to list it. It never lists a `draft` document.
+- `rows`: one or more `<ul class="rows">`, each under an optional `<h2>` that names a group. Each row is `<li><a href="...">Title</a></li>`, with an optional `<span class="why">reason</span>` after the link. The catalog, the rail and topic focus read these rows. The shell draws the link text from the catalog's title, so the title in the file is only a fallback for reading without the shell, and the gate's number rules never read it. Without a reason, the shell shows the target's description. A row can point to any document, including another map.
+
+Around the rows the page is a canvas. What a good map usually does, judged, not checked:
+
+- It says in a few sentences what the library holds here now, and what is still unsettled.
+- It groups the rows the way a newcomer should read them, each group under its heading, each row with a reason when the description does not give one.
+- It may draw the territory: a figure of how the documents relate, placed above or beside the rows. The rows still list every document the map holds.
+- It ends with the questions this part of the library has not answered yet.
+
+**The home page is a map.** It is the map with the id `home`, and it lives at `content/index.html`, not under `content/maps/`. It has no title of its own: the shell and the indices use the charter's `name`, so `folio config set name` renames it. The shell draws the top-level maps the charter names under `home.maps`, in that order, so the home page never lists them by hand. It may still hold an intro, a figure and rows of its own. It is the root: nothing needs to list it. It never lists a `draft` document.
 
 ## Forbidden
 
 - A reason that only repeats the title or the description. Leave the reason out instead. Judged, not checked.
-- Long prose. A map that explains is an entry. Caught by `max_words`.
+- A map that explains. Its stance is a few sentences; the explaining belongs in an entry it lists. Judged, not checked.
 - A top-level map listed by hand on the home page. The shell draws them from the charter. Judged, not checked.
 - A top-level map in the charter that does not exist, or is a `draft`. Caught by the gate check `home-maps`.
 - A `draft` document in the home page's own rows. Judged, not checked.

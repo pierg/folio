@@ -10,18 +10,137 @@
 <meta name="tags" content="building">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A map drawn as a flow: the lab pack's chain from question to answer, with a stepper that lights one stage at a time. */
+.bf-stance { max-width: 44rem; margin: 0 0 2rem; }
+.bf-stance .bf-big { font: 400 1.15rem/1.55 var(--serif); color: var(--ink); }
+
+.bf-flow { margin: 0 0 2.75rem; padding: 1.1rem 1.1rem 1rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+.bf-ctl { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+.bf-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.bf-scroll svg { display: block; width: 100%; min-width: 38rem; height: auto; }
+.bf-scroll svg .bf-st { transition: opacity .2s; }
+.bf-flow[data-s] svg .bf-st { opacity: .3; }
+.bf-flow[data-s="ask"] svg .bf-st-ask,
+.bf-flow[data-s="lock"] svg .bf-st-lock,
+.bf-flow[data-s="measure"] svg .bf-st-measure,
+.bf-flow[data-s="answer"] svg .bf-st-answer { opacity: 1; }
+.bf-says { margin: .8rem 0 0; min-height: 3.2rem; }
+.bf-says p { margin: 0 0 .5rem; max-width: 46rem; font-size: .97rem; color: var(--ink-2); }
+.bf-flow[data-s] .bf-says p { display: none; }
+.bf-flow[data-s="ask"] .bf-says [data-for="ask"],
+.bf-flow[data-s="lock"] .bf-says [data-for="lock"],
+.bf-flow[data-s="measure"] .bf-says [data-for="measure"],
+.bf-flow[data-s="answer"] .bf-says [data-for="answer"] { display: block; }
+@media (prefers-reduced-motion: reduce) { .bf-scroll svg .bf-st { transition: none; } }
+
+.bf-groups { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 1.5rem 2.5rem; align-items: start; margin: 0 0 2.5rem; }
+.bf-groups > * { min-width: 0; }
+.bf-groups h2 { margin-top: 0; }
+
+.bf-open { max-width: 44rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.bf-open h2 { margin-top: 0; }
+
+@container folio-canvas (max-width: 40rem) {
+  .bf-groups { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="bf-stance">
 <h2 id="take">Current take</h2>
-<p>folio is built with its own lab pack. Each question it asks of itself gets a locked protocol before anything is measured, and each measurement becomes a result. One question is answered so far: the gate is fast enough to run before every commit.</p>
+<p class="bf-big">folio is built with its own lab pack. Each question it asks of itself gets a locked protocol before anything is measured, and each measurement becomes a result.</p>
+<p>One question is answered so far: the gate is fast enough to run before every commit. The chain below is how that answer was reached, and every link in it is a document you can open.</p>
+</section>
 
+<section class="bf-flow" id="bf-flow">
+<div class="bf-ctl" role="group" aria-label="Light one stage of the chain">
+<button type="button" class="tbtn" data-s="ask" aria-pressed="false">1. Ask</button>
+<button type="button" class="tbtn" data-s="lock" aria-pressed="false">2. Lock</button>
+<button type="button" class="tbtn" data-s="measure" aria-pressed="false">3. Measure</button>
+<button type="button" class="tbtn" data-s="answer" aria-pressed="false">4. Answer</button>
+</div>
+<figure aria-label="The lab pack's chain for the gate's speed. A question, Q-1, asks whether folio check is fast enough. A protocol, check-time, is locked before anything runs. It produces two results, R-1 on this library and R-2 on the sample library, both permanent. The question's answer cites the two results, and its status becomes answered.">
+<div class="bf-scroll">
+<svg viewBox="0 0 760 248" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Question, locked protocol, two results, and the answer back on the question</title>
+<defs>
+<marker id="bf-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<!-- ask -->
+<g class="bf-st bf-st-ask">
+<rect x="20" y="64" width="160" height="80" rx="9" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<text x="36" y="88" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--azure)">QUESTION</text>
+<text x="36" y="110" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--ink)">Q-1</text>
+<text x="36" y="130" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">is the gate fast enough?</text>
+</g>
+<!-- lock -->
+<g class="bf-st bf-st-lock">
+<path d="M 180 104 L 216 104" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#bf-arr)"/>
+<rect x="220" y="64" width="170" height="80" rx="9" fill="color-mix(in srgb, var(--violet) 9%, transparent)" stroke="var(--violet)" stroke-width="2"/>
+<text x="236" y="88" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--violet)">PROTOCOL</text>
+<text x="236" y="110" font-family="ui-monospace, monospace" font-size="14" font-weight="700" fill="var(--ink)">check-time</text>
+<text x="236" y="130" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">locked before any run</text>
+<rect x="354" y="78" width="22" height="18" rx="4" fill="none" stroke="var(--violet)" stroke-width="1.6"/>
+<path d="M 359 78 L 359 74 A 6 6 0 0 1 371 74 L 371 78" fill="none" stroke="var(--violet)" stroke-width="1.6"/>
+</g>
+<!-- measure -->
+<g class="bf-st bf-st-measure">
+<path d="M 390 92 C 412 92, 410 50, 432 50" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#bf-arr)"/>
+<path d="M 390 116 C 412 116, 410 158, 432 158" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#bf-arr)"/>
+<rect x="436" y="22" width="150" height="58" rx="9" fill="none" stroke="var(--orange)" stroke-width="2"/>
+<text x="452" y="45" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--orange)">RESULT</text>
+<text x="452" y="67" font-family="ui-monospace, monospace" font-size="13" fill="var(--ink)"><tspan font-weight="700">R-1</tspan> this library</text>
+<rect x="436" y="130" width="150" height="58" rx="9" fill="none" stroke="var(--orange)" stroke-width="2"/>
+<text x="452" y="153" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--orange)">RESULT</text>
+<text x="452" y="175" font-family="ui-monospace, monospace" font-size="13" fill="var(--ink)"><tspan font-weight="700">R-2</tspan> the sample</text>
+<text x="511" y="112" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">never edited</text>
+</g>
+<!-- answer -->
+<g class="bf-st bf-st-answer">
+<path d="M 586 51 C 620 51, 620 90, 642 96" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#bf-arr)"/>
+<path d="M 586 159 C 620 159, 620 118, 642 112" fill="none" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#bf-arr)"/>
+<rect x="646" y="74" width="100" height="60" rx="9" fill="color-mix(in srgb, var(--azure) 10%, transparent)" stroke="var(--azure)" stroke-width="2"/>
+<text x="696" y="98" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="var(--ink)">Q-1</text>
+<text x="696" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--azure)">answered</text>
+<path d="M 696 136 C 696 240, 100 240, 100 148" fill="none" stroke="var(--azure)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#bf-arr)"/>
+<text x="398" y="238" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" fill="var(--azure)">the answer is written back on the question, citing both results</text>
+</g>
+</svg>
+</div>
+<figcaption>Each box is one document, and each arrow is a field that names another one. The order matters: the protocol is frozen before the first timed run, so the decision rules could not be bent to fit the numbers.</figcaption>
+</figure>
+<div class="bf-says" aria-live="polite">
+<p data-for="ask"><b>Ask.</b> A question says why it matters, what would settle it, and what would make the library drop it, before any plan to measure.</p>
+<p data-for="lock"><b>Lock.</b> A protocol names the one variable, what is held fixed and the decision rules. Once locked, it is frozen: the gate checks it against git.</p>
+<p data-for="measure"><b>Measure.</b> Each run becomes a result: a number, its baseline, its bounds and the command that re-derives it. A result is a permanent record.</p>
+<p data-for="answer"><b>Answer.</b> The question's answer cites the results by id, and its status moves to answered. A later result can supersede one without editing it.</p>
+</div>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("bf-flow");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-s]");
+  function pick(s) {
+    box.setAttribute("data-s", s);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-s") === s));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-s")); });
+})();
+</script>
+
+<div class="bf-groups">
+<section>
 <h2 id="the-project">The project</h2>
 <ul class="rows">
 <li><a href="/content/projects/folio/">folio</a> <span class="why">Where folio stands, and what comes next.</span></li>
 </ul>
+</section>
 
+<section>
 <h2 id="how-fast-is-the-gate">How fast is the gate</h2>
 <ul class="rows">
 <li><a href="/content/questions/Q-1.md">Does folio check finish in under two seconds on this documentation library?</a> <span class="why">The question: can the skills afford to run the gate before every commit?</span></li>
@@ -29,6 +148,14 @@
 <li><a href="/content/results/R-1.md">folio check took a median of 0.20 s on this documentation library</a></li>
 <li><a href="/content/results/R-2.md">folio check took a median of 0.21 s on the test suite's sample library</a></li>
 </ul>
+</section>
+</div>
+
+<section class="bf-open">
+<h2 id="still-open">Still open</h2>
+<p>The answer holds for this library at its present size. The smaller sample library was no faster, so start-up likely dominates at this scale, and the question is worth asking again once the library is several times larger.</p>
+</section>
+
 </main>
 </body>
 </html>

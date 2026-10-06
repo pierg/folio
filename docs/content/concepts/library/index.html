@@ -10,23 +10,171 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: the library as a map of its folders, beside who writes each one. Every word is in the markup; the script only picks which writer is lit. */
+.lb-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 2.5rem; align-items: start; margin-bottom: 3rem; }
+.lb-grid > * { min-width: 0; }
+.lb-grid .defn { margin-top: .2rem; }
+.lb-side { position: sticky; top: 1rem; }
+.lb-band { margin: 0 0 3rem; }
+.lb-band > h2 { margin-top: 0; }
+.lb-band > p { max-width: 44rem; }
+
+/* the tree */
+.lb-tree { margin: 0; border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.lb-ctl { display: flex; flex-wrap: wrap; gap: .45rem; padding: .85rem 1rem; border-bottom: 1px solid var(--rule); background: var(--sunk); }
+.lb-rows { list-style: none; margin: 0; padding: .5rem 0; }
+.lb-rows li { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: .2rem 1rem; margin: 0; padding: .4rem 1rem; border-left: 3px solid transparent; transition: opacity .2s, background .2s; }
+.lb-rows li > * { min-width: 0; }
+.lb-path { font: 600 .85rem/1.45 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.lb-rows li[data-d="1"] .lb-path { padding-left: 1.1rem; }
+.lb-rows li[data-d="2"] .lb-path { padding-left: 2.2rem; font-weight: 400; color: var(--ink-2); }
+.lb-what { font-size: .9rem; line-height: 1.45; color: var(--ink-2); }
+.lb-rows li[data-w="charter"] { border-left-color: var(--amber); }
+.lb-rows li[data-w="docs"] { border-left-color: var(--teal); }
+.lb-rows li[data-w="config"] { border-left-color: var(--indigo); }
+.lb-rows li[data-w="index"] { border-left-color: var(--blue); }
+.lb-tree[data-w] .lb-rows li { opacity: .32; }
+.lb-tree[data-w="charter"] .lb-rows li[data-w="charter"],
+.lb-tree[data-w="docs"] .lb-rows li[data-w="docs"],
+.lb-tree[data-w="config"] .lb-rows li[data-w="config"],
+.lb-tree[data-w="index"] .lb-rows li[data-w="index"] { opacity: 1; background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.lb-says { padding: .8rem 1rem 1rem; border-top: 1px solid var(--rule); }
+.lb-says p { margin: 0 0 .5rem; max-width: 44rem; font-size: .95rem; }
+.lb-says p:last-child { margin-bottom: 0; }
+.lb-tree[data-w] .lb-says p { display: none; }
+.lb-tree[data-w="charter"] .lb-says [data-w="charter"],
+.lb-tree[data-w="docs"] .lb-says [data-w="docs"],
+.lb-tree[data-w="config"] .lb-says [data-w="config"],
+.lb-tree[data-w="index"] .lb-says [data-w="index"] { display: block; }
+.lb-key { display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .35rem; vertical-align: -.05rem; }
+.lb-k-charter { background: var(--amber); }
+.lb-k-docs { background: var(--teal); }
+.lb-k-config { background: var(--indigo); }
+.lb-k-index { background: var(--blue); }
+.lb-tree figcaption { padding: 0 1rem .9rem; }
+
+.lb-where { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.lb-where > div { min-width: 0; }
+.lb-scope { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
+.lb-scope li { margin: 0 0 .5rem; padding-left: 1.1rem; position: relative; }
+.lb-scope li::before { content: ""; position: absolute; left: 0; top: .65em; width: .45rem; height: .45rem; border-radius: 50%; background: var(--accent); }
+
+.lb-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.lb-foot > * { min-width: 0; }
+.lb-foot h3 { margin-top: 0; }
+.lb-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .lb-grid, .lb-where, .lb-foot { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .lb-side { position: static; }
+  .lb-rows li { grid-template-columns: minmax(0, 1fr); }
+  .lb-rows li[data-d="1"] .lb-what { padding-left: 1.1rem; }
+  .lb-rows li[data-d="2"] .lb-what { padding-left: 2.2rem; }
+}
+@media (prefers-reduced-motion: reduce) { .lb-rows li { transition: none; } }
+</style>
 </head>
 <body>
 <main>
 
+<section class="lb-grid">
+<div class="lb-side">
 <blockquote class="defn" id="library">
 <span class="defn-name">Library</span><br>
 A library is a folder holding a <code>folio.yaml</code> charter, a <code>content/</code> folder of linked documents, an <code>assets/</code> folder, and the generated indices in <code>.folio/</code>. It can be a project's <code>docs/</code> folder, a notes folder, or a whole repository.
 </blockquote>
+<p>Everything folio does is scoped to one library. The folder on the right is the whole of one. Every document is under <code>content/</code>, one folder per <a class="defn-link" href="/content/concepts/genre/">genre</a>; nothing outside it is a document.</p>
+<p>Pick a writer to see which folders it owns. No folder has two.</p>
+</div>
 
-<h3>Why it matters</h3>
-<p>Everything folio does is scoped to one library: the gate checks one library, the site exports one library, and ids are unique within one library. One project can hold several libraries, and a charter can list others to search alongside its own.</p>
+<figure class="lb-tree" id="lb-tree" aria-label="The folders of one library, each owned by one writer. The charter, folio.yaml, is written only by the set-up and configure skills. Documents under content/ and the assets they cite are written by the skills through write. The library's own genres, workflows and packs are changed by configure. The indices in .folio/ are generated by folio index and never edited by hand.">
+<div class="lb-ctl" role="group" aria-label="Pick who writes">
+<button type="button" class="tbtn" data-w="all" aria-pressed="false">Every folder</button>
+<button type="button" class="tbtn" data-w="charter" aria-pressed="false"><span class="lb-key lb-k-charter"></span>The charter</button>
+<button type="button" class="tbtn" data-w="docs" aria-pressed="false"><span class="lb-key lb-k-docs"></span>Documents</button>
+<button type="button" class="tbtn" data-w="config" aria-pressed="false"><span class="lb-key lb-k-config"></span>Its own genres</button>
+<button type="button" class="tbtn" data-w="index" aria-pressed="false"><span class="lb-key lb-k-index"></span>Generated</button>
+</div>
+<ul class="lb-rows">
+<li data-d="0" data-w="charter"><span class="lb-path">folio.yaml</span><span class="lb-what">The charter: name, purpose, reader, voice, packs, home maps, check severities.</span></li>
+<li data-d="0" data-w="docs"><span class="lb-path">content/</span><span class="lb-what">Every document, one folder per genre, the journal included.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">index.html</span><span class="lb-what">The home page, the map named <code>home</code>.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">concepts/&lt;slug&gt;/</span><span class="lb-what">A concept, with its files beside it.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">journal/&lt;yyyy&gt;/</span><span class="lb-what">One Markdown file per entry.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">maps/, notes/, …</span><span class="lb-what">Each other genre's folder, as its card names it.</span></li>
+<li data-d="0" data-w="docs"><span class="lb-path">assets/</span><span class="lb-what">What documents cite but are not documents.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">figures/</span><span class="lb-what">Figure sources and their rendered files.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">refs.bib</span><span class="lb-what">The library's one bibliography.</span></li>
+<li data-d="1" data-w="docs"><span class="lb-path">data/</span><span class="lb-what">Datasets that documents cite.</span></li>
+<li data-d="0" data-w="config"><span class="lb-path">genres/&lt;name&gt;/</span><span class="lb-what">This library's overrides, variants and genres of its own.</span></li>
+<li data-d="0" data-w="config"><span class="lb-path">workflows/&lt;name&gt;.md</span><span class="lb-what">This library's own workflows.</span></li>
+<li data-d="0" data-w="config"><span class="lb-path">packs/&lt;name&gt;/</span><span class="lb-what">This library's own packs.</span></li>
+<li data-d="0" data-w="index"><span class="lb-path">.folio/</span><span class="lb-what">The generated indices, committed, and checked current by the gate.</span></li>
+<li data-d="1" data-w="index"><span class="lb-path">catalog.json</span><span class="lb-what">Every document's metadata, map rows and topics.</span></li>
+<li data-d="1" data-w="index"><span class="lb-path">backlinks.json, search.json</span><span class="lb-what">What cites what, and the search index.</span></li>
+<li data-d="1" data-w="index"><span class="lb-path">nav.json, journal.json, cards.json</span><span class="lb-what">Guide navigation, the timeline and the flashcards.</span></li>
+<li data-d="1" data-w="index"><span class="lb-path">redirects.json</span><span class="lb-what">The one file here that is state: old addresses, written by moves.</span></li>
+</ul>
+<div class="lb-says" aria-live="polite">
+<p data-w="charter"><b>The charter</b> says what the library is. Only the set-up and configure skills write it, and every change is shown as a diff and recorded in the journal.</p>
+<p data-w="docs"><b>Documents</b> are written through the skills, and every one goes through write, its genre's card and the gate. Assets are committed with the documents that cite them.</p>
+<p data-w="config"><b>Its own genres, workflows and packs</b> are added and changed by the configure skill. Each is found before a pack's or the core's of the same name.</p>
+<p data-w="index"><b>Generated</b> files are written by <code>folio index</code> and never by hand. <code>redirects.json</code> is written by <code>folio mv</code>, <code>promote</code> and <code>rm</code>.</p>
+</div>
+<figcaption>The coloured edge on each row is its writer. The script only dims the rows of the other writers; every description is on the page either way.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("lb-tree");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-w]");
+  function pick(w) {
+    if (w === "all") box.removeAttribute("data-w"); else box.setAttribute("data-w", w);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-w") === w));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-w")); });
+  pick("all");
+})();
+</script>
 
-<h3>The trap</h3>
-<p>Reading the library as a website. The pages are plain HTML and Markdown in git, readable with no build step. The site is one view of them, written by export.</p>
+<section class="lb-band">
+<h2>Where a library sits</h2>
+<p>A library is wherever a <code>folio.yaml</code> is. One project can hold more than one. When a library sits inside a larger project, the charter's <code>root:</code> names the project root, and a path a document gives to something outside the library, such as a result's evidence, resolves from there.</p>
+<div class="lb-where">
+<div class="lane lane-teal"><h4>A project's docs/</h4><p>The library beside the code it documents. This library is one: folio's own <code>docs/</code>, with <code>root: ..</code> pointing at the repository.</p></div>
+<div class="lane lane-indigo"><h4>A notes folder</h4><p>A personal library of concepts, notes and readings, inside whatever repository holds it.</p></div>
+<div class="lane lane-blue"><h4>A whole repository</h4><p>The repository is the library, and its root holds the charter.</p></div>
+</div>
+</section>
 
+<section class="lb-band">
+<h2>One library, one scope</h2>
+<ul class="lb-scope">
+<li>The <a class="defn-link" href="/content/concepts/gate/">gate</a> checks one library.</li>
+<li>The site exports one library.</li>
+<li>Ids are unique within one library, whatever the genre.</li>
+<li>Search covers one library, and a charter can list others to search alongside its own.</li>
+</ul>
+</section>
+
+<section class="lb-band">
+<div class="note note-warn">
+<b>The trap: reading the library as a website.</b> The pages are plain HTML and Markdown in git, readable with no build step. The site is one view of them, written by export.
+</div>
+</section>
+
+<section class="lb-foot">
+<div>
 <h3>Related</h3>
 <p>Every document in a library has a <a class="defn-link" href="/content/concepts/genre/">genre</a>, and readers enter through its <a class="defn-link" href="/content/concepts/map/">maps</a>.</p>
+</div>
+<div>
+<h3>What changes it</h3>
+<p>Every change goes through one of the seven <a class="defn-link" href="/content/concepts/skill/">skills</a>, which call the <code>folio</code> command and end at the gate.</p>
+</div>
+</section>
 
 </main>
 </body>

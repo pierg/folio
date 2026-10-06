@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from ..data import shipped
 from ..errors import FolioError
 from ..genres import Genre
 from ..library import Library
@@ -42,7 +43,16 @@ def genre_rows(lib: Library, every: bool = False) -> list[dict[str, Any]]:
 
 
 def card(lib: Library, name: str) -> str:
-    return lib.registry.get(name).card_text()
+    """The merged card, and for an HTML genre where the craft of laying out its pages lives."""
+    genre = lib.registry.get(name)
+    text = genre.card_text()
+    if genre.format == "html":
+        text = text.rstrip("\n") + "\n\n" + (
+            "A page of this genre is a free canvas. Before laying it out, read\n"
+            f"{shipped('craft') / 'layout.md'} (the contract, and how to choose a form),\n"
+            f"the other guides in {shipped('craft')}, and\n"
+            f"{shipped('shell') / 'COMPONENTS.md'} (the tokens, registers and components).\n")
+    return text
 
 
 _NEW_CARD = """---
@@ -75,7 +85,7 @@ No fields beyond the core. {{{{What a good title and description say for this ge
 
 ## Shape
 
-{{{{The body's parts, in order, and the markup that carries each one.}}}}
+{{{{The parts the machine reads, if any, with their markup; then what a good one usually holds, judged, not checked. Never a layout: the page is a canvas.}}}}
 
 ## Forbidden
 

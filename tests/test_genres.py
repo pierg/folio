@@ -91,3 +91,11 @@ def test_unknown_card_check(sample: Path) -> None:
     (sample / "genres/note/GENRE.md").write_text("---\nname: note\nchecks: { max_wordz: 3 }\n---\n")
     with pytest.raises(FolioError, match="max_wordz"):
         library.load_at(sample)
+
+
+def test_genre_card_points_to_the_craft(sample: Path, monkeypatch, capsys) -> None:
+    assert folio(sample, "genre", "entry", monkeypatch=monkeypatch) == 0
+    out = capsys.readouterr().out
+    assert "free canvas" in out and "layout.md" in out and "COMPONENTS.md" in out
+    assert folio(sample, "genre", "journal", monkeypatch=monkeypatch) == 0
+    assert "layout.md" not in capsys.readouterr().out

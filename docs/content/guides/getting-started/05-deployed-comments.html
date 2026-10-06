@@ -10,38 +10,303 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* Getting started: the guide's shared chapter vocabulary (.gs-), the same in every chapter; this chapter's own rules follow it.
+   Every word is in the markup. The script only hides frames, moves aria-current and aria-pressed, and sets classes and data-v. */
+.gs-sec { margin: 0 0 3.5rem; min-width: 0; }
+.gs-sec > h2:first-child { margin-top: 0; }
+.gs-sec > p, .gs-sec > ul, .gs-sec > ol, .gs-sec > pre, .gs-sec > details, .gs-sec > .note, .gs-prose > p, .gs-prose > pre, .gs-prose > details { max-width: 44rem; }
+.gs-prose { min-width: 0; }
+.gs-prose > h2:first-child { margin-top: 0; }
+.gs-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.gs-band > * { min-width: 0; }
+.gs-stick { position: sticky; top: calc(var(--top) + 1.25rem); }
+.gs-fig { margin: 0 0 1.15em; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fig svg { display: block; width: 100%; height: auto; }
+.gs-fig > figcaption { margin-top: .75rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-k { margin: 0 0 .4rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-scroll { overflow-x: auto; }
+
+/* the stepper: controls, a rail of steps, one frame per step; scripts off, the frames read as a list */
+.gs-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 .7rem; }
+.gs-rail { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; padding: 0; }
+.gs-rail button { display: inline-flex; align-items: baseline; gap: .3rem; padding: .28rem .6rem; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-3); font: 600 .74rem/1.2 var(--sans); cursor: pointer; }
+.gs-rail button b { font: 700 .72rem/1 var(--mono); }
+.gs-rail button:hover { color: var(--ink); border-color: var(--ink-3); }
+.gs-rail button[aria-current="step"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.gs-frames { list-style: none; margin: 0; padding: 0; }
+main .gs-frames > .gs-frame { margin: 0 0 1.1rem; padding: 0 0 0 .9rem; border-left: 2px solid var(--rule-strong); }
+main .gs-live .gs-frames > .gs-frame { margin: 0; padding: 0; border: 0; }
+.gs-step [hidden] { display: none !important; }
+.gs-step:not(.gs-live) .gs-ctl, .gs-step:not(.gs-live) .gs-rail { display: none; }
+.gs-frame > p { margin: 0 0 .65rem; font-size: .98rem; }
+.gs-frame > p.gs-k { margin-bottom: .35rem; }
+.gs-frame > pre { margin: 0 0 .65rem; font-size: .82rem; }
+.gs-frame > :last-child { margin-bottom: 0; }
+.gs-live [data-from] { transition: opacity .25s, background-color .25s, border-color .25s; }
+.gs-live .gs-later { opacity: .32; }
+
+/* a picker: buttons set data-v on the wrapper; scripts off, every state shows with its own label */
+.gs-pick-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 .9rem; }
+.gs-pick:not(.gs-live) .gs-pick-ctl { display: none; }
+.gs-pick.gs-live[data-v="a"] [data-for]:not([data-for~="a"]), .gs-pick.gs-live[data-v="b"] [data-for]:not([data-for~="b"]), .gs-pick.gs-live[data-v="c"] [data-for]:not([data-for~="c"]) { display: none; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-band { grid-template-columns: minmax(0, 1fr); }
+  .gs-stick { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-live [data-from], .gs-live * { transition: none !important; }
+}
+
+/* 05 only (.gs-dp-): the request path, the setups matrix, the swimlane of one comment, served against exported */
+.gs-dp-path svg { max-width: 46rem; }
+.gs-dp-matrix { width: 100%; margin: 0; font: .9rem/1.45 var(--sans); }
+.gs-dp-matrix th, .gs-dp-matrix td { vertical-align: top; text-align: left; }
+.gs-dp-matrix thead th { font: 650 .7rem/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.gs-dp-matrix tbody th { font-weight: 600; color: var(--ink); }
+.gs-dp-matrix td.gs-dp-yes { color: var(--ok); }
+.gs-dp-matrix td.gs-dp-no { color: var(--bad); }
+.gs-dp-swim svg .gs-dp-s { transition: opacity .25s; }
+.gs-dp-swim svg .gs-dp-s circle { transition: fill .25s; }
+.gs-dp-swim svg .gs-now circle { fill: var(--violet); }
+.gs-dp-swim svg .gs-now circle + text { fill: var(--paper); }
+.gs-dp-swim svg .gs-now path, .gs-dp-swim svg .gs-now line { stroke: var(--violet); stroke-width: 2.5; }
+.gs-dp-swim svg .gs-now .gs-dp-lbl { fill: var(--ink); font-weight: 700; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-dp-path svg, .gs-dp-swim svg { min-width: 36rem; }
+  .gs-dp-matrix thead { display: none; }
+  .gs-dp-matrix, .gs-dp-matrix tbody, .gs-dp-matrix tr, .gs-dp-matrix th, .gs-dp-matrix td { display: block; }
+  .gs-dp-matrix tr { padding: .5rem 0; border-bottom: 1px solid var(--rule); }
+  .gs-dp-matrix th, .gs-dp-matrix td { padding: .1rem 0; border: 0; }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gs-sec">
 <h2 id="who">The server knows who is writing</h2>
 <p>On your own machine, <code>folio serve</code> writes each comment as your git user name. On a machine others reach, the server cannot ask git: many people use it. It reads their name from the sign-in in front of it instead. Put the server behind a proxy that signs people in, and name the request header that proxy sets in <code>folio.yaml</code>:</p>
 <pre><code>comments:
   identity_header: X-Forwarded-User</code></pre>
+
+<figure class="gs-fig gs-dp-path" aria-label="A reader's comment passes the sign-in proxy, which adds a header naming the reader. folio serve reads that header, as the charter tells it to, and commits the comment as that reader.">
+<div class="gs-scroll">
+<svg viewBox="0 0 640 150" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>From the reader, through the sign-in proxy, to folio serve</title>
+<defs><marker id="gs-dp-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker></defs>
+<rect x="10" y="40" width="130" height="56" rx="9" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<text x="75" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--azure)">Reader</text>
+<text x="75" y="83" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">signs in, comments</text>
+<rect x="215" y="40" width="160" height="56" rx="9" fill="none" stroke="var(--orange)" stroke-width="2"/>
+<text x="295" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--orange)">Sign-in proxy</text>
+<text x="295" y="83" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">knows who they are</text>
+<rect x="455" y="40" width="175" height="56" rx="9" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="542" y="64" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13.5" font-weight="700" fill="var(--violet)">folio serve</text>
+<text x="542" y="83" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">commits as that name</text>
+<path d="M142 68 H211" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr)"/>
+<path d="M377 68 H451" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr)"/>
+<text x="414" y="120" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11.5" fill="var(--ink)">X-Forwarded-User: ada</text>
+<path d="M414 108 V74" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="176" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">request</text>
+</svg>
+</div>
+<figcaption>The proxy adds the header; the charter names it; the server trusts nothing else. Who the reader is never comes from a field they type.</figcaption>
+</figure>
+
 <p>Ask your agent to set it; the configure skill changes the charter. Then start the server on an outside address: <code>folio serve --host 0.0.0.0</code>. Without the header in the charter, or on a request that lacks it, the panel shows the comments read-only and says why. A comment is never taken from someone the server cannot name.</p>
+
+<figure class="gs-fig" aria-label="Four ways a library can be served, and who each comment is from. Locally it is your git user name. On an outside address with the header set, it is the signed-in reader. Without the header, comments are read-only. An exported site takes none.">
+<table class="gs-dp-matrix">
+<thead><tr><th scope="col">Served as</th><th scope="col">A comment is from</th><th scope="col">Comments</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>folio serve</code> on your machine</th><td>your git user name</td><td class="gs-dp-yes">taken and committed</td></tr>
+<tr><th scope="row"><code>folio serve --host 0.0.0.0</code>, header in the charter</th><td>the name the proxy's header carries</td><td class="gs-dp-yes">taken on a request that carries the header</td></tr>
+<tr><th scope="row"><code>folio serve --host 0.0.0.0</code>, no header in the charter</th><td>nobody the server can name</td><td class="gs-dp-no">read-only; the panel says why</td></tr>
+<tr><th scope="row"><code>folio export</code>, a static site</th><td>no server to ask</td><td class="gs-dp-no">none: no button, no comment files</td></tr>
+</tbody>
+</table>
+<figcaption>Read down the last column: comments are taken only where the server can name the writer.</figcaption>
+</figure>
 
 <details class="check">
 <summary>You run <code>folio serve --host 0.0.0.0</code> and forgot the charter setting. What happens when a reader comments?</summary>
 <div class="ans">Nothing is saved. The panel says comments are read-only here, because the server cannot tell who is writing.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="git">Each comment is a commit</h2>
 <p>Every new thread and every reply becomes one commit on the current branch. It holds only that page's comment file, its message is "Comment on" and the document's id, and its author is the commenter. Your own work in progress stays untouched, even what you have staged.</p>
-<p>On a deployed server, add <code>--push</code>. The server then pulls before it writes and pushes after it commits, so your copy of the <a class="defn-link" href="/content/concepts/library/">library</a> sees the comments with a plain <code>git pull</code>. If the pull meets a conflict or the push fails, the server undoes its write, refuses the comment and shows the reader the error. The reader can send it again; nothing is half saved.</p>
+<p>On a deployed server, add <code>--push</code>. The server then pulls before it writes and pushes after it commits, so your copy of the <a class="defn-link" href="/content/concepts/library/">library</a> sees the comments with a plain <code>git pull</code>. Step through one comment.</p>
+
+<figure class="gs-fig gs-step gs-dp-swim" id="gs-dp-step" aria-label="One comment on a server started with --push, in six steps across five lanes: the reader sends it, the server pulls from the remote, writes the comment file, commits it as the reader, pushes, and your copy pulls it.">
+<div class="gs-ctl">
+<button type="button" class="tbtn" data-go="prev">Back</button>
+<button type="button" class="tbtn" data-go="next">Next step</button>
+</div>
+<div class="gs-rail" role="group" aria-label="The steps of one comment">
+<button type="button"><b>1</b>send</button>
+<button type="button"><b>2</b>pull</button>
+<button type="button"><b>3</b>write</button>
+<button type="button"><b>4</b>commit</button>
+<button type="button"><b>5</b>push</button>
+<button type="button"><b>6</b>your copy</button>
+</div>
+<div class="gs-scroll">
+<svg viewBox="0 0 640 300" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>One comment across the reader, the server, its repository, the remote and your copy</title>
+<defs><marker id="gs-dp-arr2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker></defs>
+<g font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="var(--ink-2)">
+<text x="10" y="44">Reader</text>
+<text x="10" y="99">Server</text>
+<text x="10" y="148">Repository</text>
+<text x="10" y="162" font-weight="400" font-size="10.5" fill="var(--ink-3)">on the server</text>
+<text x="10" y="209">Remote</text>
+<text x="10" y="264">Your copy</text>
+</g>
+<g stroke="var(--rule)" stroke-width="1">
+<line x1="110" y1="40" x2="630" y2="40"/><line x1="110" y1="95" x2="630" y2="95"/><line x1="110" y1="150" x2="630" y2="150"/><line x1="110" y1="205" x2="630" y2="205"/><line x1="110" y1="260" x2="630" y2="260"/>
+</g>
+<g class="gs-dp-s" data-from="1">
+<line x1="140" y1="48" x2="140" y2="85" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr2)"/>
+<circle cx="140" cy="40" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="140" y="44" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">1</text>
+<text class="gs-dp-lbl" x="156" y="70" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">comment, signed in</text>
+</g>
+<g class="gs-dp-s" data-from="2">
+<path d="M228 103 C 228 160, 228 160, 228 196" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#gs-dp-arr2)"/>
+<circle cx="228" cy="95" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="228" y="99" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">2</text>
+<text class="gs-dp-lbl" x="236" y="182" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">pull, rebase</text>
+</g>
+<g class="gs-dp-s" data-from="3">
+<circle cx="320" cy="95" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="320" y="99" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">3</text>
+<text class="gs-dp-lbl" x="320" y="123" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">write the file</text>
+</g>
+<g class="gs-dp-s" data-from="4">
+<circle cx="410" cy="150" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="410" y="154" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">4</text>
+<line x1="332" y1="102" x2="400" y2="142" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr2)"/>
+<text class="gs-dp-lbl" x="410" y="176" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">commit, as the reader</text>
+</g>
+<g class="gs-dp-s" data-from="5">
+<circle cx="500" cy="205" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="500" y="209" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">5</text>
+<line x1="420" y1="157" x2="491" y2="197" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr2)"/>
+<text class="gs-dp-lbl" x="500" y="231" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">push</text>
+</g>
+<g class="gs-dp-s" data-from="6">
+<circle cx="590" cy="260" r="11" fill="var(--surface)" stroke="var(--violet)" stroke-width="1.5"/><text x="590" y="264" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="var(--violet)">6</text>
+<line x1="510" y1="212" x2="581" y2="252" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-dp-arr2)"/>
+<text class="gs-dp-lbl" x="590" y="287" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10.5" fill="var(--ink-3)">git pull</text>
+</g>
+</svg>
+</div>
+<ol class="gs-frames" aria-live="polite">
+<li class="gs-frame">
+<p class="gs-k">Step 1 · The reader sends a comment</p>
+<p>A signed-in reader selects a passage and asks. The request reaches the server with the proxy's header naming them.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 2 · The server pulls first</p>
+<p>Started with <code>--push</code>, the server pulls from the remote, with rebase, before it writes anything. It writes on top of the latest comments, never beside them.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 3 · It writes the comment file</p>
+<p>The thread goes into the page's comment file, beside the document. The page itself is not touched.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 4 · It commits that file alone</p>
+<p>One commit on the current branch, holding only that comment file, with the message "Comment on" and the document's id, authored as the reader. Anything else in the repository, staged or not, stays out of it.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 5 · It pushes</p>
+<p>The commit goes to the remote, where every copy of the library can fetch it.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 6 · Your copy pulls it</p>
+<p>In your own checkout, a plain <code>git pull</code> brings the comment in. Your agent can then go through it like any other.</p>
+</li>
+</ol>
+<figcaption>Each step lights its place in the lanes; later steps stay grey. With scripts off, the lanes show the whole path and the steps read in order below.</figcaption>
+</figure>
+
+<div class="cols">
+<div class="lane lane-kept"><h4>Pull and push succeed</h4><p>The comment is on the remote, authored as the reader, in a commit of its own.</p></div>
+<div class="lane lane-baseline"><h4>The pull conflicts, or the push fails</h4><p>The server undoes its write, refuses the comment and shows the reader the error. The reader can send it again; nothing is half saved.</p></div>
+</div>
 
 <details class="check">
 <summary>The remote rejects a push while a reader comments. Where is the comment?</summary>
 <div class="ans">Nowhere: the server rolled back its commit and its file change, and the reader saw the error. Nothing was lost in silence; the reader knows to try again.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="static">An exported site takes no comments</h2>
 <p><code>folio export</code> writes plain files, with no server behind them. It leaves the comment files out, hides the Comments button and the Review page, and each page's panel says that comments are open where the library is served with <code>folio serve</code>. Publish the export for readers; serve the library for the people who review it.</p>
+
+<div class="cols">
+<div class="lane lane-violet"><h4>Served, for reviewers</h4><p><code>folio serve</code>: the Comments button on every page, the threads beside each document, the Review page, and each comment committed as its writer.</p></div>
+<div class="lane lane-azure"><h4>Exported, for readers</h4><p><code>folio export</code>: the same pages, the same shell, no comment files, no button, no Review page, and a line in the panel pointing to where comments are open.</p></div>
+</div>
 
 <details class="check">
 <summary>A reader of your exported site wants to ask about a passage. Where do they go?</summary>
 <div class="ans">To the copy you serve with <code>folio serve</code>, signed in. The exported site shows no comments and takes none.</div>
 </details>
+</section>
 
+<script>
+(function () {
+  /* Steppers: hide every frame but the current one, mark its chip, and grey what later steps add. */
+  var steps = document.querySelectorAll(".gs-step");
+  for (var s = 0; s < steps.length; s++) wireStep(steps[s]);
+  function wireStep(box) {
+    var frames = box.querySelectorAll(".gs-frame");
+    if (!frames.length) return;
+    var chips = box.querySelectorAll(".gs-rail button");
+    var marks = box.querySelectorAll("[data-from]");
+    var prev = box.querySelector("[data-go='prev']"), next = box.querySelector("[data-go='next']");
+    var at = 0;
+    function show(i) {
+      at = Math.max(0, Math.min(frames.length - 1, i));
+      var n = at + 1;
+      for (var k = 0; k < frames.length; k++) frames[k].hidden = k !== at;
+      for (var c = 0; c < chips.length; c++) {
+        if (c === at) chips[c].setAttribute("aria-current", "step"); else chips[c].removeAttribute("aria-current");
+      }
+      for (var m = 0; m < marks.length; m++) {
+        var from = +marks[m].getAttribute("data-from");
+        var now = (marks[m].getAttribute("data-now") || String(from)).split(" ");
+        marks[m].classList.toggle("gs-later", from > n);
+        marks[m].classList.toggle("gs-now", now.indexOf(String(n)) !== -1);
+      }
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === frames.length - 1;
+      box.setAttribute("data-step", String(n));
+    }
+    box.classList.add("gs-live");
+    if (prev) prev.addEventListener("click", function () { show(at - 1); });
+    if (next) next.addEventListener("click", function () { show(at + 1); });
+    for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", (function (i) { return function () { show(i); }; })(c));
+    show(0);
+  }
+  /* Pickers: set data-v on the wrapper and aria-pressed on the buttons. */
+  var picks = document.querySelectorAll(".gs-pick");
+  for (var p = 0; p < picks.length; p++) wirePick(picks[p]);
+  function wirePick(box) {
+    var buttons = box.querySelectorAll(".gs-pick-ctl button[data-v]");
+    if (!buttons.length) return;
+    function pick(v) {
+      box.setAttribute("data-v", v);
+      for (var b = 0; b < buttons.length; b++) buttons[b].setAttribute("aria-pressed", String(buttons[b].getAttribute("data-v") === v));
+    }
+    for (var b = 0; b < buttons.length; b++) buttons[b].addEventListener("click", function () { pick(this.getAttribute("data-v")); });
+    box.classList.add("gs-live");
+    pick(buttons[0].getAttribute("data-v"));
+  }
+})();
+</script>
 </main>
 </body>
 </html>

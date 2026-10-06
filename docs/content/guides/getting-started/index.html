@@ -10,13 +10,85 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* The guide's front page (.gs-fp-): who it is for, what it assumes, how a chapter reads. It teaches nothing. */
+.gs-fp-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1.5rem 2.75rem; align-items: center; margin: 0 0 3rem; }
+.gs-fp-hero > * { min-width: 0; }
+.gs-fp-hero p { max-width: 36rem; }
+.gs-fp-lead { font: 1.22rem/1.5 var(--serif); color: var(--ink); }
+.gs-fp-fig { margin: 0; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fp-fig svg { display: block; width: 100%; height: auto; }
+.gs-fp-fig figcaption { margin-top: .7rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-fp-sec { margin: 0 0 3rem; }
+.gs-fp-sec > h2 { margin-top: 0; }
+.gs-fp-sec > p { max-width: 44rem; }
+.gs-fp-ways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 0 0 1.2rem; }
+.gs-fp-ways > * { min-width: 0; margin: 0; }
+.gs-fp-ways .lane p { margin: 0; font-size: .95rem; }
+.gs-fp-read { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; align-items: start; }
+.gs-fp-read > * { min-width: 0; }
+.gs-fp-read > div > p { max-width: 44rem; }
+.gs-fp-read details.check { margin-top: 0; }
+@container folio-canvas (max-width: 44rem) {
+  .gs-fp-hero, .gs-fp-read { grid-template-columns: minmax(0, 1fr); }
+  .gs-fp-ways { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gs-fp-hero">
+<div>
+<p class="gs-fp-lead">For someone who has a project and a coding agent, and wants the agent to keep a library of documents beside the code: notes, explanations, records of what was decided and measured.</p>
+<p>You will not learn a command line here. You will learn what to ask your agent for, what it does in reply, and where to look at the result.</p>
+</div>
+<figure class="gs-fp-fig" aria-label="Every chapter is told the same way, left to right: what you ask your agent in plain words, what the agent does in reply, and what you get in your project.">
+<svg viewBox="0 0 520 170" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>How every chapter is told: you ask, the agent acts, you get a result</title>
+<defs><marker id="gs-fp-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker></defs>
+<rect x="8" y="24" width="140" height="118" rx="10" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<text x="78" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--azure)">YOU ASK</text>
+<text x="78" y="82" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">in plain words,</text>
+<text x="78" y="100" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">in your agent</text>
+<rect x="190" y="24" width="140" height="118" rx="10" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="260" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--violet)">THE AGENT ACTS</text>
+<text x="260" y="82" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">follows a skill,</text>
+<text x="260" y="100" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">runs the commands</text>
+<rect x="372" y="24" width="140" height="118" rx="10" fill="none" stroke="var(--orange)" stroke-width="2"/>
+<text x="442" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--orange)">YOU GET</text>
+<text x="442" y="82" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">files in your project,</text>
+<text x="442" y="100" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink)">pages to read</text>
+<path d="M150 83 H186" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-fp-arr)"/>
+<path d="M332 83 H368" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-fp-arr)"/>
+</svg>
+<figcaption>Each chapter is told in this order. Read the left box as your part, the middle as the agent's, the right as what lands in your repository.</figcaption>
+</figure>
+</section>
+
+<section class="gs-fp-sec">
+<h2 id="who">Who it is for, and what it assumes</h2>
+<div class="gs-fp-ways">
+<div class="lane lane-azure"><h4>You have</h4><p>A git repository, and a coding agent that can run commands in it.</p></div>
+<div class="lane lane-violet"><h4>You do not need</h4><p>To learn the <code>folio</code> command. Your agent runs it, the way it runs git.</p></div>
+<div class="lane lane-orange"><h4>You end with</h4><p>A library in your project, a few linked documents, and a way to review them.</p></div>
+</div>
+</section>
+
+<section class="gs-fp-sec">
 <h2 id="start">How to read it</h2>
-<p>In order, once. It is for someone who has a project and a coding agent, and wants the agent to keep a library of documents beside the code: notes, explanations, records of what was decided and measured.</p>
-<p>You need a git repository and an agent that can run commands in it. You do not need to learn the <code>folio</code> command: your agent runs it. Each chapter shows what to ask for, what the agent does in reply, and what you get.</p>
+<div class="gs-fp-read">
+<div>
+<p>In order, once. Each chapter assumes the ones before it and nothing else, so a later chapter may use a word an earlier one taught.</p>
+<p>Inside a chapter, a stepper walks through what happens one step at a time: press Next, or pick a step. With scripts off, the steps read as a list. After each idea comes a check-yourself: answer it in your head before you open it.</p>
+<p>The last two chapters are about comments. Read the final one when people other than you will review the library.</p>
+</div>
+<details class="check">
+<summary>Do you need to learn the <code>folio</code> command before you start?</summary>
+<div class="ans">No. Your agent runs it. Each chapter shows what to ask for, and the commands appear only so you can see what the agent did.</div>
+</details>
+</div>
+</section>
 
 </main>
 </body>

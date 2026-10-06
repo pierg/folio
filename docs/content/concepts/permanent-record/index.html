@@ -10,23 +10,175 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: every word is in the markup; the script only picks which state is shown. */
+.pr-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 2.5rem; align-items: start; margin-bottom: 3rem; }
+.pr-hero > * { min-width: 0; }
+.pr-hero .defn { margin-top: .2rem; }
+.pr-hero > div > p { font-size: 1.02rem; }
+.pr-fig { margin: 0; padding: 1rem 1.1rem .8rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.pr-fig svg { display: block; width: 100%; height: auto; }
+.pr-band { margin: 0 0 3rem; }
+.pr-band > h2 { margin-top: 0; }
+.pr-band > p { max-width: 44rem; }
+
+/* the three states: one record, three things that can happen to it */
+.pr-states { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 2rem; align-items: start; }
+.pr-states > * { min-width: 0; }
+.pr-ctl { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+.pr-card { border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--surface); overflow: hidden; font-family: var(--sans); }
+.pr-card-head { padding: .9rem 1.1rem .8rem; border-bottom: 1px solid var(--rule); }
+.pr-card-head .pr-eyebrow { font: 650 .7rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.pr-card-head .pr-title { margin: .3rem 0 0; font: 600 1.1rem/1.3 var(--serif); color: var(--ink); }
+.pr-pill { display: inline-block; margin-top: .55rem; padding: .1rem .55rem; border-radius: 999px; font: 650 .68rem/1.6 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.pr-banner { display: none; margin: .9rem 1.1rem 0; padding: .6rem .8rem; border-radius: 6px; font-size: .88rem; line-height: 1.45; }
+.pr-card-body { padding: .9rem 1.1rem 1rem; font: .92rem/1.55 var(--serif); color: var(--ink-2); }
+.pr-card-body p { margin: 0; }
+.pr-lock { display: flex; align-items: center; gap: .45rem; padding: .55rem 1.1rem; border-top: 1px dashed var(--rule-strong); font-size: .78rem; color: var(--ink-3); }
+.pr-lock svg { width: .95rem; height: .95rem; flex: none; }
+.pr-pill[data-for] { display: none; }
+.pr-says p { display: none; margin: 0; }
+.pr-says p:first-child { display: block; }
+/* which state is showing: set by the buttons, on the wrapper */
+.pr-states[data-s] .pr-says p:first-child { display: none; }
+.pr-states[data-s="live"] .pr-says [data-for="live"],
+.pr-states[data-s="superseded"] .pr-says [data-for="superseded"],
+.pr-states[data-s="retracted"] .pr-says [data-for="retracted"] { display: block; }
+.pr-states:not([data-s]) .pr-pill[data-for="live"], .pr-states[data-s="live"] .pr-pill[data-for="live"] { display: inline-block; background: var(--ok-soft); color: var(--ok); }
+.pr-states[data-s="superseded"] .pr-pill[data-for="superseded"] { display: inline-block; background: var(--warn-soft); color: var(--warn); }
+.pr-states[data-s="retracted"] .pr-pill[data-for="retracted"] { display: inline-block; background: var(--bad-soft); color: var(--bad); }
+.pr-states[data-s="superseded"] .pr-banner[data-for="superseded"] { display: block; background: var(--warn-soft); color: var(--ink); }
+.pr-states[data-s="retracted"] .pr-banner[data-for="retracted"] { display: block; background: var(--bad-soft); color: var(--ink); }
+.pr-states[data-s="retracted"] .pr-card-body { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 45%, transparent); }
+
+/* the foot: neighbours */
+.pr-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.pr-foot > * { min-width: 0; }
+.pr-foot h3 { margin-top: 0; }
+.pr-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .pr-hero, .pr-states { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+}
+@container folio-canvas (max-width: 30rem) {
+  .pr-foot { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="pr-hero">
+<div>
 <blockquote class="defn" id="permanent-record">
 <span class="defn-name">Permanent record</span><br>
 A permanent record is a document whose genre declares it is never edited once committed, such as a journal entry or a result. It writes no status of its own; its status is derived from the documents that point back to it.
 </blockquote>
-
-<h3>Why it matters</h3>
 <p>A citation of a permanent record always shows what was cited, because the record cannot change under it. The <a class="defn-link" href="/content/concepts/gate/">gate</a> compares each one with its first commit, so the promise is checked, not hoped for.</p>
+</div>
 
-<h3>The trap</h3>
-<p>Thinking permanent means it can never be wrong. It can be wrong, and the library says so: a newer record supersedes it, or a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry retracts or corrects it, and a banner on the record links the correction.</p>
+<figure class="pr-fig" aria-label="A record is committed once and never edited. A newer record names it in supersedes, and a journal entry can retract it; the old record's status follows from those arrows, not from an edit to it.">
+<svg viewBox="0 0 460 230" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The old record stays as committed; arrows from newer documents set its status</title>
+<defs>
+<marker id="pr-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<!-- the old record, locked -->
+<rect x="20" y="78" width="150" height="74" rx="8" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="95" y="106" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--teal)">R-1</text>
+<text x="95" y="128" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">committed once,</text>
+<text x="95" y="143" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">never edited</text>
+<!-- the newer record -->
+<rect x="290" y="22" width="150" height="62" rx="8" fill="none" stroke="var(--blue)" stroke-width="2"/>
+<text x="365" y="48" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--blue)">R-2</text>
+<text x="365" y="68" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11.5" fill="var(--ink-2)">supersedes: R-1</text>
+<!-- the journal entry -->
+<rect x="290" y="146" width="150" height="62" rx="8" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="365" y="172" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--red)">journal entry</text>
+<text x="365" y="192" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11.5" fill="var(--ink-2)">kind: retraction</text>
+<!-- arrows point back at the old record -->
+<path d="M 288 56 C 230 56, 210 90, 174 104" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#pr-arr)"/>
+<path d="M 288 176 C 230 176, 210 142, 174 128" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#pr-arr)"/>
+<text x="232" y="44" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" fill="var(--ink-3)">names it</text>
+<text x="232" y="200" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" fill="var(--ink-3)">or retracts it</text>
+</svg>
+<figcaption>Nothing writes to the old record. Its status follows from the documents that point back at it: a newer record that names it in <code>supersedes</code>, or a journal entry that retracts it.</figcaption>
+</figure>
+</section>
 
+<section class="pr-band">
+<h2>One record, three states, no edits</h2>
+<p>The record below is the same file in every state. Pick what happens to it, and see what the shell draws on its page. Only the status and the banner change, and both come from other documents.</p>
+
+<div class="pr-states" id="pr-states">
+<div>
+<div class="pr-ctl" role="group" aria-label="What happens to the record">
+<button type="button" class="tbtn" data-s="live" aria-pressed="true">Nothing yet</button>
+<button type="button" class="tbtn" data-s="superseded" aria-pressed="false">A newer result supersedes it</button>
+<button type="button" class="tbtn" data-s="retracted" aria-pressed="false">A journal entry retracts it</button>
+</div>
+<div class="pr-says" aria-live="polite">
+<p>With scripts off, every state is described here. A record that nothing points back at is <b>live</b>. A newer record that names it in <code>supersedes</code> makes it <b>superseded</b>. A journal entry of kind <code>retraction</code> about it makes it <b>retracted</b>.</p>
+<p data-for="live"><b>Live.</b> Nothing points back at it. Every citation shows it as it was committed, and the shell draws no banner.</p>
+<p data-for="superseded"><b>Superseded.</b> A newer result names it in its <code>supersedes</code> field. The old result keeps its address, so old citations still show what they cited, and a banner links the newer one.</p>
+<p data-for="retracted"><b>Retracted.</b> A journal entry of kind <code>retraction</code> names it in <code>about</code>. The record stays readable, marked retracted, with a banner linking the entry that says why.</p>
+</div>
+</div>
+
+<div class="pr-card" aria-label="The record as the shell draws it">
+<div class="pr-card-head">
+<div class="pr-eyebrow">Result · R-1</div>
+<p class="pr-title">The gate's running time on this library, as first measured</p>
+<span class="pr-pill" data-for="live">live</span>
+<span class="pr-pill" data-for="superseded">superseded</span>
+<span class="pr-pill" data-for="retracted">retracted</span>
+</div>
+<div class="pr-banner" data-for="superseded"><b>Superseded.</b> A newer result replaces this one; follow its link for the current number.</div>
+<div class="pr-banner" data-for="retracted"><b>Retracted.</b> A journal entry withdraws this result and says why.</div>
+<div class="pr-card-body"><p>The body is exactly as it was committed, in every state.</p></div>
+<div class="pr-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>The gate compares this file with its first commit.</div>
+</div>
+</div>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("pr-states");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-s]");
+  function pick(s) {
+    box.setAttribute("data-s", s);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-s") === s));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-s")); });
+  pick("live");
+})();
+</script>
+
+<section class="pr-band">
+<h2>Permanent, frozen and revised</h2>
+<div class="cols">
+<div class="lane lane-teal"><h4>Permanent</h4><p>Never edited once committed. A journal entry and a result. Its status is derived, never written.</p></div>
+<div class="lane lane-indigo"><h4>Frozen</h4><p>Edited freely until it reaches a state such as <code>locked</code>, then never again, except a status change to one of its card's exits. A protocol and a report.</p></div>
+<div class="lane lane-baseline"><h4>Revised</h4><p>Edited in place, and always current. Concepts, entries, maps and the rest of the pages.</p></div>
+</div>
+</section>
+
+<section class="pr-band">
+<div class="note note-warn">
+<b>The trap: thinking permanent means it can never be wrong.</b> It can be wrong, and the library says so: a newer record supersedes it, or a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry retracts or corrects it, and a banner on the record links the correction. What never happens is a quiet edit.
+</div>
+</section>
+
+<section class="pr-foot">
+<div>
 <h3>Related</h3>
-<p>A frozen document is the near relative: edited freely until it reaches a state such as <code>locked</code>, then never again except its status.</p>
+<p>The <a class="defn-link" href="/content/concepts/journal/">journal</a> is made of permanent entries, one file each. The <a class="defn-link" href="/content/concepts/gate/">gate</a> holds every permanent and frozen document to its history in git.</p>
+</div>
+<div>
+<h3>The long form</h3>
+<p>How a correction reaches every page that cited the old record is in <a href="/content/entries/how-corrections-work/">How corrections work</a>.</p>
+</div>
+</section>
 
 </main>
 </body>

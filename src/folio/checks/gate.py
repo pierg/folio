@@ -17,6 +17,7 @@ from ..util import PLACEHOLDER_RE, has_placeholder, is_slug, parse_date
 
 Found = list[tuple[str, str]]
 GateCheck = Callable[[Library], Found]
+LAYOUTS = ("canvas", "column")  # a page's `layout`: the whole canvas (default), or the reading column
 
 
 def broken_link(lib: Library) -> Found:
@@ -93,6 +94,9 @@ def fields(lib: Library) -> Found:
             for tag in _tags(df.meta.get("tags")):
                 if "{{" not in tag and not is_slug(tag):
                     out.append((df.path, f"tag `{tag}` is not a lowercase slug"))
+            layout = df.meta.get("layout")
+            if df.format == "html" and layout is not None and str(layout).strip() not in LAYOUTS:
+                out.append((df.path, f"layout `{layout}` must be one of {', '.join(LAYOUTS)}"))
         genre = doc.genre
         mf = doc.meta_file
         if genre is None or mf is None or doc.is_home or mf.meta_error:

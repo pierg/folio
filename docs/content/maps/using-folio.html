@@ -10,32 +10,136 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A map drawn as a reading path: the route first, then the rows in three stops along it. */
+.uf-stance { max-width: 44rem; margin: 0 0 1.75rem; font: 400 1.15rem/1.55 var(--serif); color: var(--ink); }
+.uf-fig { margin: 0 0 2.75rem; padding: 1.1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+.uf-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.uf-scroll svg { display: block; width: 100%; min-width: 40rem; height: auto; }
+
+.uf-stops { display: grid; gap: 2rem; margin: 0 0 2.75rem; }
+.uf-stop { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); grid-template-rows: auto auto 1fr; gap: 0 2.5rem; align-items: start; padding-top: .9rem; border-top: 3px solid var(--rule-strong); }
+.uf-stop > * { min-width: 0; }
+.uf-stop > .uf-eyebrow, .uf-stop > h2, .uf-stop > p { grid-column: 1; }
+.uf-stop > ul.rows { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
+.uf-stop.uf-a { border-top-color: var(--teal); }
+.uf-stop.uf-b { border-top-color: var(--indigo); }
+.uf-stop.uf-c { border-top-color: var(--amber); }
+.uf-eyebrow { margin: 0 0 .25rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.uf-a .uf-eyebrow { color: var(--teal); }
+.uf-b .uf-eyebrow { color: var(--indigo); }
+.uf-c .uf-eyebrow { color: var(--amber); }
+.uf-stop h2 { margin-top: 0; }
+.uf-stop > p { font-size: .95rem; color: var(--ink-2); }
+
+.uf-open { max-width: 44rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.uf-open h2 { margin-top: 0; }
+
+@container folio-canvas (max-width: 40rem) {
+  .uf-stop { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .uf-stop > ul.rows { grid-column: 1; grid-row: auto; }
+}
+</style>
 </head>
 <body>
 <main>
 
-<h2 id="take">Current take</h2>
-<p>Start with the guide: it takes you from installing folio to reviewing comments in four short chapters. The entries explain the three ideas behind the rules, and the worked examples show the two packs on real material.</p>
+<p class="uf-stance">Start with the guide: it takes you from installing folio to letting others comment, in five short chapters. Then read the entries for the three ideas behind the rules, and the worked examples to see the two packs on real material.</p>
 
+<figure class="uf-fig" aria-label="The reading path. First the Getting started guide, five chapters in order: install, your first documents, organising, reviewing comments, and comments on a deployed library. It leads to three entries on why folio works this way: metadata first, one fact one home, and how corrections work. Those lead to two worked examples: the knowledge-base pack, a source and its reading, and the lab pack, a question, a locked protocol and its results.">
+<div class="uf-scroll">
+<svg viewBox="0 0 784 250" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Guide first, then the entries, then the worked examples</title>
+<defs>
+<marker id="uf-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<!-- zone labels -->
+<text x="24" y="28" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.4" fill="var(--teal)">DO IT: THE GUIDE</text>
+<text x="420" y="28" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.4" fill="var(--indigo)">WHY</text>
+<text x="604" y="28" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.4" fill="var(--amber)">SEE IT</text>
+<!-- the guide: five stops on one line -->
+<path d="M 48 110 L 352 110" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"/>
+<circle cx="48" cy="110" r="11" fill="var(--paper)" stroke="var(--teal)" stroke-width="2.5"/>
+<circle cx="124" cy="110" r="11" fill="var(--paper)" stroke="var(--teal)" stroke-width="2.5"/>
+<circle cx="200" cy="110" r="11" fill="var(--paper)" stroke="var(--teal)" stroke-width="2.5"/>
+<circle cx="276" cy="110" r="11" fill="var(--paper)" stroke="var(--teal)" stroke-width="2.5"/>
+<circle cx="352" cy="110" r="11" fill="var(--paper)" stroke="var(--teal)" stroke-width="2.5"/>
+<text x="48" y="114.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="var(--teal)">1</text>
+<text x="124" y="114.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="var(--teal)">2</text>
+<text x="200" y="114.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="var(--teal)">3</text>
+<text x="276" y="114.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="var(--teal)">4</text>
+<text x="352" y="114.5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="var(--teal)">5</text>
+<text x="48" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">Install</text>
+<text x="124" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">Your first</text>
+<text x="124" y="81" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">documents</text>
+<text x="200" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">Organising</text>
+<text x="276" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">Reviewing</text>
+<text x="276" y="81" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">comments</text>
+<text x="352" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">On a deployed</text>
+<text x="352" y="81" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">library</text>
+<text x="48" y="146" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">a library in your project, the gate passing,</text>
+<text x="48" y="162" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">a few linked documents, a way to review them</text>
+<!-- the three entries -->
+<path d="M 366 110 L 416 110" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#uf-arr)"/>
+<rect x="420" y="44" width="160" height="38" rx="7" fill="none" stroke="var(--indigo)" stroke-width="1.8"/>
+<text x="500" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">Metadata first</text>
+<rect x="420" y="91" width="160" height="38" rx="7" fill="none" stroke="var(--indigo)" stroke-width="1.8"/>
+<text x="500" y="115" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">One fact, one home</text>
+<rect x="420" y="138" width="160" height="38" rx="7" fill="none" stroke="var(--indigo)" stroke-width="1.8"/>
+<text x="500" y="162" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink)">How corrections work</text>
+<!-- the two packs -->
+<path d="M 582 110 L 600 110" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#uf-arr)"/>
+<rect x="604" y="44" width="160" height="62" rx="7" fill="color-mix(in srgb, var(--amber) 8%, transparent)" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="684" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--amber)">knowledge-base pack</text>
+<text x="684" y="88" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">a source and its reading</text>
+<rect x="604" y="114" width="160" height="62" rx="7" fill="color-mix(in srgb, var(--amber) 8%, transparent)" stroke="var(--amber)" stroke-width="1.8"/>
+<text x="684" y="136" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--amber)">lab pack</text>
+<text x="684" y="158" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">question, protocol, result</text>
+<text x="392" y="226" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">Left to right is the order to read. Each stop is a group of rows below.</text>
+</svg>
+</div>
+<figcaption>Do it, then learn why, then see it on real material. The guide is the only part to read in order; the entries and the examples can be read in any order once you have a library of your own.</figcaption>
+</figure>
+
+<div class="uf-stops">
+<section class="uf-stop uf-a">
+<p class="uf-eyebrow">First: do it</p>
 <h2 id="start-here">Start here</h2>
+<p>A working library before any theory.</p>
 <ul class="rows">
-<li><a href="/content/guides/getting-started/">Getting started</a> <span class="why">Four short chapters, from installing folio to reviewing comments.</span></li>
+<li><a href="/content/guides/getting-started/">Getting started</a> <span class="why">Five short chapters, from installing folio to letting others comment.</span></li>
 <li><a href="/content/projects/folio/">folio</a> <span class="why">Where folio itself stands, and what comes next.</span></li>
 </ul>
+</section>
 
-
+<section class="uf-stop uf-b">
+<p class="uf-eyebrow">Then: learn why</p>
 <h2 id="why-it-works-this-way">Why it works this way</h2>
+<p>Three ideas explain most of the rules the gate enforces.</p>
 <ul class="rows">
 <li><a href="/content/entries/why-metadata-first/">Why metadata comes first</a></li>
 <li><a href="/content/entries/one-fact-one-home/">One fact, one home</a></li>
 <li><a href="/content/entries/how-corrections-work/">How corrections work</a></li>
 </ul>
+</section>
+
+<section class="uf-stop uf-c">
+<p class="uf-eyebrow">Last: see it</p>
 <h2 id="worked-examples">Worked examples</h2>
+<p>Each pack, used on real material in this library.</p>
 <ul class="rows">
 <li><a href="/content/readings/1945-as-we-may-think-reading.html">As We May Think</a> <span class="why">The knowledge-base pack: a source and a reading of an essay from 1945.</span></li>
 <li><a href="/content/sources/1945-as-we-may-think/">As We May Think</a> <span class="why">The essay itself, as the source the reading rests on.</span></li>
 <li><a href="/content/questions/Q-1.md">Does folio check finish in under two seconds on this documentation library?</a> <span class="why">The lab pack: a question, a locked protocol and a measured result about this library's own gate.</span></li>
 </ul>
+</section>
+</div>
+
+<section class="uf-open">
+<h2 id="not-yet-here">Not yet here</h2>
+<p>No worked example shows the publish skill building a paper and freezing a version of it, and none shows the run skill quizzing a reader on the flashcards. Both are specified; neither has a page in this library yet.</p>
+</section>
+
 </main>
 </body>
 </html>

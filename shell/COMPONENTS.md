@@ -1,6 +1,29 @@
 # The shell's components
 
-This is the vocabulary a page may use. The shell is one stylesheet, `folio.css`, and one script, `folio.js`. Together they draw everything a page does not write: the top bar, the library rail, the header, the banners, the page panel, guide navigation, search and the comment panel. A page writes its metadata and its `<main>`, and nothing else. Read `docs/spec/model.md` §3, §4 and §14 first.
+This is the shared vocabulary a page may use. The shell is one stylesheet, `folio.css`, and one script, `folio.js`. Together they draw everything around a page: the top bar, the library rail, the header, the banners, the page panel, guide navigation, search and the comment panel. A page writes its metadata and its `<main>`. Below the header, `<main>` is a free canvas: the page lays it out for what it must show, with its own `<style>` and `<script>` when it needs them, and uses the components below where they fit. How to choose a page's form is in `craft/layout.md`. Read `docs/spec/model.md` §3, §4 and §14 first.
+
+## The canvas
+
+Every HTML page gets all the room between the library rail and the page panel, with no measure. The page's own layout is the author's: grids, columns, widths, type scale, sections, interaction, motion. The canvas (`.f-page`) is a size container named `folio-canvas`, so a page adapts to the room it has, not to the window:
+
+```html
+<style>
+.kx-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem; }
+@container folio-canvas (max-width: 44rem) { .kx-hero { grid-template-columns: minmax(0, 1fr); } }
+</style>
+```
+
+Five things stay fixed, because the library reads them:
+
+1. **The words are in the markup.** A script may arrange, reveal, highlight and animate them, and never writes them. Comments are anchored by quoting the file, and search and the gate read the file. The one exception is a label that repeats words already in the markup, such as a chart's axis.
+2. **The genre's hooks stay:** a concept's `defn`, a map's `rows`, and whatever else its card names.
+3. **The voice stays:** the genre's register, a claim supported where it is made, every number cited, a flag on what goes beyond the sources.
+4. **Colours come from the tokens below,** never a hex value, so the page reads in both themes.
+5. **The header is the shell's.** No `<h1>` and no subtitle in the body.
+
+Prefix a page's own classes (`.kx-…`) so they never collide with the shell's (`.f-…`) or another page's. Keep its CSS in one `<style>` block, and its script in one small `<script>` that only toggles classes and attributes on what the markup already holds.
+
+**The reading column** is an opt-in, for a page that is one line of argument: `<meta name="layout" content="column">` sets its prose in a measure of about 68 characters, with figures and tables up to `--wide`. A Markdown record is always rendered in it.
 
 ## How a page loads the shell
 
@@ -101,11 +124,42 @@ The reason is optional. Without one, the shell shows the target's description. T
 </figure>
 ```
 
-Figures live in `assets/figures/` and are linked from the root. The shell prefixes the caption with "Figure." A table scrolls sideways inside its own box on a narrow screen, never the page. Mark a numeric column with `class="num"` on its cells to right-align it. See `craft/`.
+Figures live in `assets/figures/` and are linked from the root, or are drawn inline as SVG in the page. The shell prefixes the caption with "Figure." A table scrolls sideways inside its own box on a narrow screen, never the page. Mark a numeric column with `class="num"` on its cells to right-align it. See `craft/`.
 
 ### Code
 
-`<code>` inline and `<pre><code>` for blocks. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code.
+`<code>` inline and `<pre><code>` for blocks. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code. See `craft/code.md`.
+
+### Math
+
+A page with `<meta name="math" content="katex">` in its `<head>` has its math typeset by KaTeX, vendored with the shell, so it works offline and on an exported site:
+
+- inline: `$H(s) \wedge \neg H(s')$`, or `\(…\)`;
+- display: `$$\forall s.\ H(s) \Rightarrow H(s')$$`, or `\[…\]`. Wrap a display formula that may run wide in `<p class="formula">`, which scrolls sideways on a phone.
+
+Nothing inside `<code>`, `<pre>`, `<script>`, `<style>` or a `defn-name` is typeset, so `<code>Init</code>` stays an identifier. The words stay in the markup as LaTeX, so search and comments read them as written. Introduce every symbol before using it, in a definition above all: the popover shows the definition with no context.
+
+### Side by side
+
+```html
+<div class="cols">
+<div class="lane lane-azure"><h4>The judge</h4><p>Decides. Never proposes.</p></div>
+<div class="lane lane-violet"><h4>The search loop</h4><p>Proposes. Never decides.</p></div>
+</div>
+```
+
+`.cols` lays its children side by side and stacks them when the canvas is narrow. A `.lane` is a box with a coloured top rule: `lane-<hue>` for any register hue, `lane-kept` for the outcome kept and `lane-baseline` for the reference. See `craft/comparison.md`.
+
+### Boxes and chips
+
+| Markup | Use |
+| --- | --- |
+| `<div class="note">` | An aside the reader should not miss. `note-warn` for a caution. |
+| `<div class="law">` | A rule stated once, set apart. |
+| `<span class="chip">` | A short label: a stage, a kind. |
+| `<span class="v v-kept">` | A verdict: `v-kept`, `v-disc` (discarded), `v-rej` (rejected), `v-unt` (untested). |
+| `<span class="sw-teal">` | A word in a register hue, to tie the prose to a figure's legend: `sw-<hue>`. |
+| `<button class="tbtn" aria-pressed="false">` | A toggle or a tab. The page's script sets `aria-pressed` (or `aria-selected`) on the one picked. |
 
 ## Tokens
 
@@ -119,10 +173,16 @@ Colours, faces and sizes are custom properties on `:root`, redefined for dark mo
 | `--accent`, `--accent-soft` | The one mark colour: eyebrows, the definition rule |
 | `--link`, `--link-line` | Links and their underline |
 | `--ok`, `--warn`, `--bad`, `--info` and each `-soft` | States and banners, never decoration |
+| `--teal`, `--indigo`, `--blue`, `--amber`, `--red` | The SET register: the parts of one picture (sets, regions, layers) |
+| `--azure`, `--violet`, `--orange` | The ROLE register: the actors of one process (who proposes, who decides, what changes) |
+| `--kept`, `--discarded`, `--rejected`, `--untested` | Verdicts: how a thing came out |
 | `--serif`, `--sans`, `--mono` | Prose, interface, code |
-| `--measure`, `--wide` | The reading column, and the most a figure may use |
+| `--measure`, `--wide` | The reading column, and the most a figure may use in it |
+| `--canvas` | The widest a canvas page and its panel grow |
 
-An inline SVG uses `currentColor` or `var(--ink-2)` and the like for its strokes and fills.
+**Registers.** A figure draws from one register, never two: the SET hues for the parts of one picture, the ROLE hues for the actors of one process. What a hue means is the page's business, said once in its legend or caption. For a tint, mix a hue with the paper: `color-mix(in srgb, var(--teal) 14%, transparent)`.
+
+An inline SVG uses `currentColor`, `var(--ink-2)`, the register hues and the like for its strokes and fills, never a hex value.
 
 ## The comment panel
 

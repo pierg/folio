@@ -2,7 +2,10 @@
   "content/concepts/gate/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/genre/index.html",
+      "content/concepts/library/index.html",
       "content/concepts/map/index.html",
+      "content/concepts/pack/index.html",
       "content/concepts/permanent-record/index.html",
       "content/concepts/skill/index.html",
       "content/entries/how-corrections-work/index.html",
@@ -16,7 +19,9 @@
     ],
     "cites": [
       "content/concepts/genre/index.html",
-      "content/concepts/pack/index.html"
+      "content/concepts/pack/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html"
     ],
     "fields": {},
     "id": "gate",
@@ -24,19 +29,29 @@
     "superseded_by": []
   },
   "content/concepts/genre/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-10-06",
+        "id": "2026-10-06-every-page-is-a-free-canvas",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/gate/index.html",
       "content/concepts/library/index.html",
+      "content/concepts/map/index.html",
       "content/concepts/pack/index.html",
       "content/concepts/skill/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/entries/why-metadata-first/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
+      "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md",
       "content/maps/concepts.html"
     ],
     "cites": [
+      "content/concepts/gate/index.html",
       "content/concepts/pack/index.html"
     ],
     "fields": {},
@@ -65,7 +80,21 @@
     ],
     "cites": [
       "content/concepts/map/index.html",
-      "content/concepts/permanent-record/index.html"
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html",
+      "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
+      "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
+      "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+      "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
+      "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+      "content/journal/2026/2026-10-04-home-maps-set.md",
+      "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
+      "content/journal/2026/2026-10-04-library-set-up.md",
+      "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
+      "content/journal/2026/2026-10-04-recorded-r-1.md",
+      "content/journal/2026/2026-10-04-recorded-r-2.md",
+      "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md",
+      "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
     ],
     "fields": {},
     "id": "journal",
@@ -75,13 +104,16 @@
   "content/concepts/library/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/guides/getting-started/index.html",
       "content/maps/concepts.html",
       "content/readings/1945-as-we-may-think-reading.html"
     ],
     "cites": [
+      "content/concepts/gate/index.html",
       "content/concepts/genre/index.html",
-      "content/concepts/map/index.html"
+      "content/concepts/map/index.html",
+      "content/concepts/skill/index.html"
     ],
     "fields": {},
     "id": "library",
@@ -101,7 +133,23 @@
     ],
     "cites": [
       "content/concepts/gate/index.html",
-      "content/concepts/journal/index.html"
+      "content/concepts/genre/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/permanent-record/index.html",
+      "content/concepts/skill/index.html",
+      "content/entries/how-corrections-work/index.html",
+      "content/entries/one-fact-one-home/index.html",
+      "content/entries/why-metadata-first/index.html",
+      "content/guides/getting-started/index.html",
+      "content/projects/folio/index.html",
+      "content/protocols/check-time.md",
+      "content/questions/Q-1.md",
+      "content/readings/1945-as-we-may-think-reading.html",
+      "content/results/R-1.md",
+      "content/results/R-2.md",
+      "content/sources/1945-as-we-may-think/index.html"
     ],
     "fields": {},
     "id": "map",
@@ -113,14 +161,15 @@
     "cited_by": [
       "content/concepts/gate/index.html",
       "content/concepts/genre/index.html",
+      "content/concepts/map/index.html",
       "content/concepts/skill/index.html",
-      "content/entries/how-corrections-work/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/guides/getting-started/index.html",
       "content/maps/concepts.html",
       "content/projects/folio/index.html"
     ],
     "cites": [
+      "content/concepts/gate/index.html",
       "content/concepts/genre/index.html",
       "content/concepts/skill/index.html"
     ],
@@ -139,7 +188,9 @@
       }
     ],
     "cited_by": [
+      "content/concepts/gate/index.html",
       "content/concepts/journal/index.html",
+      "content/concepts/map/index.html",
       "content/entries/how-corrections-work/index.html",
       "content/entries/why-metadata-first/index.html",
       "content/guides/getting-started/index.html",
@@ -148,7 +199,8 @@
     ],
     "cites": [
       "content/concepts/gate/index.html",
-      "content/concepts/journal/index.html"
+      "content/concepts/journal/index.html",
+      "content/entries/how-corrections-work/index.html"
     ],
     "fields": {},
     "id": "permanent-record",
@@ -158,6 +210,10 @@
   "content/concepts/skill/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/gate/index.html",
+      "content/concepts/journal/index.html",
+      "content/concepts/library/index.html",
+      "content/concepts/map/index.html",
       "content/concepts/pack/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
@@ -177,6 +233,8 @@
   "content/entries/how-corrections-work/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/map/index.html",
+      "content/concepts/permanent-record/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/maps/using-folio.html",
       "content/readings/1945-as-we-may-think-reading.html"
@@ -184,7 +242,6 @@
     "cites": [
       "content/concepts/gate/index.html",
       "content/concepts/journal/index.html",
-      "content/concepts/pack/index.html",
       "content/concepts/permanent-record/index.html",
       "content/entries/one-fact-one-home/index.html"
     ],
@@ -196,6 +253,7 @@
   "content/entries/one-fact-one-home/index.html": {
     "about": [],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/entries/how-corrections-work/index.html",
       "content/entries/why-metadata-first/index.html",
       "content/maps/using-folio.html"
@@ -206,6 +264,7 @@
       "content/concepts/journal/index.html",
       "content/concepts/pack/index.html",
       "content/entries/how-corrections-work/index.html",
+      "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
       "content/results/R-1.md"
     ],
     "fields": {},
@@ -223,6 +282,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md",
       "content/maps/using-folio.html"
     ],
@@ -249,6 +309,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/index.html",
       "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
       "content/maps/using-folio.html"
@@ -301,7 +362,9 @@
   },
   "content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/entries/why-metadata-first/index.html"
     ],
@@ -312,7 +375,10 @@
   },
   "content/journal/2026/2026-10-03-one-journal-entry-per-file.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html",
+      "content/entries/one-fact-one-home/index.html"
+    ],
     "cites": [
       "content/concepts/journal/index.html"
     ],
@@ -323,7 +389,9 @@
   },
   "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/concepts/permanent-record/index.html",
       "content/projects/folio/index.html"
@@ -335,7 +403,9 @@
   },
   "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/maps/building-folio.html",
       "content/maps/using-folio.html"
@@ -347,7 +417,9 @@
   },
   "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/guides/getting-started/index.html"
     ],
@@ -358,7 +430,9 @@
   },
   "content/journal/2026/2026-10-04-home-maps-set.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/maps/concepts.html",
       "content/maps/reference.html",
@@ -371,7 +445,9 @@
   },
   "content/journal/2026/2026-10-04-ingested-as-we-may-think.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/readings/1945-as-we-may-think-reading.html",
       "content/sources/1945-as-we-may-think/index.html"
@@ -383,7 +459,9 @@
   },
   "content/journal/2026/2026-10-04-library-set-up.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/index.html"
     ],
@@ -394,7 +472,9 @@
   },
   "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/protocols/check-time.md",
       "content/questions/Q-1.md"
@@ -406,7 +486,9 @@
   },
   "content/journal/2026/2026-10-04-recorded-r-1.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/protocols/check-time.md",
       "content/results/R-1.md"
@@ -418,7 +500,9 @@
   },
   "content/journal/2026/2026-10-04-recorded-r-2.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/protocols/check-time.md",
       "content/results/R-2.md"
@@ -430,7 +514,9 @@
   },
   "content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/maps/reference.html"
     ],
@@ -441,12 +527,25 @@
   },
   "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/concepts/journal/index.html"
+    ],
     "cites": [
       "content/index.html"
     ],
     "fields": {},
     "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/genre/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-06-every-page-is-a-free-canvas",
     "retracted_by": [],
     "superseded_by": []
   },
@@ -570,6 +669,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
       "content/maps/building-folio.html",
       "content/maps/using-folio.html"
@@ -607,6 +707,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
       "content/journal/2026/2026-10-04-recorded-r-1.md",
       "content/journal/2026/2026-10-04-recorded-r-2.md",
@@ -637,6 +738,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-04-locked-the-check-time-protocol.md",
       "content/maps/building-folio.html",
       "content/maps/using-folio.html",
@@ -666,6 +768,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
       "content/maps/using-folio.html"
     ],
@@ -691,6 +794,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/journal/2026/2026-10-04-recorded-r-1.md",
       "content/maps/building-folio.html",
@@ -714,6 +818,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-04-recorded-r-2.md",
       "content/maps/building-folio.html",
       "content/questions/Q-1.md"
@@ -736,6 +841,7 @@
       }
     ],
     "cited_by": [
+      "content/concepts/map/index.html",
       "content/journal/2026/2026-10-04-ingested-as-we-may-think.md",
       "content/maps/using-folio.html",
       "content/readings/1945-as-we-may-think-reading.html"

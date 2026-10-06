@@ -2,7 +2,9 @@
    It draws, on every page, what metadata and the generated indices say: the top bar,
    the library rail, the header, the banners, the page panel, guide navigation, map rows, the home page's maps, topic focus, the
    journal timeline, search, previews, concept popovers and, when served by `folio serve`,
-   the comment panel and the Review page. The page itself holds only its <head> metadata and its <main>. */
+   the comment panel and the Review page, and KaTeX math on a page that asks for it. The page holds its
+   <head> metadata and its <main>, which is a free canvas: it may carry its own style and script, and lays
+   itself out in the room between the rail and the panel, or in the reading column when it asks for one. */
 (function () {
   "use strict";
 
@@ -1345,10 +1347,38 @@
     }).catch(function (err) { main.appendChild(el("p", { class: "f-error", text: err.message })); });
   }
 
+  /* ---------------------------------------------------------------- math */
+  /* KaTeX, vendored beside this script, on a page with <meta name="math">. It typesets $…$, $$…$$,
+     \(…\) and \[…\] inside <main>, never in code, scripts or a definition's name. */
+  function loadMath() {
+    var dir = BASE + "shell/vendor/katex/";
+    function add(tag, attrs) { var n = el(tag, attrs); document.head.appendChild(n); return n; }
+    add("link", { rel: "stylesheet", href: dir + "katex.min.css" });
+    var katex = add("script", { src: dir + "katex.min.js" });
+    katex.async = false;
+    katex.onload = function () {
+      var auto = add("script", { src: dir + "contrib/auto-render.min.js" });
+      auto.onload = function () {
+        window.renderMathInElement(main, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+          ignoredClasses: ["defn-name"]
+        });
+      };
+    };
+  }
+
   /* --------------------------------------------------------------- start */
   function start() {
     var view = meta("folio-view");
     var rel = meta("folio-source") || relOf(location.pathname);
+    if (view || meta("layout") === "column") document.body.classList.add("f-column");
     Promise.all([
       optional(fetchJSON(".folio/catalog.json"), { documents: [] }),
       optional(fetchJSON(".folio/backlinks.json"), {}),
@@ -1383,6 +1413,7 @@
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
       }
       hookPreviews(document.body);
+      if (document.querySelector('meta[name="math"]')) loadMath();
       document.documentElement.classList.add("f-ready");
     });
   }
