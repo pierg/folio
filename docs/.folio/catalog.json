@@ -55,7 +55,8 @@
       "title": "Journal",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/journal/"
     },
@@ -74,7 +75,8 @@
       "title": "Library",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/library/"
     },
@@ -93,7 +95,8 @@
       "title": "Map",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/map/"
     },
@@ -132,7 +135,8 @@
       "title": "Permanent record",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/concepts/permanent-record/"
     },
@@ -350,7 +354,8 @@
       "title": "One journal entry per file",
       "topics": [
         "using-folio",
-        "concepts"
+        "concepts",
+        "building-folio"
       ],
       "url": "/content/journal/2026/2026-10-03-one-journal-entry-per-file.md"
     },
