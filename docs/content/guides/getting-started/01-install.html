@@ -10,45 +10,302 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* Getting started: the guide's shared chapter vocabulary (.gs-), the same in every chapter; this chapter's own rules follow it.
+   Every word is in the markup. The script only hides frames, moves aria-current and aria-pressed, and sets classes and data-v. */
+.gs-sec { margin: 0 0 3.5rem; min-width: 0; }
+.gs-sec > h2:first-child { margin-top: 0; }
+.gs-sec > p, .gs-sec > ul, .gs-sec > ol, .gs-sec > pre, .gs-sec > details, .gs-sec > .note, .gs-prose > p, .gs-prose > pre, .gs-prose > details { max-width: 44rem; }
+.gs-prose { min-width: 0; }
+.gs-prose > h2:first-child { margin-top: 0; }
+.gs-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.gs-band > * { min-width: 0; }
+.gs-stick { position: sticky; top: calc(var(--top) + 1.25rem); }
+.gs-fig { margin: 0 0 1.15em; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fig svg { display: block; width: 100%; height: auto; }
+.gs-fig > figcaption { margin-top: .75rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-k { margin: 0 0 .4rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-scroll { overflow-x: auto; }
+
+/* the stepper: controls, a rail of steps, one frame per step; scripts off, the frames read as a list */
+.gs-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 .7rem; }
+.gs-rail { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; padding: 0; }
+.gs-rail button { display: inline-flex; align-items: baseline; gap: .3rem; padding: .28rem .6rem; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-3); font: 600 .74rem/1.2 var(--sans); cursor: pointer; }
+.gs-rail button b { font: 700 .72rem/1 var(--mono); }
+.gs-rail button:hover { color: var(--ink); border-color: var(--ink-3); }
+.gs-rail button[aria-current="step"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.gs-frames { list-style: none; margin: 0; padding: 0; }
+main .gs-frames > .gs-frame { margin: 0 0 1.1rem; padding: 0 0 0 .9rem; border-left: 2px solid var(--rule-strong); }
+main .gs-live .gs-frames > .gs-frame { margin: 0; padding: 0; border: 0; }
+.gs-step [hidden] { display: none !important; }
+.gs-step:not(.gs-live) .gs-ctl, .gs-step:not(.gs-live) .gs-rail { display: none; }
+.gs-frame > p { margin: 0 0 .65rem; font-size: .98rem; }
+.gs-frame > p.gs-k { margin-bottom: .35rem; }
+.gs-frame > pre { margin: 0 0 .65rem; font-size: .82rem; }
+.gs-frame > :last-child { margin-bottom: 0; }
+.gs-live [data-from] { transition: opacity .25s, background-color .25s, border-color .25s; }
+.gs-live .gs-later { opacity: .32; }
+
+/* a picker: buttons set data-v on the wrapper; scripts off, every state shows with its own label */
+.gs-pick-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 .9rem; }
+.gs-pick:not(.gs-live) .gs-pick-ctl { display: none; }
+.gs-pick.gs-live[data-v="a"] [data-for]:not([data-for~="a"]), .gs-pick.gs-live[data-v="b"] [data-for]:not([data-for~="b"]), .gs-pick.gs-live[data-v="c"] [data-for]:not([data-for~="c"]) { display: none; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-band { grid-template-columns: minmax(0, 1fr); }
+  .gs-stick { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-live [data-from], .gs-live * { transition: none !important; }
+}
+
+/* 01 only (.gs-in-): the two ways in, the agent's one message, the tree that grows */
+.gs-in-ways { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 2.5rem; margin: 0 0 1rem; }
+.gs-in-ways > * { min-width: 0; }
+.gs-in-ways > section > h2 { margin-top: 0; }
+.gs-in-ways > .gs-sec { margin-bottom: 1rem; }
+.gs-in-ways > section > p, .gs-in-ways > section > pre { max-width: 44rem; }
+.gs-in-flow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2rem minmax(0, 1.05fr); grid-template-rows: auto auto; gap: .7rem .8rem; align-items: stretch; margin: 0; }
+.gs-in-flow > * { min-width: 0; }
+.gs-in-box { padding: .6rem .75rem .65rem; border: 1.5px solid var(--rule-strong); border-radius: 8px; background: var(--paper); font: .86rem/1.45 var(--sans); color: var(--ink-2); }
+.gs-in-box b { display: block; margin-bottom: .15rem; font: 700 .64rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.gs-in-you { border-color: var(--azure); }
+.gs-in-you b { color: var(--azure); }
+.gs-in-agent { border-color: var(--violet); }
+.gs-in-agent b { color: var(--violet); }
+.gs-in-join { grid-column: 3; grid-row: 1 / span 2; display: flex; align-items: center; justify-content: center; color: var(--ink-3); }
+.gs-in-join svg { width: 2rem; height: 100%; min-height: 6rem; }
+.gs-in-end { grid-column: 4; grid-row: 1 / span 2; display: flex; flex-direction: column; justify-content: center; border-color: var(--orange); background: color-mix(in srgb, var(--orange) 8%, var(--paper)); }
+.gs-in-end b { color: var(--orange); }
+.gs-in-arrow { position: relative; }
+.gs-in-arrow::after { content: ""; position: absolute; right: -.62rem; top: 50%; width: .45rem; height: .45rem; border-top: 1.5px solid var(--ink-3); border-right: 1.5px solid var(--ink-3); transform: translateY(-50%) rotate(45deg); }
+
+.gs-in-msg { max-width: 40rem; margin: 0 0 1.15em; border: 1px solid var(--rule-strong); border-radius: 12px; background: var(--surface); overflow: hidden; font-family: var(--sans); }
+.gs-in-msg-head { display: flex; align-items: center; gap: .5rem; padding: .55rem 1rem; border-bottom: 1px solid var(--rule); font: 650 .72rem/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--violet); }
+.gs-in-msg-head::before { content: ""; width: .55rem; height: .55rem; border-radius: 50%; background: var(--violet); }
+.gs-in-msg ol { margin: 0; padding: .8rem 1rem .9rem 2.3rem; font-size: .93rem; line-height: 1.5; }
+.gs-in-msg li { margin: 0 0 .55rem; }
+.gs-in-msg li:last-child { margin-bottom: 0; }
+.gs-in-msg .gs-in-def { display: block; margin-top: .15rem; font-size: .84rem; color: var(--ink-3); }
+.gs-in-reply { padding: .55rem 1rem .65rem; border-top: 1px dashed var(--rule-strong); background: color-mix(in srgb, var(--azure) 7%, var(--surface)); font-size: .9rem; color: var(--ink-2); }
+.gs-in-reply b { color: var(--azure); }
+
+.gs-in-tree { list-style: none; margin: 0; padding: .4rem 0; font: .82rem/1.5 var(--mono); }
+main .gs-in-tree > li { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 0 .8rem; margin: 0; padding: .22rem .5rem; border-radius: 6px; border: 1.5px solid transparent; }
+.gs-in-tree > li > * { min-width: 0; overflow-wrap: anywhere; }
+.gs-in-tree .gs-in-d1 { padding-left: 1.1rem; }
+.gs-in-tree .gs-in-d2 { padding-left: 2.2rem; }
+.gs-in-tree .gs-in-note { font: .78rem/1.45 var(--sans); color: var(--ink-3); }
+.gs-in-tree > li.gs-now { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 12%, transparent); }
+.gs-in-tree > li.gs-now .gs-in-note { color: var(--ink-2); }
+.gs-in-commit { margin: .5rem 0 0; padding: .45rem .6rem; border-top: 1px dashed var(--rule-strong); font: .82rem/1.45 var(--sans); color: var(--ink-2); }
+.gs-in-commit code { font-size: .78rem; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-in-ways { grid-template-columns: minmax(0, 1fr); }
+  .gs-in-flow { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .gs-in-join { display: none; }
+  .gs-in-end { grid-column: auto; grid-row: auto; }
+  .gs-in-arrow::after { display: none; }
+  main .gs-in-tree > li { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<figure class="gs-fig" aria-label="There are two ways in. Either you paste the setup prompt and the agent installs the engine, or you install the engine and ask the agent to set up folio. Both end in the same place: the set-up skill, which asks its questions in one message and leaves a library that passes the gate.">
+<p class="gs-k">Two ways in, one set-up</p>
+<div class="gs-in-flow">
+<div class="gs-in-box gs-in-you gs-in-arrow"><b>You</b>Paste the setup prompt into your agent.</div>
+<div class="gs-in-box gs-in-agent"><b>Agent</b>Installs <code>folio-kb</code> and confirms that <code>folio</code> runs.</div>
+<div class="gs-in-box gs-in-you gs-in-arrow"><b>You</b>Install <code>folio-kb</code> yourself.</div>
+<div class="gs-in-box gs-in-you"><b>You</b>Ask, in plain words: set up folio here.</div>
+<div class="gs-in-join" aria-hidden="true"><svg viewBox="0 0 32 100" preserveAspectRatio="none" role="img"><title>Both paths join</title><path d="M2 25 C 18 25, 16 50, 30 50 M2 75 C 18 75, 16 50, 30 50" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
+<div class="gs-in-box gs-in-end"><b>The set-up skill</b>Asks what it still needs in one message, creates the library, runs the gate and commits.</div>
+</div>
+<figcaption>The top row is the setup prompt; the bottom row is installing the engine first. The boxes marked You are the only steps you take.</figcaption>
+</figure>
+
+<div class="gs-in-ways">
+<section class="gs-sec">
 <h2 id="prompt">Hand your agent the setup prompt</h2>
 <p>folio is installed by your agent, not by you. Open your coding agent in the project where the library should live, and paste the setup prompt from <a href="https://github.com/pierg/folio/blob/main/SETUP.md">SETUP.md</a>.</p>
-<p>The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up <a class="defn-link" href="/content/concepts/skill/">skill</a>. The agent asks you at most three questions in one message: what the library is called and who reads it, where it should live, and which <a class="defn-link" href="/content/concepts/pack/">packs</a> to switch on. Every question comes with a default, so "defaults" is a full answer.</p>
-
-<details class="check">
-<summary>How many rounds of questions does set-up take?</summary>
-<div class="ans">One. The agent asks everything it still needs in one message, and skips what you already said.</div>
-</details>
-
+<p>The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up <a class="defn-link" href="/content/concepts/skill/">skill</a>. A skill is a written procedure the agent reads before it acts. Set-up is the first of seven.</p>
+</section>
+<section class="gs-sec">
 <h2 id="pip">Or install the engine yourself</h2>
-<p>If you prefer to install the engine first, run <code>pip install folio-kb</code>, or <code>uv tool install folio-kb</code>. The command it installs is <code>folio</code>. Then ask your agent, in plain words, to set up folio here. It finds the set-up skill and carries on from the questions.</p>
+<p>If you prefer to install the engine first, run one of these. The package is <code>folio-kb</code>; the command it installs is <code>folio</code>.</p>
+<pre><code>uv tool install folio-kb
+pipx install folio-kb
+pip install folio-kb</code></pre>
+<p>Then ask your agent, in plain words, to set up folio here. It finds the set-up skill and carries on from the questions.</p>
 <p>Either way, you do not run <code>folio</code> again yourself. The skills call it, the way an agent calls git.</p>
+</section>
+</div>
 
 <details class="check">
 <summary>What is the package called, and what is the command called?</summary>
 <div class="ans">The package is <code>folio-kb</code>; the command it installs is <code>folio</code>.</div>
 </details>
 
+<section class="gs-sec">
+<h2 id="questions">The questions come in one message</h2>
+<div class="gs-band">
+<div class="gs-prose">
+<p>The agent asks you at most three questions, all in one message: what the library is called and who reads it, where it should live, and which <a class="defn-link" href="/content/concepts/pack/">packs</a> to switch on. A pack adds genres and rules for one kind of work, such as a lab's results.</p>
+<p>Every question comes with a default, so "defaults" is a full answer. A question you already answered in your request is skipped.</p>
+</div>
+<figure class="gs-in-msg" aria-label="The agent's one message holds three questions, each with a default; one reply, defaults, answers all three.">
+<div class="gs-in-msg-head">The agent asks</div>
+<ol>
+<li>What is it called, what is it for, and who reads it?<span class="gs-in-def">Default: the folder's name, your own notes, for you.</span></li>
+<li>Where should it live?<span class="gs-in-def">Default: <code>docs/</code> in an existing project, or the root of a new repository.</span></li>
+<li>Which packs should be on?<span class="gs-in-def">Default: none. The agent lists each pack with its purpose in one line.</span></li>
+</ol>
+<div class="gs-in-reply"><b>You:</b> defaults</div>
+</figure>
+</div>
+
+<details class="check">
+<summary>How many rounds of questions does set-up take?</summary>
+<div class="ans">One. The agent asks everything it still needs in one message, and skips what you already said.</div>
+</details>
+</section>
+
+<section class="gs-sec">
 <h2 id="result">What set-up leaves behind</h2>
-<p>Set-up makes a <a class="defn-link" href="/content/concepts/library/">library</a> in the folder you chose and commits it:</p>
-<pre><code>docs/
-  folio.yaml        the charter: name, purpose, reader, packs
-  content/
-    index.html      the home page
-    journal/        one file per entry; the first records the setup
-  assets/           figures, the bibliography, data
-  .folio/           generated indices, committed
-.agents/skills/     the seven skills, at the project's root</code></pre>
-<p>It ends by running the <a class="defn-link" href="/content/concepts/gate/">gate</a>, which passes on a new library, and by telling you in two lines what you can now ask for.</p>
+<p>Set-up makes a <a class="defn-link" href="/content/concepts/library/">library</a> in the folder you chose, and commits it. Step through what the agent runs, and watch the project fill in. Each step lights the files it writes.</p>
+
+<div class="gs-step gs-band" id="gs-in-step">
+<div>
+<div class="gs-ctl">
+<button type="button" class="tbtn" data-go="prev">Back</button>
+<button type="button" class="tbtn" data-go="next">Next step</button>
+</div>
+<div class="gs-rail" role="group" aria-label="The steps of set-up">
+<button type="button"><b>1</b>confirm</button>
+<button type="button"><b>2</b>init</button>
+<button type="button"><b>3</b>charter</button>
+<button type="button"><b>4</b>journal</button>
+<button type="button"><b>5</b>gate</button>
+<button type="button"><b>6</b>commit</button>
+</div>
+<ol class="gs-frames" aria-live="polite">
+<li class="gs-frame">
+<p class="gs-k">Step 1 · Confirm the engine</p>
+<pre><code>folio version</code></pre>
+<p>The agent checks that the engine runs and tells you its version. If it does not run, the agent stops and gives you the install line. Nothing is written yet.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 2 · Create the library</p>
+<pre><code>folio init docs --name "Field notes" --purpose "What we learned building the importer"</code></pre>
+<p>One command writes the charter, the home page, the asset folders, a <code>.gitignore</code> and the generated indices, and copies the seven skills to the project's root. The home page takes its title from the name.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 3 · Finish the charter</p>
+<pre><code>folio config set reader "The team, who know the importer's code"
+folio pack on lab</code></pre>
+<p>The reader goes into the charter, and each pack you chose is switched on there. Only the set-up and configure skills write the charter, and always through the command, so every change is visible.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 4 · Record the setup</p>
+<pre><code>folio journal add --title "Library set up" --description "Notes on building the importer, for the team" --body "..." --kind decision --about home</code></pre>
+<p>The library's first <a class="defn-link" href="/content/concepts/journal/">journal</a> entry is a decision: what the library is for, who reads it, which packs are on, where it lives. <code>folio init</code> writes no entry, so this is the first.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 5 · Run the gate</p>
+<pre><code>folio index
+folio check</code></pre>
+<p>The indices are rebuilt to include the new entry, and the <a class="defn-link" href="/content/concepts/gate/">gate</a> runs. A new library passes it: it starts clean.</p>
+</li>
+<li class="gs-frame">
+<p class="gs-k">Step 6 · Commit</p>
+<p>The agent adds exactly the files set-up wrote, never everything in the folder, and commits them with one line saying the library was set up. Then it tells you, in two lines, what you can now ask for.</p>
+</li>
+</ol>
+</div>
+
+<figure class="gs-fig gs-stick" aria-label="The project after set-up: the seven skills at the project's root, and in docs the charter, the home page, the first journal entry, the asset folders and the committed indices.">
+<p class="gs-k">Your project</p>
+<ol class="gs-in-tree">
+<li><span>your-project/</span><span class="gs-in-note"></span></li>
+<li data-from="2"><span class="gs-in-d1">.agents/skills/</span><span class="gs-in-note">the seven skills, at the project's root</span></li>
+<li data-from="2"><span class="gs-in-d1">.claude/skills</span><span class="gs-in-note">a link to them</span></li>
+<li data-from="2"><span class="gs-in-d1">docs/</span><span class="gs-in-note">the library</span></li>
+<li data-from="2" data-now="2 3"><span class="gs-in-d2">folio.yaml</span><span class="gs-in-note">the charter: name, purpose, reader, packs</span></li>
+<li data-from="2"><span class="gs-in-d2">content/index.html</span><span class="gs-in-note">the home page</span></li>
+<li data-from="4"><span class="gs-in-d2">content/journal/</span><span class="gs-in-note">one file per entry; the first records the setup</span></li>
+<li data-from="2"><span class="gs-in-d2">assets/</span><span class="gs-in-note">figures, data, the bibliography</span></li>
+<li data-from="2" data-now="2 5"><span class="gs-in-d2">.folio/</span><span class="gs-in-note">generated indices, committed</span></li>
+<li data-from="2"><span class="gs-in-d2">.gitignore</span><span class="gs-in-note">keeps the built site and the server's files out</span></li>
+</ol>
+<p class="gs-in-commit" data-from="6">One commit holds all of it: <code>Library set up</code>.</p>
+<figcaption>Files light up in the step that writes them; the charter lights again when set-up finishes it, and the indices when the gate rebuilds them. With scripts off, this is the finished project.</figcaption>
+</figure>
+</div>
 
 <details class="check">
 <summary>Which file holds what the library is for, and who writes it?</summary>
 <div class="ans"><code>folio.yaml</code>, the charter. Only the set-up and configure skills write it, and each change is recorded in the journal.</div>
 </details>
+<details class="check">
+<summary>You open the library right after <code>folio init</code>, before set-up has finished. Is there a journal entry yet?</summary>
+<div class="ans">No. <code>folio init</code> writes none. The set-up skill adds the first one, a decision recording the setup, before it runs the gate.</div>
+</details>
+</section>
 
+<script>
+(function () {
+  /* Steppers: hide every frame but the current one, mark its chip, and grey what later steps add. */
+  var steps = document.querySelectorAll(".gs-step");
+  for (var s = 0; s < steps.length; s++) wireStep(steps[s]);
+  function wireStep(box) {
+    var frames = box.querySelectorAll(".gs-frame");
+    if (!frames.length) return;
+    var chips = box.querySelectorAll(".gs-rail button");
+    var marks = box.querySelectorAll("[data-from]");
+    var prev = box.querySelector("[data-go='prev']"), next = box.querySelector("[data-go='next']");
+    var at = 0;
+    function show(i) {
+      at = Math.max(0, Math.min(frames.length - 1, i));
+      var n = at + 1;
+      for (var k = 0; k < frames.length; k++) frames[k].hidden = k !== at;
+      for (var c = 0; c < chips.length; c++) {
+        if (c === at) chips[c].setAttribute("aria-current", "step"); else chips[c].removeAttribute("aria-current");
+      }
+      for (var m = 0; m < marks.length; m++) {
+        var from = +marks[m].getAttribute("data-from");
+        var now = (marks[m].getAttribute("data-now") || String(from)).split(" ");
+        marks[m].classList.toggle("gs-later", from > n);
+        marks[m].classList.toggle("gs-now", now.indexOf(String(n)) !== -1);
+      }
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === frames.length - 1;
+      box.setAttribute("data-step", String(n));
+    }
+    box.classList.add("gs-live");
+    if (prev) prev.addEventListener("click", function () { show(at - 1); });
+    if (next) next.addEventListener("click", function () { show(at + 1); });
+    for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", (function (i) { return function () { show(i); }; })(c));
+    show(0);
+  }
+  /* Pickers: set data-v on the wrapper and aria-pressed on the buttons. */
+  var picks = document.querySelectorAll(".gs-pick");
+  for (var p = 0; p < picks.length; p++) wirePick(picks[p]);
+  function wirePick(box) {
+    var buttons = box.querySelectorAll(".gs-pick-ctl button[data-v]");
+    if (!buttons.length) return;
+    function pick(v) {
+      box.setAttribute("data-v", v);
+      for (var b = 0; b < buttons.length; b++) buttons[b].setAttribute("aria-pressed", String(buttons[b].getAttribute("data-v") === v));
+    }
+    for (var b = 0; b < buttons.length; b++) buttons[b].addEventListener("click", function () { pick(this.getAttribute("data-v")); });
+    box.classList.add("gs-live");
+    pick(buttons[0].getAttribute("data-v"));
+  }
+})();
+</script>
 </main>
 </body>
 </html>

@@ -10,36 +10,378 @@
 <meta name="tags" content="using">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* Getting started: the guide's shared chapter vocabulary (.gs-), the same in every chapter; this chapter's own rules follow it.
+   Every word is in the markup. The script only hides frames, moves aria-current and aria-pressed, and sets classes and data-v. */
+.gs-sec { margin: 0 0 3.5rem; min-width: 0; }
+.gs-sec > h2:first-child { margin-top: 0; }
+.gs-sec > p, .gs-sec > ul, .gs-sec > ol, .gs-sec > pre, .gs-sec > details, .gs-sec > .note, .gs-prose > p, .gs-prose > pre, .gs-prose > details { max-width: 44rem; }
+.gs-prose { min-width: 0; }
+.gs-prose > h2:first-child { margin-top: 0; }
+.gs-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2.5rem; align-items: start; }
+.gs-band > * { min-width: 0; }
+.gs-stick { position: sticky; top: calc(var(--top) + 1.25rem); }
+.gs-fig { margin: 0 0 1.15em; padding: 1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gs-fig svg { display: block; width: 100%; height: auto; }
+.gs-fig > figcaption { margin-top: .75rem; font: .88rem/1.5 var(--sans); color: var(--ink-2); }
+.gs-k { margin: 0 0 .4rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.gs-scroll { overflow-x: auto; }
+
+/* the stepper: controls, a rail of steps, one frame per step; scripts off, the frames read as a list */
+.gs-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0 0 .7rem; }
+.gs-rail { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 1rem; padding: 0; }
+.gs-rail button { display: inline-flex; align-items: baseline; gap: .3rem; padding: .28rem .6rem; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--ink-3); font: 600 .74rem/1.2 var(--sans); cursor: pointer; }
+.gs-rail button b { font: 700 .72rem/1 var(--mono); }
+.gs-rail button:hover { color: var(--ink); border-color: var(--ink-3); }
+.gs-rail button[aria-current="step"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.gs-frames { list-style: none; margin: 0; padding: 0; }
+main .gs-frames > .gs-frame { margin: 0 0 1.1rem; padding: 0 0 0 .9rem; border-left: 2px solid var(--rule-strong); }
+main .gs-live .gs-frames > .gs-frame { margin: 0; padding: 0; border: 0; }
+.gs-step [hidden] { display: none !important; }
+.gs-step:not(.gs-live) .gs-ctl, .gs-step:not(.gs-live) .gs-rail { display: none; }
+.gs-frame > p { margin: 0 0 .65rem; font-size: .98rem; }
+.gs-frame > p.gs-k { margin-bottom: .35rem; }
+.gs-frame > pre { margin: 0 0 .65rem; font-size: .82rem; }
+.gs-frame > :last-child { margin-bottom: 0; }
+.gs-live [data-from] { transition: opacity .25s, background-color .25s, border-color .25s; }
+.gs-live .gs-later { opacity: .32; }
+
+/* a picker: buttons set data-v on the wrapper; scripts off, every state shows with its own label */
+.gs-pick-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 .9rem; }
+.gs-pick:not(.gs-live) .gs-pick-ctl { display: none; }
+.gs-pick.gs-live[data-v="a"] [data-for]:not([data-for~="a"]), .gs-pick.gs-live[data-v="b"] [data-for]:not([data-for~="b"]), .gs-pick.gs-live[data-v="c"] [data-for]:not([data-for~="c"]) { display: none; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-band { grid-template-columns: minmax(0, 1fr); }
+  .gs-stick { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-live [data-from], .gs-live * { transition: none !important; }
+}
+
+/* 03 only (.gs-or-): folders against a map, reachability, the move, the plain move against folio mv, the health pass */
+.gs-or-vs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; margin: 0; }
+.gs-or-vs > * { min-width: 0; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); padding: .8rem .95rem .9rem; }
+.gs-or-vs ul { list-style: none; margin: 0; padding: 0; }
+main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans); color: var(--ink-2); }
+.gs-or-dir { font: .8rem/1.45 var(--mono); color: var(--ink-3); }
+.gs-or-dir code { background: none; padding: 0; }
+.gs-or-file { padding-left: 1.1rem !important; font-family: var(--mono) !important; font-size: .8rem !important; }
+.gs-or-grp { margin-top: .5rem !important; font: 650 .68rem/1.3 var(--sans) !important; letter-spacing: .1em; text-transform: uppercase; color: var(--accent) !important; }
+.gs-or-grp:first-child { margin-top: 0 !important; }
+.gs-or-row { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); }
+.gs-or-row::before { content: counter(gs-or-n); counter-increment: gs-or-n; font: 700 .72rem/1.9 var(--mono); color: var(--ink-3); }
+.gs-or-map ul { counter-reset: gs-or-n; }
+.gs-or-row span { color: var(--ink-3); }
+.gs-or-row b { font-weight: 600; color: var(--link); }
+
+.gs-or-reach svg { max-width: 30rem; margin: 0 auto; }
+
+.gs-or-frame { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1rem 1.8rem; align-items: start; }
+.gs-or-frame > * { min-width: 0; }
+.gs-or-frame > div > p { margin: 0 0 .6rem; font-size: .98rem; }
+.gs-or-frame > div > pre { margin: 0 0 .6rem; font-size: .82rem; }
+.gs-or-state { margin: 0; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--paper); font: .8rem/1.45 var(--sans); }
+.gs-or-state > div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: .6rem; padding: .5rem .7rem; border-top: 1px solid var(--rule); border-left: 3px solid transparent; }
+.gs-or-state > div:first-child { border-top: 0; }
+.gs-or-state > div > * { min-width: 0; }
+.gs-or-state b { font: 650 .66rem/1.6 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.gs-or-state code { font-size: .76rem; }
+.gs-or-state .gs-or-chg { border-left-color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, var(--paper)); }
+.gs-or-state .gs-or-none { color: var(--ink-3); }
+
+.gs-or-two { margin: 0; }
+.gs-or-readout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8rem; }
+.gs-or-readout > * { min-width: 0; }
+.gs-or-readout table { width: 100%; margin: 0; font: .86rem/1.45 var(--sans); }
+.gs-or-readout th { width: 34%; text-align: left; font-weight: 600; color: var(--ink-2); vertical-align: top; }
+.gs-or-readout caption { caption-side: top; text-align: left; padding: 0 0 .35rem; font: 650 .7rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.gs-or-bad caption { color: var(--bad); }
+.gs-or-good caption { color: var(--ok); }
+.gs-or-bad td { color: var(--bad); }
+.gs-or-good td { color: var(--ok); }
+.gs-pick.gs-live .gs-or-readout { grid-template-columns: minmax(0, 1fr); max-width: 34rem; }
+
+.gs-or-health { margin: 0 0 1.15em; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1rem; }
+.gs-or-health > * { min-width: 0; }
+.gs-or-health ol { margin: 0; padding-left: 1.3rem; font-size: .95rem; }
+.gs-or-health li { margin: 0 0 .3rem; }
+
+@container folio-canvas (max-width: 40rem) {
+  .gs-or-vs, .gs-or-frame, .gs-or-readout, .gs-or-health { grid-template-columns: minmax(0, 1fr); }
+  .gs-or-state > div { grid-template-columns: minmax(0, 1fr); gap: .1rem; }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gs-sec">
 <h2 id="maps">Maps are the structure</h2>
 <p>A library's folders follow genres, so they do not tell a reader where to start. <a class="defn-link" href="/content/concepts/map/">Maps</a> do. Each map lists documents in the order to read them, under group headings, with an optional reason per row. The maps named in the charter as home maps appear on the home page as the library's topics.</p>
-<p>Every document except a journal entry must be on a map, or linked from a document that is. The <a class="defn-link" href="/content/concepts/gate/">gate</a> reports any that are not.</p>
+
+<figure class="gs-fig" aria-label="The same documents twice. The folders sort them by genre and then by name, which says nothing about where to start. A map puts them in reading order, under headings, each row with a reason to follow it.">
+<div class="gs-or-vs">
+<div>
+<p class="gs-k">The folders: by genre, then by name</p>
+<ul>
+<li class="gs-or-dir"><code>content/concepts/</code></li>
+<li class="gs-or-file">replica/</li>
+<li class="gs-or-file">schema-version/</li>
+<li class="gs-or-dir"><code>content/entries/</code></li>
+<li class="gs-or-file">how-the-importer-retries/</li>
+<li class="gs-or-dir"><code>content/notes/</code></li>
+<li class="gs-or-file">pinned-parser.html</li>
+<li class="gs-or-file">why-batches-of-files.html</li>
+</ul>
+</div>
+<div class="gs-or-map">
+<p class="gs-k">A map: the importer, in reading order</p>
+<ul>
+<li class="gs-or-grp">Start here</li>
+<li class="gs-or-row"><div><b>How the importer retries</b> <span>The whole design in one read.</span></div></li>
+<li class="gs-or-row"><div><b>Why batches of files</b> <span>The choice the rest depends on.</span></div></li>
+<li class="gs-or-grp">When something breaks</li>
+<li class="gs-or-row"><div><b>Why we pinned the parser</b> <span>Read before you upgrade it.</span></div></li>
+</ul>
+</div>
+</div>
+<figcaption>Left, what the file system gives you. Right, what a map adds: an order, headings, and a reason on each row. The concepts are on no map here; the entry links them, which is enough.</figcaption>
+</figure>
+
+<div class="gs-band">
+<div class="gs-prose">
+<p>Every document except a journal entry must be on a map, or linked from a document that is. The <a class="defn-link" href="/content/concepts/gate/">gate</a> reports any that are not: an orphan is a page no reader can reach by following the library from its home page.</p>
+<p>A genre can ask for more. A guide or an entry needs a row of its own on some map; a link to it is not enough. A concept or a note is reachable either way.</p>
+</div>
+<figure class="gs-fig gs-or-reach" aria-label="Reachability from the home page: the home page lists a map, the map lists an entry, the entry links a concept and a note, so all of them are reachable. One note is listed by no map and linked from nothing, so it is an orphan and the gate reports it.">
+<svg viewBox="0 0 420 250" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>What is reachable from the home page, and the one orphan</title>
+<defs><marker id="gs-or-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker></defs>
+<rect x="10" y="20" width="96" height="40" rx="7" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="58" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--teal)">home</text>
+<rect x="160" y="20" width="96" height="40" rx="7" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="208" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--teal)">map</text>
+<rect x="310" y="20" width="100" height="40" rx="7" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="360" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--teal)">entry</text>
+<rect x="230" y="120" width="96" height="40" rx="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+<text x="278" y="145" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--blue)">concept</text>
+<rect x="340" y="120" width="70" height="40" rx="7" fill="none" stroke="var(--blue)" stroke-width="2"/>
+<text x="375" y="145" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--blue)">note</text>
+<rect x="30" y="190" width="150" height="44" rx="7" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="105" y="210" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--red)">note</text>
+<text x="105" y="226" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">no row, no link: orphan</text>
+<path d="M108 40 H156" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-or-arr)"/>
+<path d="M258 40 H306" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#gs-or-arr)"/>
+<text x="132" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">row</text>
+<text x="282" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">row</text>
+<path d="M345 62 C 330 90, 300 95, 286 116" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#gs-or-arr)"/>
+<path d="M368 62 C 372 85, 375 95, 375 116" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#gs-or-arr)"/>
+<text x="300" y="92" text-anchor="end" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">links</text>
+</svg>
+<figcaption>Solid arrows are map rows; dashed ones are links in a document's text. Everything the arrows reach passes. The lone note at the bottom fails the gate until it gets a row or a link.</figcaption>
+</figure>
+</div>
 
 <details class="check">
 <summary>A page is on no map, but a page on a map links to it. Is it an orphan?</summary>
 <div class="ans">No. A link from a document that is on a map makes it reachable, unless its genre requires a row of its own.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="change">Ask for the change, not the commands</h2>
 <p>Say "tidy the maps", "rename this page", "merge these two", "this note grew, make it an entry", or "retire this into that". The agent follows the organise skill. It moves documents only through folio's own commands, so links are rewritten, comments and dates are kept, and a committed document keeps its id while its old address redirects to the new one.</p>
+<p>Follow one rename through. You ask: "rename the pinned-parser note to parser-pin". Watch the map row that lists it.</p>
+
+<figure class="gs-fig gs-step" id="gs-or-step" aria-label="A rename with folio mv in five steps: the files move together with their comments, every link to the note is rewritten, the note keeps its id and its old address redirects, and the change is staged and recorded.">
+<div class="gs-ctl">
+<button type="button" class="tbtn" data-go="prev">Back</button>
+<button type="button" class="tbtn" data-go="next">Next step</button>
+</div>
+<div class="gs-rail" role="group" aria-label="The steps of a rename">
+<button type="button"><b>1</b>before</button>
+<button type="button"><b>2</b>move</button>
+<button type="button"><b>3</b>links</button>
+<button type="button"><b>4</b>id and address</button>
+<button type="button"><b>5</b>record</button>
+</div>
+<ol class="gs-frames" aria-live="polite">
+<li class="gs-frame gs-or-frame">
+<div>
+<p class="gs-k">Step 1 · Before</p>
+<p>The note is committed, a map lists it, and a reader has left a comment on it. Three things point at its name: the map row, its comment file and its address.</p>
+</div>
+<div class="gs-or-state">
+<div><b>Map row</b><code>href="/content/notes/pinned-parser.html"</code></div>
+<div><b>Files</b><span><code>pinned-parser.html</code><br><code>pinned-parser.annotations.json</code></span></div>
+<div><b>Old address</b><span class="gs-or-none">none yet</span></div>
+</div>
+</li>
+<li class="gs-frame gs-or-frame">
+<div>
+<p class="gs-k">Step 2 · Move the files</p>
+<pre><code>folio mv pinned-parser parser-pin</code></pre>
+<p>The note moves to its new name, and its comment file moves with it, so every thread stays on the page it was left on.</p>
+</div>
+<div class="gs-or-state">
+<div><b>Map row</b><code>href="/content/notes/pinned-parser.html"</code></div>
+<div class="gs-or-chg"><b>Files</b><span><code>parser-pin.html</code><br><code>parser-pin.annotations.json</code></span></div>
+<div><b>Old address</b><span class="gs-or-none">none yet</span></div>
+</div>
+</li>
+<li class="gs-frame gs-or-frame">
+<div>
+<p class="gs-k">Step 3 · Rewrite the links</p>
+<p>The same command rewrites every link to the note across the library: the map row here, and any page that cites it. The row's text comes from the note's title, so it reads right without an edit.</p>
+</div>
+<div class="gs-or-state">
+<div class="gs-or-chg"><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
+<div><b>Files</b><span><code>parser-pin.html</code><br><code>parser-pin.annotations.json</code></span></div>
+<div><b>Old address</b><span class="gs-or-none">none yet</span></div>
+</div>
+</li>
+<li class="gs-frame gs-or-frame">
+<div>
+<p class="gs-k">Step 4 · Keep the id, redirect the address</p>
+<p>The note was committed, so others may already cite it by its id. It keeps <code>pinned-parser</code> as its id, written into its metadata, and the old address redirects to the new one. Its dates come from git, and survive the move.</p>
+</div>
+<div class="gs-or-state">
+<div><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
+<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code><br><code>parser-pin.annotations.json</code></span></div>
+<div class="gs-or-chg"><b>Old address</b><span>redirects to the new one</span></div>
+</div>
+</li>
+<li class="gs-frame gs-or-frame">
+<div>
+<p class="gs-k">Step 5 · Stage and record</p>
+<p>The move stages every file it changed in git. The agent adds a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry saying what moved and why, runs the gate, and commits.</p>
+</div>
+<div class="gs-or-state">
+<div><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
+<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code><br><code>parser-pin.annotations.json</code></span></div>
+<div class="gs-or-chg"><b>Journal</b><span>a decision entry: renamed, and why</span></div>
+</div>
+</li>
+</ol>
+<figcaption>The highlighted row is what the step changed. A note never committed would simply take its new name as its id, with no redirect.</figcaption>
+</figure>
+
+<figure class="gs-fig gs-pick gs-or-two" aria-label="The same rename done two ways. A plain file move leaves the map row pointing at nothing, strands the comments under the old name, and kills the old address. folio mv rewrites the row, carries the comments, keeps the id and redirects the address.">
+<div class="gs-pick-ctl" role="group" aria-label="How the note was moved">
+<button type="button" class="tbtn" data-v="a" aria-pressed="false">A plain file move</button>
+<button type="button" class="tbtn" data-v="b" aria-pressed="false">folio mv</button>
+</div>
+<div class="gs-or-readout" aria-live="polite">
+<table class="gs-or-bad" data-for="a">
+<caption>A plain file move</caption>
+<tr><th scope="row">Map row</th><td>points at a file that is gone</td></tr>
+<tr><th scope="row">Comments</th><td>left behind under the old name</td></tr>
+<tr><th scope="row">Old address</th><td>leads nowhere</td></tr>
+<tr><th scope="row">Gate</th><td>fails on the broken links</td></tr>
+</table>
+<table class="gs-or-good" data-for="b">
+<caption>folio mv</caption>
+<tr><th scope="row">Map row</th><td>rewritten to the new path</td></tr>
+<tr><th scope="row">Comments</th><td>moved with the page</td></tr>
+<tr><th scope="row">Old address</th><td>redirects; the id is kept</td></tr>
+<tr><th scope="row">Gate</th><td>passes</td></tr>
+</table>
+</div>
+<figcaption>Pick a way to move the note and compare what is left behind. With scripts off, both are shown.</figcaption>
+</figure>
 
 <details class="check">
 <summary>Why should the agent never move a page with a plain file move?</summary>
 <div class="ans">A plain move breaks every link to the page and loses its comments. folio's move rewrites the links and keeps the comments, the id and the dates.</div>
 </details>
+</section>
 
+<section class="gs-sec">
 <h2 id="health">Ask for a health pass</h2>
 <p>From time to time, ask "is the library healthy?". The agent runs the gate, lists documents on no map, looks for thin documents and duplicates, finds drafts left for weeks and open comments, and reports what it changed and what is left for you. Structural choices, such as a new topic or retiring something you wrote, stay yours.</p>
+
+<div class="gs-or-health">
+<div class="lane lane-azure">
+<h4>The agent checks and fixes</h4>
+<ol>
+<li>The gate passes.</li>
+<li>Documents on no map get a row, or a link from one.</li>
+<li>Thin documents fold into the one they belong to.</li>
+<li>Two homes for one fact become one.</li>
+<li>Drafts left for weeks are finished, or proposed for retirement.</li>
+<li>Open comments go to the address skill.</li>
+</ol>
+</div>
+<div class="lane lane-violet">
+<h4>It asks you first</h4>
+<ol>
+<li>A new topic on the home page.</li>
+<li>Retiring or merging away something you wrote.</li>
+<li>Two documents that disagree on a fact: which holds.</li>
+</ol>
+</div>
+</div>
+
 <p>Each reorganisation is recorded in the <a class="defn-link" href="/content/concepts/journal/">journal</a>, so later you can see when a page moved and why.</p>
 
 <details class="check">
 <summary>Who decides to add a new top-level map?</summary>
 <div class="ans">You do. It is a change to the charter, made through the configure skill and recorded as a decision.</div>
 </details>
+</section>
 
+<script>
+(function () {
+  /* Steppers: hide every frame but the current one, mark its chip, and grey what later steps add. */
+  var steps = document.querySelectorAll(".gs-step");
+  for (var s = 0; s < steps.length; s++) wireStep(steps[s]);
+  function wireStep(box) {
+    var frames = box.querySelectorAll(".gs-frame");
+    if (!frames.length) return;
+    var chips = box.querySelectorAll(".gs-rail button");
+    var marks = box.querySelectorAll("[data-from]");
+    var prev = box.querySelector("[data-go='prev']"), next = box.querySelector("[data-go='next']");
+    var at = 0;
+    function show(i) {
+      at = Math.max(0, Math.min(frames.length - 1, i));
+      var n = at + 1;
+      for (var k = 0; k < frames.length; k++) frames[k].hidden = k !== at;
+      for (var c = 0; c < chips.length; c++) {
+        if (c === at) chips[c].setAttribute("aria-current", "step"); else chips[c].removeAttribute("aria-current");
+      }
+      for (var m = 0; m < marks.length; m++) {
+        var from = +marks[m].getAttribute("data-from");
+        var now = (marks[m].getAttribute("data-now") || String(from)).split(" ");
+        marks[m].classList.toggle("gs-later", from > n);
+        marks[m].classList.toggle("gs-now", now.indexOf(String(n)) !== -1);
+      }
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === frames.length - 1;
+      box.setAttribute("data-step", String(n));
+    }
+    box.classList.add("gs-live");
+    if (prev) prev.addEventListener("click", function () { show(at - 1); });
+    if (next) next.addEventListener("click", function () { show(at + 1); });
+    for (var c = 0; c < chips.length; c++) chips[c].addEventListener("click", (function (i) { return function () { show(i); }; })(c));
+    show(0);
+  }
+  /* Pickers: set data-v on the wrapper and aria-pressed on the buttons. */
+  var picks = document.querySelectorAll(".gs-pick");
+  for (var p = 0; p < picks.length; p++) wirePick(picks[p]);
+  function wirePick(box) {
+    var buttons = box.querySelectorAll(".gs-pick-ctl button[data-v]");
+    if (!buttons.length) return;
+    function pick(v) {
+      box.setAttribute("data-v", v);
+      for (var b = 0; b < buttons.length; b++) buttons[b].setAttribute("aria-pressed", String(buttons[b].getAttribute("data-v") === v));
+    }
+    for (var b = 0; b < buttons.length; b++) buttons[b].addEventListener("click", function () { pick(this.getAttribute("data-v")); });
+    box.classList.add("gs-live");
+    pick(buttons[0].getAttribute("data-v"));
+  }
+})();
+</script>
 </main>
 </body>
 </html>
