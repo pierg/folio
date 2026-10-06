@@ -41,6 +41,8 @@ def run(lib: Library) -> list[Problem]:
             add(genre.lives, LIFECYCLE_CHECKS[genre.lives](lib, doc))
         if any(p.lives == "permanent" for p in genre.parts.values()):
             add("permanent", permanent_parts(lib, doc))
+        if doc.status == "retired":
+            continue  # its address redirects to its replacement; only its lifecycle is still checked
         for df in doc.files:
             checks = genre.parts[df.part].checks if df.part is not None else genre.checks
             # `require` also bars an <h1> of the document's own, so it runs on every card.

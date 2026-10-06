@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -316,3 +317,15 @@ def test_the_library_rail_is_drawn_from_the_indices(sample: Path) -> None:
     for map_id in lib.charter.home_maps:
         assert isinstance(by_id[map_id].get("rows"), list)
     assert all(d["genre"] and d["title"] and d["url"] for d in docs)
+
+
+def test_a_retired_document_skips_its_card_checks(sample: Path, monkeypatch) -> None:
+    from conftest import problems
+
+    page = sample / "content/notes/flashattention-tiling.html"
+    text = page.read_text()
+    bare = re.sub(r"<a\b[^>]*>(.*?)</a>", r"\1", text, flags=re.S)
+    page.write_text(bare)
+    assert any("flashattention-tiling" in p.path and p.check == "min_links" for p in problems(sample))
+    assert folio(sample, "rm", "flashattention-tiling", "--to", "attention", monkeypatch=monkeypatch) == 0
+    assert not any("flashattention-tiling" in p.path and p.check == "min_links" for p in problems(sample))

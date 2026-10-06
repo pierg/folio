@@ -29,6 +29,8 @@ These run on every document. No card needs to name them.
 
 ## Card checks
 
+A retired document is held only to its lifecycle checks (`permanent`, `frozen`): its address redirects to its replacement, so what its body cites or links no longer matters.
+
 | Check | Settings | What it checks | Default | Used by |
 | --- | --- | --- | --- | --- |
 | `require` | a list of part names | Each named part of the body is present. In LaTeX, a part is an environment or command of that name (`abstract`, `bibliography`). Order is judged, not checked. The card's Shape defines each name. `h2` is at least one `<h2>` section. In Markdown, a part is a `##` section. A document has no `<h1>` of its own: the shell draws the title. A core or pack card requires only a part the engine or the shell reads, or that a tool built on folio parses. | error | concept (`defn`), map (`rows`), source (`identifiers`), paper, question, protocol, result, claim |
