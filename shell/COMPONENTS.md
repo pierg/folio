@@ -126,7 +126,7 @@ The reason is optional. Without one, the shell shows the target's description. T
 
 Figures live in `assets/figures/` and are linked from the root, or are drawn inline as SVG in the page. The shell prefixes the caption with "Figure." A table scrolls sideways inside its own box on a narrow screen, never the page. Mark a numeric column with `class="num"` on its cells to right-align it. See `craft/`.
 
-An inline SVG is shown near the size its `viewBox` was drawn for (at most 1.15 times its width), so its labels keep their size on a wide canvas; `data-fit="wide"` on the figure or the `<svg>` lets it fill the canvas instead. Every top-level figure gets a button in its corner that opens it larger in a dialog, with its controls still working; `data-expand="no"` leaves a figure out.
+An inline SVG is shown near the size its `viewBox` was drawn for (at most 1.15 times its width), so its labels keep their size on a wide canvas; `data-fit="wide"` on the figure or the `<svg>` lets it fill the canvas instead. Every top-level figure gets a button in its corner that opens it larger in a dialog, with its controls still working (on a narrow screen the dialog shows a wide drawing at its drawn size and scrolls sideways); `data-expand="no"` leaves a figure out.
 
 ### Code
 

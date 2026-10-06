@@ -1538,12 +1538,24 @@
     shut.addEventListener("click", function () { dialog.close(); });
     dialog.addEventListener("click", function (e) { if (e.target === dialog) dialog.close(); });
     dialog.addEventListener("close", function () {
+      held.forEach(function (svg) { svg.style.minWidth = ""; svg.style.maxHeight = ""; });
       dialog.parentNode.insertBefore(fig, dialog);
       dialog.remove();
       var back = fig.querySelector(".f-fig-expand");
       if (back) back.focus({ preventScroll: true });
     });
     dialog.showModal();
+    /* On a narrow screen the dialog would shrink a wide drawing again: show it at its drawn width
+       instead, and let the dialog scroll sideways. */
+    var held = [];
+    Array.prototype.forEach.call(fig.querySelectorAll("svg[viewBox]"), function (svg) {
+      var box = (svg.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+      if (box.length === 4 && box[2] > dialog.clientWidth) {
+        svg.style.minWidth = Math.round(box[2]) + "px";
+        svg.style.maxHeight = "none";
+        held.push(svg);
+      }
+    });
     shut.focus();
   }
 

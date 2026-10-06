@@ -432,6 +432,7 @@ dialog.f-fig-dialog figure svg { max-width: none !important; width: 100%; height
 .f-fig-close { position: absolute; top: .6rem; right: .6rem; display: grid; place-items: center; width: 2rem; height: 2rem;
   padding: 0; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink-2); cursor: pointer; }
 .f-fig-close svg { width: 1rem; height: 1rem; }
+@media (max-width: 40rem) { .f-fig-close { position: fixed; top: calc(3vh + .6rem); right: calc(2vw + .6rem); z-index: 3; } }
 .f-fig-close:hover { color: var(--ink); }
 main figcaption { margin-top: .6rem; font: .85rem/1.5 var(--sans); color: var(--ink-2); }
 main figcaption::before { content: "Figure. "; font-weight: 650; color: var(--ink); }
