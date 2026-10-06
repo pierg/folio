@@ -1352,26 +1352,44 @@
      \(…\) and \[…\] inside <main>, never in code, scripts or a definition's name. */
   function loadMath() {
     var dir = BASE + "shell/vendor/katex/";
-    function add(tag, attrs) { var n = el(tag, attrs); document.head.appendChild(n); return n; }
-    add("link", { rel: "stylesheet", href: dir + "katex.min.css" });
-    var katex = add("script", { src: dir + "katex.min.js" });
-    katex.async = false;
-    katex.onload = function () {
-      var auto = add("script", { src: dir + "contrib/auto-render.min.js" });
-      auto.onload = function () {
-        window.renderMathInElement(main, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "\\[", right: "\\]", display: true },
-            { left: "$", right: "$", display: false },
-            { left: "\\(", right: "\\)", display: false }
-          ],
-          throwOnError: false,
-          ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
-          ignoredClasses: ["defn-name"]
-        });
-      };
-    };
+    function add(tag, attrs) {
+      return new Promise(function (done, fail) {
+        var n = el(tag, attrs);
+        n.onload = done;
+        n.onerror = function () { fail(new Error("could not load " + (attrs.src || attrs.href))); };
+        if (tag === "script") n.async = false;  // in order: auto-render needs katex
+        document.head.appendChild(n);
+      });
+    }
+    return Promise.all([
+      add("link", { rel: "stylesheet", href: dir + "katex.min.css" }),
+      add("script", { src: dir + "katex.min.js" }),
+      add("script", { src: dir + "contrib/auto-render.min.js" })
+    ]);
+  }
+  function typeset() {
+    window.renderMathInElement(main, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false,
+      ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+      ignoredClasses: ["defn-name"]
+    });
+  }
+
+  /* KaTeX's common faces, fetched before the page shows so the math does not change face after it;
+     a slow font is not waited for longer than half a second. */
+  function mathFonts() {
+    if (!document.fonts || !document.fonts.load) return null;
+    var faces = ["1em KaTeX_Main", "italic 1em KaTeX_Main", "italic 1em KaTeX_Math"];
+    return Promise.race([
+      Promise.all(faces.map(function (f) { return document.fonts.load(f); })),
+      new Promise(function (done) { setTimeout(done, 500); })
+    ]);
   }
 
   /* --------------------------------------------------------------- start */
@@ -1379,6 +1397,8 @@
     var view = meta("folio-view");
     var rel = meta("folio-source") || relOf(location.pathname);
     if (view || meta("layout") === "column") document.body.classList.add("f-column");
+    // KaTeX loads beside the indices, and the page shows once its math is set, not before.
+    var math = document.querySelector('meta[name="math"]') ? loadMath() : null;
     Promise.all([
       optional(fetchJSON(".folio/catalog.json"), { documents: [] }),
       optional(fetchJSON(".folio/backlinks.json"), {}),
@@ -1413,9 +1433,25 @@
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
       }
       hookPreviews(document.body);
-      if (document.querySelector('meta[name="math"]')) loadMath();
-      document.documentElement.classList.add("f-ready");
+      return math && math.then(typeset).then(mathFonts);
+    }).catch(function (err) {
+      if (window.console) console.error("folio:", err);
+    }).then(function () {
+      document.documentElement.classList.add("f-ready");  // the stylesheet shows the page now, drawn or not
     });
+    prerenderLinks();
+  }
+
+  /* Where the browser can, a page linked from this one is prepared while the pointer rests on its link,
+     script and all, so following the link shows it at once. Others ignore the rules. */
+  function prerenderLinks() {
+    if (!(HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules"))) return;
+    var rules = el("script", { type: "speculationrules" });
+    rules.textContent = JSON.stringify({ prerender: [{
+      where: { and: [{ href_matches: BASE + "*" }, { not: { href_matches: BASE + "_folio/*" } }] },
+      eagerness: "moderate"
+    }] });
+    document.head.appendChild(rules);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();

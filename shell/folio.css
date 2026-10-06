@@ -92,6 +92,13 @@ body {
   overflow-x: hidden;
 }
 ::selection { background: var(--mark); color: var(--ink); }
+/* The script draws the top bar, rail and panel around <main>. Until it has, the page stays hidden,
+   so a reader never sees it half drawn: the browser keeps the last page on screen meanwhile. Without
+   scripting nothing is hidden, and should the script fail, the page shows after 1.5 s. */
+@media (scripting: enabled) {
+  html:not(.f-ready) body { visibility: hidden; animation: f-reveal 0s 1.5s forwards; }
+}
+@keyframes f-reveal { to { visibility: visible; } }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 a { color: var(--link); text-decoration-line: underline; text-decoration-color: var(--link-line);
     text-decoration-thickness: 1px; text-underline-offset: .18em; }
