@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+Pages get a free canvas again. A genre gives structure and voice; the form is the page's.
+
+- Every HTML page is a canvas: all the room between the rail and the page panel, with its own `<style>` and `<script>`, adapting with `@container folio-canvas` queries. The reading column is opt-in with `<meta name="layout" content="column">`; Markdown records always use it. The gate checks `layout` is `canvas` or `column`.
+- Genre cards check substance, not form. Word caps are gone from every page genre (they stay on journal entries, results and claims). Gone too: `forbid: [h2]` on concept and note, the `require` parts nothing reads (entry `thesis` and `h2`, project `state` and `next`, guide `start` and chapter sections, reading, source `about`, survey and report sections), and the `check_each_section` check. `forward_links` is judged unless a library sets it. `min_sources` counts the sources a survey cites anywhere. Each card's Shape is now guidance, judged, not checked.
+- The shell adds the colour registers (`--teal`, `--indigo`, `--blue`, `--amber`, `--red`; `--azure`, `--violet`, `--orange`; `--kept`, `--discarded`, `--rejected`, `--untested`), a few shared components (`.cols`, `.lane`, `.note`, `.law`, `.chip`, `.v`, `.tbtn`) and KaTeX math, vendored, on a page with `<meta name="math">`.
+- `craft/layout.md` holds the canvas contract and the "choosing a form" playbook; new `code.md`, `comparison.md` and `timeline.md` guides. The write skill designs the page, and `folio genre <name>` ends with where the craft guides are installed.
+- The documentation library is rebuilt as canvas pages.
+
 ## 0.1.0 (2026-10-04)
 
 The first release.
