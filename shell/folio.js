@@ -264,7 +264,11 @@
       document.body.insertBefore(side, document.body.firstChild);
     }
     document.body.insertBefore(topbar(view, !!side), document.body.firstChild);
-    if (side) { syncRail(); keepInView(side); }
+    if (side) {
+      syncRail(); keepInView(side);
+      // A page prerendered on hover drew its rail before the click: place it again when it is shown.
+      if (document.prerendering) document.addEventListener("prerenderingchange", function () { keepInView(side); }, { once: true });
+    }
     wrapTables();
   }
 
@@ -489,7 +493,14 @@
     })));
     box.appendChild(el("p", { class: "f-rkeys" }, [el("kbd", { text: "[" }), " shows or hides the library"]));
     box.addEventListener("click", function (e) {
-      if (e.target.closest && e.target.closest("a") && narrow()) setRail(false);
+      var a = e.target.closest && e.target.closest("a");
+      if (!a) return;
+      // Where the clicked link sat in the rail, so the next page can put it back under the pointer.
+      try {
+        sessionStorage.setItem(STORE + "rail-at", JSON.stringify({
+          href: a.getAttribute("href"), y: a.getBoundingClientRect().top - box.getBoundingClientRect().top }));
+      } catch (err) { /* storage off: the rail falls back to keeping the current page in view */ }
+      if (narrow()) setRail(false);
     });
     return box;
   }
@@ -521,6 +532,19 @@
   }
   /* The current page's row, in view in a long rail. */
   function keepInView(side) {
+    /* A link clicked in the rail goes back to the height it was clicked at, so the pointer still rests
+       on it, however the groups above it opened or closed on the new page. */
+    var at = null;
+    try { at = JSON.parse(sessionStorage.getItem(STORE + "rail-at") || "null"); } catch (err) { at = null; }
+    if (at && at.href) {
+      var same = Array.prototype.filter.call(side.querySelectorAll("a[href]"), function (a) { return a.getAttribute("href") === at.href; });
+      var link = same.filter(function (a) { return a.getAttribute("aria-current") === "page"; })[0] || same[0];
+      if (link) {
+        side.scrollTop += (link.getBoundingClientRect().top - side.getBoundingClientRect().top) - at.y;
+        if (!document.prerendering) { try { sessionStorage.removeItem(STORE + "rail-at"); } catch (err) { /* nothing to clear */ } }
+        return;
+      }
+    }
     var cur = side.querySelector('[aria-current="page"]') || side.querySelector(".f-here");
     if (!cur) return;
     var top = cur.getBoundingClientRect().top - side.getBoundingClientRect().top + side.scrollTop;
