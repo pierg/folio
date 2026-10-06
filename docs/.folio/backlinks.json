@@ -114,7 +114,6 @@
       "content/concepts/gate/index.html",
       "content/concepts/genre/index.html",
       "content/concepts/skill/index.html",
-      "content/entries/how-corrections-work/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/guides/getting-started/index.html",
       "content/maps/concepts.html",
@@ -186,7 +185,6 @@
     "cites": [
       "content/concepts/gate/index.html",
       "content/concepts/journal/index.html",
-      "content/concepts/pack/index.html",
       "content/concepts/permanent-record/index.html",
       "content/entries/one-fact-one-home/index.html"
     ],
@@ -208,6 +206,7 @@
       "content/concepts/journal/index.html",
       "content/concepts/pack/index.html",
       "content/entries/how-corrections-work/index.html",
+      "content/journal/2026/2026-10-03-one-journal-entry-per-file.md",
       "content/results/R-1.md"
     ],
     "fields": {},
@@ -314,7 +313,9 @@
   },
   "content/journal/2026/2026-10-03-one-journal-entry-per-file.md": {
     "about": [],
-    "cited_by": [],
+    "cited_by": [
+      "content/entries/one-fact-one-home/index.html"
+    ],
     "cites": [
       "content/concepts/journal/index.html"
     ],
