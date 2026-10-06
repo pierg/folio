@@ -43,6 +43,7 @@
       info: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM12 11v6M12 7h0",
       chat: "M4 5h16v11H9l-5 4z",
       close: "M6 6l12 12M18 6 6 18",
+      expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
       home: "M4 11 12 4l8 7M6 9.5V20h12V9.5",
       rail: "M4 5h16v14H4zM9.5 5v14",
       focus: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1"
@@ -1492,6 +1493,7 @@
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
       }
       hookPreviews(document.body);
+      figures();
       return math && math.then(typeset).then(mathFonts);
     }).catch(function (err) {
       if (window.console) console.error("folio:", err);
@@ -1502,6 +1504,47 @@
       if (target) target.scrollIntoView();
     });
     prerenderLinks();
+  }
+
+  /* ------------------------------------------------------------ figures */
+  /* An inline SVG is drawn for a size: its viewBox. Stretched across a wide canvas its labels grow
+     with it, so each one is held near that size (a page opts out with data-fit="wide" on the figure
+     or the svg). Every figure can also be opened larger, in a dialog: the figure itself moves into
+     it and back, so its controls keep working (data-expand="no" leaves a figure out). */
+  var FIT = 1.15;
+  function figures() {
+    Array.prototype.forEach.call(document.querySelectorAll("main figure"), function (fig) {
+      if (fig.parentNode.closest && fig.parentNode.closest("figure")) return;  // a figure inside a figure
+      Array.prototype.forEach.call(fig.querySelectorAll("svg[viewBox]"), function (svg) {
+        if (fig.getAttribute("data-fit") === "wide" || svg.getAttribute("data-fit") === "wide") return;
+        if (svg.closest("button, a")) return;
+        var box = (svg.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+        if (box.length === 4 && box[2] > 48) svg.style.maxWidth = Math.round(box[2] * FIT) + "px";
+      });
+      if (fig.getAttribute("data-expand") === "no") return;
+      fig.classList.add("f-fig");
+      fig.appendChild(el("button", { class: "f-fig-expand", type: "button", "aria-label": "Open the figure larger",
+        title: "Open larger", onclick: function () { openFigure(fig); } }, [icon("expand")]));
+    });
+  }
+  function openFigure(fig) {
+    /* The dialog sits where the figure was, so the page's own styles still reach it; showModal lifts it
+       above the page whatever its ancestors. */
+    var dialog = el("dialog", { class: "f-fig-dialog", "aria-label": fig.getAttribute("aria-label") || "Figure" });
+    var shut = el("button", { class: "f-fig-close", type: "button", "aria-label": "Close", title: "Close (Esc)" }, [icon("close")]);
+    fig.parentNode.insertBefore(dialog, fig);
+    dialog.appendChild(shut);
+    dialog.appendChild(fig);
+    shut.addEventListener("click", function () { dialog.close(); });
+    dialog.addEventListener("click", function (e) { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener("close", function () {
+      dialog.parentNode.insertBefore(fig, dialog);
+      dialog.remove();
+      var back = fig.querySelector(".f-fig-expand");
+      if (back) back.focus({ preventScroll: true });
+    });
+    dialog.showModal();
+    shut.focus();
   }
 
   /* Where the browser can, a page linked from this one is prepared while the pointer rests on its link,

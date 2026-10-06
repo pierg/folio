@@ -414,6 +414,25 @@ main .not-measured { color: var(--ink-3); font-style: italic; }
 /* figures and tables may run wider than the measure on a wide screen */
 main figure { margin-left: 0; margin-right: 0; }
 main figure img, main figure svg { display: block; margin: 0 auto; border-radius: 4px; }
+/* Every figure can be opened larger (folio.js): a quiet button in its corner, and a dialog. */
+main figure.f-fig { position: relative; }
+.f-fig-expand { position: absolute; top: .4rem; right: .4rem; z-index: 2; display: grid; place-items: center;
+  width: 1.9rem; height: 1.9rem; padding: 0; border: 1px solid var(--rule); border-radius: 6px;
+  background: var(--paper); color: var(--ink-2); cursor: pointer; opacity: 0; transition: opacity .15s; }
+.f-fig-expand svg { width: 1rem; height: 1rem; }
+main figure.f-fig:hover > .f-fig-expand, .f-fig-expand:focus-visible { opacity: 1; }
+@media (hover: none) { .f-fig-expand { opacity: .75; } }
+.f-fig-expand:hover { color: var(--ink); border-color: var(--ink-3); }
+dialog.f-fig-dialog { width: min(96vw, 110rem); max-width: none; max-height: 94vh; margin: auto; padding: 2.75rem 1.5rem 1.25rem;
+  border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); overflow: auto; }
+dialog.f-fig-dialog::backdrop { background: rgba(0, 0, 0, .62); }
+dialog.f-fig-dialog > figure { margin: 0; }
+dialog.f-fig-dialog .f-fig-expand { display: none; }
+dialog.f-fig-dialog figure svg { max-width: none !important; width: 100%; height: auto; max-height: calc(94vh - 9rem); }
+.f-fig-close { position: absolute; top: .6rem; right: .6rem; display: grid; place-items: center; width: 2rem; height: 2rem;
+  padding: 0; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); color: var(--ink-2); cursor: pointer; }
+.f-fig-close svg { width: 1rem; height: 1rem; }
+.f-fig-close:hover { color: var(--ink); }
 main figcaption { margin-top: .6rem; font: .85rem/1.5 var(--sans); color: var(--ink-2); }
 main figcaption::before { content: "Figure. "; font-weight: 650; color: var(--ink); }
 .f-scroll { overflow-x: auto; margin: 0 0 1.15em; -webkit-overflow-scrolling: touch; }
