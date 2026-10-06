@@ -11,24 +11,114 @@
 <meta name="tags" content="project">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed project page: the state, then the track of the release, then the parts as a board.
+   No script: everything is visible at once. */
+.pj-top { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 2rem; align-items: stretch; margin-bottom: 2.6rem; }
+.pj-top > * { min-width: 0; }
+.pj-top .state { margin: 0; }
+.pj-block { padding: .9rem 1rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); font-family: var(--sans); }
+.pj-block p.pj-eyebrow { margin: 0 0 .35rem; font: 650 .7rem/1.3 var(--sans); color: var(--accent); }
+.pj-block p { margin: 0; font: .95rem/1.5 var(--serif); color: var(--ink-2); }
+.pj-eyebrow { font: 650 .7rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 .5rem; }
+.pj-band { margin: 0 0 2.8rem; }
+.pj-band > h2 { margin-top: 0; }
+.pj-band > p { max-width: 44rem; }
+
+/* the track: where the release stands, one stop per stage */
+.pj-track { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0 0; padding: 0; list-style: none; }
+.pj-track::before { content: ""; position: absolute; left: 1rem; right: 1rem; top: .7rem; border-top: 2px dashed var(--rule-strong); }
+.pj-stop { position: relative; min-width: 0; margin: 0; padding-top: 2rem; }
+.pj-stop::before { content: ""; position: absolute; left: 0; top: 0; width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 2px solid var(--rule-strong); background: var(--paper); box-sizing: border-box; }
+.pj-stop.pj-done::before { border-color: var(--ok); background: var(--ok); }
+.pj-stop.pj-next::before { border-color: var(--info); background: var(--info-soft); }
+.pj-stop p.pj-name { margin: 0 0 .3rem; font: 650 1rem/1.3 var(--sans); color: var(--ink); }
+.pj-stop p { margin: 0; font: .92rem/1.5 var(--serif); color: var(--ink-2); }
+.pj-chip { display: inline-block; margin: 0 0 .45rem; padding: .05rem .5rem; border-radius: 999px; font: 650 .66rem/1.6 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.pj-done .pj-chip { background: var(--ok-soft); color: var(--ok); }
+.pj-next .pj-chip { background: var(--info-soft); color: var(--info); }
+.pj-later .pj-chip { background: var(--sunk); color: var(--ink-3); }
+
+/* the board: the parts of folio, each with what it holds */
+.pj-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin: 1.2rem 0 0; }
+.pj-part { min-width: 0; padding: .85rem 1rem .95rem; border: 1px solid var(--rule); border-top: 3px solid var(--ok); border-radius: 8px; background: var(--surface); }
+.pj-part p.pj-name { margin: 0 0 .1rem; font: 650 .98rem/1.3 var(--sans); color: var(--ink); }
+.pj-part .pj-count { margin: 0 0 .5rem; font: .8rem/1.4 var(--mono); color: var(--ink-3); overflow-wrap: anywhere; }
+.pj-part p { margin: 0; font: .9rem/1.5 var(--serif); color: var(--ink-2); }
+
+/* next and where */
+.pj-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem 2.4rem; align-items: start; }
+.pj-two > * { min-width: 0; }
+.pj-two h2 { margin-top: 0; }
+.pj-list { margin: 0; padding: 0; list-style: none; counter-reset: pj; }
+.pj-list li { counter-increment: pj; position: relative; margin: 0 0 .7rem; padding-left: 2rem; font: .97rem/1.5 var(--serif); }
+.pj-list li::before { content: counter(pj); position: absolute; left: 0; top: .1rem; width: 1.3rem; height: 1.3rem; border-radius: 50%; display: grid; place-items: center; font: 650 .72rem/1 var(--sans); color: var(--info); background: var(--info-soft); }
+.pj-where { margin: 0; padding: 0; list-style: none; }
+.pj-where li { margin: 0 0 .7rem; padding: .7rem .85rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); font: .93rem/1.5 var(--serif); color: var(--ink-2); overflow-wrap: anywhere; }
+.pj-where li a { font-family: var(--sans); font-weight: 600; }
+
+@container folio-canvas (max-width: 40rem) {
+  .pj-top, .pj-two { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+  .pj-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pj-track { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+  .pj-track::before { left: .7rem; right: auto; top: .5rem; bottom: .5rem; border-top: 0; border-left: 2px dashed var(--rule-strong); }
+  .pj-stop { padding: 0 0 0 2.4rem; }
+}
+@container folio-canvas (max-width: 26rem) {
+  .pj-board { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="pj-top">
 <p class="state">folio 0.1.0 is written: the engine and its <a class="defn-link" href="/content/concepts/gate/">gate</a>, the eight core genres, the knowledge-base and lab <a class="defn-link" href="/content/concepts/pack/">packs</a>, the seven <a class="defn-link" href="/content/concepts/skill/">skills</a>, and this documentation, which is itself a folio library and passes its own gate.</p>
+<div class="pj-block">
+<p class="pj-eyebrow">Blocked</p>
+<p>Nothing is blocked. The next steps wait only on being done.</p>
+</div>
+</section>
 
+<section class="pj-band">
+<h2 id="track">Where the release stands</h2>
+<ol class="pj-track" aria-label="Release track: written is done; published and tried in fresh projects are next">
+<li class="pj-stop pj-done"><span class="pj-chip">Done</span><p class="pj-name">Written</p><p>Every part below exists, and this library passes its own gate.</p></li>
+<li class="pj-stop pj-next"><span class="pj-chip">Next</span><p class="pj-name">Published</p><p>The package on the index as <code>folio-kb</code>, and this library as the documentation site.</p></li>
+<li class="pj-stop pj-next"><span class="pj-chip">Next</span><p class="pj-name">Tried</p><p>The setup prompt run in fresh projects, with different agents, each trial recorded in the journal.</p></li>
+</ol>
+</section>
+
+<section class="pj-band">
+<h2 id="parts">The parts, at a glance</h2>
+<p>Each part is written for 0.1.0, to the specifications in <code>docs/spec/</code>.</p>
+<div class="pj-board">
+<div class="pj-part"><p class="pj-name">Engine and gate</p><p class="pj-count">src/folio/</p><p>The <code>folio</code> command, the indices, and <code>folio check</code>, which names every problem in one pass.</p></div>
+<div class="pj-part"><p class="pj-name">Core genres</p><p class="pj-count">eight cards</p><p>Concept, note, entry, map, guide, project, journal and paper, each with its card and skeleton.</p></div>
+<div class="pj-part"><p class="pj-name">Packs</p><p class="pj-count">knowledge-base, lab</p><p>Sources, readings and surveys; questions, protocols, results, claims and reports, with their workflows and rules.</p></div>
+<div class="pj-part"><p class="pj-name">Skills</p><p class="pj-count">seven</p><p>Set-up, configure, write, organise, address, publish and run: every change to a library goes through one.</p></div>
+<div class="pj-part"><p class="pj-name">Shell</p><p class="pj-count">folio.css, folio.js</p><p>The rail, the header from metadata, search, previews, comments, and a free canvas for every page.</p></div>
+<div class="pj-part"><p class="pj-name">This library</p><p class="pj-count">docs/</p><p>The documentation, kept with folio itself, with both packs on and the gate passing.</p></div>
+</div>
+</section>
+
+<section class="pj-band pj-two">
+<div>
 <h2 id="next">Next</h2>
-<ul>
+<ol class="pj-list">
 <li>Publish the package as <code>folio-kb</code> and this library as the documentation site.</li>
 <li>Run the setup prompt in fresh projects, with different agents, and record what each trial finds in the journal.</li>
 <li>Repeat the timing in <a href="/content/questions/Q-1.md">Q-1</a> as the library grows.</li>
-</ul>
-
+</ol>
+</div>
+<div>
 <h2 id="code">Where the code lives</h2>
-<ul>
+<ul class="pj-where">
 <li><a href="https://github.com/pierg/folio">github.com/pierg/folio</a>: the engine, the genres, the packs, the skills and this library, in <code>docs/</code>.</li>
 <li><a href="https://github.com/pierg/folio/tree/main/docs/spec">docs/spec/</a>: the specifications, which win when anything else disagrees with them.</li>
 </ul>
+</div>
+</section>
 
 </main>
 </body>

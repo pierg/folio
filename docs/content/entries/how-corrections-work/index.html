@@ -10,33 +10,247 @@
 <meta name="tags" content="design, records">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed entry: the position beside the figure that carries it, then one band per step.
+   Every word is in the markup; the one script only picks which step of the replay is lit. */
+.hc-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 2.5rem; align-items: start; margin-bottom: 3.2rem; }
+.hc-hero > * { min-width: 0; }
+.hc-hero .thesis { margin-top: 0; }
+.hc-hero p { max-width: 44rem; }
+.hc-fig { margin: 0; padding: 1rem 1.1rem .8rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.hc-fig svg { display: block; width: 100%; height: auto; }
+.hc-band { margin: 0 0 3.2rem; }
+.hc-band > h2 { margin-top: 0; }
+.hc-band > p, .hc-band > details.check { max-width: 44rem; }
+.hc-eyebrow { font: 650 .7rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 .4rem; }
+
+/* step one: three lifecycles as a strip of states */
+.hc-lives { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0 1.4rem; }
+.hc-life { min-width: 0; padding: .9rem 1rem 1rem; border: 1px solid var(--rule); border-top: 3px solid var(--ink-3); border-radius: 8px; background: var(--surface); font-family: var(--sans); }
+.hc-life.hc-perm { border-top-color: var(--teal); }
+.hc-life.hc-froz { border-top-color: var(--indigo); }
+.hc-life p.hc-name { margin: 0 0 .2rem; font: 650 1rem/1.3 var(--sans); color: var(--ink); }
+.hc-life .hc-who { margin: 0 0 .7rem; font-size: .82rem; color: var(--ink-3); }
+.hc-track { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: 0 0 .7rem; padding: 0; list-style: none; }
+.hc-track li { margin: 0; padding: .12rem .5rem; border-radius: 999px; font: 600 .74rem/1.5 var(--mono); border: 1px solid var(--rule-strong); color: var(--ink-2); background: var(--paper); }
+.hc-track li.hc-lock { border-color: currentColor; }
+.hc-perm .hc-track li.hc-lock { color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, transparent); }
+.hc-froz .hc-track li.hc-lock { color: var(--indigo); background: color-mix(in srgb, var(--indigo) 10%, transparent); }
+.hc-track li.hc-arrow { border: 0; background: none; padding: 0; color: var(--ink-3); }
+.hc-life p { margin: 0; font: .92rem/1.5 var(--serif); color: var(--ink-2); }
+
+/* step two: the replay, overwrite against supersede */
+.hc-ctl { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1rem; }
+.hc-lanes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2rem; }
+.hc-lane { min-width: 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.hc-lane-head { padding: .75rem 1rem; border-bottom: 1px solid var(--rule); font-family: var(--sans); }
+.hc-lane-head b { display: block; font-size: 1rem; }
+.hc-lane-head span { font-size: .82rem; color: var(--ink-3); }
+.hc-over .hc-lane-head { border-top: 3px solid var(--orange); }
+.hc-sup .hc-lane-head { border-top: 3px solid var(--azure); }
+.hc-steps { margin: 0; padding: 0; list-style: none; counter-reset: hc; }
+.hc-steps li { counter-increment: hc; position: relative; margin: 0; padding: .8rem 1rem .85rem 2.9rem; border-top: 1px dashed var(--rule); font: .93rem/1.5 var(--serif); color: var(--ink-2); transition: opacity .2s ease; }
+.hc-steps li:first-child { border-top: 0; }
+.hc-steps li::before { content: counter(hc); position: absolute; left: 1rem; top: .8rem; width: 1.35rem; height: 1.35rem; border-radius: 50%; display: grid; place-items: center; font: 650 .72rem/1 var(--sans); color: var(--ink-3); border: 1px solid var(--rule-strong); }
+.hc-steps li b { color: var(--ink); font-family: var(--sans); font-size: .88rem; }
+.hc-over .hc-steps li.hc-bad { box-shadow: inset 3px 0 0 var(--orange); }
+.hc-sup .hc-steps li.hc-good { box-shadow: inset 3px 0 0 var(--azure); }
+/* the script sets data-step on the wrapper; later steps fade, the current one is marked */
+.hc-replay[data-step="1"] .hc-steps li:nth-child(n+2),
+.hc-replay[data-step="2"] .hc-steps li:nth-child(n+3) { opacity: .28; }
+.hc-replay[data-step="1"] .hc-steps li:nth-child(1)::before,
+.hc-replay[data-step="2"] .hc-steps li:nth-child(2)::before,
+.hc-replay[data-step="3"] .hc-steps li:nth-child(3)::before { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.hc-replay > p { max-width: 44rem; }
+.hc-lanes + p { margin-top: 1.2rem; }
+@media (prefers-reduced-motion: reduce) { .hc-steps li { transition: none; } }
+
+/* step three: the three instruments, one row each */
+.hc-scroll { overflow-x: auto; }
+.hc-matrix { width: 100%; min-width: 34rem; border-collapse: separate; border-spacing: 0 .4rem; font-family: var(--sans); }
+.hc-matrix th { padding: .3rem .7rem; text-align: left; font: 650 .7rem/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border: 0; }
+.hc-matrix td { padding: .7rem; vertical-align: top; font: .9rem/1.45 var(--serif); color: var(--ink-2); background: var(--surface); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.hc-matrix td:first-child { border-left: 3px solid var(--rule-strong); border-radius: 8px 0 0 8px; font-family: var(--sans); color: var(--ink); font-weight: 650; }
+.hc-matrix td:last-child { border-right: 1px solid var(--rule); border-radius: 0 8px 8px 0; }
+.hc-matrix tr.hc-r-sup td:first-child { border-left-color: var(--teal); }
+.hc-matrix tr.hc-r-ret td:first-child { border-left-color: var(--red); }
+.hc-matrix tr.hc-r-cor td:first-child { border-left-color: var(--amber); }
+.hc-matrix code { font-size: .82rem; white-space: nowrap; }
+
+/* step four: what an edit loses */
+.hc-why { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem 2.5rem; align-items: start; }
+.hc-why > * { min-width: 0; }
+.hc-why p { margin-top: 0; }
+
+.hc-foot { padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.hc-foot p { max-width: 44rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .hc-hero, .hc-lanes, .hc-why { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .hc-lives { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="hc-hero">
+<div>
 <p class="thesis">A record that was wrong is never edited. A new document points back at it, and the engine shows the correction on the record itself, so old citations keep showing what they cited and every reader of the record sees what changed.</p>
+<p>The argument runs in four steps: which documents may not be edited, what happens when one is overwritten anyway, the three ways folio points back instead, and why pointing back is worth the extra document.</p>
+</div>
 
+<figure class="hc-fig" aria-label="Three pages cite an old result. A newer result names the old one in its supersedes field. The old result is not edited: it keeps its address, so the three citations still land on it, and a banner on it sends each reader on to the newer result.">
+<svg viewBox="0 0 480 260" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Old citations still land on the old record, and its banner points to the newer one</title>
+<defs>
+<marker id="hc-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+<marker id="hc-arr-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--blue)"/></marker>
+</defs>
+<!-- the citing pages -->
+<g font-family="system-ui, sans-serif" font-size="13.5">
+<rect x="14" y="26" width="112" height="40" rx="6" fill="none" stroke="var(--rule-strong)"/>
+<text x="70" y="50" text-anchor="middle" fill="var(--ink-2)">an entry</text>
+<rect x="14" y="110" width="112" height="40" rx="6" fill="none" stroke="var(--rule-strong)"/>
+<text x="70" y="134" text-anchor="middle" fill="var(--ink-2)">a report</text>
+<rect x="14" y="194" width="112" height="40" rx="6" fill="none" stroke="var(--rule-strong)"/>
+<text x="70" y="218" text-anchor="middle" fill="var(--ink-2)">a project page</text>
+</g>
+<path d="M 128 46 C 160 46, 170 112, 196 120" fill="none" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#hc-arr)"/>
+<path d="M 128 130 L 196 130" fill="none" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#hc-arr)"/>
+<path d="M 128 214 C 160 214, 170 148, 196 140" fill="none" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#hc-arr)"/>
+<text x="160" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="var(--ink-3)">cite R-12</text>
+<!-- the old record, unchanged, with its banner -->
+<rect x="198" y="84" width="128" height="92" rx="8" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<rect x="198" y="84" width="128" height="24" rx="8" fill="color-mix(in srgb, var(--amber) 22%, transparent)"/>
+<text x="262" y="100" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="var(--ink)">banner: see R-13</text>
+<text x="262" y="132" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="var(--teal)">R-12</text>
+<text x="262" y="152" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="var(--ink-2)">as committed,</text>
+<text x="262" y="166" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="var(--ink-2)">status: superseded</text>
+<!-- the newer record -->
+<rect x="356" y="84" width="112" height="92" rx="8" fill="none" stroke="var(--blue)" stroke-width="2"/>
+<text x="412" y="122" text-anchor="middle" font-family="ui-monospace, monospace" font-size="17" font-weight="700" fill="var(--blue)">R-13</text>
+<text x="412" y="144" text-anchor="middle" font-family="ui-monospace, monospace" font-size="12.5" fill="var(--ink-2)">supersedes:</text>
+<text x="412" y="158" text-anchor="middle" font-family="ui-monospace, monospace" font-size="12.5" fill="var(--ink-2)">R-12</text>
+<path d="M 404 178 C 404 230, 290 230, 268 180" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#hc-arr-b)"/>
+<text x="330" y="244" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="var(--ink-3)">names it; edits nothing</text>
+</svg>
+<figcaption>The old result is never touched. The three citations still land on what they cited, and the banner, drawn by the engine from the newer result's <code>supersedes</code> field, sends every reader on. The ids are made up for the example.</figcaption>
+</figure>
+</section>
+
+<section class="hc-band">
+<p class="hc-eyebrow">Step one</p>
 <h2 id="which">Which documents are never edited</h2>
 <p>A genre says how its documents change over time. Most are revised in place. A <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, such as a journal entry or a result, is never edited once committed. A frozen document, such as a locked protocol or a published report, is edited freely until it reaches its frozen state, and then never again except its status. The <a class="defn-link" href="/content/concepts/gate/">gate</a> checks both against git history.</p>
+
+<div class="hc-lives">
+<div class="hc-life hc-perm">
+<p class="hc-name">Permanent</p>
+<p class="hc-who">a journal entry, a result</p>
+<ol class="hc-track" aria-label="Permanent lifecycle"><li class="hc-lock">first commit</li><li class="hc-arrow" aria-hidden="true">then</li><li class="hc-lock">never edited</li></ol>
+<p>The gate compares the file with its first commit. It writes no status: its status is derived from what points back.</p>
+</div>
+<div class="hc-life hc-froz">
+<p class="hc-name">Frozen</p>
+<p class="hc-who">a protocol, a report</p>
+<ol class="hc-track" aria-label="Frozen lifecycle"><li>draft</li><li class="hc-arrow" aria-hidden="true">then</li><li class="hc-lock">locked</li><li class="hc-arrow" aria-hidden="true">then</li><li>abandoned</li></ol>
+<p>Edited freely until it reaches a frozen state. After that only its status moves, forward to one of its card's exits, in a commit that changes nothing else.</p>
+</div>
+<div class="hc-life">
+<p class="hc-name">Revised</p>
+<p class="hc-who">concepts, entries, maps, projects</p>
+<ol class="hc-track" aria-label="Revised lifecycle"><li>live</li><li class="hc-arrow" aria-hidden="true">then</li><li>live</li><li class="hc-arrow" aria-hidden="true">then</li><li>live</li></ol>
+<p>Edited in place and always current. Corrections to these are ordinary edits, and git keeps the history.</p>
+</div>
+</div>
 
 <details class="check">
 <summary>A protocol was locked yesterday and has a typo in its hypothesis. Can the agent fix it in place?</summary>
 <div class="ans">No. Once locked, the file must match the commit that locked it. A new protocol names it in <code>amends</code>, or a correction entry about it says what was meant.</div>
 </details>
+</section>
 
-<h2 id="supersede">A newer record supersedes</h2>
-<p>When a measurement is redone, the new result names the old one: <code>supersedes: R-1</code>. The engine marks the old result <code>superseded</code> and shows a banner on it that links the new one. The old result keeps its id and its address, so a page that cited it still resolves, and with the lab <a class="defn-link" href="/content/concepts/pack/">pack</a> on, the gate warns on each revised page that still cites it.</p>
+<section class="hc-band hc-replay" id="hc-replay">
+<p class="hc-eyebrow">Step two</p>
+<h2 id="replay">Overwrite against supersede, replayed</h2>
+<p>Take one result that three pages cite. The measurement is redone and comes out different. Step through what each lane does, and what a reader who follows an old citation sees at the end.</p>
 
-<h2 id="retract">A journal entry retracts or corrects</h2>
-<p>When nothing replaces a record, a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry of kind <code>retraction</code> names it in <code>about</code>, and the record's status becomes <code>retracted</code>. An entry of kind <code>correction</code> names a document and says what is true instead; its text shows as a banner on that document. Neither edits the original.</p>
+<div class="hc-ctl" role="group" aria-label="Step of the replay">
+<button type="button" class="tbtn" data-step="1" aria-pressed="false">1. Cited</button>
+<button type="button" class="tbtn" data-step="2" aria-pressed="false">2. Redone</button>
+<button type="button" class="tbtn" data-step="3" aria-pressed="false">3. Followed</button>
+</div>
+
+<div class="hc-lanes" aria-live="polite">
+<div class="hc-lane hc-over">
+<div class="hc-lane-head"><b>Overwrite</b><span>edit the old record in place</span></div>
+<ol class="hc-steps">
+<li><b>Cited.</b> The result is committed, and an entry, a report and a project page cite it by id.</li>
+<li class="hc-bad"><b>Redone.</b> Someone edits the result's number to the new value. The old value is gone from the page, and the gate fails the edit, because the file no longer matches its first commit.</li>
+<li class="hc-bad"><b>Followed.</b> Had the edit got through, a reader who quoted the old value would follow the citation and find a different number, with nothing to say it changed or why. The three citing pages now point at a document that says something else.</li>
+</ol>
+</div>
+<div class="hc-lane hc-sup">
+<div class="hc-lane-head"><b>Supersede</b><span>a new record that points back</span></div>
+<ol class="hc-steps">
+<li><b>Cited.</b> The result is committed, and an entry, a report and a project page cite it by id.</li>
+<li class="hc-good"><b>Redone.</b> A new result is committed with <code>supersedes</code> naming the old one. Nothing else is written: the engine derives the old result's status as <code>superseded</code>.</li>
+<li class="hc-good"><b>Followed.</b> The reader lands on the old result exactly as it was cited, with a banner linking the new one. With the lab pack on, the gate warns on each revised page that still cites the old result, so the agent updates them.</li>
+</ol>
+</div>
+</div>
+<p>Both lanes start from the same file. Only the supersede lane leaves the library able to answer what was believed, when, and what replaced it.</p>
+</section>
+
+<section class="hc-band">
+<p class="hc-eyebrow">Step three</p>
+<h2 id="ways">Three ways to point back</h2>
+<p>When a measurement is redone, the new result names the old one: <code>supersedes: R-12</code>. When nothing replaces a record, a <a class="defn-link" href="/content/concepts/journal/">journal</a> entry does the pointing. Each row below is one instrument, and none of them edits the original.</p>
+<div class="hc-scroll" role="region" aria-label="Three correction instruments, scroll sideways on a narrow screen" tabindex="0">
+<table class="hc-matrix">
+<thead><tr><th scope="col">Instrument</th><th scope="col">Written as</th><th scope="col">Status of the original</th><th scope="col">What the reader sees</th></tr></thead>
+<tbody>
+<tr class="hc-r-sup"><td>Supersede</td><td>a newer record of the same genre, with <code>supersedes</code></td><td><code>superseded</code>, derived</td><td>a banner linking the newer record; the old one keeps its id and address</td></tr>
+<tr class="hc-r-ret"><td>Retract</td><td>a journal entry of kind <code>retraction</code>, naming it in <code>about</code></td><td><code>retracted</code>, derived</td><td>the record stays readable, marked retracted, with a banner linking the entry that says why</td></tr>
+<tr class="hc-r-cor"><td>Correct</td><td>a journal entry of kind <code>correction</code>, naming it in <code>about</code></td><td>unchanged</td><td>a banner on the document with the entry's text, saying what is true instead</td></tr>
+</tbody>
+</table>
+</div>
+<p>A frozen document keeps the status it was frozen with, and shows its corrections the same way.</p>
 
 <details class="check">
 <summary>Where does a retracted result's status come from, since the result writes no status?</summary>
 <div class="ans">It is derived: the engine finds the retraction entry whose <code>about</code> names the result.</div>
 </details>
+</section>
 
+<section class="hc-band">
+<p class="hc-eyebrow">Step four</p>
 <h2 id="why">Why not just edit</h2>
-<p>An edit erases the evidence that something was wrong. Anyone who read the old value has no way to learn it changed, and a page that quoted it now cites a document that says something else. A correction that points back keeps both, and the banner tells every later reader. It is the same idea as <a href="/content/entries/one-fact-one-home/">one fact, one home</a>, applied over time.</p>
+<div class="hc-why">
+<p>An edit erases the evidence that something was wrong. Anyone who read the old value has no way to learn it changed, and a page that quoted it now cites a document that says something else.</p>
+<p>A correction that points back keeps both, and the banner tells every later reader. The cost is one more document, and the gate makes sure nobody skips it.</p>
+</div>
+</section>
+
+<section class="hc-foot">
+<p>It is the same idea as <a href="/content/entries/one-fact-one-home/">one fact, one home</a>, applied over time: the fact keeps one home, and its history is a chain of documents that point back.</p>
+</section>
+
+<script>
+(function () {
+  var box = document.getElementById("hc-replay");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-step]");
+  function pick(s) {
+    box.setAttribute("data-step", s);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-step") === s));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-step")); });
+  pick("1");
+})();
+</script>
 
 </main>
 </body>
