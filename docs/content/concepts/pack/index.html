@@ -10,23 +10,171 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: packs as layers switched on over the core. Every word is in the markup; the script only switches a layer's class. */
+.pk-top { max-width: 52rem; margin-bottom: 2.2rem; }
+.pk-top > p { max-width: 44rem; }
+.pk-band { margin: 0 0 3rem; }
+.pk-band > h2 { margin-top: 0; }
+.pk-band > p { max-width: 44rem; }
+
+.pk-stack { margin: 0; }
+.pk-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin: 0 0 1rem; }
+.pk-ctl > span { font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-right: .3rem; }
+.pk-layers { display: flex; flex-direction: column; gap: .55rem; }
+.pk-layer { display: grid; grid-template-columns: minmax(8rem, .28fr) minmax(0, 1fr); border: 1.5px solid var(--hue); border-radius: 10px; background: var(--surface); overflow: hidden; transition: opacity .25s, transform .25s; }
+.pk-layer > * { min-width: 0; }
+.pk-layer[data-l="skills"] { --hue: var(--ink-2); border-style: dashed; }
+.pk-layer[data-l="lab"] { --hue: var(--amber); }
+.pk-layer[data-l="kb"] { --hue: var(--teal); }
+.pk-layer[data-l="core"] { --hue: var(--indigo); border-width: 2px; }
+.pk-name { padding: .75rem .9rem; background: color-mix(in srgb, var(--hue) 12%, transparent); border-right: 1px solid var(--rule); }
+.pk-name b { display: block; font: 700 .95rem/1.3 var(--sans); color: var(--hue); }
+.pk-name small { display: block; margin-top: .2rem; font: .75rem/1.35 var(--sans); color: var(--ink-3); }
+.pk-state { display: inline-block; margin-top: .4rem; padding: .05rem .5rem; border-radius: 999px; font: 650 .64rem/1.6 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.pk-state-off { display: none; background: var(--sunk); color: var(--ink-3); }
+.pk-state-on { background: var(--ok-soft); color: var(--ok); }
+.pk-body { padding: .65rem .9rem .75rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem 1.2rem; }
+.pk-body > div { min-width: 0; }
+.pk-body h4 { margin: 0 0 .2rem; font: 650 .66rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.pk-body p { margin: 0; font-size: .9rem; line-height: 1.45; }
+.pk-body code { font-size: .8rem; }
+.pk-layer.pk-off { opacity: .35; }
+.pk-layer.pk-off .pk-state-on { display: none; }
+.pk-layer.pk-off .pk-state-off { display: inline-block; }
+.pk-says { margin-top: 1rem; max-width: 44rem; }
+.pk-says p { margin: 0 0 .4rem; font-size: .95rem; }
+.pk-stack figcaption { margin-top: .6rem; }
+
+.pk-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.pk-pair > div { min-width: 0; }
+.pk-from { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.pk-from li { min-width: 0; margin: 0; padding: .85rem 1rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); font-size: .95rem; color: var(--ink-2); }
+.pk-from b { display: block; color: var(--ink); font-family: var(--sans); margin-bottom: .2rem; }
+
+.pk-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.pk-foot > * { min-width: 0; }
+.pk-foot h3 { margin-top: 0; }
+.pk-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .pk-layer { grid-template-columns: minmax(0, 1fr); }
+  .pk-name { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .pk-body, .pk-pair, .pk-from, .pk-foot { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .pk-layer { transition: none; } }
+</style>
 </head>
 <body>
 <main>
 
+<section class="pk-top">
 <blockquote class="defn" id="pack">
 <span class="defn-name">Pack</span><br>
 A pack is a named set of genres, workflows, library-wide rules and journal kinds for one kind of work. Switching it on in the charter adds them to the whole library and rewrites nothing.
 </blockquote>
-
-<h3>Why it matters</h3>
 <p>The core genres suit any library. A pack adds what one kind of work needs: the knowledge-base pack keeps sources and readings apart, and the lab pack gives every measured number one home. Several packs on at once still make one library, with one search and one graph.</p>
+</section>
 
-<h3>The trap</h3>
-<p>Expecting a pack to bring new skills. A pack is data only. The same <a class="defn-link" href="/content/concepts/skill/">skills</a> read its genres and follow its workflows, so a new pack never needs a new skill.</p>
+<section class="pk-band">
+<h2>Layers over the core</h2>
+<p>folio ships two packs. This library has both on. Switch each off and on, and watch what the library offers for new work. The core stays, and so do the skills on top.</p>
 
+<figure class="pk-stack" id="pk-stack" aria-label="A stack of layers. At the bottom is the core: eight genres and four journal kinds. Above it, two packs that can each be switched on: the knowledge-base pack adds three genres, two workflows and one rule; the lab pack adds five genres, two workflows, two rules and five journal kinds. On top, unchanged in every setting, are the seven skills, which read whatever is on.">
+<div class="pk-ctl" role="group" aria-label="Switch a pack on or off">
+<span>Switched on</span>
+<button type="button" class="tbtn" data-l="kb" aria-pressed="true">knowledge-base</button>
+<button type="button" class="tbtn" data-l="lab" aria-pressed="true">lab</button>
+</div>
+<div class="pk-layers">
+<div class="pk-layer" data-l="skills">
+<div class="pk-name"><b>The seven skills</b><small>the same in every setting</small></div>
+<div class="pk-body">
+<div><h4>Read</h4><p>The charter, every genre and every workflow that is on, each time they start.</p></div>
+<div><h4>Never change</h4><p>A pack brings no skill. The run skill follows its workflows; write follows its cards.</p></div>
+</div>
+</div>
+<div class="pk-layer" data-l="lab">
+<div class="pk-name"><b>lab</b><small>measured work</small><span class="pk-state pk-state-on">on</span><span class="pk-state pk-state-off">off</span></div>
+<div class="pk-body">
+<div><h4>Genres</h4><p>question, protocol, result, claim, report</p></div>
+<div><h4>Workflows</h4><p>record-a-result, write-a-report</p></div>
+<div><h4>Rules</h4><p><code>uncited-number</code>, <code>cites-superseded</code></p></div>
+<div><h4>Journal kinds</h4><p>lock, run, kill, instrument, pivot</p></div>
+</div>
+</div>
+<div class="pk-layer" data-l="kb">
+<div class="pk-name"><b>knowledge-base</b><small>reading and learning</small><span class="pk-state pk-state-on">on</span><span class="pk-state pk-state-off">off</span></div>
+<div class="pk-body">
+<div><h4>Genres</h4><p>source, reading, survey</p></div>
+<div><h4>Workflows</h4><p>ingest, quiz</p></div>
+<div><h4>Rules</h4><p><code>unverified-identifier</code></p></div>
+<div><h4>Journal kinds</h4><p>None of its own.</p></div>
+</div>
+</div>
+<div class="pk-layer" data-l="core">
+<div class="pk-name"><b>core</b><small>always there</small></div>
+<div class="pk-body">
+<div><h4>Genres</h4><p>concept, note, entry, map, guide, project, journal, paper</p></div>
+<div><h4>Workflows</h4><p>None. A library adds its own.</p></div>
+<div><h4>Rules</h4><p>The gate checks only. No library-wide rule.</p></div>
+<div><h4>Journal kinds</h4><p>decision, lesson, correction, retraction</p></div>
+</div>
+</div>
+</div>
+<div class="pk-says">
+<p><b>Off</b> hides a pack's genres and workflows from new work. Documents already written in its genres stay valid, and its rules stop running.</p>
+</div>
+<figcaption>Each pack sits on the core without changing it: a pack's genres have names no other genre uses, and a pack never redefines a core genre.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("pk-stack");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-l]");
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () {
+    var on = this.getAttribute("aria-pressed") !== "true";
+    this.setAttribute("aria-pressed", String(on));
+    var layer = box.querySelector('.pk-layer[data-l="' + this.getAttribute("data-l") + '"]');
+    if (layer) layer.classList.toggle("pk-off", !on);
+  });
+})();
+</script>
+
+<section class="pk-band">
+<h2>What switching one on does</h2>
+<div class="pk-pair">
+<div class="lane lane-teal"><h4>It adds</h4><p>Its genres, workflows, rules and journal kinds, to the whole library at once. The charter lists it under <code>packs:</code>, and the configure skill records the change in the journal.</p></div>
+<div class="lane lane-amber"><h4>It rewrites nothing</h4><p>No existing document is changed. A pack's rules can flag documents written before it was on, such as a number with no result to cite; the organise skill proposes the fixes.</p></div>
+</div>
+</section>
+
+<section class="pk-band">
+<h2>Where packs come from</h2>
+<ul class="pk-from">
+<li><b>Shipped with folio</b>knowledge-base and lab.</li>
+<li><b>The library's own</b>In its <code>packs/</code> folder. <code>folio pack add</code> gathers library genres and workflows into one.</li>
+<li><b>A git repository</b>Pinned in the charter by its address and a commit.</li>
+</ul>
+</section>
+
+<section class="pk-band">
+<div class="note note-warn">
+<b>The trap: expecting a pack to bring new skills.</b> A pack is data only. The same <a class="defn-link" href="/content/concepts/skill/">skills</a> read its genres and follow its workflows, so a new pack never needs a new skill.
+</div>
+</section>
+
+<section class="pk-foot">
+<div>
 <h3>Related</h3>
 <p>Each pack adds <a class="defn-link" href="/content/concepts/genre/">genres</a> under names no other genre uses; it never redefines a core one.</p>
+</div>
+<div>
+<h3>Its rules at the gate</h3>
+<p>A pack's rules are checks the <a class="defn-link" href="/content/concepts/gate/">gate</a> runs across the whole library while the pack is on. A library's own pack can only combine checks the gate already has.</p>
+</div>
+</section>
 
 </main>
 </body>

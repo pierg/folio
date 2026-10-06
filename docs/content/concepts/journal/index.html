@@ -10,23 +10,207 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: the journal as a timeline of files, one per entry. Every word is in the markup; the script only filters by kind. */
+.jn-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; margin-bottom: 3rem; }
+.jn-hero > * { min-width: 0; }
+.jn-hero .defn { margin-top: .2rem; }
+.jn-fig { margin: 0; padding: 1rem 1.1rem .8rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.jn-fig svg { display: block; width: 100%; height: auto; }
+.jn-scroll { overflow-x: auto; }
+.jn-scroll svg { min-width: 25rem; }
+.jn-band { margin: 0 0 3rem; }
+.jn-band > h2 { margin-top: 0; }
+.jn-band > p { max-width: 44rem; }
+
+/* the timeline */
+.jn-tl { margin: 0; }
+.jn-ctl { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 1.1rem; }
+.jn-day { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0 1.2rem; }
+.jn-day > * { min-width: 0; }
+.jn-date { padding-top: .55rem; font: 650 .8rem/1.3 var(--mono); color: var(--ink-3); text-align: right; }
+.jn-list { list-style: none; margin: 0; padding: 0 0 .6rem 1.2rem; border-left: 2px solid var(--rule-strong); }
+.jn-list li { position: relative; margin: 0 0 .55rem; padding: .55rem .8rem .6rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+.jn-list li::before { content: ""; position: absolute; left: calc(-1.2rem - 6px); top: .95rem; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink-3); }
+.jn-list li[data-k="decision"]::before { border-color: var(--azure); background: var(--azure); }
+.jn-list li[data-k="lock"]::before { border-color: var(--violet); background: var(--violet); }
+.jn-t { display: block; font: 600 .98rem/1.35 var(--serif); }
+.jn-file { display: block; margin-top: .2rem; font: .74rem/1.4 var(--mono); color: var(--ink-3); overflow-wrap: anywhere; }
+.jn-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; margin-top: .35rem; font: .74rem/1.4 var(--sans); color: var(--ink-3); }
+.jn-kind { display: inline-block; padding: .05rem .5rem; border-radius: 999px; font: 650 .66rem/1.6 var(--sans); letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--rule-strong); color: var(--ink-3); }
+li[data-k="decision"] .jn-kind { border-color: var(--azure); color: var(--azure); }
+li[data-k="lock"] .jn-kind { border-color: var(--violet); color: var(--violet); }
+.jn-about code { font-size: .74rem; }
+.jn-tl[data-k="decision"] li:not([data-k="decision"]),
+.jn-tl[data-k="lock"] li:not([data-k="lock"]),
+.jn-tl[data-k="none"] li:not([data-k="none"]) { display: none; }
+.jn-tl[data-k="decision"] .jn-day:not(:has(li[data-k="decision"])),
+.jn-tl[data-k="lock"] .jn-day:not(:has(li[data-k="lock"])),
+.jn-tl[data-k="none"] .jn-day:not(:has(li[data-k="none"])) { display: none; }
+.jn-tl figcaption { margin-top: .4rem; }
+
+/* one file each, against one log */
+.jn-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.jn-pair > div { min-width: 0; }
+.jn-kinds { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.jn-kinds > div { min-width: 0; padding: .9rem 1rem; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface); }
+.jn-kinds .jn-h { margin: 0 0 .5rem; font: 650 .74rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.jn-kinds dl { margin: 0; }
+.jn-kinds dt { font: 600 .85rem/1.4 var(--mono); color: var(--ink); }
+.jn-kinds dd { margin: 0 0 .5rem; font-size: .93rem; color: var(--ink-2); }
+.jn-kinds p:not(.jn-h) { margin: 0; font-size: .93rem; color: var(--ink-2); }
+
+.jn-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.jn-foot > * { min-width: 0; }
+.jn-foot h3 { margin-top: 0; }
+.jn-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .jn-hero, .jn-pair, .jn-kinds, .jn-foot { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .jn-day { grid-template-columns: minmax(0, 1fr); }
+  .jn-date { text-align: left; padding: 0 0 .4rem; }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="jn-hero">
+<div>
 <blockquote class="defn" id="journal">
 <span class="defn-name">Journal</span><br>
 The journal is a library's dated record of what happened and what was decided. Each entry is its own short Markdown file with a date, an optional kind, and the ids of the documents it is about.
 </blockquote>
-
-<h3>Why it matters</h3>
 <p>Documents say what is true now; the journal says when it changed and why. An entry shows on every document it names, and the shell renders all entries as one timeline that filters by kind, tag, date or document.</p>
+</div>
 
-<h3>The trap</h3>
-<p>Writing a decision only into the page it changed. The page will be revised again and the reason lost. The decision goes in the journal, about that page.</p>
+<figure class="jn-fig" aria-label="One journal entry is one Markdown file. Its front matter names a date, a kind and the documents it is about. From that one file the shell draws it in two places: on the journal's timeline, and in the page panel of each document it names.">
+<div class="jn-scroll">
+<svg viewBox="0 0 440 230" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>One entry file shows on the timeline and on each document it is about</title>
+<defs>
+<marker id="jn-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<path d="M 20 40 L 156 40 L 176 60 L 176 190 L 20 190 Z" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<path d="M 156 40 L 156 60 L 176 60" fill="none" stroke="var(--azure)" stroke-width="1.5"/>
+<text x="32" y="30" font-family="ui-monospace, monospace" font-size="11" fill="var(--ink-3)">{date}-{slug}.md</text>
+<text x="32" y="78" font-family="ui-monospace, monospace" font-size="12" fill="var(--ink-2)">date: …</text>
+<text x="32" y="100" font-family="ui-monospace, monospace" font-size="12" fill="var(--azure)">kind: decision</text>
+<text x="32" y="122" font-family="ui-monospace, monospace" font-size="12" fill="var(--ink-2)">about:</text>
+<text x="44" y="142" font-family="ui-monospace, monospace" font-size="12" fill="var(--ink-2)">[journal]</text>
+<text x="32" y="172" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-3)">a few terse lines</text>
+<rect x="262" y="26" width="166" height="70" rx="8" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="345" y="54" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--violet)">the timeline</text>
+<text x="345" y="74" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">newest first, filtered</text>
+<rect x="262" y="134" width="166" height="70" rx="8" fill="none" stroke="var(--orange)" stroke-width="2"/>
+<text x="345" y="162" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--orange)">each page it names</text>
+<text x="345" y="182" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">in the page panel</text>
+<path d="M 180 90 C 215 90, 225 62, 258 62" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#jn-arr)"/>
+<path d="M 180 138 C 215 138, 225 168, 258 168" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#jn-arr)"/>
+</svg>
+</div>
+<figcaption>The entry is written once. The shell places it on the timeline and on every document in its <code>about</code>, so nobody keeps a "history" section by hand.</figcaption>
+</figure>
+</section>
 
+<section class="jn-band">
+<h2>This library's journal, one file each</h2>
+<p>These are the entries in this library's own journal, grouped by day. Each is its own file, and each links to its page. Filter by kind, as the timeline does.</p>
+
+<figure class="jn-tl" id="jn-tl" aria-label="This library's journal as a timeline of thirteen files over two days. Most entries are decisions; one is a lock from the lab pack; three carry no kind and record a plain event. Every entry is its own file and names the documents it is about.">
+<div class="jn-ctl" role="group" aria-label="Filter by kind">
+<button type="button" class="tbtn" data-k="all" aria-pressed="false">Every entry</button>
+<button type="button" class="tbtn" data-k="decision" aria-pressed="false">decision</button>
+<button type="button" class="tbtn" data-k="lock" aria-pressed="false">lock</button>
+<button type="button" class="tbtn" data-k="none" aria-pressed="false">no kind</button>
+</div>
+
+<div class="jn-day">
+<div class="jn-date">2026-10-04</div>
+<ul class="jn-list">
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-library-set-up.md">Library set up</a><span class="jn-file">2026-10-04-library-set-up.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>home</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md">The library shares the repository's skills</a><span class="jn-file">2026-10-04-the-library-shares-the-repository-s-skills.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>home</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-home-maps-set.md">Home maps set</a><span class="jn-file">2026-10-04-home-maps-set.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>using-folio</code> <code>concepts</code> <code>reference</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-specifications-stay-outside-the-library.md">Specifications stay outside the library</a><span class="jn-file">2026-10-04-specifications-stay-outside-the-library.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>reference</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md">Comments are committed by the server, as the commenter</a><span class="jn-file">2026-10-04-comments-are-committed-by-the-server.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>getting-started</code></span></span></li>
+<li data-k="none"><a class="jn-t" href="/content/journal/2026/2026-10-04-ingested-as-we-may-think.md">Ingested As We May Think</a><span class="jn-file">2026-10-04-ingested-as-we-may-think.md</span><span class="jn-meta"><span class="jn-kind">no kind</span><span class="jn-about">about <code>1945-as-we-may-think</code> <code>1945-as-we-may-think-reading</code></span></span></li>
+<li data-k="lock"><a class="jn-t" href="/content/journal/2026/2026-10-04-locked-the-check-time-protocol.md">Locked the check-time protocol</a><span class="jn-file">2026-10-04-locked-the-check-time-protocol.md</span><span class="jn-meta"><span class="jn-kind">lock</span><span class="jn-about">about <code>check-time</code> <code>Q-1</code></span></span></li>
+<li data-k="none"><a class="jn-t" href="/content/journal/2026/2026-10-04-recorded-r-1.md">Recorded R-1</a><span class="jn-file">2026-10-04-recorded-r-1.md</span><span class="jn-meta"><span class="jn-kind">no kind</span><span class="jn-about">about <code>R-1</code> <code>check-time</code></span></span></li>
+<li data-k="none"><a class="jn-t" href="/content/journal/2026/2026-10-04-recorded-r-2.md">Recorded R-2</a><span class="jn-file">2026-10-04-recorded-r-2.md</span><span class="jn-meta"><span class="jn-kind">no kind</span><span class="jn-about">about <code>R-2</code> <code>check-time</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-04-added-how-folio-is-built-as.md">Added How folio is built as a home map</a><span class="jn-file">2026-10-04-added-how-folio-is-built-as.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>building-folio</code> <code>using-folio</code></span></span></li>
+</ul>
+</div>
+
+<div class="jn-day">
+<div class="jn-date">2026-10-03</div>
+<ul class="jn-list">
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-03-one-journal-entry-per-file.md">One journal entry per file</a><span class="jn-file">2026-10-03-one-journal-entry-per-file.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>journal</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-03-metadata-holds-every-fact-the-engine.md">Metadata holds every fact the engine reads</a><span class="jn-file">2026-10-03-metadata-holds-every-fact-the-engine.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>why-metadata-first</code></span></span></li>
+<li data-k="decision"><a class="jn-t" href="/content/journal/2026/2026-10-03-paper-versions-are-snapshots.md">Paper versions are snapshots</a><span class="jn-file">2026-10-03-paper-versions-are-snapshots.md</span><span class="jn-meta"><span class="jn-kind">decision</span><span class="jn-about">about <code>folio</code> <code>permanent-record</code></span></span></li>
+</ul>
+</div>
+<figcaption>Every entry is a separate file under <code>content/journal/2026/</code>. Within a day the order here is not the order of events; the date is. The entry about <code>journal</code> on the first day is the decision that gave the journal this shape.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("jn-tl");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-k]");
+  function pick(k) {
+    if (k === "all") box.removeAttribute("data-k"); else box.setAttribute("data-k", k);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-k") === k));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-k")); });
+  pick("all");
+})();
+</script>
+
+<section class="jn-band">
+<h2>Why one file per entry</h2>
+<p>A single log file would be shorter to read in an editor. One file per entry buys three things the log cannot give.</p>
+<div class="jn-pair">
+<div class="lane lane-azure"><h4>One file per entry</h4><p>Two agents writing at once never touch the same file, so they never conflict. Every entry has its own address, so it can be linked and searched on its own. Every entry is a <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, and the gate compares each file with its first commit.</p></div>
+<div class="lane lane-baseline"><h4>One log file</h4><p>Every new entry edits the same file, so concurrent writers collide. An entry is a heading inside a long page, not a document, so nothing can name it in <code>about</code> or show it on a page. The file changes every day, so no line in it can be held to its first commit.</p></div>
+</div>
+</section>
+
+<section class="jn-band">
+<h2>Kinds</h2>
+<p>A kind is optional. The shell filters by it, and two kinds change what readers see on the document they name. Kinds are an open set: the core has four, a pack adds its own while it is on, and the charter adds more under <code>journal.kinds</code>.</p>
+<div class="jn-kinds">
+<div>
+<p class="jn-h">The core's four</p>
+<dl>
+<dt>decision</dt><dd>A choice that binds later work.</dd>
+<dt>lesson</dt><dd>Something learned the hard way.</dd>
+<dt>correction</dt><dd>Says a document was wrong and what is true instead; shows as a banner on it.</dd>
+<dt>retraction</dt><dd>Withdraws a record, which is then marked retracted.</dd>
+</dl>
+</div>
+<div>
+<p class="jn-h">Added here by the lab pack</p>
+<p><code>lock</code>, <code>run</code>, <code>kill</code>, <code>instrument</code> and <code>pivot</code>. An entry with no kind is a plain event, such as a source ingested or a result recorded.</p>
+</div>
+</div>
+</section>
+
+<section class="jn-band">
+<div class="note note-warn">
+<b>The trap: writing a decision only into the page it changed.</b> The page will be revised again and the reason lost. The decision goes in the journal, about that page.
+</div>
+</section>
+
+<section class="jn-foot">
+<div>
 <h3>Related</h3>
 <p>Every entry is a <a class="defn-link" href="/content/concepts/permanent-record/">permanent record</a>, and the only document no <a class="defn-link" href="/content/concepts/map/">map</a> needs to list.</p>
+</div>
+<div>
+<h3>Who writes it</h3>
+<p>Every <a class="defn-link" href="/content/concepts/skill/">skill</a> that makes a decision records it as a new entry with <code>folio journal add</code>, which writes a new file and never edits an existing one.</p>
+</div>
+</section>
 
 </main>
 </body>

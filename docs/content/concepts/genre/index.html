@@ -10,23 +10,179 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A designed concept: what a card fixes against what it leaves to the page, as a matrix. Every word is in the markup; the script only picks which genre's column is shown. */
+.gn-top { max-width: 52rem; margin-bottom: 2.2rem; }
+.gn-top > p { max-width: 44rem; }
+.gn-band { margin: 0 0 3rem; }
+.gn-band > h2 { margin-top: 0; }
+.gn-band > p { max-width: 44rem; }
+
+.gn-mx { margin: 0; border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.gn-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; padding: .85rem 1rem; border-bottom: 1px solid var(--rule); background: var(--sunk); }
+.gn-ctl > span { font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-right: .3rem; }
+.gn-row { display: grid; grid-template-columns: minmax(7rem, .32fr) minmax(0, 1fr); border-top: 1px solid var(--rule); }
+.gn-row:first-of-type { border-top: 0; }
+.gn-row > * { min-width: 0; padding: .7rem 1rem; }
+.gn-k { font: 650 .82rem/1.35 var(--sans); color: var(--teal); background: color-mix(in srgb, var(--teal) 7%, transparent); border-right: 1px solid var(--rule); }
+.gn-k small { display: block; font-weight: 400; color: var(--ink-3); }
+.gn-v { font-size: .95rem; line-height: 1.5; color: var(--ink); }
+.gn-v span { display: block; margin: 0 0 .3rem; }
+.gn-v span:last-child { margin-bottom: 0; }
+.gn-v b { font: 650 .7rem/1.4 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-right: .35rem; }
+.gn-v code { overflow-wrap: anywhere; }
+.gn-split { padding: .5rem 1rem; border-top: 2px solid var(--rule-strong); font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--amber); background: color-mix(in srgb, var(--amber) 9%, transparent); }
+.gn-row.gn-form .gn-k { color: var(--amber); background: color-mix(in srgb, var(--amber) 7%, transparent); }
+/* a picked genre: only its spans, and no label */
+.gn-mx[data-g] .gn-v span { display: none; }
+.gn-mx[data-g] .gn-v b { display: none; }
+.gn-mx[data-g="concept"] .gn-v [data-g="concept"],
+.gn-mx[data-g="journal"] .gn-v [data-g="journal"],
+.gn-mx[data-g="result"] .gn-v [data-g="result"],
+.gn-mx[data-g="map"] .gn-v [data-g="map"] { display: block; }
+.gn-mx figcaption { padding: .7rem 1rem .9rem; border-top: 1px solid var(--rule); }
+
+/* lookup order: three steps */
+.gn-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.gn-steps li { min-width: 0; margin: 0; padding: .9rem 1rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.gn-steps .gn-n { display: block; font: 700 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .3rem; }
+.gn-steps p { margin: 0; font-size: .95rem; color: var(--ink-2); }
+
+.gn-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.gn-foot > * { min-width: 0; }
+.gn-foot h3 { margin-top: 0; }
+.gn-foot p { font-size: .98rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .gn-row { grid-template-columns: minmax(0, 1fr); }
+  .gn-k { border-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: .45rem; }
+  .gn-steps, .gn-foot { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
+<section class="gn-top">
 <blockquote class="defn" id="genre">
 <span class="defn-name">Genre</span><br>
 A genre is a kind of document, such as a concept, a note or a result. It fixes the document's job, its reader, its voice, its format, where it lives, which metadata it carries, how it may change over time, and which checks it must pass.
 </blockquote>
+<p>An agent writing a document reads its genre's card first, every time. So two documents of one genre read as if one author wrote them, and the <a class="defn-link" href="/content/concepts/gate/">gate</a> can check what each genre promises. Voice is never set per document.</p>
+<p>A genre gives structure and voice, never form. How an HTML page looks is its author's, on a free canvas: the card fixes what the page is, and the page decides how to show it.</p>
+</section>
 
-<h3>Why it matters</h3>
-<p>An agent writing a document reads its genre's card first, every time. So two documents of one genre read as if one author wrote them, and the gate can check what each genre promises. Voice is never set per document.</p>
+<section class="gn-band">
+<h2>What a card fixes, and what it leaves to the page</h2>
+<p>Each row below is something a card decides. The last row is the one thing it does not. Pick a genre to read its card down the column.</p>
 
-<h3>The trap</h3>
-<p>Treating a genre as a template. The skeleton is the smallest part of it. The card also says what the document is for and what it must never do, and most of that is judged by the agent, not checked.</p>
+<figure class="gn-mx" id="gn-mx" aria-label="A matrix with one row per thing a genre's card fixes: job, reader, voice, format and place, metadata, lifecycle and checks. Each row holds the value for a concept, a journal entry, a result and a map, and every genre has a value in every row. Below a dividing line, the last row is form: for the HTML genres it is the author's, on the canvas; for Markdown records it is the reading column.">
+<div class="gn-ctl" role="group" aria-label="Pick a genre">
+<span>Read the card of</span>
+<button type="button" class="tbtn" data-g="concept" aria-pressed="false">concept</button>
+<button type="button" class="tbtn" data-g="journal" aria-pressed="false">journal</button>
+<button type="button" class="tbtn" data-g="result" aria-pressed="false">result</button>
+<button type="button" class="tbtn" data-g="map" aria-pressed="false">map</button>
+</div>
+<div aria-live="polite">
+<div class="gn-row"><div class="gn-k">Job<small>what it is for</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>Defines one term, once, so every other document can link to it.</span>
+<span data-g="journal"><b>journal</b>Records one thing that happened or was decided, on its date.</span>
+<span data-g="result"><b>result</b>Holds one measured number, with its baseline, bound, evidence and the command that re-derives it.</span>
+<span data-g="map"><b>map</b>A front door over part of the library, in the order to read it.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Reader<small>who opens it</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>Someone who met the term elsewhere, often reading only the popover.</span>
+<span data-g="journal"><b>journal</b>The owner or a collaborator, later, reconstructing a decision.</span>
+<span data-g="result"><b>result</b>Anyone about to cite the number, and anyone who doubts it.</span>
+<span data-g="map"><b>map</b>Someone arriving cold.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Voice<small>how it sounds</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>Impersonal, present tense, timeless.</span>
+<span data-g="journal"><b>journal</b>Terse. Past tense for what happened, present for what holds from now on.</span>
+<span data-g="result"><b>result</b>Terse and numeric. The bound sits beside the number.</span>
+<span data-g="map"><b>map</b>Opinionated and brief.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Format and place<small>one format, one path</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>HTML, at <code>content/concepts/{slug}/index.html</code>.</span>
+<span data-g="journal"><b>journal</b>Markdown, at <code>content/journal/{yyyy}/{date}-{slug}.md</code>.</span>
+<span data-g="result"><b>result</b>Markdown, at <code>content/results/R-{n}.md</code>, from the lab pack.</span>
+<span data-g="map"><b>map</b>HTML, at <code>content/maps/{slug}.html</code>.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Metadata<small>fields beyond the core</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>None.</span>
+<span data-g="journal"><b>journal</b><code>date</code>, required; <code>kind</code> and <code>about</code>, optional.</span>
+<span data-g="result"><b>result</b><code>protocol</code>, <code>number</code>, <code>baseline</code>, <code>bound</code>, <code>evidence</code>, <code>rederive</code>, <code>date</code>; <code>supersedes</code> when it replaces one.</span>
+<span data-g="map"><b>map</b>None.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Lifecycle<small>how it may change</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>Revised in place: draft, live, historical, retired.</span>
+<span data-g="journal"><b>journal</b>Permanent once committed. Its status is derived.</span>
+<span data-g="result"><b>result</b>Permanent once committed: live, superseded or retracted, derived from other documents.</span>
+<span data-g="map"><b>map</b>Revised in place: draft, live, historical, retired.</span>
+</div></div>
+<div class="gn-row"><div class="gn-k">Checks<small>what the gate holds it to</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>A definition is present, cites nothing, and is the only one of its term.</span>
+<span data-g="journal"><b>journal</b>Its kind is one the library accepts; a word cap; unchanged since its first commit.</span>
+<span data-g="result"><b>result</b>A <code>why</code> section; a word cap; every field present; unchanged since its first commit.</span>
+<span data-g="map"><b>map</b>Its rows are present, and it is itself on a map.</span>
+</div></div>
+<div class="gn-split">Left to the page</div>
+<div class="gn-row gn-form"><div class="gn-k">Form<small>layout, figures, controls</small></div><div class="gn-v">
+<span data-g="concept"><b>concept</b>The author's, on the canvas. This page is one example.</span>
+<span data-g="journal"><b>journal</b>A Markdown record: always set in the reading column.</span>
+<span data-g="result"><b>result</b>A Markdown record: always set in the reading column.</span>
+<span data-g="map"><b>map</b>The author's, on the canvas, around its rows.</span>
+</div></div>
+</div>
+<figcaption>Read down any column: every row above the line has a value, and it is the card's, not the author's. Only the last row changes from page to page.</figcaption>
+</figure>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("gn-mx");
+  if (!box) return;
+  var buttons = box.querySelectorAll("button[data-g]");
+  function pick(g) {
+    box.setAttribute("data-g", g);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-g") === g));
+  }
+  for (var i = 0; i < buttons.length; i++) buttons[i].addEventListener("click", function () { pick(this.getAttribute("data-g")); });
+  pick("concept");
+})();
+</script>
 
+<section class="gn-band">
+<h2>Where a genre comes from</h2>
+<p>A genre is a folder holding its card and a skeleton. folio looks for it in three places, and the first one found wins. An override in the library holds only what it changes, so the card underneath still applies and folio's upgrades flow in.</p>
+<ol class="gn-steps">
+<li><span class="gn-n">First</span><p>The library's own <code>genres/&lt;name&gt;/</code>: an override, a variant or a genre of its own.</p></li>
+<li><span class="gn-n">Then</span><p>A <a class="defn-link" href="/content/concepts/pack/">pack</a> switched on in the charter, which adds genres under names no other genre uses.</p></li>
+<li><span class="gn-n">Last</span><p>folio's core: concept, note, entry, map, guide, project, journal and paper.</p></li>
+</ol>
+</section>
+
+<section class="gn-band">
+<h2>A variant, for a second audience</h2>
+<p>A genre can extend another. The variant inherits everything and overrides only what it states: usually the voice, the reader and the limits. A paper for a workshop extends the paper. A document changes genre only by promotion, as when a note that grew sections becomes an entry, and promotion keeps its id, links, comments and dates.</p>
+</section>
+
+<section class="gn-band">
+<div class="note note-warn">
+<b>The trap: treating a genre as a template.</b> The skeleton is the smallest part of it. The card also says what the document is for and what it must never do, and most of that is judged by the agent, not checked.
+</div>
+</section>
+
+<section class="gn-foot">
+<div>
 <h3>Related</h3>
 <p>The core has eight genres. A <a class="defn-link" href="/content/concepts/pack/">pack</a> adds more, and a library can override a genre or add a variant for a second audience.</p>
+</div>
+<div>
+<h3>Where it is checked</h3>
+<p>The <a class="defn-link" href="/content/concepts/gate/">gate</a> runs each card's checks on every document of its genre. Whether a page does its job well is left to the agent and the owner.</p>
+</div>
+</section>
 
 </main>
 </body>
