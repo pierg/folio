@@ -7,16 +7,141 @@
 <meta name="description" content="How to use folio, what its ideas mean, and the record of how it is built, kept with folio itself.">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* The home page: a hero that says what folio is, one figure of the loop, and the one row a newcomer needs. */
+.hm-hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; margin: 0 0 2.25rem; }
+.hm-hero > * { min-width: 0; }
+.hm-lead { margin: 0 0 1rem; font: 400 1.28rem/1.5 var(--serif); color: var(--ink); max-width: 40rem; }
+.hm-hero p { max-width: 40rem; }
+.hm-facts { display: grid; gap: .7rem; margin: .3rem 0 0; padding: 0; list-style: none; }
+.hm-facts li { margin: 0; padding: .75rem .95rem; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); font: .93rem/1.45 var(--sans); color: var(--ink-2); }
+.hm-facts b { display: block; margin-bottom: .15rem; font: 650 .72rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+.hm-fig { margin: 0 0 2.5rem; padding: 1.1rem 1.1rem .9rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+.hm-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.hm-scroll svg { display: block; width: 100%; min-width: 40rem; height: auto; }
+.hm-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin: .7rem 0 0; padding: 0; list-style: none; font: .82rem/1.4 var(--sans); color: var(--ink-2); }
+.hm-legend li { display: flex; align-items: center; gap: .45rem; margin: 0; }
+.hm-legend i { display: inline-block; width: .85rem; height: .85rem; border-radius: 3px; border: 2px solid currentColor; }
+
+.hm-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem 1.4rem; margin: 0 0 2.75rem; padding: 0; list-style: none; counter-reset: hm; }
+.hm-steps li { min-width: 0; margin: 0; counter-increment: hm; font: .95rem/1.5 var(--serif); color: var(--ink-2); }
+.hm-steps li::before { content: counter(hm); display: grid; place-items: center; width: 1.6rem; height: 1.6rem; margin-bottom: .45rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font: 700 .8rem/1 var(--sans); }
+.hm-steps b { color: var(--ink); font-family: var(--sans); font-size: .9rem; }
+
+.hm-start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1rem 2.5rem; align-items: start; padding-top: 1.5rem; border-top: 1px solid var(--rule); margin-bottom: 2rem; }
+.hm-start > * { min-width: 0; }
+.hm-start h2 { margin-top: 0; }
+.hm-start p { max-width: 30rem; color: var(--ink-2); }
+
+@container folio-canvas (max-width: 40rem) {
+  .hm-hero, .hm-start { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .hm-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container folio-canvas (max-width: 26rem) {
+  .hm-steps { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
-<p>folio turns a coding agent into the librarian of a knowledge library that lives inside a project, or on its own. Every document has one <a class="defn-link" href="/content/concepts/genre/">genre</a>, which fixes its job, its voice, its format and its checks. Documents link to each other, and <a class="defn-link" href="/content/concepts/map/">maps</a> give a reader the way in. You talk to your agent; it follows folio's seven <a class="defn-link" href="/content/concepts/skill/">skills</a> and runs the <a class="defn-link" href="/content/concepts/gate/">gate</a> before every commit.</p>
-<p>This documentation is itself a folio library. New here? Start with the guide.</p>
+<section class="hm-hero">
+<div>
+<p class="hm-lead">folio turns a coding agent into the librarian of a knowledge library that lives inside a project, or on its own.</p>
+<p>Every document has one <a class="defn-link" href="/content/concepts/genre/">genre</a>, which fixes its job, its voice, its format and its checks. Documents link to each other, and <a class="defn-link" href="/content/concepts/map/">maps</a> give a reader the way in. You talk to your agent; it follows folio's seven <a class="defn-link" href="/content/concepts/skill/">skills</a> and runs the <a class="defn-link" href="/content/concepts/gate/">gate</a> before every commit.</p>
+<p>This documentation is itself a folio library. Every page you read here was written and checked the way yours would be.</p>
+</div>
+<ul class="hm-facts">
+<li><b>You ask</b>In plain words, to the coding agent you already use. The <code>folio</code> command exists, but only the skills call it.</li>
+<li><b>The library is files</b>Plain HTML and Markdown in a folder in git. Reading a page needs no build step.</li>
+<li><b>Nothing lands unchecked</b>Every change passes <code>folio check</code> before it is committed.</li>
+</ul>
+</section>
 
+<figure class="hm-fig" aria-label="How folio works, as a loop. You ask your agent in plain words. The agent picks a skill, and the skill writes linked documents. folio check, the gate, checks them; a failure goes back to the writing, a pass is committed to git. folio serve renders the library as a site, a reader leaves a comment on a passage, and the address skill answers it and edits the page, which goes through the gate again.">
+<div class="hm-scroll">
+<svg viewBox="0 0 784 318" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The loop: ask, skill, write, check, commit, read, comment, answer</title>
+<defs>
+<marker id="hm-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<!-- top row: the way in -->
+<rect x="20" y="70" width="136" height="64" rx="9" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<text x="88" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--azure)">You ask</text>
+<text x="88" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">in plain words</text>
+
+<rect x="172" y="70" width="136" height="64" rx="9" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="240" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--violet)">Your agent</text>
+<text x="240" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">picks a skill</text>
+
+<rect x="324" y="70" width="136" height="64" rx="9" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="392" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--violet)">It writes</text>
+<text x="392" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">linked documents</text>
+
+<rect x="476" y="70" width="136" height="64" rx="9" fill="color-mix(in srgb, var(--orange) 10%, transparent)" stroke="var(--orange)" stroke-width="2"/>
+<text x="544" y="98" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13.5" font-weight="700" fill="var(--orange)">folio check</text>
+<text x="544" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">the gate</text>
+
+<rect x="628" y="70" width="136" height="64" rx="9" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+<text x="696" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--ink)">Committed</text>
+<text x="696" y="118" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">to git</text>
+
+<path d="M 156 102 L 170 102" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 308 102 L 322 102" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 460 102 L 474 102" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 612 102 L 626 102" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<!-- a failure goes back -->
+<path d="M 544 68 C 544 26, 392 26, 392 66" fill="none" stroke="var(--orange)" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#hm-arr)"/>
+<text x="468" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--orange)">fails: fix it and check again</text>
+
+<!-- bottom row: reading and comments -->
+<rect x="628" y="214" width="136" height="64" rx="9" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+<text x="696" y="242" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13.5" font-weight="700" fill="var(--ink)">folio serve</text>
+<text x="696" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">renders the site</text>
+
+<rect x="476" y="214" width="136" height="64" rx="9" fill="none" stroke="var(--azure)" stroke-width="2"/>
+<text x="544" y="242" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--azure)">A reader</text>
+<text x="544" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">leaves a comment</text>
+
+<rect x="324" y="214" width="136" height="64" rx="9" fill="none" stroke="var(--violet)" stroke-width="2"/>
+<text x="392" y="242" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="var(--violet)">address skill</text>
+<text x="392" y="262" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">answers, edits</text>
+
+<path d="M 696 134 L 696 212" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 628 246 L 614 246" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 476 246 L 462 246" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<path d="M 392 214 L 392 136" stroke="var(--ink-3)" stroke-width="1.6" marker-end="url(#hm-arr)"/>
+<text x="384" y="180" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">the edit goes</text>
+<text x="384" y="195" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">through the gate too</text>
+<text x="704" y="178" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">read it</text>
+<text x="545" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">saved beside the page, in git</text>
+</svg>
+</div>
+<ul class="hm-legend" aria-hidden="true">
+<li style="color: var(--azure)"><i></i><span style="color: var(--ink-2)">people: you, and readers</span></li>
+<li style="color: var(--violet)"><i></i><span style="color: var(--ink-2)">the agent, following a skill</span></li>
+<li style="color: var(--orange)"><i></i><span style="color: var(--ink-2)">the gate</span></li>
+</ul>
+<figcaption>Follow the arrows from the top left. Nothing reaches git without passing the gate, and a reader's comment comes back in through a skill, so the answer is checked like any other change.</figcaption>
+</figure>
+
+<ol class="hm-steps">
+<li><b>Ask.</b> "Add a concept for the gate", "file this paper", "tidy the maps". The agent picks the skill that covers it: set-up, configure, write, organise, address, run or publish.</li>
+<li><b>Write.</b> The write skill picks the genre, writes in its voice, links the concepts it uses, flags what goes beyond its sources and puts the document on a map.</li>
+<li><b>Check.</b> The gate reads every document: links resolve, maps list what they should, frozen records are unchanged, each genre's checks hold.</li>
+<li><b>Read and answer.</b> The library renders as a site. A comment on a passage is saved in a file beside the page, and the address skill answers it on that page.</li>
+</ol>
+
+<section class="hm-start">
+<div>
+<h2 id="new-here">New here?</h2>
+<p>Start with the guide. It installs folio in a project and walks you to your first reviewed page. The cards above are the library's top-level maps: how to use it, its ideas, its specifications, and the record of how it is built.</p>
+</div>
 <ul class="rows">
 <li><a href="/content/guides/getting-started/">Getting started</a></li>
 </ul>
+</section>
 
 </main>
 </body>

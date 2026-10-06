@@ -10,13 +10,105 @@
 <meta name="tags" content="reference">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A map drawn as a lookup: the hub of the contract, then a table from the question in hand to the spec that settles it, then the rows. */
+.rf-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; margin: 0 0 2.5rem; }
+.rf-top > * { min-width: 0; }
+.rf-stance p { max-width: 34rem; }
+.rf-law { margin: 0 0 1rem; }
+.rf-fig { margin: 0; }
+.rf-fig svg { display: block; width: 100%; max-width: 26rem; height: auto; margin: 0 auto; }
+
+.rf-look { margin: 0 0 2.75rem; }
+.rf-look h2 { margin-top: 0; }
+.rf-look > p { max-width: 44rem; }
+.rf-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); margin: 0; padding: 0; list-style: none; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.rf-grid li { display: contents; }
+.rf-q, .rf-a { min-width: 0; padding: .7rem 1rem; border-top: 1px solid var(--rule); }
+.rf-grid li:first-child .rf-q, .rf-grid li:first-child .rf-a { border-top: 0; }
+.rf-q { font: .97rem/1.45 var(--serif); color: var(--ink); }
+.rf-a { font: .85rem/1.45 var(--sans); color: var(--ink-2); background: var(--sunk); overflow-wrap: anywhere; }
+.rf-a code { color: var(--blue); }
+.rf-a.rf-hub code { color: var(--teal); font-weight: 700; }
+.rf-a.rf-shell code { color: var(--amber); }
+
+.rf-rows h2 { margin-top: 0; }
+.rf-rows { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1rem 2.5rem; align-items: start; margin-bottom: 2.5rem; }
+.rf-rows > * { min-width: 0; }
+
+.rf-open { max-width: 44rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.rf-open h2 { margin-top: 0; }
+
+@container folio-canvas (max-width: 40rem) {
+  .rf-top, .rf-rows { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .rf-grid { grid-template-columns: minmax(0, 1fr); }
+  .rf-a { border-top: 0; padding-top: .2rem; background: transparent; }
+}
+</style>
 </head>
 <body>
 <main>
 
-<h2 id="take">Current take</h2>
-<p>The specifications are the contract. When a skill, a genre card or a page in this library disagrees with them, they win and the other is fixed. They are Markdown files in the repository, outside this library, so they link to GitHub.</p>
+<section class="rf-top">
+<div class="rf-stance">
+<div class="law rf-law">When a skill, a genre card or a page disagrees with the specifications, the specifications win, and the other is fixed.</div>
+<p>The specifications are the contract. The model comes first: every other spec builds on it and settles one part in detail. They are Markdown files in the repository, outside this library, so their rows link to GitHub.</p>
+<p>Come here with a question, not to read front to back. The table below says which file to open.</p>
+</div>
 
+<figure class="rf-fig" aria-label="The folio model sits at the centre. Five specs build on it, each settling one part: the genre format, the checks, the folio command, the pack format and the skill format. The shell's components sit apart, describing how pages are drawn.">
+<svg viewBox="0 0 400 330" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The model at the centre, five specs around it, the shell beside them</title>
+<!-- spokes -->
+<g stroke="var(--rule-strong)" stroke-width="1.5">
+<line x1="200" y1="150" x2="200" y2="52"/>
+<line x1="200" y1="150" x2="74" y2="112"/>
+<line x1="200" y1="150" x2="326" y2="112"/>
+<line x1="200" y1="150" x2="96" y2="228"/>
+<line x1="200" y1="150" x2="304" y2="228"/>
+</g>
+<!-- the hub -->
+<circle cx="200" cy="150" r="46" fill="color-mix(in srgb, var(--teal) 14%, var(--paper))" stroke="var(--teal)" stroke-width="2.5"/>
+<text x="200" y="146" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="var(--teal)">model.md</text>
+<text x="200" y="164" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="var(--ink-2)">the contract</text>
+<!-- the five -->
+<g font-family="ui-monospace, monospace" font-size="11.5" text-anchor="middle">
+<rect x="134" y="30" width="132" height="30" rx="15" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.8"/>
+<text x="200" y="49" fill="var(--blue)">genre-format.md</text>
+<rect x="14" y="96" width="120" height="30" rx="15" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.8"/>
+<text x="74" y="115" fill="var(--blue)">checks.md</text>
+<rect x="266" y="96" width="120" height="30" rx="15" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.8"/>
+<text x="326" y="115" fill="var(--blue)">commands.md</text>
+<rect x="30" y="214" width="132" height="30" rx="15" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.8"/>
+<text x="96" y="233" fill="var(--blue)">pack-format.md</text>
+<rect x="238" y="214" width="132" height="30" rx="15" fill="var(--paper)" stroke="var(--blue)" stroke-width="1.8"/>
+<text x="304" y="233" fill="var(--blue)">skill-format.md</text>
+</g>
+<!-- the shell, apart -->
+<line x1="20" y1="272" x2="380" y2="272" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>
+<rect x="118" y="286" width="164" height="30" rx="6" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-dasharray="5 3"/>
+<text x="200" y="305" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11.5" fill="var(--amber)">COMPONENTS.md</text>
+</svg>
+<figcaption>Start at the centre. The <span class="sw-blue">five around it</span> each settle one part of the <span class="sw-teal">model</span> in detail; the <span class="sw-amber">shell's components</span> sit below the line, about how pages are drawn rather than what they are.</figcaption>
+</figure>
+</section>
+
+<section class="rf-look">
+<h2 id="which-to-open">Which file to open</h2>
+<p>Find the question you have on the left. The file on the right settles it.</p>
+<ul class="rf-grid">
+<li><span class="rf-q">What a document, a link, a map, the journal or the charter is, and what the gate promises.</span><span class="rf-a rf-hub"><code>model.md</code></span></li>
+<li><span class="rf-q">How to write or read a genre card: its settings, fields, parts and sections.</span><span class="rf-a"><code>genre-format.md</code></span></li>
+<li><span class="rf-q">Why the gate stopped a commit, what a check looks at, and how severe it is by default.</span><span class="rf-a"><code>checks.md</code></span></li>
+<li><span class="rf-q">What a <code>folio</code> command does, and which files it changes.</span><span class="rf-a"><code>commands.md</code></span></li>
+<li><span class="rf-q">How a pack bundles genres, rules and journal kinds, and how a workflow is written.</span><span class="rf-a"><code>pack-format.md</code></span></li>
+<li><span class="rf-q">The shape every skill follows: how it starts, its rules, its steps, where it stops.</span><span class="rf-a"><code>skill-format.md</code></span></li>
+<li><span class="rf-q">What the shell draws around a page, and which components and tokens a page may use.</span><span class="rf-a rf-shell"><code>COMPONENTS.md</code></span></li>
+</ul>
+</section>
+
+<div class="rf-rows">
+<section>
 <h2 id="the-specifications">The specifications</h2>
 <ul class="rows">
 <li><a href="https://github.com/pierg/folio/blob/main/docs/spec/model.md">The folio model</a> <span class="why">Read first: documents, links, maps, the journal, genres, packs, the charter and the gate, in one contract.</span></li>
@@ -26,12 +118,20 @@
 <li><a href="https://github.com/pierg/folio/blob/main/docs/spec/pack-format.md">The pack format</a> <span class="why">How a pack and a workflow are written.</span></li>
 <li><a href="https://github.com/pierg/folio/blob/main/docs/spec/skill-format.md">The skill format</a> <span class="why">The shape every skill follows: start, rules, steps, stops, done when.</span></li>
 </ul>
+</section>
 
+<section>
 <h2 id="the-shell">The shell</h2>
 <ul class="rows">
 <li><a href="https://github.com/pierg/folio/blob/main/shell/COMPONENTS.md">The shell's components</a> <span class="why">What the shell draws on every page, and the components a page may write.</span></li>
 </ul>
+</section>
+</div>
 
+<section class="rf-open">
+<h2 id="not-here">Not here</h2>
+<p>How to lay a page out, draw a figure or build a comparison is craft, not contract. It lives in the <code>craft/</code> guides that ship with folio, and <code>folio genre</code> points to them.</p>
+</section>
 
 </main>
 </body>

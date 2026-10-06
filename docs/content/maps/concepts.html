@@ -10,32 +10,139 @@
 <meta name="tags" content="concepts">
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
+<style>
+/* A map drawn as a system: the eight terms in place, joined by what each does to the others; the rows sit in three tiers beside it. */
+.cm-top { margin: 0 0 2.75rem; }
+.cm-stance { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0 2.5rem; margin: 0 0 1.5rem; }
+.cm-stance > * { min-width: 0; }
+.cm-stance .cm-big { grid-row: span 2; }
+.cm-top > * { min-width: 0; }
+.cm-stance p { max-width: 30rem; }
+.cm-stance .cm-big { font: 400 1.18rem/1.5 var(--serif); color: var(--ink); }
+.cm-fig { margin: 0; padding: 1rem 1rem .8rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+.cm-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.cm-scroll svg { display: block; width: 100%; max-width: 50rem; min-width: 34rem; height: auto; margin: 0 auto; }
+
+.cm-tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 0 0 2.5rem; }
+.cm-tier { min-width: 0; padding: 1rem 1.1rem .4rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.cm-tier.cm-t1 { border-top: 3px solid var(--teal); }
+.cm-tier.cm-t2 { border-top: 3px solid var(--indigo); }
+.cm-tier.cm-t3 { border-top: 3px solid var(--amber); }
+.cm-tier h2 { margin-top: 0; font-size: 1.1rem; }
+.cm-tier > p { margin: 0 0 .5rem; font-size: .92rem; color: var(--ink-2); }
+.cm-tiers { counter-reset: cm; }
+.cm-tier { counter-increment: cm; }
+.cm-tier h2::before { content: counter(cm); display: inline-block; margin-right: .45rem; font: 700 .78rem/1 var(--sans); color: var(--ink-3); }
+
+.cm-open { max-width: 44rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.cm-open h2 { margin-top: 0; }
+
+@container folio-canvas (max-width: 40rem) {
+  .cm-stance { grid-template-columns: minmax(0, 1fr); }
+  .cm-tiers { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
 </head>
 <body>
 <main>
 
-<h2 id="take">Current take</h2>
-<p>Eight terms carry the rest of this library. Read the library, genre and map first; the others make sense after them.</p>
+<section class="cm-top">
+<div class="cm-stance">
+<p class="cm-big">Eight terms carry the rest of this library. Read the library, genre and map first; the others make sense after them.</p>
+<p>Each term is defined once, on its own page. Every other page links to that page instead of defining the term again, and hovering the link shows the definition.</p>
+<p>The figure reads in tiers: what a library is made of, how the work on it is done, and how it keeps a record that can be trusted.</p>
+</div>
 
+<figure class="cm-fig" aria-label="How the eight concepts relate. A library holds documents, and every document has one genre. A map is the reader's way into the library. Skills change the library step by step. A pack adds genres and workflows. Skills run the gate before every commit. The journal is made of permanent records, and the gate holds each permanent record to its first commit.">
+<div class="cm-scroll">
+<svg viewBox="0 0 690 360" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>The eight concepts in three tiers, joined by what each does</title>
+<defs>
+<marker id="cm-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-3)"/></marker>
+</defs>
+<!-- tier 1: what a library is made of -->
+<rect x="20" y="50" width="150" height="48" rx="8" fill="color-mix(in srgb, var(--teal) 10%, transparent)" stroke="var(--teal)" stroke-width="2"/>
+<text x="95" y="79" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--teal)">Library</text>
+<rect x="270" y="50" width="150" height="48" rx="8" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="345" y="79" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--teal)">Genre</text>
+<rect x="520" y="50" width="150" height="48" rx="8" fill="none" stroke="var(--teal)" stroke-width="2"/>
+<text x="595" y="79" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--teal)">Map</text>
+<path d="M 170 74 L 268 74" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="219" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">each document</text>
+<text x="219" y="90" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">has one</text>
+<path d="M 595 48 C 595 12, 95 12, 95 46" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="345" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">the reader's way in</text>
+
+<!-- tier 2: how the work is done -->
+<rect x="20" y="170" width="150" height="48" rx="8" fill="none" stroke="var(--indigo)" stroke-width="2"/>
+<text x="95" y="199" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--indigo)">Skill</text>
+<rect x="270" y="170" width="150" height="48" rx="8" fill="none" stroke="var(--indigo)" stroke-width="2"/>
+<text x="345" y="199" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--indigo)">Pack</text>
+<rect x="520" y="170" width="150" height="48" rx="8" fill="color-mix(in srgb, var(--indigo) 10%, transparent)" stroke="var(--indigo)" stroke-width="2"/>
+<text x="595" y="199" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--indigo)">Gate</text>
+<path d="M 95 168 L 95 100" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="103" y="132" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">changes it,</text>
+<text x="103" y="147" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">step by step</text>
+<path d="M 345 168 L 345 100" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="353" y="140" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">adds genres</text>
+<path d="M 268 194 L 172 194" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="219" y="186" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">adds</text>
+<text x="219" y="210" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">workflows</text>
+<path d="M 95 220 C 95 254, 595 254, 595 222" fill="none" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="345" y="264" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">runs it before every commit</text>
+
+<!-- tier 3: the record -->
+<rect x="270" y="290" width="150" height="48" rx="8" fill="none" stroke="var(--amber)" stroke-width="2"/>
+<text x="345" y="319" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--amber)">Journal</text>
+<rect x="520" y="290" width="150" height="48" rx="8" fill="color-mix(in srgb, var(--amber) 10%, transparent)" stroke="var(--amber)" stroke-width="2"/>
+<text x="595" y="319" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="var(--amber)">Permanent record</text>
+<path d="M 420 314 L 518 314" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#cm-arr)"/>
+<text x="469" y="306" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">its entries</text>
+<text x="469" y="330" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">are</text>
+<path d="M 595 220 L 595 288" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#cm-arr)"/>
+<text x="587" y="282" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">checks it against git</text>
+</svg>
+</div>
+<figcaption>Read down the tiers. The <span class="sw-teal">library</span> tier is what you have, the <span class="sw-indigo">work</span> tier is what acts on it, and the <span class="sw-amber">record</span> tier is what never changes behind your back.</figcaption>
+</figure>
+</section>
+
+<div class="cm-tiers">
+<section class="cm-tier cm-t1">
 <h2 id="start-here">Start here</h2>
+<p>What a library is made of, and how a reader finds a way in.</p>
 <ul class="rows">
 <li><a href="/content/concepts/library/">Library</a></li>
 <li><a href="/content/concepts/genre/">Genre</a></li>
 <li><a href="/content/concepts/map/">Map</a></li>
 </ul>
+</section>
 
-
+<section class="cm-tier cm-t2">
 <h2 id="how-the-work-is-done">How the work is done</h2>
+<p>Who changes the library, with what, and what stops a bad change.</p>
 <ul class="rows">
 <li><a href="/content/concepts/skill/">Skill</a></li>
 <li><a href="/content/concepts/pack/">Pack</a></li>
 <li><a href="/content/concepts/gate/">Gate</a></li>
 </ul>
+</section>
+
+<section class="cm-tier cm-t3">
 <h2 id="the-record">The record</h2>
+<p>Why the history can be trusted when a page cites it.</p>
 <ul class="rows">
 <li><a href="/content/concepts/journal/">Journal</a></li>
 <li><a href="/content/concepts/permanent-record/">Permanent record</a></li>
 </ul>
+</section>
+</div>
+
+<section class="cm-open">
+<h2 id="not-defined-yet">Not defined yet</h2>
+<p>Some terms the specs use still have no concept page of their own: the charter, a workflow, a flag. Until they do, the guide and the specifications are where they are explained.</p>
+</section>
+
 </main>
 </body>
 </html>
