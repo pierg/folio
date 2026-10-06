@@ -2,9 +2,13 @@
 
 ## A page designs itself around what it shows
 
-Every HTML page is a free canvas: all the room between the library rail and the page panel, below the header the shell draws. Lead with the one figure, control or contrast that carries the idea, and lay the page out around it. The prose is the definition, the caption, and what the figure cannot show: the reasons, the trade-offs, the open questions. This holds for every genre, concepts and notes included. A definition is often clearer beside a diagram or a control than as three paragraphs, and a note's one claim is often clearer as a contrast than as a paragraph.
+Every HTML page is a free canvas: all the room between the library rail and the page panel, below the header the shell draws. Lead with the one figure, control or contrast that carries the idea, when one does, and lay the page out around it. The prose is the definition, the caption, and what the figure cannot show: the reasons, the trade-offs, the open questions. This holds for every genre, concepts and notes included. A definition is often clearer beside a diagram or a control than as three paragraphs, and a note's one claim is often clearer as a contrast than as a paragraph.
 
 Vary the form. A system with parts, a flow, a set to compare, a mechanism with a setting, a progression: each has a form that shows it (below). Do not reach for the same layout twice in a row. A library reads as one system when each page's form fits its own material, not when pages share a template.
+
+**Restraint.** A figure, control or animation earns its place by showing what prose cannot: a structure, a flow, the effect of a setting, a comparison. Use the fewest that carry the idea, and make each one complete. One added to decorate costs the reader time and teaches nothing.
+
+**Length follows the content.** No page has a word limit. Say what the reader needs: briefly where the idea is simple, at length where it needs the room. What is wrong is saying a thing twice, on the page or across the library, and words that carry nothing.
 
 **The reading column is the exception.** A page that is one line of argument, a narrative, or a reading that is itself a line of prose may read best in the column: `<meta name="layout" content="column">`. Reach for it when the material is a line of thought, not a structure, and know why a figure would not serve. A page left in the column because it was quicker to write is the thing to avoid.
 

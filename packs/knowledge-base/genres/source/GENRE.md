@@ -22,6 +22,10 @@ on_map: optional
 
 A source is one work you keep, such as a paper, an article, a book or a talk: its verified citation, a few words on what it is, and the original beside it.
 
+## Earns its page
+
+A source earns its place when a document cites the work. A work nothing cites is not kept yet.
+
 ## Reader
 
 Anyone in the library who needs to know exactly which work a page means, and where to find it. They want the facts of the work, not an opinion of it.

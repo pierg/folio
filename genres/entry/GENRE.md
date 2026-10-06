@@ -15,6 +15,10 @@ on_map: required
 
 An entry explains or analyses one subject in depth, takes a position on it, and cites what each claim rests on.
 
+## Earns its page
+
+An entry holds a position that no document in the library already holds, on a subject that needs several steps to support it. A subject with no position is a concept or a note. An entry that only mirrors what is kept better elsewhere, such as code, a log or a source, links that instead.
+
 ## Reader
 
 Interested and capable, but not an expert in this subject. They will spend several minutes, and want to see the shape of the argument before they read it.

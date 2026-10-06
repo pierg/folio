@@ -70,3 +70,28 @@ def test_resolve_href() -> None:
     assert resolve_href(lib, page, "/content/results/R-3.html") == "content/results/R-3.md"
     assert resolve_href(lib, page, "/assets/refs.bib") == "assets/refs.bib"
     assert resolve_href(lib, page, "/content/nope/") is None
+
+
+def test_skills_lists_and_updates_only_what_changed(tmp_path: Path, monkeypatch, capsys) -> None:
+    from conftest import folio
+    from folio.commands import setup
+
+    lib = tmp_path / "lib"
+    assert folio(tmp_path, "init", str(lib), monkeypatch=monkeypatch) == 0
+    skills = lib / ".agents" / "skills"
+    (skills / "write" / "SKILL.md").write_text("an old copy\n")
+    (skills / "mine").mkdir()
+    (skills / "mine" / "SKILL.md").write_text("a skill of the project's own\n")
+    (skills / "run").rename(tmp_path / "run-aside")
+    capsys.readouterr()
+    assert folio(lib, "skills", monkeypatch=monkeypatch) == 0
+    states = dict(line.split() for line in capsys.readouterr().out.splitlines())
+    assert states["write"] == "stale" and states["run"] == "missing" and states["mine"] == "own"
+    assert states["organise"] == "current"
+    assert folio(lib, "skills", "update", monkeypatch=monkeypatch) == 0
+    assert sorted(capsys.readouterr().out.split()) == sorted(
+        ["updated", ".agents/skills/write/", "created", ".agents/skills/run/"])
+    assert {s for _, s in setup.skills_status(lib)} == {"current", "own"}
+    assert (skills / "mine" / "SKILL.md").read_text() == "a skill of the project's own\n"
+    assert folio(lib, "skills", "update", monkeypatch=monkeypatch) == 0
+    assert capsys.readouterr().out.strip() == "the skills are current"

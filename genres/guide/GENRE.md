@@ -20,6 +20,10 @@ A guide teaches one subject in order, chapter by chapter, so a reader who starts
 
 A guide has two parts, both of this genre. The **front page** is `index.html` in the guide's folder. It says what the guide builds and who it is for. Each **chapter** is a part: a numbered file beside it, `{nn}-{name}.html`, starting at `01`. The number fixes the order. The engine builds the chapter list and the guide's navigation from the files, in number order, so nobody writes the list by hand.
 
+## Earns its page
+
+A guide earns its place when a subject must be learned in order, and the steps would be lost as separate documents. A subject a reader can take in any order is a map over concepts and entries.
+
 ## Reader
 
 The front page: someone deciding whether to start, and where. A chapter: someone who has read the earlier chapters and nothing else. That is the whole contract of a guide.

@@ -16,6 +16,10 @@ on_map: optional
 
 A note states one idea or claim, with its reason, as a node other documents can link to.
 
+## Earns its page
+
+A note holds one lesson worth keeping: a claim that would change a decision or how something is read, and that the library does not already state. A remark that restates a concept's definition, or a fact with no consequence, stays a sentence in the document that needs it.
+
 ## Reader
 
 Someone who already knows the domain. They want the thought, not the background.

@@ -58,14 +58,13 @@ def test_init_new_journal_index_check(tmp_path: Path, monkeypatch, capsys) -> No
 
     concept = lib / "content/concepts/softmax/index.html"
     drop(concept, r"<figure>.*?</figure>\n")
-    drop(concept, r"<h3>Why it matters</h3>.*?</p>\n")
-    drop(concept, r"<h3>Related</h3>.*?</p>\n")
     fill(concept, {
         "{{term}}": "Softmax",
         "{{one to three sentences that define the term; no citations; every symbol named here}}":
             "The softmax divides the exponential of each score by the sum of them all.",
-        "{{the usual misreading, named precisely}}": "The softmax weights every score; it does not pick the largest.",
     })
+    drop(concept, r"<p>\{\{the rest of the page.*?</p>\n")
+    fill(concept, {"</blockquote>\n": "</blockquote>\n\n<p>The softmax weights every score; it does not pick the largest.</p>\n"})
     note = lib / "content/notes/flashattention-tiling.html"
     fill(note, {
         '<meta name="tags" content="{{tags}}">\n': "",

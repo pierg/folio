@@ -33,7 +33,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 6. Nulls are as prominent as wins. A failure, a drop or a dead end is stated as plainly, in the same place and voice.
 7. Plain is not vague. "It did not help" is vague; "12 of 40 pass, against 14 yesterday" is plain and precise.
 8. Codes are links, not content. An id, a path or a hash rides beside the sentence it supports and is never its subject.
-9. Define a term once and link it everywhere. The second time a term needs explaining, it gets its own definition document, and every mention links to it with `class="defn-link"`.
+9. Define a term once and link it everywhere. When a term earns its own page (the concept card says when), it gets a definition document, and every mention links to it with `class="defn-link"`. Until then, explain it in a clause where it is used.
 10. Siblings share ids, figures and the bibliography, never sentences. A page, a report and a paper on the same fact each cite it in their own words.
 11. Flag what goes beyond the sources. Your example, framing or general-knowledge claim gets a labelled flag, so the owner can review it at a glance.
 12. Address open questions on a document before you edit it. An open question whose quoted text you rewrite fails the gate.
@@ -47,11 +47,17 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 20. A new document is `live`. Skeletons write no status, except for a genre whose states have no `live` (it starts in its first state, such as a protocol's `draft`). Set `status` to `draft` only when the user asks to hold the document. A passage from general knowledge gets a flag (step 8); it never holds the document as a draft. To hold one, pass `--status draft` to `folio new`. Leaving `draft` means editing the `status` field.
 21. Ids are unique across the library. `folio new` refuses a taken slug, so pick one that names this document, not its topic alone.
 22. Commit each change. Lifecycles are checked against git, so a record is permanent only once committed.
+23. A document is judged by its content, never its size. Five questions, each judged, not checked:
+    - **Does it earn a page?** Not trivial; still true when a result changes or a system it describes is rewritten; adds something beyond its sources and the library. If not, its content goes where it is used.
+    - **Is this its one home?** No fact, number or definition written out again from another document. If not, link the home.
+    - **Is it clear?** A reader of the genre follows it without outside help, and a definition stands alone.
+    - **Is it complete, and nothing more?** Short where the idea is simple, long where it needs the room. Padding and repetition are faults; length is not.
+    - **Does the form serve the content?** A figure, control, animation or table where it shows what prose cannot; prose where the material is one line of argument.
 
 ## Steps
 
 1. **Pick the genre.** Match the request to the genre whose job fits, using `folio genres` and each card's first line. Confirm it in one line. Ask only when two genres fit equally well.
-2. **Check for a home.** Run `folio search <key words>` (add `--all` when the charter lists other libraries). If the fact or term already lives somewhere, revise that document or cite it. Do not create a second home.
+2. **Check it earns a page, and has no home yet.** Read the card's `## Earns its page` and ask the five questions of rule 23. If the content does not earn a page, put it where it is used (a clause in that document, a map row's reason, a flag) and tell the user why. Then run `folio search <key words>` (add `--all` when the charter lists other libraries). If the fact or term already lives somewhere, revise that document or cite it. Do not create a second home.
 3. **Gather the sources.** Read what the document will rest on: files, documents, data, the user's words. Note which claims each one supports.
 4. **Open the document.**
    - New: `folio new <genre> <slug> --title "<title>" --description "<one line>" --tags <a,b> [--<field> <value>]`. `folio new --help` lists the fields a genre takes. A record genre with a prefix takes the next free id; give no slug. If the slug is taken, choose another. A new part of a multi-part document, such as a chapter: `folio new <genre> <slug> --part <part> <name>`.
@@ -61,7 +67,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
    - Link each term that has a definition document with `class="defn-link"`.
    - Cite every other document by id. Run `folio cite <id>` to get its path and the right markup for this format.
    - A number cites the document that holds it. If nothing holds it yet, say so and leave the number out, or write its home first.
-7. **Design the page.** An HTML page is a canvas: read `craft/layout.md` (`folio genre <name>` names where the craft guides are) and pick the form that shows the material, from its "Choosing a form" table. Lead with the figure, control or contrast that carries the idea, then the prose it cannot show.
+7. **Design the page.** An HTML page is a canvas: read `craft/layout.md` (`folio genre <name>` names where the craft guides are) and pick the form that shows the material, from its "Choosing a form" table. Lead with the figure, control or contrast that carries the idea, when one does, then the prose it cannot show. A figure, control or animation is there because it shows what prose cannot, never to decorate.
    - Lay it out with the page's own `<style>`, behind one short class prefix, and adapt with `@container folio-canvas` queries, never `@media`.
    - The words stay in the markup. A script may arrange, reveal and highlight them, never write them, and only toggles classes and attributes.
    - Draw figures as inline SVG in the page, or keep a figure other documents share in `assets/figures/`, where every document and paper embeds the same file.

@@ -15,6 +15,10 @@ on_map: required
 
 A map is a front door over part of the library: it lists the documents worth following, in the order to read them.
 
+## Earns its page
+
+A map earns its place when part of the library holds enough documents that a reader needs an order to read them in. A topic with a handful of documents is a group on a broader map until it grows.
+
 ## Reader
 
 Someone arriving cold. They need to know what is here, where to start, and what to skip.

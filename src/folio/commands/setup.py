@@ -75,6 +75,50 @@ def install_skills(root: Path) -> list[str]:
     return changed
 
 
+def _files(folder: Path) -> dict[str, bytes]:
+    return {p.relative_to(folder).as_posix(): p.read_bytes()
+            for p in sorted(folder.rglob("*")) if p.is_file()}
+
+
+def skills_status(root: Path) -> list[tuple[str, str]]:
+    """Each skill in the project's `.agents/skills/` against folio's own, by name.
+
+    `current` matches folio's copy, `stale` differs from it, `missing` is shipped but not
+    installed, and `own` is a skill the project added that folio does not ship.
+    """
+    shipped = {s.name: s for s in sorted(data.shipped("skills").iterdir()) if (s / "SKILL.md").is_file()}
+    target = root / ".agents" / "skills"
+    if target.resolve() == data.shipped("skills").resolve():
+        return [(name, "current") for name in shipped]
+    installed = {s.name: s for s in sorted(target.iterdir()) if (s / "SKILL.md").is_file()} if target.is_dir() else {}
+    out = []
+    for name, source in shipped.items():
+        if name not in installed:
+            out.append((name, "missing"))
+        else:
+            out.append((name, "current" if _files(installed[name]) == _files(source) else "stale"))
+    out.extend((name, "own") for name in installed if name not in shipped)
+    return out
+
+
+def update_skills(root: Path) -> list[str]:
+    """Copy folio's skills over the stale and missing ones; leave current and own skills alone."""
+    target = root / ".agents" / "skills"
+    if target.resolve() == data.shipped("skills").resolve():
+        return []  # the project shares folio's own skills folder (folio's repository)
+    changed = []
+    for name, state in skills_status(root):
+        if state not in ("stale", "missing"):
+            continue
+        dest = target / name
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(data.shipped("skills") / name, dest)
+        changed.append(f"{'updated' if state == 'stale' else 'created'} {dest.relative_to(root)}/")
+    return changed
+
+
 # Never committed: the exported site, and the files `folio up` keeps while it serves.
 GITIGNORE = ("_site/", ".folio/serve.pid", ".folio/serve.log", ".folio/build/")
 

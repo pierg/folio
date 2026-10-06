@@ -7,7 +7,9 @@ description: >-
   "reorganise", "tidy", "clean up", "tidy the maps", "merge these", "merge these topics",
   "split this map", "rename this page", "move this", "promote this note", "retire this",
   "this is a duplicate", "fold this into that", "clean up the tags", "what is on no map",
-  "is the library healthy?", "health check", or "fix what the new pack flagged".
+  "is the library healthy?", "health check", "fix what the new pack flagged",
+  "audit the library", "does this still earn its page", "review every page against
+  the cards", or "bring the library up to the new folio".
 ---
 
 # organise
@@ -32,6 +34,7 @@ Change where documents live and how the maps reach them, with every link, commen
 6. Tags are facets for filtering, never structure. Structure lives in maps.
 7. Structural changes are the owner's call: a new top-level map, a merge, a retirement of their own writing. Propose, say why, and act when asked.
 8. Record every reorganisation as a journal entry of kind `decision`, old names to new, about the documents and maps it touched.
+9. An audit proposes and the owner decides. Report every verdict before changing anything, and apply only what the owner approved.
 
 ## Steps
 
@@ -40,7 +43,7 @@ Pick the change, then follow its line.
 1. **Move or rename a document:** `folio mv <doc> <to>`. Links are rewritten and dates kept. A committed document keeps its id, and its old address redirects. A document never committed takes the new slug as its id, with no redirect, so a move is how to fix a slug before the first commit.
 2. **Promote a document** that has outgrown its genre (for example, a short note that grew sections): `folio promote <doc> <genre>`. Then revise it in the new genre's voice through write.
 3. **Merge two documents:** pick the one to keep. Fold the other's surviving content into it through write. Then `folio rm <other> --to <kept>`.
-4. **Fold a thin definition** into the document that uses it: same as a merge. A term earns its own definition document only when it is transferable, non-trivial and cited.
+4. **Fold a thin definition** into the document that uses it: same as a merge. The concept card's `## Earns its page` says when a term earns its own definition document.
 5. **Retire a document:** `folio rm <doc> --to <replacement>`. Its links and address go to the replacement. It prints a `review:` line for every link whose text still names the retired document's title. Review each one, and reword through write any that no longer fits. Only a genre whose card lists `retired` can be retired. A record that was wrong stays at its address under its own states instead: a result is superseded or retracted through write.
 6. **Maps.**
    - A new map: create it through write. Rows go in with `folio map add <map> <doc> [--reason ".."] [--group "<heading>"] [--after <doc>]`, in the order a newcomer reads them.
@@ -58,9 +61,16 @@ Pick the change, then follow its line.
    6. Drafts left for weeks: finish them through write, or propose retiring them.
    7. Open comments: `folio annotations list`. Hand them to the address skill.
    8. Report what you found, what you changed, and what is left for the owner.
-10. **Record it.** `folio journal add --title "<change>" --description "<one line: what moved and why>" --body "<old names and new>" --kind decision --about <id>,..`.
-11. **Run the gate.** `folio index`, then `folio check`.
-12. **Commit.** `folio mv`, `folio promote` and `folio rm` stage in git every file they moved or changed, annotation files included. Add only the new journal entry and `.folio/` (which holds the redirects), then commit. Never `git add -A`.
+10. **Audit against the cards**, when asked or after folio is upgraded:
+   1. If folio was upgraded, refresh the library's skills first: `folio skills update`, then commit `.agents/skills/`.
+   2. Take one map at a time (`folio maps`): its rows, and the concepts they link.
+   3. Read each document in full, with its card (`folio genre <name>`) and `craft/layout.md`. Ask the five questions of the write skill's rule 23, and the card's `## Earns its page`.
+   4. Give each document one verdict: keep; revise (the words); redesign (the form); promote to another genre; merge into a named document; retire. Add one line on why, and whether you would write it today, and in what form.
+   5. Report to the owner: a table per map with every verdict, then what repeats across documents. Change nothing yet.
+   6. Apply what the owner approves, in batches, least risk first: fixes that change no meaning, then merges and retirements (steps 3 to 5), then revisions and redesigns through write. Each batch ends with the gate and a commit, and each merge or retirement is recorded (step 11).
+11. **Record it.** `folio journal add --title "<change>" --description "<one line: what moved and why>" --body "<old names and new>" --kind decision --about <id>,..`.
+12. **Run the gate.** `folio index`, then `folio check`.
+13. **Commit.** `folio mv`, `folio promote` and `folio rm` stage in git every file they moved or changed, annotation files included. Add only the new journal entry and `.folio/` (which holds the redirects), then commit. Never `git add -A`.
 
 ## Stops
 
@@ -90,3 +100,4 @@ Pick the change, then follow its line.
 - `folio journal add --title ".." --description ".." --body ".." --kind decision --about <id>,..` records the change.
 - `folio index` regenerates the indices.
 - `folio check` runs the gate.
+- `folio skills update` refreshes the library's copy of the skills after folio is upgraded.

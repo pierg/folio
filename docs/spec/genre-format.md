@@ -57,6 +57,7 @@ parts:                        # only for a genre whose documents have more than 
 The body has these sections, in this order. A section with nothing to say is left out.
 
 - `# <Name>`, then one sentence: the job, the question this genre answers that no other does.
+- `## Earns its page`: when a document of this genre deserves to exist, and where its content goes when it does not (model.md §3). Questions and examples, judged, not checked; never a threshold such as a word count or a number of links.
 - `## Reader`: who reads it and what they already know.
 - `## Voice`: the register, in a few plain sentences, with one short example of a sentence in that voice.
 - `## Metadata`: the genre's fields, each with what it is for, and what a good `description` says for this genre.

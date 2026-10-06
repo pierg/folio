@@ -38,6 +38,20 @@ Three principles shape every document:
 - **What follows from links is generated, never written.** A list of what a document cites, what cites it, the work on a question, a guide's chapters, a record's current status: the engine derives each one.
 - **A record is never edited.** A correction is a new document that points back, and the engine shows it on the one it corrects.
 
+### What earns a page
+
+A document is judged by its content, never by its size. Five questions apply to every genre, and each card's `## Earns its page` says what they mean for that genre:
+
+| Question | When the answer is no |
+| --- | --- |
+| **Does it earn a page?** It holds knowledge that is not trivial, stays true when a result changes or a system it describes is rewritten, and adds something beyond its sources and the rest of the library. | Its content goes where it is used: a sentence in another document, a map row's reason, a flag, or nowhere. |
+| **Is this its one home?** No fact, number or definition is written out again from another document. | Link the home instead. |
+| **Is it clear?** A reader of the genre follows it without outside help, and a definition stands alone. | Revise it. |
+| **Is it complete, and nothing more?** It says what its reader needs: short where the idea is simple, long where the idea needs the room. Padding and repetition are faults; length is not. | Add the missing step, or cut what is said twice. |
+| **Does the form serve the content?** A figure, control, animation or table where it shows what prose cannot; prose where the material is one line of argument. | Redesign it (`craft/layout.md`). |
+
+All five are judged, not checked: no word count or number of links decides them. The write skill asks them before it writes a document, and the organise skill's audit asks them of the documents already written.
+
 ### Where a document lives
 
 - **The home page** is the map named `home`, at `content/index.html`. It is the one document outside its genre's folder, and the root of the no-orphans rule. It has no title of its own: the shell and the indices use the charter's `name`, so renaming the library renames its home page.
@@ -228,12 +242,12 @@ Under `genres:`, a genre takes `enabled` and any setting of its card's checks. U
 | set-up | Installs folio in a project or a new repository, asks what the library is for, writes the charter, creates the home page, records the setup in the journal, runs the gate. |
 | configure | Changes the charter: packs, maps on the home page, a genre's limits, a new genre, a variant, a workflow, a pack made from existing genres. |
 | write | Adds or revises any document, in its genre's voice and format, links its concepts, flags what goes beyond its sources, updates the maps, runs the gate. |
-| organise | Moves, merges, promotes and retires documents and maps, with every link, comment and date intact. Runs health passes. |
+| organise | Moves, merges, promotes and retires documents and maps, with every link, comment and date intact. Runs health passes, and audits documents against the current cards: whether each still earns its page (§3), and in what form. |
 | address | Answers the comments readers left on rendered pages, on the page they were left on. |
 | publish | Exports the static site, and builds a paper and freezes versions of it. Freezing copies the paper's source and built PDF into a permanent `versions/<name>/` folder and adds a journal entry; the source stays revised, and a later change is frozen as a new version. |
 | run | Follows a workflow from a pack or the library, step by step; every document it produces goes through write. |
 
-Every skill starts the same way: it reads the charter, the genres available (library, packs, core) and the workflows. So a new genre, workflow or pack never needs a new skill. Skill contracts follow `skill-format.md`.
+Every skill starts the same way: it reads the charter, the genres available (library, packs, core) and the workflows. So a new genre, workflow or pack never needs a new skill. Skill contracts follow `skill-format.md`. A library keeps its own copy of the skills; after folio is upgraded, `folio skills update` refreshes it.
 
 ## 12. The review loop
 
@@ -284,7 +298,7 @@ Every HTML document uses the shared shell: one stylesheet, light and dark themes
 - **Colours come from the shell's tokens,** never a hex value, so a page reads in both themes.
 - **The header is the shell's:** a page writes no `<h1>` and no subtitle of its own.
 
-A page that is one line of argument may opt into the reading column with `<meta name="layout" content="column">`; a Markdown record is always rendered in it. The shell offers colour registers, a few shared components and KaTeX math (`$…$`, `\[…\]`, on a page carrying `<meta name="math" content="katex">`), all described in `shell/COMPONENTS.md`. How to choose a page's form is in `craft/layout.md`.
+A page that is one line of argument may opt into the reading column with `<meta name="layout" content="column">`; a Markdown record is always rendered in it. The shell offers colour registers, a few shared components and KaTeX math (`$…$`, `\[…\]`, on a page carrying `<meta name="math" content="katex">`), all described in `shell/COMPONENTS.md`. How to choose a page's form is in `craft/layout.md`. A figure, control or animation earns its place by showing what prose cannot; a page uses one where it carries the idea, never to decorate.
 
 The library rail is on the left of every page, the home page, the journal and the Review page included. It links home, the journal and, when served, the Review page. Then it lists the charter's home maps in order, each a group of the documents it lists, and then every document other than a journal entry, grouped by genre. Inside a map's group the documents keep the map's own sections: each list of rows sits under the heading nearest above it on the map page, and consecutive lists under one heading are one section. A map with two or more such sections shows them as sub-groups, each counting its genres while closed; a long map (more than twelve rows) opens only its first section and the one being read. A map with fewer sections lists its documents by genre in reading order (guide, entry, concept, note, survey, reading, source) when it has more than six, and as one list otherwise. Each document in a map's group carries its genre's mark, a letter or two with the genre's name on hover, and a key at the foot of the rail names the marks shown. The map's first document is marked Start. It is drawn from the indices alone (`catalog.json`, `nav.json`) and the site data, so no page lists the library by hand. The current page is marked and scrolled into view, and a guide being read shows its chapters. A group the reader opens or closes stays so in that browser. On a wide screen the rail sits beside the page and the page panel; the `[` key or the top bar's library button hides or shows it, and that choice is remembered. On a narrow screen it is a drawer that the same button or key opens and Escape, a click outside or a link closes.
 

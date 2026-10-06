@@ -18,6 +18,10 @@ on_map: required
 
 A reading is your close reading of one source: what it claims, faithfully, and then your take on it, kept apart.
 
+## Earns its page
+
+A reading earns its place when the library rests on the work or argues with it: documents cite it, or will. A work mentioned once needs only a source.
+
 ## Reader
 
 The owner, coming back months later, and anyone the library is shared with. They have not read the work, or have forgotten it. They want to know what it says without opening it, and what you made of it.

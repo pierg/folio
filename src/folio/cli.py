@@ -166,6 +166,21 @@ def cmd_cite(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_skills(args: argparse.Namespace) -> int:
+    root = setup.project_root(_lib().root)
+    if args.action == "update":
+        changes = setup.update_skills(root)
+        _print_changes(changes or ["the skills are current"])
+        return 0
+    rows = setup.skills_status(root)
+    if args.json:
+        _json([{"name": name, "state": state} for name, state in rows])
+    else:
+        for name, state in rows:
+            print(f"{name:<12} {state}")
+    return 0
+
+
 def cmd_config(args: argparse.Namespace) -> int:
     lib = _lib()
     if args.action == "get":
@@ -372,6 +387,11 @@ def parser() -> argparse.ArgumentParser:
 
     annotate.register(sub)
     graph_cli.register(sub)
+
+    s = sub.add_parser("skills", help="The installed skills against folio's own; `update` refreshes the stale ones.")
+    s.add_argument("action", nargs="?", choices=["update"])
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(func=cmd_skills)
 
     s = sub.add_parser("version", help="The engine version.")
     s.set_defaults(func=cmd_version)

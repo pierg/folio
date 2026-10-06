@@ -17,6 +17,12 @@ on_map: optional
 
 A concept defines one term, once, so that every other document can link to it instead of explaining it again.
 
+## Earns its page
+
+A term gets a concept when a reader would want it pinned down on its own: the idea is not trivial, and it stays true and worth looking up beyond the page where it first came up. A well-known part of a larger system can be a concept, such as the KV cache of a transformer. An implementation detail of one system as built, which would change if that system were rewritten, stays prose in the document about that system.
+
+How many documents link a concept is a signal, not a rule. A concept nothing links yet asks a question: should a page link it, or is the term thin enough to fold into the document that uses it? Several small terms that only make sense together are one concept, not several.
+
 ## Reader
 
 Someone who met the term on another page and wants it pinned down. Often they read only the definition, in the popover that shows when they hover a link. They have no context beyond that definition.
@@ -45,6 +51,7 @@ What a good concept usually does, judged, not checked:
 - It gives a worked example the reader can follow step by step.
 - It names the usual misreading, precisely.
 - It says what the idea buys and where it is used, and links the neighbouring concepts.
+- It is as long as the idea needs. A simple idea is its definition and one figure; a deep one adds the steps it takes to understand it. Nothing on the page says the same thing twice, and the page takes no fixed run of sections.
 
 ## Forbidden
 
@@ -52,20 +59,20 @@ What a good concept usually does, judged, not checked:
 - A second definition of the same term. Caught by `defined_once`: no other document carries a `defn` with the same `defn-name`.
 - A prose re-explanation of the term on another page. Judged, not checked.
 - A label after the term in `defn-name`, such as "Softmax, definition". Judged, not checked.
-- A concept for a part of one particular system. That stays in its entry. Judged, not checked.
+- A concept for an implementation detail of one system as built, which would change if the system were rewritten. It stays in the document about that system. Judged, not checked.
 - A number that belongs to a result, stated as the concept's own. The definition stays true when any result changes. Judged, not checked.
 
 ## Steps
 
 - Search before writing: `folio search <term>`. If the term is defined, link to it or revise it. Never add a second one.
-- A concept earns its page when the idea is transferable, not trivial, and needed on at least two documents. Judged, not checked. The organise skill folds a thin concept into its entry with `folio rm --to`.
+- Ask whether the term earns its page (above). If not, explain it in a clause where it is used. The organise skill folds a thin concept into the document that uses it with `folio rm --to`.
 - After writing it, replace every other explanation of the term with `<a class="defn-link" href="/content/concepts/{slug}/">`. The write skill does this sweep.
 - Delete what the skeleton offers and you do not use. A placeholder left in the page is reported by the gate.
 - An invented example or figure gets a flag, because the source did not say it.
 
 ## Lifecycle
 
-Revised in place. The slug is the id and never changes; a move uses `folio mv`. A concept is born when a term needs explaining a second time, often out of a note or an entry's section. It becomes `historical` when the library stops using the term. It becomes `retired` when merged into another concept with `folio rm --to`. When the page has become an argument about the term rather than a definition of it, the argument moves into an entry and the concept links it.
+Revised in place. The slug is the id and never changes; a move uses `folio mv`. A concept is born when a term earns its own page, often out of a note or an entry's section. It becomes `historical` when the library stops using the term. It becomes `retired` when merged into another concept with `folio rm --to`. When the page has become an argument about the term rather than a definition of it, the argument moves into an entry and the concept links it.
 
 ## Example
 

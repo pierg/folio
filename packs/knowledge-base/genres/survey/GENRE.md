@@ -17,6 +17,10 @@ on_map: required
 
 A survey compares several works on one question: a neutral table of what each says, and your reading of the table, kept apart.
 
+## Earns its page
+
+A survey earns its place when several works answer one question differently, and setting them side by side shows what no single reading does. A list of works with no question is a map's rows, or a set of sources.
+
 ## Reader
 
 Someone deciding which works to read, or which approach to take, on one question. They know the field's basic terms and want the differences laid side by side.
