@@ -351,3 +351,34 @@ def test_an_exported_site_carries_no_comments(sample: Path, tmp_path: Path) -> N
     assert "content/review/index.html" not in written
     assert json.loads((tmp_path / "out/.folio/site.json").read_text())["comments"] is None
     assert Site.load(sample).site_data()["comments"] is None
+
+
+# -- the server keeps what it loaded --------------------------------------------------
+
+
+def test_the_server_loads_the_library_again_only_when_a_file_changes(sample: Path, server_for, monkeypatch) -> None:
+    loads = []
+    real = Site.load.__func__
+    monkeypatch.setattr(Site, "load", classmethod(lambda cls, *a, **k: loads.append(1) or real(cls, *a, **k)))
+    s = server_for(sample)
+    for _ in range(3):
+        assert s.get("/" + DOC)[0] == 200
+        assert s.get("/shell/folio.css")[0] == 200
+    assert len(loads) == 1
+    page = sample / DOC
+    page.write_text(page.read_text().replace(QUOTE, "a phrase written while the server runs"))
+    assert "a phrase written while the server runs" in s.get("/" + DOC)[1]
+    assert len(loads) == 2
+
+
+def test_an_unchanged_file_is_answered_with_304(sample: Path, server_for) -> None:
+    s = server_for(sample)
+    with urllib.request.urlopen(s.url + "/" + DOC) as r:
+        etag = r.headers["ETag"]
+        assert etag and r.headers["Cache-Control"] == "no-cache"
+    req = urllib.request.Request(s.url + "/" + DOC, headers={"If-None-Match": etag})
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        urllib.request.urlopen(req)
+    assert exc.value.code == 304
+    with urllib.request.urlopen(s.url + serve.API + "?doc=" + DOC) as r:
+        assert r.headers["Cache-Control"] == "no-store" and r.headers["ETag"] is None

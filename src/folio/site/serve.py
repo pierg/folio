@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import signal
 import subprocess
 import sys
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -19,7 +21,7 @@ from ..indexer import INDEX_DIR
 from . import notes, review
 from .identity import Policy, is_loopback
 from .record import Recorder
-from .site import Site
+from .site import SITE_DATA, Response, Site, shell_dir
 
 HOST = "127.0.0.1"
 PORT = 5170
@@ -53,6 +55,123 @@ class Comments:
         return {"open": who is not None, "who": who.name if who else None, "reason": refusal}
 
 
+class LiveSite:
+    """The site one running server shows, loaded once and again only after a file changes.
+
+    Before each request it reads the modification time and size of every file
+    the site can come from: the library, the shell, and git's record of the
+    last commit (pages show dates from git). Reading them takes milliseconds;
+    loading the library takes a large fraction of a second. So an edit shows on
+    the next reload, and an unchanged library is not loaded again.
+    """
+
+    RUNTIME = {PID_FILE, LOG_FILE}  # the server's own files, written as it runs
+
+    def __init__(self, root: Path) -> None:
+        self.root = root
+        self.git = self._git_dir(root)
+        self._lock = threading.Lock()
+        self._walking = threading.Lock()
+        self._walked: tuple[float, str] | None = None  # when the last walk began, and its stamp
+        self._stamp: str | None = None
+        self._site: Site | None = None
+        self._pages: dict[str, tuple[Response, str] | None] = {}
+        self._data: dict | None = None
+
+    @staticmethod
+    def _git_dir(root: Path) -> Path | None:
+        try:
+            out = subprocess.run(["git", "-C", str(root), "rev-parse", "--absolute-git-dir"],
+                                 capture_output=True, text=True)
+        except OSError:
+            return None
+        return Path(out.stdout.strip()) if out.returncode == 0 else None
+
+    def _walk(self, top: Path, digest: "hashlib._Hash") -> None:
+        for folder, dirs, files in os.walk(top):
+            here = Path(folder)
+            # Another repository inside the library (a worktree, a vendored clone) and an
+            # earlier export are not where the site comes from.
+            dirs[:] = sorted(d for d in dirs if d != ".git" and not (here / d / ".git").exists()
+                             and not (here / d / ".nojekyll").exists())
+            for name in sorted(files):
+                path = here / name
+                rel = path.relative_to(top).as_posix()
+                if top == self.root and rel in self.RUNTIME:
+                    continue
+                try:
+                    st = path.stat()
+                except OSError:
+                    continue  # removed while walking; the next request sees it gone
+                digest.update(f"{rel}\0{st.st_mtime_ns}\0{st.st_size}\n".encode())
+
+    def stamp(self) -> str:
+        digest = hashlib.sha1()
+        self._walk(self.root, digest)
+        if self._site is not None:
+            shell = shell_dir(self._site.lib).resolve()
+            if self.root.resolve() not in shell.parents:
+                self._walk(shell, digest)
+        if self.git is not None:
+            for name in ("HEAD", "logs/HEAD"):
+                try:
+                    st = (self.git / name).stat()
+                    digest.update(f"{name}\0{st.st_mtime_ns}\0{st.st_size}\n".encode())
+                except OSError:
+                    pass
+        return digest.hexdigest()
+
+    def fresh_stamp(self) -> str:
+        """A stamp from a walk that began after this call: requests that arrive together share one."""
+        asked = time.monotonic()
+        with self._walking:
+            if self._walked is not None and self._walked[0] >= asked:
+                return self._walked[1]
+            began = time.monotonic()
+            stamp = self.stamp()
+            self._walked = (began, stamp)
+            return stamp
+
+    def current(self) -> Site:
+        """The site as the files are now: the loaded one, or a fresh load when a file changed."""
+        stamp = self.fresh_stamp()
+        with self._lock:
+            if self._site is None or stamp != self._stamp:
+                first = self._site is None
+                self._site = Site.load(self.root, live=True)
+                self._pages = {}
+                self._data = None
+                # The stamp taken before loading, so a change made during the load shows next time.
+                # The first load is stamped again: only now is the shell's place known.
+                self._stamp = self.stamp() if first else stamp
+            return self._site
+
+    def site_data(self) -> dict:
+        """`.folio/site.json`'s data, kept until a file changes; the caller adds the commenter."""
+        site = self.current()
+        with self._lock:
+            if site is self._site and self._data is not None:
+                return dict(self._data)
+        data = site.site_data()
+        with self._lock:
+            if site is self._site:
+                self._data = data
+        return dict(data)
+
+    def get(self, path: str) -> tuple[Response, str] | None:
+        """The response at a site path and its ETag, kept until a file changes."""
+        site = self.current()
+        with self._lock:
+            if site is self._site and path in self._pages:
+                return self._pages[path]
+        response = site.get(path)
+        found = None if response is None else (response, '"' + hashlib.sha1(response.body).hexdigest() + '"')
+        with self._lock:
+            if site is self._site:
+                self._pages[path] = found
+        return found
+
+
 def _hostname(value: str) -> str:
     value = value.strip().lower()
     if value.startswith("["):
@@ -62,6 +181,7 @@ def _hostname(value: str) -> str:
 
 def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRequestHandler]:
     comments = comments or Comments(root)
+    live = LiveSite(root)
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "folio"
@@ -69,11 +189,22 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
         def log_message(self, format: str, *args: object) -> None:
             sys.stderr.write(f"{self.address_string()} {format % args}\n")
 
-        def _send(self, status: int, body: bytes, kind: str, location: str | None = None) -> None:
+        def _send(self, status: int, body: bytes, kind: str, location: str | None = None,
+                  etag: str | None = None) -> None:
+            """A response. With an ETag the browser keeps it and asks again with If-None-Match;
+            without one (the comment API, errors) it keeps nothing."""
+            if etag is not None and etag in (self.headers.get("If-None-Match") or ""):
+                self.send_response(304)
+                self.send_header("ETag", etag)
+                self.send_header("Cache-Control", "no-cache")
+                self.end_headers()
+                return
             self.send_response(status)
             self.send_header("Content-Type", kind)
             self.send_header("Content-Length", str(len(body)))
-            self.send_header("Cache-Control", "no-store")
+            self.send_header("Cache-Control", "no-cache" if etag else "no-store")
+            if etag:
+                self.send_header("ETag", etag)
             if location:
                 self.send_header("Location", location)
             self.end_headers()
@@ -104,25 +235,31 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                 self._send(403, b"Forbidden host", "text/plain; charset=utf-8")
                 return
             url = urlsplit(self.path)
-            # Each request loads the library afresh, so an edit shows on the next reload.
-            site = Site.load(root, live=True)
-            site.comments = comments.status(self.headers)
             try:
                 if url.path == API:
                     doc = parse_qs(url.query).get("doc", [""])[0]
-                    self._json(200, {"threads": notes.threads(site.lib, doc)})
+                    self._json(200, {"threads": notes.threads(live.current().lib, doc)})
                     return
                 if url.path == INBOX:
-                    self._json(200, review.inbox(site.lib))
+                    self._json(200, review.inbox(live.current().lib))
                     return
             except FolioError as exc:
                 self._json(400, {"error": str(exc)})
                 return
-            response = site.get(unquote(url.path))
-            if response is None:
+            path = unquote(url.path).lstrip("/")
+            if path == SITE_DATA:
+                # Whether this reader may comment depends on the request, so this one is not kept.
+                data = live.site_data()
+                data["comments"] = comments.status(self.headers)
+                self._json(200, data)
+                return
+            found = live.get(path)
+            if found is None:
                 self._send(404, b"Not found", "text/plain; charset=utf-8")
                 return
-            self._send(response.status, response.body, response.content_type, response.location)
+            response, etag = found
+            self._send(response.status, response.body, response.content_type, response.location,
+                       etag if response.status == 200 else None)
 
         def do_POST(self) -> None:
             if urlsplit(self.path).path != API:
@@ -148,8 +285,7 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                 return
             try:
                 request = json.loads(self.rfile.read(length) or b"{}")
-                site = Site.load(root, live=True)
-                self._json(200, {"thread": notes.act(site.lib, request, who, comments.recorder)})
+                self._json(200, {"thread": notes.act(live.current().lib, request, who, comments.recorder)})
             except (FolioError, ValueError) as exc:
                 self._json(400, {"error": str(exc)})
 
