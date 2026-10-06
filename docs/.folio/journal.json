@@ -1,6 +1,19 @@
 [
   {
     "about": [
+      "genre"
+    ],
+    "date": "2026-10-06",
+    "description": "Genre cards settle structure and voice; the author designs each page's form.",
+    "id": "2026-10-06-every-page-is-a-free-canvas",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md",
+    "tags": [],
+    "title": "Every page is a free canvas",
+    "url": "/content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md"
+  },
+  {
+    "about": [
       "home"
     ],
     "date": "2026-10-04",

@@ -29,7 +29,14 @@
     "superseded_by": []
   },
   "content/concepts/genre/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-10-06",
+        "id": "2026-10-06-every-page-is-a-free-canvas",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/gate/index.html",
       "content/concepts/library/index.html",
@@ -40,6 +47,7 @@
       "content/entries/why-metadata-first/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
+      "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md",
       "content/maps/concepts.html"
     ],
     "cites": [
@@ -527,6 +535,17 @@
     ],
     "fields": {},
     "id": "2026-10-04-the-library-shares-the-repository-s-skills",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/genre/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-06-every-page-is-a-free-canvas",
     "retracted_by": [],
     "superseded_by": []
   },
