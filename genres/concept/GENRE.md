@@ -21,6 +21,8 @@ A concept defines one term, once, so that every other document can link to it in
 
 A term gets a concept when a reader would want it pinned down on its own: the idea is not trivial, and it stays true and worth looking up beyond the page where it first came up. A well-known part of a larger system can be a concept, such as the KV cache of a transformer. An implementation detail of one system as built, which would change if that system were rewritten, stays prose in the document about that system.
 
+Use the field's name for the term when it has one. A name the library coins earns a concept only when it is clear, does not read as a better-known meaning in another field, and the page says the name is the library's (a flag, `framing`). A partition or taxonomy the library made up to organise a topic, such as its own list of categories, is not a set of concepts: it lives in the entry that frames the topic, until the field has a name for it.
+
 How many documents link a concept is a signal, not a rule. A concept nothing links yet asks a question: should a page link it, or is the term thin enough to fold into the document that uses it? Several small terms that only make sense together are one concept, not several.
 
 ## Reader

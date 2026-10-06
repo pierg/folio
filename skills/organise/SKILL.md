@@ -64,7 +64,7 @@ Pick the change, then follow its line.
 10. **Audit against the cards**, when asked or after folio is upgraded:
    1. If folio was upgraded, refresh the library's skills first: `folio skills update`, then commit `.agents/skills/`.
    2. Take one map at a time (`folio maps`): its rows, and the concepts they link.
-   3. Read each document in full, with its card (`folio genre <name>`) and `craft/layout.md`. Ask the five questions of the write skill's rule 23, and the card's `## Earns its page`.
+   3. Read each document in full, with its card (`folio genre <name>`) and `craft/layout.md`. Ask the five questions of the write skill's rule 23, and the card's `## Earns its page`. For a definition document, also ask whether its term is the field's name, or the library's own framing presented as one; the card says what follows.
    4. Give each document one verdict: keep; revise (the words); redesign (the form); promote to another genre; merge into a named document; retire. Add one line on why, and whether you would write it today, and in what form.
    5. Report to the owner: a table per map with every verdict, then what repeats across documents. Change nothing yet.
    6. Apply what the owner approves, in batches, least risk first: fixes that change no meaning, then merges and retirements (steps 3 to 5), then revisions and redesigns through write. Each batch ends with the gate and a commit, and each merge or retirement is recorded (step 11).

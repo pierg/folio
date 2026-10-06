@@ -1497,6 +1497,9 @@
       if (window.console) console.error("folio:", err);
     }).then(function () {
       document.documentElement.classList.add("f-ready");  // the stylesheet shows the page now, drawn or not
+      // The browser jumped to the address's #section while the page was hidden and undrawn; jump again now.
+      var target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) target.scrollIntoView();
     });
     prerenderLinks();
   }
