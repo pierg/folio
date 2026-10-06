@@ -320,6 +320,41 @@
   }
   function isRecordId(id) { return /^[A-Za-z]+-\d+$/.test(String(id || "")); }
 
+  /* A genre's mark in the rail: a letter or two, its name on hover and in the rail's key. */
+  var MARKS = { concept: "C", note: "N", entry: "E", guide: "G", map: "M", journal: "J", paper: "P", project: "Pj",
+    reading: "R", source: "S", survey: "Sv", question: "Q", protocol: "Pr", result: "Rs", claim: "Cl", report: "Rp" };
+  function markOf(genre) { return MARKS[genre] || human(genre).slice(0, 2); }
+  /* The order a reader meets genres in: the way in first, then ideas, then the evidence. */
+  var READING = ["guide", "entry", "concept", "note", "survey", "reading", "source", "map"];
+  function genreRank(genre) { var i = READING.indexOf(genre); return i < 0 ? READING.length : i; }
+  function summary(docs) {
+    var n = {};
+    docs.forEach(function (d) { n[d.genre] = (n[d.genre] || 0) + 1; });
+    return Object.keys(n).sort(function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); })
+      .map(function (g) { return n[g] + " " + (n[g] === 1 ? g : plural(g).toLowerCase()); }).join(", ");
+  }
+  /* A map's documents as the rail lists them: under the map's own headings when it has two or more;
+     else, for a long map, by genre in reading order; else as one list. */
+  function sectionsOf(map, docs) {
+    var shownHere = {};
+    docs.forEach(function (d) { shownHere[d.path] = d; });
+    var parts = (map.sections || []).map(function (sec) {
+      return { title: sec.title, docs: sec.rows.map(function (p) { return shownHere[p]; }).filter(Boolean) };
+    }).filter(function (part) { return part.docs.length; });
+    if (parts.filter(function (part) { return part.title; }).length >= 2) {
+      var placed = {};
+      parts.forEach(function (part) { part.docs.forEach(function (d) { placed[d.path] = 1; }); });
+      var rest = docs.filter(function (d) { return !placed[d.path]; });
+      if (rest.length) parts.push({ title: "More", docs: rest });
+      return parts;
+    }
+    if (docs.length <= 6) return [{ title: null, docs: docs }];
+    var by = {};
+    docs.forEach(function (d) { (by[d.genre] = by[d.genre] || []).push(d); });
+    return Object.keys(by).sort(function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); })
+      .map(function (g) { return { title: plural(g), docs: by[g] }; });
+  }
+
   function rail(view, rel) {
     if (!D.catalog.length) return null;
     var info = view ? null : lookup(rel);
@@ -327,15 +362,20 @@
     var herePath = info ? (info.part || info.doc).path : null;
     var box = el("nav", { class: "f-rail", id: "f-rail", "aria-label": "Library" });
     var shown = {};  // documents already visible in an open group, so a genre group stays closed
+    var marked = {};  // the genres whose mark the rail shows, for its key
 
-    function item(doc) {
+    function item(doc, opts) {
+      opts = opts || {};
       var cur = hereDoc === doc;
       var out = !inFocus(doc);
+      if (opts.mark) marked[doc.genre] = 1;
       var a = el("a", { href: docURL(doc), title: doc.title + (out ? " (outside your focus)" : ""),
         "aria-current": cur && herePath === doc.path ? "page" : null,
         class: ((cur ? "f-here" : "") + (out ? " f-out" : "")).trim() || null }, [
+        opts.mark ? el("span", { class: "f-gmark", "data-g": doc.genre, title: human(doc.genre), text: markOf(doc.genre) }) : null,
         isRecordId(doc.id) ? el("span", { class: "f-rid", text: doc.id }) : null,
-        el("span", { class: "f-rname", text: doc.title })
+        el("span", { class: "f-rname", text: doc.title }),
+        opts.start ? el("span", { class: "f-start", text: "Start" }) : null
       ]);
       var li = el("li", null, [a]);
       // A guide shows its chapters while the reader is in it.
@@ -352,16 +392,16 @@
     }
     /* A group opens as the reader last left it, or by default; and always when it holds the
        current page and no open group above already shows it. */
-    function group(key, head, docs, byDefault) {
+    function group(key, head, docs, byDefault, fill, count) {
       var holdsHere = !!hereDoc && docs.indexOf(hereDoc) >= 0;
       var saved = store("rail:" + key);
       var open = (holdsHere && !shown[hereDoc.path]) || (saved ? saved === "open" : byDefault);
       var ul = el("ul", { class: "f-rlist", id: "f-r-" + slug(key) });
-      docs.forEach(function (d) { ul.appendChild(item(d)); });
+      if (fill) fill(ul); else docs.forEach(function (d) { ul.appendChild(item(d)); });
       var caret = el("button", { class: "f-caret", type: "button", "aria-expanded": String(open), "aria-controls": ul.id,
         "aria-label": (open ? "Close " : "Open ") + head.textContent });
       var wrap = el("div", { class: "f-rgroup" + (holdsHere ? " f-holds" : ""), "data-open": open ? "" : null }, [
-        el("div", { class: "f-rhead" }, [caret, head, el("span", { class: "f-count", text: String(docs.length) })]), ul]);
+        el("div", { class: "f-rhead" }, [caret, head, count || el("span", { class: "f-count", text: String(docs.length) })]), ul]);
       function flip() {
         open = !open;
         if (open) wrap.setAttribute("data-open", ""); else wrap.removeAttribute("data-open");
@@ -408,7 +448,22 @@
         maps.push(el("div", { class: "f-rgroup f-rsolo" }, [el("div", { class: "f-rhead" }, [name])]));
         return;
       }
-      maps.push(group("map:" + map.id, name, docs, true));
+      var parts = sectionsOf(map, docs);
+      maps.push(group("map:" + map.id, name, docs, true, function (ul) {
+        var many = docs.length > 12;  // a long map opens its first section and the one being read
+        parts.forEach(function (part, i) {
+          if (!part.title) {
+            part.docs.forEach(function (d) { ul.appendChild(item(d, { mark: true, start: d === docs[0] && docs.length > 2 })); });
+            return;
+          }
+          var head = el("button", { class: "f-rname-btn f-rsec-btn", type: "button", title: part.title, text: part.title });
+          var sum = el("span", { class: "f-rsum", text: summary(part.docs) });
+          ul.appendChild(el("li", { class: "f-rsec" }, [group("sec:" + map.id + ":" + slug(part.title), head, part.docs, !many || i === 0,
+            function (sub) {
+              part.docs.forEach(function (d) { sub.appendChild(item(d, { mark: true, start: d === docs[0] && docs.length > 2 })); });
+            }, sum)]));
+        });
+      }));
     });
     section("Maps", maps);
 
@@ -427,6 +482,10 @@
     });
     section("By genre", byGenre);
 
+    var used = Object.keys(marked).sort(function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); });
+    if (used.length) box.appendChild(el("p", { class: "f-rlegend" }, used.map(function (g) {
+      return el("span", null, [el("span", { class: "f-gmark", "data-g": g, text: markOf(g) }), " " + g]);
+    })));
     box.appendChild(el("p", { class: "f-rkeys" }, [el("kbd", { text: "[" }), " shows or hides the library"]));
     box.addEventListener("click", function (e) {
       if (e.target.closest && e.target.closest("a") && narrow()) setRail(false);

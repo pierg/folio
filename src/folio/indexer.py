@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as _dt
+import html as _html
 import json
 import re
 from pathlib import Path
@@ -65,6 +66,41 @@ def _map_rows(lib: Library, doc: Document) -> list[str]:
         target = row["doc"]
         if target is not None and target.key not in out:
             out.append(target.key)
+    return out
+
+
+_HEADING_RE = re.compile(r"<h([1-6])\b[^>]*>(.*?)</h\1\s*>", re.S | re.I)
+
+
+def _map_sections(lib: Library, doc: Document) -> list[dict[str, Any]]:
+    """A map's rows as the map groups them: each list of rows under the heading nearest above it.
+
+    Consecutive lists under the same heading are one section. A list with no heading
+    above it has no title. A row already listed earlier is not listed again.
+    """
+    from .commands.maps_cmds import _ROWS_RE, _rows
+
+    text = doc.main.text if doc.main else ""
+    headings = [(m.start(), " ".join(_html.unescape(re.sub(r"<[^>]+>", "", m.group(2))).split()))
+                for m in _HEADING_RE.finditer(text)]
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    rows = _rows(lib, doc, text)
+    for block in _ROWS_RE.finditer(text):
+        above = [title for at, title in headings if at < block.start()]
+        title = above[-1] if above and above[-1] else None
+        paths = []
+        for row in rows:
+            target = row["doc"]
+            if block.start(2) <= row["start"] < block.end(2) and target is not None and target.key not in seen:
+                seen.add(target.key)
+                paths.append(target.key)
+        if not paths:
+            continue
+        if out and out[-1]["title"] == title:
+            out[-1]["rows"].extend(paths)
+        else:
+            out.append({"title": title, "rows": paths})
     return out
 
 
@@ -179,6 +215,7 @@ def catalog(lib: Library) -> dict[str, Any]:
         }
         if doc.is_a("map"):
             entry["rows"] = _map_rows(lib, doc)
+            entry["sections"] = _map_sections(lib, doc)
         if doc.is_a("paper"):
             entry["abstract"] = latex_abstract(doc.main.latex if doc.main else None)
             entry["versions"] = paper_versions(lib, doc)

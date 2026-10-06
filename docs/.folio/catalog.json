@@ -290,6 +290,14 @@
       "rows": [
         "content/guides/getting-started/index.html"
       ],
+      "sections": [
+        {
+          "rows": [
+            "content/guides/getting-started/index.html"
+          ],
+          "title": "New here?"
+        }
+      ],
       "status": "live",
       "tags": [],
       "title": "folio",
@@ -714,6 +722,23 @@
         "content/results/R-1.md",
         "content/results/R-2.md"
       ],
+      "sections": [
+        {
+          "rows": [
+            "content/projects/folio/index.html"
+          ],
+          "title": "The project"
+        },
+        {
+          "rows": [
+            "content/questions/Q-1.md",
+            "content/protocols/check-time.md",
+            "content/results/R-1.md",
+            "content/results/R-2.md"
+          ],
+          "title": "How fast is the gate"
+        }
+      ],
       "status": "live",
       "tags": [
         "building"
@@ -742,6 +767,31 @@
         "content/concepts/journal/index.html",
         "content/concepts/permanent-record/index.html"
       ],
+      "sections": [
+        {
+          "rows": [
+            "content/concepts/library/index.html",
+            "content/concepts/genre/index.html",
+            "content/concepts/map/index.html"
+          ],
+          "title": "Start here"
+        },
+        {
+          "rows": [
+            "content/concepts/skill/index.html",
+            "content/concepts/pack/index.html",
+            "content/concepts/gate/index.html"
+          ],
+          "title": "How the work is done"
+        },
+        {
+          "rows": [
+            "content/concepts/journal/index.html",
+            "content/concepts/permanent-record/index.html"
+          ],
+          "title": "The record"
+        }
+      ],
       "status": "live",
       "tags": [
         "concepts"
@@ -761,6 +811,7 @@
       "parts": [],
       "path": "content/maps/reference.html",
       "rows": [],
+      "sections": [],
       "status": "live",
       "tags": [
         "reference"
@@ -788,6 +839,31 @@
         "content/readings/1945-as-we-may-think-reading.html",
         "content/sources/1945-as-we-may-think/index.html",
         "content/questions/Q-1.md"
+      ],
+      "sections": [
+        {
+          "rows": [
+            "content/guides/getting-started/index.html",
+            "content/projects/folio/index.html"
+          ],
+          "title": "Start here"
+        },
+        {
+          "rows": [
+            "content/entries/why-metadata-first/index.html",
+            "content/entries/one-fact-one-home/index.html",
+            "content/entries/how-corrections-work/index.html"
+          ],
+          "title": "Why it works this way"
+        },
+        {
+          "rows": [
+            "content/readings/1945-as-we-may-think-reading.html",
+            "content/sources/1945-as-we-may-think/index.html",
+            "content/questions/Q-1.md"
+          ],
+          "title": "Worked examples"
+        }
       ],
       "status": "live",
       "tags": [

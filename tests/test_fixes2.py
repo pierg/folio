@@ -170,6 +170,28 @@ def test_catalog_lists_map_rows_in_their_order(sample: Path, monkeypatch) -> Non
     assert "!rows[p]" in SHELL
 
 
+
+def test_catalog_keeps_a_maps_sections_under_their_headings(sample: Path) -> None:
+    from folio import indexer
+
+    def sections(map_id: str) -> list[dict]:
+        cat = indexer.catalog(library.load_at(sample))["documents"]
+        return next(d for d in cat if d["id"] == map_id)["sections"]
+
+    attention = sections("attention")
+    assert [s["title"] for s in attention] == ["Basics", "Reading"]
+    flat = next(d for d in indexer.catalog(library.load_at(sample))["documents"] if d["id"] == "attention")["rows"]
+    assert [p for s in attention for p in s["rows"]] == flat
+    page = sample / "content/maps/attention.html"
+    text = page.read_text()
+    # A second list under the same heading joins its section; markup in a heading is dropped.
+    text = text.replace('<h2 id="reading">Reading</h2>', '<h2 id="basics-more">Basics</h2>', 1)
+    text = text.replace('<h2 id="basics">Basics</h2>', '<h2 id="basics"><em>Basics</em></h2>', 1)
+    page.write_text(text)
+    assert [s["title"] for s in sections("attention")] == ["Basics"]
+    assert "sectionsOf(map, docs)" in SHELL and "f-gmark" in SHELL
+
+
 # 15. A whole-page comment from the drawer
 
 def test_drawer_offers_a_whole_page_comment() -> None:

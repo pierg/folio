@@ -37,7 +37,7 @@
   --wide: 52rem;              /* in the reading column, tables, figures and code may use this much */
   --canvas: 92rem;            /* the widest a canvas page and its panel grow on a very wide screen */
   --panel: 16.5rem;
-  --rail: 15rem;              /* the library rail on the left */
+  --rail: 16rem;              /* the library rail on the left */
   --top: 3.25rem;
   --gutter: 1rem;
   --radius: 6px;
@@ -265,6 +265,28 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-rail .f-rchapters a { padding: .2rem .5rem; font-size: .8rem; }
 .f-rlist .f-rchapters a.f-here, .f-rlist .f-rchapters a { background: none; font-weight: 450; color: var(--ink-2); }
 .f-rlist .f-rchapters a[aria-current="page"] { color: var(--accent); font-weight: 600; background: none; }
+/* A map's own sections inside its group: the title wraps to two lines, and a closed
+   section counts its genres on a line of its own. */
+.f-rail .f-rlist:has(> .f-rsec) { margin-left: .2rem; padding-left: 0; border-left: 0; }
+.f-rail .f-rsec { margin: .1rem 0 0; }
+.f-rsec > .f-rgroup > .f-rhead { flex-wrap: wrap; align-items: flex-start; min-height: 0; padding: .2rem .4rem .2rem 0; }
+.f-rail .f-rsec-btn { flex: 1; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  line-height: 1.3; padding: .15rem 0; text-align: left; font-size: .78rem; font-weight: 500; color: var(--ink-3); }
+.f-rsec > .f-rgroup > .f-rhead:hover .f-rsec-btn { color: var(--ink-2); }
+.f-rsec > .f-rgroup > .f-rhead .f-caret { height: 1.3rem; }
+.f-rsum { flex: 0 0 100%; padding-left: 1.45rem; font-size: .7rem; line-height: 1.3; color: var(--ink-3); }
+.f-rgroup[data-open] > .f-rhead > .f-rsum { display: none; }
+.f-rail .f-rsec .f-rlist { margin: 0 0 .3rem .62rem; padding-left: .3rem; }
+.f-rail .f-rsec .f-rlist a { padding-left: .35rem; }
+/* A genre's mark, and the map's way in. */
+.f-gmark { flex: none; align-self: center; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.15rem; height: 1.15rem; padding: 0 .2rem; border: 1px solid var(--rule); border-radius: 4px;
+  font: 500 .62rem/1 var(--mono); color: var(--ink-3); background: var(--paper); }
+.f-rlist a.f-here .f-gmark, .f-rlist a[aria-current="page"] .f-gmark { color: inherit; border-color: currentColor; }
+.f-start { flex: none; align-self: center; margin-left: auto; padding: .1rem .4rem; border-radius: 999px;
+  font-size: .64rem; font-weight: 500; color: var(--accent); background: var(--accent-soft); }
+.f-rlegend { display: flex; flex-wrap: wrap; gap: .3rem .7rem; margin: 1rem .55rem .25rem; font-size: .7rem; color: var(--ink-3); }
+.f-rlegend > span { display: inline-flex; align-items: center; gap: .3rem; }
 /* the parent row of a chapter being read is marked, not filled */
 .f-rlist a.f-here:not([aria-current]) { background: none; }
 .f-rkeys { margin: 1.5rem .55rem 0; color: var(--ink-3); font-size: .74rem; }

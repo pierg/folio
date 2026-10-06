@@ -121,6 +121,14 @@
       "rows": [
         "content/projects/attention-kernel/index.html"
       ],
+      "sections": [
+        {
+          "rows": [
+            "content/projects/attention-kernel/index.html"
+          ],
+          "title": null
+        }
+      ],
       "status": "live",
       "tags": [],
       "title": "Research notes",
@@ -225,6 +233,25 @@
         "content/surveys/exact-attention.html",
         "content/papers/tiled-attention/main.tex"
       ],
+      "sections": [
+        {
+          "rows": [
+            "content/concepts/softmax/index.html",
+            "content/notes/flashattention-tiling.html",
+            "content/entries/attention-is-quadratic/index.html",
+            "content/guides/attention-from-scratch/index.html"
+          ],
+          "title": "Basics"
+        },
+        {
+          "rows": [
+            "content/readings/2017-attention-is-all-you-need-reading.html",
+            "content/surveys/exact-attention.html",
+            "content/papers/tiled-attention/main.tex"
+          ],
+          "title": "Reading"
+        }
+      ],
       "status": "live",
       "tags": [
         "attention"
@@ -247,6 +274,16 @@
         "content/questions/Q-1.md",
         "content/claims/C-1.md",
         "content/reports/pi-error-scaling-report/index.html"
+      ],
+      "sections": [
+        {
+          "rows": [
+            "content/questions/Q-1.md",
+            "content/claims/C-1.md",
+            "content/reports/pi-error-scaling-report/index.html"
+          ],
+          "title": null
+        }
       ],
       "status": "live",
       "tags": [],
