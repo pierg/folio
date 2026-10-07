@@ -382,3 +382,30 @@ def test_an_unchanged_file_is_answered_with_304(sample: Path, server_for) -> Non
     assert exc.value.code == 304
     with urllib.request.urlopen(s.url + serve.API + "?doc=" + DOC) as r:
         assert r.headers["Cache-Control"] == "no-store" and r.headers["ETag"] is None
+
+
+def test_an_author_deletes_their_own_thread_and_its_id_is_not_reused(sample: Path, server_for) -> None:
+    make_repo(sample)
+    lib = library.load_at(sample)
+    theirs = ann.add(lib, DOC, "flag", "", "An agent's flag.", "agent:w")
+    srv = server_for(sample)
+    status, body = srv.ask("Mine.")
+    assert status == 200
+    mine = body["thread"]["id"]
+    doc_id = library.load_at(sample).by_path[DOC].doc.id
+    assert srv.post({"action": "delete", "doc": DOC, "id": theirs["id"]})[0] == 400  # not the reader's thread
+    status, _ = srv.post({"action": "delete", "doc": DOC, "id": mine})
+    assert status == 200
+    data = json.loads((sample / SIDECAR).read_text())
+    assert [t["id"] for t in data["threads"]] == [theirs["id"]]
+    assert data["deleted"] == [mine]
+    assert git(sample, "log", "-1", "--format=%s|%an") == f"Delete a comment on {doc_id}|Ada Reader"
+    assert mine in git(sample, "show", "HEAD~1:" + SIDECAR)  # history keeps what was said
+    assert srv.post({"action": "delete", "doc": DOC, "id": mine})[0] == 400
+    status, body = srv.ask("Again.")
+    assert body["thread"]["id"] not in {mine, theirs["id"]}
+
+
+def test_the_header_offers_the_page_path_to_copy() -> None:
+    shell = (Path(__file__).resolve().parents[1] / "shell" / "folio.js").read_text()
+    assert "function copyPath(path)" in shell and r"index\.html$" in shell

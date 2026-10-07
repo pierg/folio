@@ -46,7 +46,9 @@
       expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
       home: "M4 11 12 4l8 7M6 9.5V20h12V9.5",
       rail: "M4 5h16v14H4zM9.5 5v14",
-      focus: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1"
+      focus: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1",
+      copy: "M9 9h11v11H9zM5 15H4V4h11v1",
+      check: "M5 12.5 10 17.5 19 7"
     };
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -581,6 +583,37 @@
   /* Fields the header shows in its own way, not in the facts list. */
   var OWN = { about: 1, date: 1, kind: 1, reviewed: 1, supersedes: 1, replaced_by: 1 };
 
+  // The page's path in the library, as an agent or a command takes it: a folder page by its folder.
+  function copyPath(path) {
+    var label = el("span", { text: path });
+    var mark = icon("copy");
+    var btn = el("button", { type: "button", class: "f-copypath", title: "Copy the path of this page",
+      "aria-label": "Copy the path " + path }, [mark, label]);
+    function done(ok) {
+      btn.replaceChild(icon(ok ? "check" : "copy"), btn.firstChild);
+      label.textContent = ok ? "Copied" : "Copy failed: " + path;
+      setTimeout(function () { btn.replaceChild(icon("copy"), btn.firstChild); label.textContent = path; }, 1400);
+    }
+    function fallback() {
+      var area = el("textarea", { class: "f-offscreen", "aria-hidden": "true" });
+      area.value = path;
+      document.body.appendChild(area);
+      area.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      area.remove();
+      return ok;
+    }
+    btn.addEventListener("click", function () {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(path).then(function () { done(true); }, function () { done(fallback()); });
+      } else {
+        done(fallback());
+      }
+    });
+    return btn;
+  }
+
   function header(info) {
     var doc = info ? info.doc : null;
     var part = info ? info.part : null;
@@ -624,6 +657,9 @@
       tags.forEach(function (t) { tagBox.appendChild(el("button", { type: "button", class: "f-tag", title: "Search for " + t, text: t, onclick: function () { openSearch(t); } })); });
       metaRow.appendChild(tagBox);
     }
+
+    var source = (part || doc || {}).path;
+    if (source) eyebrow.appendChild(copyPath(source.replace(/(^|\/)index\.html$/, "$1")));
 
     var outside = doc && !isHome && !inFocus(doc);
     var head = el("header", { class: "f-head" }, [
@@ -1292,6 +1328,15 @@
       });
       if (t.changed) box.appendChild(whatChanged(t.changed));
       if (!status.open) return box;
+      if (t.author === status.who) {
+        var delError = el("p", { class: "f-error", role: "alert" });
+        box.appendChild(el("div", { class: "f-thread-tools" }, [
+          el("button", { class: "f-btn f-delete", type: "button", text: "Delete", title: "Delete this thread; git keeps the history",
+            onclick: function () {
+              if (!window.confirm("Delete this comment thread? It disappears from the page; the commit history keeps it.")) return;
+              send({ action: "delete", id: t.id }, delError).catch(function () {});
+            } }), delError]));
+      }
       if (t.kind === "flag" && t.state === "noted") {
         var error = el("p", { class: "f-error", role: "alert" });
         if (changing === t.id) {

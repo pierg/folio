@@ -71,7 +71,8 @@ def act(lib: Library, request: dict[str, Any], who: Who, recorder: Recorder) -> 
     Actions: `add` (kind, quote, body, label), `reply` (id, body, and
     `reopen` to open a closed thread again), `keep` (id: a resting flag
     closes as kept), `change` (id, body: a resting flag reopens as an open
-    question carrying what to change).
+    question carrying what to change), `delete` (id: the thread's author
+    removes it).
     """
     if not isinstance(request, dict):
         raise FolioError("expected a JSON object")
@@ -114,4 +115,9 @@ def act(lib: Library, request: dict[str, Any], who: Who, recorder: Recorder) -> 
         if not body:
             raise FolioError("say what to change")
         return save(lambda: annotations.reply(lib, rel, thread_id, body, who.name, state="open"))
+    if action == "delete":
+        _thread(lib, rel, thread_id)
+        return recorder.save(sidecar, who, doc_id,
+                             lambda: annotations.delete(lib, rel, thread_id, who.name),
+                             message=f"Delete a comment on {doc_id}")
     raise FolioError(f"unknown comment action `{action}`")

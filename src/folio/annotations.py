@@ -20,12 +20,15 @@ guide's chapter, has its own sidecar. The format:
             {"author": "..", "date": "YYYY-MM-DD", "body": "..", "state": null | "<state>"}
           ]
         }
-      ]
+      ],
+      "deleted": ["a2"]                    # ids of threads their author deleted; optional
     }
 
 A message's `state` is the state it moved the thread to. A flag starts
-`noted`, a question `open`. Nothing is deleted: threads and messages are
-only added, and a thread only changes state.
+`noted`, a question `open`. Threads and messages are only added, and a
+thread only changes state, with one exception: a thread's author may delete
+it from the served page. The id goes into `deleted`, so it is never reused,
+and the server commits the deletion, so git keeps what was said.
 """
 
 from __future__ import annotations
@@ -66,22 +69,36 @@ def load_threads(root: Path, rel: str) -> list[dict[str, Any]]:
     return _read(root, sidecar_path(rel))
 
 
-def _read(root: Path, sidecar: str) -> list[dict[str, Any]]:
+def _data(root: Path, sidecar: str) -> dict[str, Any]:
     path = root / sidecar
     if not path.is_file():
-        return []
+        return {"threads": []}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise FolioError(f"{sidecar}: not valid JSON: {exc}") from exc
     if not isinstance(data, dict) or not isinstance(data.get("threads"), list):
         raise FolioError(f"{sidecar}: expected an object with a `threads` list")
-    return data["threads"]
+    if not isinstance(data.get("deleted", []), list):
+        raise FolioError(f"{sidecar}: `deleted` must be a list of thread ids")
+    return data
 
 
-def _write(root: Path, rel: str, threads: list[dict[str, Any]]) -> str:
+def _read(root: Path, sidecar: str) -> list[dict[str, Any]]:
+    return _data(root, sidecar)["threads"]
+
+
+def _deleted(root: Path, rel: str) -> list[str]:
+    return [str(i) for i in _data(root, sidecar_path(rel)).get("deleted", [])]
+
+
+def _write(root: Path, rel: str, threads: list[dict[str, Any]], deleted: list[str] | None = None) -> str:
     sidecar = sidecar_path(rel)
-    text = json.dumps({"version": 1, "threads": threads}, indent=2, ensure_ascii=False) + "\n"
+    gone = _deleted(root, rel) if deleted is None else deleted
+    data: dict[str, Any] = {"version": 1, "threads": threads}
+    if gone:
+        data["deleted"] = gone
+    text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
     (root / sidecar).write_text(text, encoding="utf-8")
     return sidecar
 
@@ -138,7 +155,7 @@ def add(lib: "Library", rel: str, kind: str, quote: str | None, body: str, autho
     if normalise(quote) not in page_text(df):
         raise FolioError(f"the quote is not on {rel}: `{quote}`")
     threads = load_threads(lib.root, rel)
-    used = {str(t.get("id")) for t in threads}
+    used = {str(t.get("id")) for t in threads} | set(_deleted(lib.root, rel))
     n = len(threads) + 1
     while f"a{n}" in used:
         n += 1
@@ -168,6 +185,19 @@ def reply(lib: "Library", rel: str, thread_id: str, body: str, author: str,
             if state is not None:
                 thread["state"] = state
             _write(lib.root, rel, threads)
+            return thread
+    raise FolioError(f"{rel} has no thread `{thread_id}`")
+
+
+def delete(lib: "Library", rel: str, thread_id: str, author: str) -> dict[str, Any]:
+    """Remove a thread its author opened; its id is kept in `deleted` so it is never reused."""
+    threads = load_threads(lib.root, rel)
+    for thread in threads:
+        if thread.get("id") == thread_id:
+            if thread.get("author") != author:
+                raise FolioError(f"only {thread.get('author')}, who opened thread {thread_id}, may delete it")
+            kept = [t for t in threads if t is not thread]
+            _write(lib.root, rel, kept, _deleted(lib.root, rel) + [thread_id])
             return thread
     raise FolioError(f"{rel} has no thread `{thread_id}`")
 

@@ -1,7 +1,7 @@
 """Saving a comment: write the page's annotation file, then commit it, and push when asked.
 
-Each new thread or reply is one commit on the current branch holding only
-that page's annotation file, authored as the commenter. With `push`, the
+Each new thread, reply or deletion is one commit on the current branch
+holding only that page's annotation file, authored as the commenter. With `push`, the
 server pulls with rebase before it writes and pushes after it commits. When
 any step fails, the local write is rolled back and the comment is refused:
 a comment is saved and recorded, or the reader sees why it was not. Outside
@@ -82,7 +82,7 @@ class Recorder:
             raise FolioError("the comment was not saved: pulling the latest version failed"
                              + (f" ({detail[-1]})" if detail else ""))
 
-    def save(self, sidecar: str, who: Who, doc_id: str, write: Callable[[], T]) -> T:
+    def save(self, sidecar: str, who: Who, doc_id: str, write: Callable[[], T], message: str | None = None) -> T:
         """Run `write` (which writes `sidecar`) and record the result; undo it all on any failure."""
         with self._lock:
             if not self.git:
@@ -96,7 +96,7 @@ class Recorder:
             try:
                 result = write()
                 self._must("git add", "add", "--", sidecar)
-                self._must("git commit", "commit", "--quiet", "--only", "-m", f"Comment on {doc_id}",
+                self._must("git commit", "commit", "--quiet", "--only", "-m", message or f"Comment on {doc_id}",
                            "--", sidecar, env=self._env(who))
                 committed = True
                 if self.push:

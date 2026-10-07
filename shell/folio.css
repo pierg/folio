@@ -311,6 +311,16 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-eyebrow a:hover { text-decoration: underline; }
 .f-eyebrow .f-id { font: 500 .78rem/1 var(--mono); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
 .f-eyebrow .f-sep { color: var(--rule-strong); }
+.f-eyebrow .f-copypath { margin-left: auto; display: inline-flex; align-items: center; gap: .35rem; max-width: 100%;
+  padding: .2rem .5rem; border: 1px solid var(--rule); border-radius: 6px; background: none; cursor: pointer;
+  font: 500 .74rem/1.2 var(--mono); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
+.f-eyebrow .f-copypath span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.f-eyebrow .f-copypath .f-icon { width: .9rem; height: .9rem; flex: none; }
+.f-eyebrow .f-copypath:hover, .f-eyebrow .f-copypath:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+.f-offscreen { position: fixed; left: -9999px; top: 0; opacity: 0; }
+.f-thread-tools { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; margin-top: .4rem; }
+.f-thread-tools .f-delete { font-size: .78rem; color: var(--ink-3); }
+.f-thread-tools .f-delete:hover { color: var(--red); }
 .f-title { margin: 0; font: 600 clamp(1.85rem, 1.3rem + 2.4vw, 2.6rem)/1.12 var(--serif); letter-spacing: -.012em;
            color: var(--ink); text-wrap: balance; }
 .f-sub { margin: .8rem 0 0; font: 400 clamp(1.08rem, 1rem + .4vw, 1.25rem)/1.45 var(--serif); color: var(--ink-2);
