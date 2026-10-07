@@ -1386,7 +1386,7 @@
       render();
       if (id) {
         var t = document.getElementById("comment-" + id);
-        if (t) { t.scrollIntoView({ block: "start" }); t.classList.add("f-focus"); }
+        if (t) { t.scrollIntoView({ block: "start" }); t.classList.add("f-thread-on"); }
       }
     }
     if (status.open) document.addEventListener("mouseup", function () {

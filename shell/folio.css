@@ -702,7 +702,7 @@ mark.f-anno[data-w="closed"] { background: transparent; border-bottom: 1px dashe
 .f-cwho { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; padding-bottom: .6rem; color: var(--ink-3); font-size: .8rem; }
 .f-cwho strong { color: var(--ink); font-weight: 600; }
 .f-cwho .f-whole-btn { margin: 0 0 0 auto; border-color: var(--rule); }
-.f-thread.f-focus { margin: 0 -.5rem; padding-left: .5rem; padding-right: .5rem; border-radius: var(--radius); background: var(--accent-soft); }
+.f-thread.f-thread-on { margin: 0 -.5rem; padding-left: .5rem; padding-right: .5rem; border-radius: var(--radius); background: var(--accent-soft); }
 .f-choice { display: flex; gap: .5rem; margin-top: .7rem; }
 .f-choice button { padding: .45rem 1rem; border-radius: 6px; font: 600 .82rem/1 var(--sans); cursor: pointer; }
 .f-keep { border: 0; background: var(--ink); color: var(--paper); }
