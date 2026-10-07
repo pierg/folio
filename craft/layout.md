@@ -50,7 +50,7 @@ Keep the page's words in the order a reader would read them without the layout. 
 ## Mechanics
 
 - **Only the page's own classes, behind one short prefix.** Give the page a prefix (`.kx-`, `.sm-`) and keep its CSS in one `<style>` block in the `<head>`. Never restyle the shell's `.f-` classes.
-- **Nothing overflows.** Use `minmax(0, 1fr)` tracks and `min-width: 0` on grid and flex children. A wide figure sits in an `overflow-x: auto` wrapper with a `min-width` in `rem`, so it scrolls sideways on a phone instead of pushing the page.
+- **Nothing overflows.** Use `minmax(0, 1fr)` tracks and `min-width: 0` on grid and flex children. A wide figure sits in an `overflow-x: auto` wrapper with a `min-width` in `rem`, so it scrolls sideways on a phone instead of pushing the page. Size the figure's own SVG (`.xx-scroll > svg`), never every `svg` inside the figure: the shell puts an icon button in the figure's corner, and a rule that reaches it stretches it.
 - **Keep the drawing inside the viewBox.** Anything past an SVG's `viewBox` is clipped without a warning, the commonest way a designed page ships broken. Size the `viewBox` to the last element plus a margin, and check again after adding a row or a label.
 - **One small script, and only to toggle.** A control's script sets a class or an attribute on a wrapper and nothing more: it never writes text and never builds the figure. Everything shows with the script off; the toggle only changes which pre-written state is visible. Reach for a control only where a setting or a state is the point.
 - **Controls are buttons.** A control is a `<button class="tbtn">`, a picked state is `aria-pressed`, and a readout that changes is `aria-live="polite"`. Test it from the keyboard.

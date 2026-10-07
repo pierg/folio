@@ -419,7 +419,9 @@ main figure.f-fig { position: relative; }
 .f-fig-expand { position: absolute; top: .4rem; right: .4rem; z-index: 2; display: grid; place-items: center;
   width: 1.9rem; height: 1.9rem; padding: 0; border: 1px solid var(--rule); border-radius: 6px;
   background: var(--paper); color: var(--ink-2); cursor: pointer; opacity: 0; transition: opacity .15s; }
-.f-fig-expand svg { width: 1rem; height: 1rem; }
+/* A page's figure rule (`.xx-fig svg { min-width: 40rem }`) must not stretch the shell's own icons. */
+svg.f-icon { min-width: 0 !important; max-width: none !important; }
+.f-fig-expand svg.f-icon { width: 1rem !important; height: 1rem !important; }
 main figure.f-fig:hover > .f-fig-expand, .f-fig-expand:focus-visible { opacity: 1; }
 @media (hover: none) { .f-fig-expand { opacity: .75; } }
 .f-fig-expand:hover { color: var(--ink); border-color: var(--ink-3); }

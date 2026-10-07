@@ -1,4 +1,4 @@
-"""The packs' rule checks: uncited-number, cites-superseded, unverified-identifier."""
+"""The packs' rule checks: uncited-number, cites-superseded, unverified-identifier, source-pointer."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from conftest import edit, found
 
-from folio.checks.rules import measurements
+from folio.checks.rules import measurements, pointers
 
 NOTE = "content/notes/flashattention-tiling.html"
 REPORT = "content/reports/pi-error-scaling-report/index.html"
@@ -129,3 +129,53 @@ def test_unverified_identifier(sample: Path, old: str, new: str, words: str) -> 
     edit(sample / SOURCE, old, new)
     msgs = found(sample, "unverified-identifier")
     assert len(msgs) == 1 and words in msgs[0].message and msgs[0].severity == "error"
+
+
+@pytest.mark.parametrize("text", ["(Section 5.3)", "in Table 7", "§4", "Appendix C", "Fig. 2", "footnote 6",
+                                  "Figures 3 and 4", "Eq. 12", "see Listing 2", "App. B"])
+def test_pointer_shapes(text: str) -> None:
+    assert pointers(text)
+
+
+@pytest.mark.parametrize("text", ["Theorem 2", "Lemma 3", "Definition 1", "a table of 7 rows",
+                                  "an appendix a reader skips", "the figure shows", "Section headings"])
+def test_not_pointers(text: str) -> None:
+    assert pointers(text) == []
+
+
+def test_source_pointer_flags_prose(sample: Path) -> None:
+    edit(sample / NOTE, "the exact result.</p>",
+         "the exact result (Section 5.3, Table 7). See Appendix C.</p>")
+    msgs = found(sample, "source-pointer")
+    assert [(p.path, p.severity) for p in msgs] == [(NOTE, "warning")]
+    assert msgs[0].message.startswith("3 pointer(s)") and "Section 5.3" in msgs[0].message
+
+
+def test_source_pointer_skips_code_and_attributes(sample: Path) -> None:
+    edit(sample / NOTE, "the exact result.</p>",
+         'the exact result. Run <code>show Table 7</code> and read'
+         ' <a href="/content/notes/flashattention-tiling.html#Section 5" title="Figure 3">the note</a>.</p>')
+    assert found(sample, "source-pointer") == []
+
+
+def test_source_pointer_skips_the_journal(sample: Path) -> None:
+    edit(sample / "content/journal/2026/2026-10-02-lab-meeting.md", "next.", "next, as Section 5.3 says.")
+    assert found(sample, "source-pointer") == []
+
+
+def test_source_pointer_severity_from_the_charter(sample: Path) -> None:
+    edit(sample / NOTE, "the exact result.</p>", "the exact result (Table 7).</p>")
+    edit(sample / "folio.yaml", "  uncited-number: error", "  uncited-number: error\n  source-pointer: error")
+    assert [p.severity for p in found(sample, "source-pointer")] == ["error"]
+    edit(sample / "folio.yaml", "source-pointer: error", "source-pointer: off")
+    assert found(sample, "source-pointer") == []
+
+
+def test_source_pointer_skips_the_pages_own_labels(sample: Path) -> None:
+    edit(sample / NOTE, "the exact result.</p>",
+         "the exact result, as (§4) and Figure 3 show; chapter 03 §2 says more.</p>"
+         "<h2>§4 · Tiling</h2><figure><figcaption>Figure 3. One tile at a time.</figcaption></figure>")
+    assert found(sample, "source-pointer") == []
+    edit(sample / NOTE, "chapter 03 §2 says more.", "chapter 03 §2 says more, and so does Figure 5.")
+    msgs = found(sample, "source-pointer")
+    assert len(msgs) == 1 and msgs[0].message.startswith("1 pointer(s)") and "Figure 5" in msgs[0].message

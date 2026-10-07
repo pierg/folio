@@ -248,7 +248,7 @@
     "path": "content/readings/2017-attention-is-all-you-need-reading.html",
     "status": "live",
     "tags": [],
-    "text": "What it claims Self-attention links any two positions in a constant number of steps (section 4). My take It holds for short sequences. It agrees with our softmax page. Why does the paper scale the dot products? Large dot products push the softmax into regions with tiny gradients.",
+    "text": "What it claims Self-attention links any two positions in a constant number of steps, where a recurrent layer needs as many steps as the sequence is long. My take It holds for short sequences. It agrees with our softmax page. Why does the paper scale the dot products? Large dot products push the softmax into regions with tiny gradients.",
     "title": "Attention Is All You Need",
     "url": "/content/readings/2017-attention-is-all-you-need-reading.html"
   },

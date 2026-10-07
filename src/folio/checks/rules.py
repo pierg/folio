@@ -1,4 +1,4 @@
-"""The packs' rule checks: `uncited-number` and `cites-superseded` (lab), `unverified-identifier` (knowledge-base)."""
+"""The packs' rule checks: `uncited-number` and `cites-superseded` (lab), `unverified-identifier` and `source-pointer` (knowledge-base)."""
 
 from __future__ import annotations
 
@@ -324,4 +324,114 @@ def _identifier_problems(df: DocFile) -> list[str]:
     for el in df.body.iter():
         if el.tag == "a" and "identifier" in el.classes and id(el) not in inside:
             out.append(f"identifier `{el.text().strip()}` sits outside the identifiers list")
+    return out
+
+
+# ---------------------------------------------------------------- source-pointer
+
+# A pointer into a source's internals: a section sign before a number, or a
+# word that names a part of a paper (section, table, figure, listing,
+# footnote, equation, appendix) followed by its number. An appendix may also
+# be named by a capital letter ("Appendix C"). Lowercase is matched too, but
+# only for the word's first letter. "Theorem 2", "Lemma 3" and "Definition 1"
+# are not pointers: a guide may number its own.
+POINTER_RE = re.compile(
+    r"§\s?\d+(?:\.\d+)*"
+    r"|\b(?:[Ss]ections?|[Tt]ables?|[Ff]igures?|[Ff]igs?\.|[Ll]istings?|[Ff]ootnotes?"
+    r"|[Ee]qs?\.|[Ee]quations?|[Aa]ppendix|[Aa]pp\.)\s?\d+(?:\.\d+)*\b"
+    r"|\b(?:[Aa]ppendix|[Aa]pp\.)\s?[A-Z]\b"
+)
+# A reference to another chapter of the same guide: "chapter 03 §4".
+_CHAPTER_BEFORE_RE = re.compile(r"\b[Cc]hapters?\s+\d+\s*$")
+# The elements whose opening words may define a label of the page's own.
+_LABEL_TAGS = {"h2", "h3", "h4", "figcaption", "caption"}
+_KIND = {"§": "section", "sec": "section", "tab": "table", "fig": "figure", "lis": "listing",
+         "foo": "footnote", "eq": "equation", "equ": "equation", "app": "appendix"}
+
+
+def _label(pointer: str) -> tuple[str, str]:
+    """A pointer as (kind, number), so "§4", "Section 4" and "sections 4" are one label."""
+    m = re.match(r"(§|[A-Za-z]+)\.?\s?(\S+)", pointer)
+    word, number = (m.group(1), m.group(2)) if m else (pointer, "")
+    key = "§" if word == "§" else word.lower()[:3]
+    return _KIND.get(key, _KIND.get(key[:2], key)), number
+
+
+def pointers(text: str, own: set[tuple[str, str]] = frozenset()) -> list[tuple[str, str]]:
+    """Each pointer in a stretch of prose, with a little of the text around it.
+
+    A pointer to a label in `own` (one the page defines itself) is skipped,
+    and so is one right after "chapter NN" (another chapter of a guide).
+    """
+    out = []
+    for m in POINTER_RE.finditer(text):
+        if _label(m.group(0)) in own or _CHAPTER_BEFORE_RE.search(text[:m.start()]):
+            continue
+        start, end = max(0, m.start() - 30), min(len(text), m.end() + 30)
+        context = ("…" if start else "") + text[start:end].strip() + ("…" if end < len(text) else "")
+        out.append((m.group(0), context))
+    return out
+
+
+def _prose(node: Node, parts: list[str]) -> None:
+    """The visible prose under a node: no code, no scripts or styles, no attribute values."""
+    if isinstance(node, str):
+        parts.append(node)
+        return
+    if node.tag in _SKIP_TAGS:
+        return
+    for child in node.children:
+        _prose(child, parts)
+    if node.tag not in _INLINE_TAGS:
+        parts.append(" ")
+
+
+def own_labels(doc: Document) -> set[tuple[str, str]]:
+    """The labels a document defines itself: a pointer that opens a heading (h2 to h4) or a caption.
+
+    Read across all of the document's files, so a guide's chapters share them.
+    """
+    out: set[tuple[str, str]] = set()
+    for df in doc.files:
+        if df.body is None:
+            continue
+        for el in df.body.iter():
+            if el.tag in _LABEL_TAGS:
+                parts: list[str] = []
+                _prose(el, parts)
+                m = POINTER_RE.match(" ".join("".join(parts).split()))
+                if m:
+                    out.add(_label(m.group(0)))
+    return out
+
+
+def source_pointer(lib: Library) -> Found:
+    """A page states what a source says, never where in the source it says it.
+
+    Reads the visible prose of every HTML and Markdown file of a document
+    that is still revised: permanent documents (the journal, results),
+    frozen ones once locked, and historical or retired ones are skipped, as
+    are LaTeX files and permanent parts. A label the document defines itself
+    (`own_labels`) is not a pointer. One finding per file.
+    """
+    out: Found = []
+    for doc in lib.documents:
+        genre = doc.genre
+        if genre is None or genre.lives == "permanent" or doc.status in ("historical", "retired"):
+            continue
+        if genre.lives == "frozen" and doc.status in genre.frozen_in:
+            continue
+        own = own_labels(doc)
+        for df in doc.files:
+            if df.body is None or (df.part is not None and genre.parts[df.part].lives == "permanent"):
+                continue
+            parts: list[str] = []
+            _prose(df.body, parts)
+            found = pointers(" ".join("".join(parts).split()), own)
+            if not found:
+                continue
+            examples = "; ".join(f"`{ctx}`" for _, ctx in found[:3])
+            out.append((df.path, f"{len(found)} pointer(s) into a source's internals, such as {examples};"
+                                 " state the claim itself, redraw a figure or table that matters, and drop"
+                                 " the section, table, figure or appendix number"))
     return out

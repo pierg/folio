@@ -53,6 +53,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
     - **Is it clear?** A reader of the genre follows it without outside help, and a definition stands alone.
     - **Is it complete, and nothing more?** Short where the idea is simple, long where it needs the room. Padding and repetition are faults; length is not.
     - **Does the form serve the content?** A figure, control, animation or table where it shows what prose cannot; prose where the material is one line of argument.
+24. A page stands alone. The reader will not open the source, so never point into it: no section, figure, table, appendix, listing, footnote or equation number ("Section 5.3", "see Table 7"). State the claim itself. Redraw a figure or table that matters. Explain a name the source coins in a clause where it is used, or drop it. When the source contradicts itself, say so in words. Quote briefly when the exact words matter, without a location; a verifier searches the kept original. The `source-pointer` check flags a pointer.
 
 ## Steps
 

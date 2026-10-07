@@ -47,6 +47,7 @@ CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("uncited-number", "rule", "warning", "lab"),
     CheckSpec("cites-superseded", "rule", "warning", "lab"),
     CheckSpec("unverified-identifier", "rule", "error", "knowledge-base"),
+    CheckSpec("source-pointer", "rule", "warning", "knowledge-base"),
 )
 
 BY_NAME = {c.name: c for c in CHECKS}

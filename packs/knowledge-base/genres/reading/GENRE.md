@@ -30,7 +30,7 @@ The owner, coming back months later, and anyone the library is shared with. They
 
 Neutral in what the work claims, then opinionated in your take. In the claims, report the work's position with its own hedges intact. In the take, say plainly what you think and why.
 
-> The work claims that self-attention links any two positions in a constant number of steps, at a cost per layer that grows with the square of the sequence length (section 4). My take: the comparison favours attention only while sequences are shorter than the model width, which long contexts break.
+> The work claims that self-attention links any two positions in a constant number of steps, at a cost per layer that grows with the square of the sequence length. My take: the comparison favours attention only while sequences are shorter than the model width, which long contexts break.
 
 ## Metadata
 
@@ -44,7 +44,7 @@ The shell draws the title, the description and the source above the body. Below 
 
 What a good reading usually holds, judged, not checked:
 
-- **What it claims**: the work's main claims, each with where it is made (a section, a page, a timestamp). A reading often leads with the work's own central figure or argument, redrawn so the claim is obvious.
+- **What it claims**: the work's main claims, each stated in full on the page. The reader will not open the work, so a claim never points into it. A reading often leads with the work's own central figure or argument, redrawn so the claim is obvious.
 - **What it rests on**: the evidence and method behind the claims, as the work presents them.
 - **My take**: what holds, what does not, what it changes for you. Set apart from the claims, so a reader never mistakes the one for the other.
 - **What it leaves open**: questions the work raises and does not answer.
@@ -56,13 +56,16 @@ What a good reading usually holds, judged, not checked:
 - Your opinion mixed into the work's claims. Judged, not checked.
 - A claim the work did not make, in the part that reports the work. Judged, not checked.
 - A term defined here that another page needs. Caught by `defined_once` once a concept defines it; make it a concept and link it with `class="defn-link"`.
+- A pointer into the source's internals: a section, figure, table, appendix, listing, footnote or equation number, such as "(Section 5.3)" or "see Table 7". Caught by `source-pointer`. State the claim, and redraw a figure or table that matters.
 - A take that passes off a claim the work did not make. Judged, not checked. The take is the library's reading and an agent may draft it; it is set apart from the work's claims, so it needs no flag. A point in it the owner must decide gets one (the write skill's rule 11).
 
 ## Steps
 
 - Read the whole work before writing. A reading of an abstract is not a reading.
 - Name the reading `<source-slug>-reading`, so the pair is easy to find. Ids are unique across the library, so the reading never takes the source's own slug.
-- Keep each claim to what the work states. Quote briefly when the exact words matter, with the location.
+- Keep each claim to what the work states, and state it on the page. Quote briefly when the exact words matter, without a location: a verifier searches the kept original for the words.
+- Explain a name the work coins, such as its benchmark's or method's own label, in a clause where it is used, or drop it.
+- When the work contradicts itself, say so in words: "the paper gives 47% in one table and 57% in another".
 - Write cards only for what is worth remembering a month from now. One fact per card, answerable in a sentence.
 
 ## Lifecycle
@@ -79,8 +82,8 @@ Revised in place: a reread adds to the take, and the take may change its mind. T
 <section id="claims">
   <h2>What it claims</h2>
   <ul>
-    <li>Self-attention links any two positions in a constant number of sequential steps, where a recurrent layer needs as many steps as the sequence is long (section 4).</li>
-    <li>Its cost per layer grows with the square of the sequence length (section 4, table 1).</li>
+    <li>Self-attention links any two positions in a constant number of sequential steps, where a recurrent layer needs as many steps as the sequence is long.</li>
+    <li>Its cost per layer grows with the square of the sequence length.</li>
   </ul>
 </section>
 <section id="take">

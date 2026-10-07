@@ -10,7 +10,7 @@ from .. import annotations, history
 from ..library import Library
 from .lifecycle import frozen, permanent
 from .problems import Problem
-from .rules import cites_superseded, uncited_number, unverified_identifier
+from .rules import cites_superseded, source_pointer, uncited_number, unverified_identifier
 
 Found = list[tuple[str, str]]
 
@@ -51,4 +51,5 @@ RULE_CHECKS = {
     "uncited-number": uncited_number,
     "cites-superseded": cites_superseded,
     "unverified-identifier": unverified_identifier,
+    "source-pointer": source_pointer,
 }
