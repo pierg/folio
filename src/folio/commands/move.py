@@ -385,13 +385,15 @@ def _rm_elsewhere(lib: Library, doc: Document, name: str, replacement: Document,
             plan.notes.append(f"left {path} ({locked(owner)}): its links to {doc.id} follow the redirect")
             continue
         text = plan.text(path)
-        for raw, new in edits.items():
-            text = replace_href(text, raw, new, path)
         what = f"links to {doc.id} now go to {label}"
         if owner.is_a("map"):
-            text, dropped = dedupe_rows(text)
+            # A map lists this library's documents: its row for the retired one goes.
+            text, dropped = _drop_rows(text, set(edits))
             if dropped:
-                what += f" ({dropped} duplicate row{'s' if dropped > 1 else ''} dropped)"
+                what += f" ({dropped} row{'s' if dropped > 1 else ''} dropped)"
+            edits = {raw: new for raw, new in edits.items() if _has_href(text, raw)}
+        for raw, new in edits.items():
+            text = _undefine(replace_href(text, raw, new, path), new)
         plan.write(path, text, what)
     mf = doc.meta_file
     if mf is None:
@@ -412,3 +414,40 @@ def _rm_elsewhere(lib: Library, doc: Document, name: str, replacement: Document,
         if path not in before:
             changes.append(f"note: {path} was reachable only through {doc.id}; it is on no map now")
     return changes
+
+
+def _drop_rows(text: str, hrefs: set[str]) -> tuple[str, int]:
+    """A map's text without the rows that link one of `hrefs`, and how many went."""
+    dropped = 0
+
+    def block(m: re.Match[str]) -> str:
+        nonlocal dropped
+
+        def row(r: re.Match[str]) -> str:
+            nonlocal dropped
+            h = _HREF_RE.search(r.group(0))
+            if h is not None and h.group(1) in hrefs:
+                dropped += 1
+                return ""
+            return r.group(0)
+
+        return m.group(1) + _ROW_RE.sub(row, m.group(2)) + m.group(3)
+
+    return _ROWS_RE.sub(block, text), dropped
+
+
+def _has_href(text: str, href: str) -> bool:
+    return any(h.group(1) == href for h in _HREF_RE.finditer(text))
+
+
+def _undefine(text: str, href: str) -> str:
+    """Drop `defn-link` from the links to `href`: a link into another library has no hover definition."""
+    tag_re = re.compile(r"<a\b[^>]*\bhref\s*=\s*[\"']" + re.escape(href) + r"[\"'][^>]*>")
+
+    def fix(m: re.Match[str]) -> str:
+        def classes(c: re.Match[str]) -> str:
+            kept = " ".join(x for x in c.group(1).split() if x != "defn-link")
+            return f' class="{kept}"' if kept else ""
+        return re.sub(r'\s+class="([^"]*)"', classes, m.group(0))
+
+    return tag_re.sub(fix, text)

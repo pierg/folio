@@ -105,6 +105,10 @@ def test_without_a_url_the_link_is_served_as_written(pair: tuple[Path, Path]) ->
 
 def test_rm_retires_a_document_into_another_library(pair: tuple[Path, Path], monkeypatch, capsys) -> None:
     sample, _ = pair
+    assert folio(sample, "map", "add", "attention", "self-attention", monkeypatch=monkeypatch) == 0
+    edit(sample / ENTRY, "</main>",
+         '<p>See <a class="defn-link" href="/content/concepts/self-attention/">self-attention</a>.</p>\n</main>')
+    out_of(capsys)
     assert folio(sample, "rm", "self-attention", "--to", "other:softmax", monkeypatch=monkeypatch) == 0
     out = out_of(capsys)
     assert "redirected content/concepts/self-attention/index.html -> other:content/concepts/softmax/index.html" in out
@@ -113,6 +117,10 @@ def test_rm_retires_a_document_into_another_library(pair: tuple[Path, Path], mon
     assert '<meta name="replaced_by" content="other:softmax">' in retired
     assert redirects.load(sample)["content/concepts/self-attention/index.html"] == \
         "other:content/concepts/softmax/index.html"
+    assert "1 row dropped" in out
+    assert "other:" not in (sample / "content/maps/attention.html").read_text()
+    assert not any('defn-link" href="other:' in p.read_text() or 'class="defn-link" href="other:' in p.read_text()
+                   for p in sample.rglob("*.html"))
     rewritten = [p for p in sample.rglob("*.html") if 'href="other:/content/concepts/softmax/' in p.read_text()]
     assert rewritten, "the links to the retired concept now lead into the other library"
     assert not any('href="/content/concepts/self-attention/' in p.read_text()
