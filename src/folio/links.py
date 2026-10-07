@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .library import Library
 
 _SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
+_LIBRARY_RE = re.compile(r"^([a-z][a-z0-9-]*):(.*)$", re.S)
 _FCITE_RE = re.compile(r"\\fcite\{([^}]*)\}")
 RECORD_ID_RE = re.compile(r"^([A-Za-z]+)-([0-9]+)$")
 
@@ -25,7 +26,7 @@ RECORD_ID_RE = re.compile(r"^([A-Za-z]+)-([0-9]+)$")
 @dataclass(eq=False)
 class Link:
     file: DocFile
-    kind: str  # "href" | "code" | "fcite" | "field"
+    kind: str  # "href" | "code" | "fcite" | "field" | "library" (a link into another library, model §4)
     raw: str
     resolved: bool
     target: str | None = None  # the file an href lands on, from the library root
@@ -40,6 +41,42 @@ class Link:
 
 def is_external(href: str) -> bool:
     return bool(_SCHEME_RE.match(href)) or href.startswith("//")
+
+
+def library_ref(lib: "Library", href: str) -> tuple[str, str] | None:
+    """`(name, address)` when an href links into a library the charter names, else None."""
+    match = _LIBRARY_RE.match(href)
+    if match is None or match.group(1) not in lib.charter.libraries:
+        return None
+    return match.group(1), match.group(2)
+
+
+def library_root(lib: "Library", name: str) -> Path | None:
+    """Where a library the charter names is on this machine, or None when it is not there."""
+    roots = lib.cache.setdefault("library_roots", {})
+    if name not in roots:
+        root = (lib.root / lib.charter.libraries[name].path).resolve()
+        roots[name] = root if (root / "folio.yaml").is_file() else None
+    return roots[name]
+
+
+def resolve_library(lib: "Library", href: str) -> tuple[bool | None, str | None]:
+    """Whether a link into another library lands on a file there, and which one.
+
+    `(None, None)` when the library is not at its path, so the link cannot be checked.
+    """
+    ref = library_ref(lib, href)
+    if ref is None:
+        return False, None
+    name, address = ref
+    root = library_root(lib, name)
+    if root is None:
+        return None, None
+    path = address.split("#", 1)[0].split("?", 1)[0]
+    if not path:
+        return False, None
+    found = resolve_href(root, "", path if path.startswith("/") else "/" + path)
+    return (found is not None), found
 
 
 def resolve_href(library: Path, from_path: str, href: str) -> str | None:
@@ -72,8 +109,8 @@ def resolve_href(library: Path, from_path: str, href: str) -> str | None:
         olds.append(Path(os.path.relpath(target / "index.html", library)).as_posix())
     for old in olds:
         moved = redirects.target(library, old)
-        if moved is not None and (library / moved).is_file():
-            return moved
+        if moved is not None and (_LIBRARY_RE.match(moved) or (library / moved).is_file()):
+            return moved  # a document retired into another library leads there (model §3)
     return None
 
 
@@ -83,9 +120,20 @@ def _href_links(lib: "Library", df: DocFile, nodes: list[Node]) -> list[Link]:
         if el.tag != "a" or not el.has("href") or el.has("data-unchecked"):
             continue
         href = (el.get("href") or "").strip()
+        if library_ref(lib, href) is not None:
+            found, _ = resolve_library(lib, href)
+            out.append(Link(df, "library", href, found is not False, href, [],
+                            defn="defn-link" in el.classes, element=el))
+            continue
         if not href or href.startswith("#") or is_external(href) or "{{" in href:
             continue
         target = resolve_href(lib.root, df.path, href)
+        if target is not None and library_ref(lib, target) is not None:
+            # An old address redirected into another library: checked there like a link into it.
+            found, _ = resolve_library(lib, target)
+            out.append(Link(df, "href", href, found is not False, target, [],
+                            defn="defn-link" in el.classes, element=el))
+            continue
         docs = []
         if target is not None and target in lib.by_path:
             owner = lib.by_path[target].doc

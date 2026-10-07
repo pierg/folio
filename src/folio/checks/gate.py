@@ -7,6 +7,7 @@ from collections import deque
 from typing import Any, Callable
 
 from .. import indexer
+from .. import links as links_mod
 from ..charter import CHARTER
 from ..documents import Document
 from ..genres import FieldSpec
@@ -30,10 +31,26 @@ def broken_link(lib: Library) -> Found:
                 out.append((path, f"`{link.raw}` resolves to nothing"))
             elif link.kind == "code":
                 out.append((path, f"`{link.raw}` names no document"))
+            elif link.kind == "library":
+                out.append((path, f"`{link.raw}` resolves to nothing in that library"))
             elif link.kind == "fcite":
                 out.append((path, f"\\fcite{{{link.raw}}} names no document"))
             else:
                 out.append((path, f"field `{link.field}`: `{link.raw}` names no document"))
+    return out
+
+
+def library_link(lib: Library) -> Found:
+    """One warning per library the charter names that is not at its path: its links go unchecked."""
+    out = []
+    for name, ref in lib.charter.libraries.items():
+        if links_mod.library_root(lib, name) is not None:
+            continue
+        count = sum(1 for links in lib.links.values() for link in links
+                    if (link.kind == "library" and link.raw.startswith(name + ":"))
+                    or (link.kind == "href" and (link.target or "").startswith(name + ":")))
+        out.append((CHARTER, f"library `{name}` is not at `{ref.path}`, so its "
+                    f"{count} link{'' if count == 1 else 's'} {'is' if count == 1 else 'are'} not checked"))
     return out
 
 
@@ -286,6 +303,7 @@ def index_current(lib: Library) -> Found:
 
 GATE_CHECKS: dict[str, GateCheck] = {
     "broken-link": broken_link,
+    "library-link": library_link,
     "location": location,
     "fields": fields,
     "status": status,

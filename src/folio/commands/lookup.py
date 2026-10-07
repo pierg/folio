@@ -8,6 +8,7 @@ from typing import Any
 from .. import charter as charter_mod
 from .. import indexer
 from .. import library as library_mod
+from .. import links as links_mod
 from ..edits import find_doc
 from ..errors import FolioError
 from ..library import Library
@@ -66,6 +67,11 @@ def search(lib: Library, query: str, everywhere: bool) -> list[dict[str, Any]]:
             if not (other / charter_mod.CHARTER).is_file():
                 raise FolioError(f"folio.yaml: search library `{rel}` has no {charter_mod.CHARTER}")
             libraries.append((rel, library_mod.load_at(other)))
+        listed = {(lib.root / rel).resolve() for rel in lib.charter.search}
+        for name in lib.charter.libraries:
+            other = links_mod.library_root(lib, name)
+            if other is not None and other not in listed:
+                libraries.append((name, library_mod.load_at(other)))
     hits = []
     for label, one in libraries:
         for entry in indexer.search(one):

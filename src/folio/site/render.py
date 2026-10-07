@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from markdown_it import MarkdownIt
 
 from ..frontmatter import split
-from ..links import is_external, resolve_href
+from ..links import is_external, library_ref, resolve_href
 from ..util import html_attr, html_text
 
 if TYPE_CHECKING:
@@ -46,10 +46,37 @@ def _split_suffix(href: str) -> tuple[str, str, str]:
     return href[:cut], href[cut], href[cut + 1:]
 
 
+def library_href(lib: "Library", href: str) -> tuple[str, str] | None:
+    """A link into another library as the site serves it: `(library, address)`, or None.
+
+    The address is the library's `url` with the document's served path; without a
+    `url` the link is served as written (model §4).
+    """
+    ref = library_ref(lib, href)
+    if ref is None:
+        return None
+    name, address = ref
+    url = lib.charter.libraries[name].url
+    if not url:
+        return name, href
+    path, sep, rest = _split_suffix(address)
+    if path.endswith(".md"):
+        path = path[: -len(".md")] + ".html"
+    if not path.startswith("/"):
+        path = "/" + path
+    return name, url + path + sep + rest
+
+
 def rewrite(lib: "Library", from_path: str, text: str, base: str) -> str:
-    """Every href and src in a page, rewritten with `site_href`."""
+    """Every href and src in a page, rewritten with `site_href`; a link into another library
+    goes to that library's `url` and is marked with `data-library`."""
     def one(match: re.Match[str]) -> str:
         value = _html.unescape(match.group(3))
+        other = library_href(lib, value) if match.group(1).strip().lower().startswith("href") else None
+        if other is not None:
+            name, new = other
+            return (f"{match.group(1)}{match.group(2)}{_html.escape(new, quote=True)}{match.group(2)}"
+                    f' data-library="{name}"')
         new = site_href(lib, from_path, value, base)
         if new == value:
             return match.group(0)

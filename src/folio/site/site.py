@@ -128,6 +128,7 @@ class Site:
             "live": self.live,
             "review": {"url": url_of(REVIEW_VIEW)},
             "comments": self.comments,
+            "libraries": {name: {"url": ref.url} for name, ref in sorted(lib.charter.libraries.items())},
         }
 
     # -- paths -------------------------------------------------------------
@@ -216,6 +217,9 @@ class Site:
     def _moved(self, path: str) -> Response | None:
         for old, new in redirects(self.lib).items():
             if _served(old) == path:
+                other = render.library_href(self.lib, new)
+                if other is not None:  # retired into another library (model §3)
+                    return self._html(render.redirect(other[1]))
                 target = url_of(_served(new))
                 return self._html(render.redirect(self.base.rstrip("/") + target))
         return None

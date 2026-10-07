@@ -455,6 +455,8 @@ main .defn-name { display: block; margin-bottom: .2rem; font: 650 .76rem/1.4 var
 main .defn-name + br { display: none; }
 a.defn-link { color: inherit; text-decoration-style: dotted; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; }
 a.defn-link:hover { color: var(--accent); }
+/* A link into another library (model §4): the library it leads to, after the words. */
+a[data-library]::after { content: "\2009\2197\2009" attr(data-library); font-size: .78em; color: var(--ink-3); white-space: nowrap; }
 
 /* a check-yourself and a flashcard */
 main details.check, main details.card { border-radius: var(--radius); font-family: var(--sans); font-size: .98rem; }

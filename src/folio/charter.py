@@ -18,12 +18,16 @@ CHARTER = "folio.yaml"
 
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
-    "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments",
+    "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
 _COMMENTS_KEYS = ("identity_header",)
 _PACK_KEYS = ("name", "git", "ref")
+_LIBRARY_KEYS = ("path", "url")
+# Schemes the web already uses: a library named like one would make its links ambiguous.
+_WEB_SCHEMES = {"http", "https", "mailto", "ftp", "ftps", "file", "data", "javascript", "tel", "sms",
+                "ws", "wss", "about", "blob", "chrome", "git", "ssh", "urn", "news", "irc", "vbscript"}
 SEVERITIES = ("error", "warning", "off")
 # Keys whose value is a list, so `config set` splits a comma-separated value.
 LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search")
@@ -37,6 +41,14 @@ class PackRef:
     name: str
     git: str | None = None
     ref: str | None = None
+
+
+@dataclass
+class LibraryRef:
+    """Another folio library this one links to (model §4)."""
+    name: str
+    path: str  # relative to the folder holding folio.yaml
+    url: str = ""  # where it is served; empty: links are served as written
 
 
 @dataclass
@@ -59,6 +71,7 @@ class Charter:
     search: list[str] = field(default_factory=list)
     site_url: str = ""  # where the exported site is published; a paper's \fcite links resolve from it
     identity_header: str = ""  # the request header a sign-in proxy names the reader in; empty: none
+    libraries: dict[str, LibraryRef] = field(default_factory=dict)
 
     @property
     def library(self) -> Path:
@@ -85,6 +98,8 @@ class Charter:
             "theme": self.theme, "journal": {"kinds": list(self.journal_kinds)},
             "search": list(self.search), "site_url": self.site_url,
             "comments": {"identity_header": self.identity_header},
+            "libraries": {n: {"path": r.path, **({"url": r.url} if r.url else {})}
+                          for n, r in self.libraries.items()},
         }
 
 
@@ -182,7 +197,33 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         search=_str_list(raw.get("search"), "search", where),
         site_url=_site_url(raw, where),
         identity_header=_identity_header(raw, where),
+        libraries=_libraries(raw, where),
     )
+
+
+def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:
+    """The other libraries this one links to: `name: {path, url}` (model §4, §10)."""
+    table = raw.get("libraries")
+    if table is None:
+        return {}
+    if not isinstance(table, dict):
+        raise FolioError(f"{where}: `libraries` maps each library's name to its path and url")
+    out: dict[str, LibraryRef] = {}
+    for name, entry in table.items():
+        name = str(name)
+        if not re.match(r"^[a-z][a-z0-9-]*$", name):
+            raise FolioError(f"{where}: library name `{name}` must be a lowercase slug, such as pier-folio")
+        if name in _WEB_SCHEMES:
+            raise FolioError(f"{where}: library name `{name}` is a scheme the web already uses; pick another")
+        entry = _only(entry, _LIBRARY_KEYS, f"libraries.{name}", where)
+        path = _str(entry, "path", "", where).strip()
+        if not path:
+            raise FolioError(f"{where}: `libraries.{name}` needs a `path`")
+        url = _str(entry, "url", "", where).strip().rstrip("/")
+        if url and not re.match(r"^https?://", url):
+            raise FolioError(f"{where}: `libraries.{name}.url` must be an http(s) address, not `{url}`")
+        out[name] = LibraryRef(name, path, url)
+    return out
 
 
 def _identity_header(raw: dict[str, Any], where: str) -> str:

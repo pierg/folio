@@ -15,6 +15,7 @@ from pathlib import PurePosixPath
 
 from .. import library as library_mod
 from .. import history, paths, redirects
+from .. import links as links_mod
 from ..checks import gate
 from ..documents import HOME_PATH, Document
 from ..edits import Plan, find_doc, locked, new_href, replace_href, set_front
@@ -275,9 +276,34 @@ def _stale_link_text(lib: Library, doc: Document, replacement: Document, mapping
     return out
 
 
+def _elsewhere(lib: Library, to: str) -> tuple[Document, str, str] | None:
+    """A replacement in another library the charter names, `<library>:<id>` (model §4).
+
+    Returns the document there, the redirect target (`<library>:<file>`) and the
+    href a link takes to reach it; None when `to` names no other library.
+    """
+    name, sep, ident = to.partition(":")
+    if not sep or name not in lib.charter.libraries:
+        return None
+    root = links_mod.library_root(lib, name)
+    if root is None:
+        raise FolioError(f"library `{name}` is not at `{lib.charter.libraries[name].path}`; "
+                         "it must be there to retire a document into it")
+    other = library_mod.load_at(root)
+    found = find_doc(other, ident)
+    if found.status == "retired":
+        raise FolioError(f"{name}:{found.id} is retired itself; retire into what replaced it")
+    landing = found.address_file.path
+    href = "/" + found.key if found.key.endswith(".md") else found.url
+    return found, f"{name}:{landing}", f"{name}:{href}"
+
+
 def rm(lib: Library, ref: str, to: str) -> list[str]:
     doc = find_doc(lib, ref)
     _refuse_fixed(doc, "retired")
+    elsewhere = _elsewhere(lib, to)
+    if elsewhere is not None:
+        return _rm_elsewhere(lib, doc, to.partition(":")[0], *elsewhere)
     replacement = find_doc(lib, to)
     genre = doc.genre
     assert genre is not None
@@ -320,6 +346,60 @@ def rm(lib: Library, ref: str, to: str) -> list[str]:
     for key, value in (("status", "retired"), ("replaced_by", replacement.id)):
         text = set_meta(text, mf.format, key, value) if mf.format == "html" else set_front(text, key, value)
     plan.write(mf.path, text, f"status: retired, replaced_by: {replacement.id}")
+    for path, links in lib.links.items():
+        owner = lib.by_path[path].doc
+        if owner is not doc and any(lk.kind != "href" and doc in lk.docs for lk in links):
+            plan.notes.append(f"note: {path} still cites `{doc.id}` by id; it resolves to the retired document")
+    plan.notes.extend(_stale_link_text(lib, doc, replacement, mapping))
+    before = {path for path, _ in gate.orphan(lib)}
+    changes = plan.apply() + _staged_note(plan) + redirects.add(lib.root, mapping)
+    after = library_mod.load_at(lib.root)
+    for path, _ in gate.orphan(after):
+        if path not in before:
+            changes.append(f"note: {path} was reachable only through {doc.id}; it is on no map now")
+    return changes
+
+
+def _rm_elsewhere(lib: Library, doc: Document, name: str, replacement: Document, landing: str,
+                  href: str) -> list[str]:
+    """Retire a document into one in another library: links go there, and so does the address."""
+    genre = doc.genre
+    assert genre is not None
+    if "retired" not in genre.states:
+        raise FolioError(f"a `{genre.name}` is never retired: its states are {', '.join(genre.states)}")
+    if doc.status == "retired":
+        raise FolioError(f"{doc.key} is already retired")
+    label = f"{name}:{replacement.id}"
+    plan = Plan(lib, stage=True)
+    mapping = {df.path: landing for df in doc.files}
+    for path, links in lib.links.items():
+        owner = lib.by_path[path].doc
+        if owner is doc or owner is None:
+            continue
+        cut = lambda raw: min([i for i in (raw.find("#"), raw.find("?")) if i >= 0], default=len(raw))
+        edits = {lk.raw: href + lk.raw[cut(lk.raw):] for lk in links
+                 if lk.kind == "href" and lk.target in mapping}
+        if not edits:
+            continue
+        if locked(owner):
+            plan.notes.append(f"left {path} ({locked(owner)}): its links to {doc.id} follow the redirect")
+            continue
+        text = plan.text(path)
+        for raw, new in edits.items():
+            text = replace_href(text, raw, new, path)
+        what = f"links to {doc.id} now go to {label}"
+        if owner.is_a("map"):
+            text, dropped = dedupe_rows(text)
+            if dropped:
+                what += f" ({dropped} duplicate row{'s' if dropped > 1 else ''} dropped)"
+        plan.write(path, text, what)
+    mf = doc.meta_file
+    if mf is None:
+        raise FolioError(f"{doc.key} holds no metadata to mark retired")
+    text = plan.text(mf.path)
+    for key, value in (("status", "retired"), ("replaced_by", label)):
+        text = set_meta(text, mf.format, key, value) if mf.format == "html" else set_front(text, key, value)
+    plan.write(mf.path, text, f"status: retired, replaced_by: {label}")
     for path, links in lib.links.items():
         owner = lib.by_path[path].doc
         if owner is not doc and any(lk.kind != "href" and doc in lk.docs for lk in links):

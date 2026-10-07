@@ -685,7 +685,11 @@
     });
     if (doc.status === "retired" && (doc.fields || {}).replaced_by) {
       var to = byId(doc.fields.replaced_by)[0];
+      var lib = String(doc.fields.replaced_by).split(":");
+      var other = lib.length > 1 && ((D.site.libraries || {})[lib[0]] || null);
       if (to) banner("retired", "alert", "Retired.", null, { href: docURL(to), text: "Read " + to.title + " instead" });
+      else if (other) banner("retired", "alert", "Retired.", null,
+        { href: other.url || "#", text: "Read " + lib.slice(1).join(":") + " in " + lib[0] + " instead" });
     }
     var corrections = (links.about || []).filter(function (a) { return a.kind === "correction"; });
     if (!corrections.length) return;

@@ -15,6 +15,7 @@ class CheckSpec:
 
 CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("broken-link", "gate", "error"),
+    CheckSpec("library-link", "gate", "warning"),
     CheckSpec("location", "gate", "error"),
     CheckSpec("fields", "gate", "error"),
     CheckSpec("status", "gate", "error"),

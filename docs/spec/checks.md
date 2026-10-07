@@ -16,7 +16,8 @@ These run on every document. No card needs to name them.
 
 | Check | What it checks | Default |
 | --- | --- | --- |
-| `broken-link` | Every link and citation resolves, the way the exported site serves it: an `href`, an id in backticks, a field of type `id`, a `\fcite`. | error |
+| `broken-link` | Every link and citation resolves, the way the exported site serves it: an `href`, an id in backticks, a field of type `id`, a `\fcite`, and a link into another library the charter names, where that library is at its path. | error |
+| `library-link` | A library the charter names under `libraries` is at its path, so links into it are checked. Reported once per library that is not, with the number of its links left unchecked. | warning |
 | `location` | A document sits at its genre's `path`, and its `genre` metadata matches. | error |
 | `fields` | The core metadata is present (`title`, `description`, `genre`, and `id` for a record), a page's `layout`, when present, is `canvas` or `column`, a permanent document writes no `status`, and every field the card declares under `fields:` is present when required and has its type. An `id` field resolves, and meets its `genre` and `status` limits. A `path` field exists, resolved from the charter's `root`. | error |
 | `status` | The status is one of the card's `states`, or absent when the card has `live`. | error |

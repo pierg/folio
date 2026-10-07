@@ -91,7 +91,7 @@ Each card declares its `states`, the status words its documents accept, and the 
 - `draft`: unfinished, and kept off the home page. A new document is `live`, because skeletons write no status; it is `draft` only when the author asks to hold it;
 - `live`: current;
 - `historical`: true of its time, and kept for the record;
-- `retired`: replaced. It names its replacement in `replaced_by`, and the engine redirects its address there.
+- `retired`: replaced. It names its replacement in `replaced_by`, and the engine redirects its address there. The replacement may be a document in another library the charter names (`replaced_by: pier-folio:cti`, §4), when a library hands a subject to another.
 
 A card can add states of its own: a project is `paused` or `done`, a protocol `locked`.
 
@@ -114,6 +114,7 @@ Nothing that is permanent or frozen is edited to say it was wrong. Instead:
 - **A citation is a link to the cited document.** In HTML, an `<a href>` to its path from the library's root, such as `/content/concepts/softmax/`. In Markdown, a link, or an id in backticks that matches a document (`R-12`, which the site renders as a link), or a field of type `id`. In LaTeX, `\fcite{<id>}`. The gate resolves every one, the way the exported site serves it (check `broken-link`).
 - **Links to Markdown records.** An HTML page links a Markdown record by its source path, such as `/content/results/R-1.md`. The exported site renders each Markdown record as a page at the same path with `.html`, and rewrites the links to match. `folio cite <id>` prints the right markup for each format, always in the same form, so nobody works this out by hand.
 - **One fact has one home.** A fact (a definition, a measured number, a decision) lives in exactly one document. Everything else cites that document by id and never restates its value as its own.
+- **Links to another library.** A library can link documents in other folio libraries on the same machine, which the charter names under `libraries` (§10), each with its `path` and, optionally, the `url` where it is served. A link names the library as its scheme and the document's address in it: `<a href="pier-folio:/content/concepts/cti/">`, or `[CTI](pier-folio:/content/concepts/cti/)` in Markdown; `folio cite pier-folio:cti` prints it. The gate resolves the link against that library's files and redirects, as it would its own (check `broken-link`). Where the library is not at its path, as in a checkout without it, its links are not checked, and the gate says so once per library (check `library-link`, a warning). `folio serve` and `folio export` rewrite the link to the library's `url`, mark it with `data-library` and give it the target's title, and the shell shows which library it leads to; without a `url` the link is served as written. A link to another library is not a citation: it shows in no link panel, counts toward no card's `cites`, makes no document reachable, and has no hover definition.
 - **Concepts are linked, not explained twice.** The second time a term needs explaining, it becomes a concept, and every mention links to it with `class="defn-link"`. Hovering the link shows the definition.
 - **Link panels are generated.** The shell shows, beside every document, what it cites, what cites it, and the journal entries `about` it. A field of type `id` also shows on the document it names, under the field's name: a question lists the protocols whose `question` names it, and a protocol the results whose `protocol` names it. Nobody writes these lists by hand, so a genre never has a "rests on", "referenced in" or "work so far" section.
 - **Siblings share ids and assets, never sentences.** A journal entry, a report and a paper about the same result each cite the result and reuse its figure from `assets/figures/`. None is generated from another.
@@ -225,12 +226,18 @@ journal:
   kinds: [meeting]                 # kinds this library adds to the core's and the packs'
 search:                            # other libraries to search alongside this one
   - ../lab/docs
+libraries:                         # other libraries this one links to (§4)
+  pier-folio:
+    path: ../../pier-folio           # where the library is on this machine
+    url: http://localhost:5180       # where it is served; links are rewritten to it
 site_url: https://example.org/notes   # where the exported site is published; a paper's \fcite links resolve from it
 comments:
   identity_header: X-Forwarded-User   # the header a sign-in proxy names the reader in, for a deployed server
 ```
 
 Defaults: no packs, the folio theme, `assets/`, `root` is the folder holding `folio.yaml`, the reader is the owner, the voice is plain and precise, no `site_url` (a paper's `\fcite` then prints the id as plain text), and no `comments.identity_header` (comments are then taken only on 127.0.0.1, as the git user). `comments.identity_header` must be a header name: letters, digits and hyphens.
+
+Under `libraries:`, each name is a lowercase slug, used as the scheme of a link (§4), and may not be a scheme the web already uses (`http`, `https`, `mailto` and the like). `path` is required, relative to the folder holding `folio.yaml`; `url` is optional and must be an http(s) address. `folio search --all` searches these libraries too, where their path holds one.
 
 Under `genres:`, a genre takes `enabled` and any setting of its card's checks. Under `checks:`, a check takes `error`, `warning` or `off`. Check names are listed in `checks.md`.
 

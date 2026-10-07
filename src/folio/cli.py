@@ -162,7 +162,8 @@ def cmd_cite(args: argparse.Namespace) -> int:
             print(f"  path:        {row['path']}")
             print(f"  description: {row['description']}")
             for fmt, markup in row["markup"].items():
-                print(f"  {fmt + ':':<12} {markup}")
+                if markup is not None:
+                    print(f"  {fmt + ':':<12} {markup}")
     return 0
 
 

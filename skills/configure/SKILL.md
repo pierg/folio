@@ -39,6 +39,7 @@ Change the charter, or the genres, workflows and packs the library holds, and re
 1. **Name the change** in one line and pick its kind below.
 2. **Make it.**
    - **Purpose, reader, voice, theme, assets, root, other libraries to search:** `folio config set <key> "<value>"`.
+   - **Other libraries this one links to** (`libraries:`, each with its `path` and the `url` where it is served; model §4, §10): edit `folio.yaml` as a diff, then run `folio check`, which warns when a library is not at its path.
    - **A journal kind:** `folio config set journal.kinds "<a>, <b>"`, the full list of the library's own kinds. The core's and the packs' kinds need no entry.
    - **Home maps:** `folio config set home.maps "<a>, <b>"`, in reading order. Each must be an existing map that is not a `draft`; run `folio maps` to check. If one is a draft, warn the user and set it live through the write skill first.
    - **The library's name:** `folio config set name "<name>"`. The home page takes its title from it, so nothing else changes.
