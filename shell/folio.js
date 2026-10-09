@@ -1599,6 +1599,7 @@
     function stepsOf(s) {
       var n = 0;
       Array.prototype.forEach.call(s.querySelectorAll("[data-step],[data-until]"), function (e) {
+        if (e.closest(".notes")) return;  // a note's data-step names the build it speaks to; it is no build itself
         n = Math.max(n, +e.getAttribute("data-step") || 0, (+e.getAttribute("data-until") || 0) + 1);
       });
       return n;
@@ -1606,8 +1607,20 @@
     function show(s, k) {
       s.setAttribute("data-at", k);
       Array.prototype.forEach.call(s.querySelectorAll("[data-step],[data-until]"), function (e) {
+        if (e.closest(".notes")) return;
         var from = +e.getAttribute("data-step") || 0, until = e.hasAttribute("data-until") ? +e.getAttribute("data-until") : Infinity;
         e.classList.toggle("f-off", k < from || k > until);
+      });
+    }
+    /* A talking point or script paragraph with data-step="n" speaks to build n (none: the slide as it
+       opens). Stepping a slide marks them: the current build's now, earlier ones past, later ones next. */
+    function markNotes(notes, k, steps) {
+      if (!notes) return;
+      Array.prototype.forEach.call(notes.querySelectorAll(".points > li, .script > p:not(.src)"), function (e) {
+        var n = +e.getAttribute("data-step") || 0;
+        e.classList.toggle("f-past", !!steps && n < k);
+        e.classList.toggle("f-now", !!steps && n === k);
+        e.classList.toggle("f-next", !!steps && n > k);
       });
     }
     function fit(frame) { frame.style.setProperty("--k", frame.clientWidth / SLIDE_W); }
@@ -1625,17 +1638,42 @@
       var heading = s.querySelector("h2");
       var box = el("section", { class: "f-slide-box", "aria-label": "Slide " + (i + 1) });
       root.insertBefore(box, s);
+      var count = el("span", { text: s.steps + (s.steps === 1 ? " build" : " builds") });
       box.appendChild(el("p", { class: "f-slide-label" }, [
         el("a", { href: "#" + s.id, text: (i + 1) + " / " + slides.length }),
-        s.steps ? el("span", { text: s.steps + (s.steps === 1 ? " build" : " builds") }) : null]));
+        s.steps ? el("span", { class: "f-build" }, [
+          el("button", { type: "button", "aria-label": "Previous build", title: "Previous build", text: "‹", onclick: function () { pageStep(i, -1); } }),
+          count,
+          el("button", { type: "button", "aria-label": "Next build", title: "Next build (or click the slide)", text: "›", onclick: function () { pageStep(i, 1); } })
+        ]) : null]));
+      box.count = count; box.k = s.steps;
       box.appendChild(s);
       framed(s);
       var notes = s.querySelector(".notes");
       if (notes) box.appendChild(notes);  // the notes sit under the slide, never on it
       show(s, s.steps);
       boxes.push(box);
+      if (s.steps) box.querySelector(".f-slide-frame").addEventListener("click", function () { if (!live) pageStep(i, 1, true); });
       if (heading && !heading.id) heading.id = s.id + "-title";
     });
+    /* On the page, a slide's builds can be stepped while reading its notes: its arrows, or a click on
+       the slide, which starts again after the last build. */
+    function pageStep(i, d, wrap) {
+      var box = boxes[i], s = slides[i], k = box.k + d;
+      if (wrap && k > s.steps) k = 0;
+      k = Math.max(0, Math.min(s.steps, k));
+      box.k = k;
+      box.classList.add("f-stepping");
+      show(s, k);
+      markNotes(box.querySelector(".notes"), k, s.steps);
+      box.count.textContent = "build " + k + " of " + s.steps;
+    }
+    function pageReset(i) {
+      var box = boxes[i], s = slides[i];
+      box.k = s.steps; box.classList.remove("f-stepping");
+      markNotes(box.querySelector(".notes"), s.steps, 0);
+      if (box.count) box.count.textContent = s.steps + (s.steps === 1 ? " build" : " builds");
+    }
     /* Notes may hold talking points (.points) beside a script (.script); the script can be hidden,
        here and in the presenter's window, to rehearse from the points alone. */
     var hasScript = !!root.querySelector(".notes .script");
@@ -1689,6 +1727,7 @@
     function prev() { if (step > 0) go(at, step - 1); else if (at > 0) go(at - 1, slides[at - 1].steps); }
     function present(i, full) {
       live = true;
+      boxes.forEach(function (b, j) { pageReset(j); });
       document.body.classList.add("f-presenting");
       root.classList.add("f-live");
       boxes.forEach(function (b) { b.classList.remove("f-current"); });
@@ -1700,7 +1739,7 @@
       if (!live) return;
       live = false; root.classList.remove("f-live", "f-blank");
       document.body.classList.remove("f-presenting");
-      boxes.forEach(function (b, i) { b.classList.remove("f-current"); show(slides[i], slides[i].steps); });
+      boxes.forEach(function (b, i) { b.classList.remove("f-current"); show(slides[i], slides[i].steps); pageReset(i); });
       if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
       boxes[at].scrollIntoView({ block: "center" });
     }
@@ -1723,6 +1762,19 @@
       var key = e.key;
       if ((key === "h" || key === "H") && hasScript) { e.preventDefault(); setScript(!scriptShown()); return; }
       if (!live && !presenterView) {
+        // On the page the arrows step the builds of the slide in view, then go on to the next slide.
+        if (key === "ArrowRight" || key === "ArrowLeft") {
+          var i = visible(), box = boxes[i], fwd = key === "ArrowRight";
+          if (slides[i].steps && !box.classList.contains("f-stepping")) { box.k = fwd ? -1 : slides[i].steps + 1; pageStep(i, fwd ? 1 : -1); }
+          else if (fwd ? box.k < slides[i].steps : box.k > 0) pageStep(i, fwd ? 1 : -1);
+          else if (fwd ? i < slides.length - 1 : i > 0) {
+            var j = i + (fwd ? 1 : -1);
+            boxes[j].k = fwd ? -1 : slides[j].steps + 1;
+            if (slides[j].steps) pageStep(j, fwd ? 1 : -1);
+            boxes[j].scrollIntoView({ block: "start" });
+          }
+          e.preventDefault(); return;
+        }
         if (key === "p" || key === "P") { e.preventDefault(); present(visible(), true); }
         else if (key === "s" || key === "S") { e.preventDefault(); openPresenter(); }
         return;
@@ -1799,7 +1851,13 @@
         if (n) nextBox.appendChild(copy(n[0], n[1]));
         count.textContent = (at + 1) + " / " + slides.length + (slides[at].steps ? "  ·  build " + step + " of " + slides[at].steps : "");
         var notes = boxes[at].querySelector(".notes");
-        if (notes) notesBox.appendChild(notes.cloneNode(true));
+        if (notes) {
+          var copyOf = notes.cloneNode(true);
+          notesBox.appendChild(copyOf);
+          markNotes(copyOf, step, slides[at].steps);
+          var lit = copyOf.querySelector(".f-now");
+          notesBox.scrollTop = lit ? Math.max(0, lit.offsetTop - notesBox.offsetTop - 60) : 0;
+        }
         Array.prototype.forEach.call(view.querySelectorAll(".f-slide-frame"), fit);
       } };
     }

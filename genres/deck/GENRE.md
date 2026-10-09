@@ -44,7 +44,7 @@ The machine reads two parts:
 Inside a slide, by convention, judged, not checked:
 
 - One `<h2>` names the slide. The page's outline lists them, so the outline is the talk's running order.
-- `<aside class="notes">` holds what the speaker says. The page shows it under the slide; Present hides it, and the presenter's window shows it beside the slide. Notes may be structured: `<ul class="points">`, the talking points to cover, beside `<div class="script">`, the words to say. H, or the bar's button, hides every script, to rehearse from the points alone. `<span class="cue">click</span>` in a script marks where the next build comes.
+- `<aside class="notes">` holds what the speaker says. The page shows it under the slide; Present hides it, and the presenter's window shows it beside the slide. Notes may be structured: `<ul class="points">`, the talking points to cover, beside `<div class="script">`, the words to say. H, or the bar's button, hides every script, to rehearse from the points alone. `<span class="cue">click</span>` in a script marks where the next build comes. A point or a script paragraph with `data-step="n"` speaks to build n (none: the slide as it opens); stepping the slide, on the page with its arrows or a click, or in the presenter's window, lights the current build's lines and fades the later ones.
 - `data-step="n"` on an element makes it appear at the nth build of its slide; `data-until="n"` makes it leave after the nth. The slide carries `data-at`, its current build, for styles that change with it. The page shows each slide complete.
 
 What a good deck usually does, judged, not checked:

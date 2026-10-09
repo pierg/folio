@@ -835,6 +835,14 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 .deck .notes .cue { display: inline-block; margin-right: .3em; padding: 0 .4em; border-radius: 4px; background: var(--sunk); font: 600 .72em/1.6 var(--mono); color: var(--ink-3); vertical-align: .1em; }
 .deck .notes .src { font-size: .85em; color: var(--ink-3); }
 body.f-no-script .deck .notes .script, body.f-no-script .f-pv-notes .script { display: none; }
+/* Stepping a slide's builds on the page marks its notes: the current build's lines lit, later ones faint. */
+.f-build { display: inline-flex; align-items: center; gap: .35rem; }
+.f-build button { padding: .1rem .5rem; border: 1px solid var(--rule-strong); border-radius: 4px; background: none; color: inherit; font: 600 .85rem/1 var(--sans); cursor: pointer; }
+.f-build button:hover { color: var(--ink); border-color: var(--ink-3); }
+.deck:not(.f-live) .f-slide-box:has(.f-build) .f-slide-frame { cursor: pointer; }
+.deck .notes :is(.points > li, .script > p) { transition: opacity .2s ease, background-color .2s ease; }
+.deck .f-stepping .notes .f-next { opacity: .35; }
+.deck .f-stepping .notes .f-now { background: var(--accent-soft); box-shadow: 0 0 0 6px var(--accent-soft); border-radius: 3px; }
 body.f-no-script .deck .notes:has(.points) { grid-template-columns: minmax(0, 1fr); }
 .deck .notes::before { content: "Notes"; display: block; margin-bottom: .3rem; font: 650 .7rem/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .deck .slide .f-off { opacity: 0; visibility: hidden; }
@@ -877,6 +885,11 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-pv-notes .script { padding-top: .8rem; border-top: 1px solid #333; font: 1.1rem/1.55 var(--serif); color: #b7b1a6; }
 .f-pv-notes .cue { padding: 0 .35em; border-radius: 4px; background: #2a2a27; font: 600 .75em/1.6 var(--mono); color: #8b877f; }
 .f-pv-notes .src { display: none; }
+.f-pv-notes .f-past { opacity: .55; }
+.f-pv-notes .f-next { opacity: .3; }
+.f-pv-notes .f-now { background: #3a2a21; box-shadow: 0 0 0 6px #3a2a21; border-radius: 3px; color: #fff; }
+.f-pv-notes .script p.f-now { color: #ece9e2; }
+.f-pv-notes { scroll-behavior: smooth; }
 @media (max-aspect-ratio: 1 / 1) {
   .f-presenter-view { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
   .f-pv-side { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); grid-template-rows: minmax(0, 1fr); }
