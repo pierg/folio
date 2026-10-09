@@ -107,6 +107,16 @@ def normalise(text: str) -> str:
     return " ".join(text.split())
 
 
+def on_page(quote: str, text: str) -> bool:
+    """Whether a quote is on a page's text, whitespace ignored.
+
+    The extracted text puts a space after every closing tag (`<b>x</b>, y` reads
+    `x , y`) and none between some blocks, while a reader's selection follows the
+    rendered page, so only the characters are compared.
+    """
+    return "".join(quote.split()) in "".join(text.split())
+
+
 def page_text(df: "DocFile") -> str:
     """The text a reader sees on the page, whitespace collapsed: title, description and body."""
     parts = [str(df.meta.get("title") or ""), str(df.meta.get("description") or "")]
@@ -152,7 +162,7 @@ def add(lib: "Library", rel: str, kind: str, quote: str | None, body: str, autho
     df = lib.by_path.get(rel)
     if df is None:
         raise FolioError(f"`{rel}` is not a document file")
-    if normalise(quote) not in page_text(df):
+    if not on_page(quote, page_text(df)):
         raise FolioError(f"the quote is not on {rel}: `{quote}`")
     threads = load_threads(lib.root, rel)
     used = {str(t.get("id")) for t in threads} | set(_deleted(lib.root, rel))
@@ -255,7 +265,7 @@ def stale_quotes(lib: "Library") -> list[tuple[str, str]]:
         text = page_text(owner)
         for t in threads:
             quote = normalise(str(t.get("quote") or ""))
-            if t.get("state") == "open" and quote and quote not in text:
+            if t.get("state") == "open" and quote and not on_page(quote, text):
                 out.append((owner.path, f"open thread {t.get('id')} quotes text no longer on the page:"
                                         f" `{t.get('quote')}`"))
     return out

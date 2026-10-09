@@ -60,6 +60,16 @@ def test_add_refuses_a_quote_not_on_the_page(sample: Path, monkeypatch, capsys) 
                  "--body", "x", "--author", "r", monkeypatch=monkeypatch) == 2
 
 
+def test_a_quote_across_tags_is_on_the_page(sample: Path) -> None:
+    # A reader's selection runs across inline and block tags: no space at `</b>,`, a line break between cells.
+    edit(sample / NOTE, "updates a running maximum and sum", "updates <b>a running maximum</b>, and sum")
+    edit(sample / NOTE, "</p>", "</p>\n<dl><dt>Tile</dt><dd>a block of keys</dd></dl>")
+    lib = library.load_at(sample)
+    annotations.add(lib, NOTE, "question", "a running maximum, and sum", "Why?", "reader")
+    annotations.add(lib, NOTE, "question", "Tile\na block", "Why?", "reader")
+    assert found(sample, "stale-quote") == []
+
+
 def test_stale_quote(sample: Path) -> None:
     lib = library.load_at(sample)
     annotations.add(lib, NOTE, "question", "rescaled this way gives the exact result", "Why?", "reader")

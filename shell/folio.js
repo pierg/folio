@@ -1369,17 +1369,32 @@
       main.normalize();
       threads.forEach(function (t) {
         if (!t.quote || t.state === "withdrawn") return;
+        // The quote may run across tags (`<b>x</b>, y`): match the page's characters, whitespace
+        // ignored, and mark each text node the match covers.
+        var nodes = [], at = [], flat = "";
         var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
         var node;
         while ((node = walker.nextNode())) {
-          var i = node.nodeValue.indexOf(t.quote);
-          if (i < 0) continue;
-          var range = document.createRange();
-          range.setStart(node, i); range.setEnd(node, i + t.quote.length);
+          if (/^(SCRIPT|STYLE)$/.test(node.parentNode.nodeName)) continue;
+          for (var k = 0; k < node.nodeValue.length; k++) {
+            if (/\s/.test(node.nodeValue[k])) continue;
+            flat += node.nodeValue[k]; at.push([nodes.length, k]);
+          }
+          nodes.push(node);
+        }
+        var q = t.quote.replace(/\s+/g, "");
+        var i = flat.indexOf(q);
+        if (i < 0) return;
+        var first = at[i], last = at[i + q.length - 1];
+        for (var n = last[0]; n >= first[0]; n--) {
+          var text = nodes[n];
+          var from = n === first[0] ? first[1] : 0, to = n === last[0] ? last[1] + 1 : text.nodeValue.length;
+          if (!text.nodeValue.slice(from, to).trim()) continue;
+          var piece = from ? text.splitText(from) : text;
+          if (to - from < piece.nodeValue.length) piece.splitText(to - from);
           var m = el("mark", { class: "f-anno", "data-w": t.word || null, title: t.kind + ": " + (t.word || t.state) });
           m.addEventListener("click", function () { openDrawer(t.id); });
-          range.surroundContents(m);
-          break;
+          piece.replaceWith(m); m.appendChild(piece);
         }
       });
     }
