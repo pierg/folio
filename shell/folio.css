@@ -870,7 +870,8 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-pv-notes .notes { margin: 0; padding: 0; border: 0; color: inherit; font: inherit; max-width: none; }
 .f-pv-notes .notes::before { content: none; }
 .f-pv-notes p { margin: 0 0 .7em; }
-.f-pv-notes ul.points { margin: 0 0 1rem; padding: 0; list-style: none; font: 600 1.3rem/1.4 var(--sans); }
+.f-pv-notes ul.points { margin: 0 0 1rem; padding: 0; list-style: none; font: 400 1.2rem/1.4 var(--sans); }
+.f-pv-notes ul.points b { font-weight: 700; color: #fff; }
 .f-pv-notes ul.points li { margin: 0 0 .55em; padding-left: 1em; position: relative; }
 .f-pv-notes ul.points li::before { content: ""; position: absolute; left: 0; top: .55em; width: .38em; height: .38em; border-radius: 50%; background: #e09572; }
 .f-pv-notes .script { padding-top: .8rem; border-top: 1px solid #333; font: 1.1rem/1.55 var(--serif); color: #b7b1a6; }
