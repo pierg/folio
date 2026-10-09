@@ -1636,14 +1636,28 @@
       boxes.push(box);
       if (heading && !heading.id) heading.id = s.id + "-title";
     });
+    /* Notes may hold talking points (.points) beside a script (.script); the script can be hidden,
+       here and in the presenter's window, to rehearse from the points alone. */
+    var hasScript = !!root.querySelector(".notes .script");
+    function scriptShown() { return !document.body.classList.contains("f-no-script"); }
+    function setScript(on) {
+      document.body.classList.toggle("f-no-script", !on);
+      store("deck-script", on ? null : "hidden");
+      var label = document.querySelector(".f-script-label");
+      if (label) label.textContent = on ? "Hide script" : "Show script";
+      if (channel) channel.postMessage({ script: on });
+    }
     var bar = el("div", { class: "f-deck-bar" }, [
       el("button", { class: "f-btn", type: "button", onclick: function () { present(visible(), true); } },
         [icon("play"), el("span", { text: "Present" }), el("kbd", { text: "P" })]),
       el("button", { class: "f-btn", type: "button", onclick: function () { window.print(); } },
         [icon("print"), el("span", { text: "Print" })]),
+      hasScript ? el("button", { class: "f-btn f-script-btn", type: "button", onclick: function () { setScript(!scriptShown()); } },
+        [el("span", { class: "f-script-label" }), el("kbd", { text: "H" })]) : null,
       el("span", { text: slides.length + " slides · S opens the presenter's window" })
     ]);
     root.parentNode.insertBefore(bar, root);
+    if (hasScript) setScript(store("deck-script") !== "hidden");
 
     function visible() {
       var best = 0, mid = window.innerHeight / 2, d = Infinity;
@@ -1707,6 +1721,7 @@
     document.addEventListener("keydown", function (e) {
       if (e.metaKey || e.ctrlKey || e.altKey || (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]"))) return;
       var key = e.key;
+      if ((key === "h" || key === "H") && hasScript) { e.preventDefault(); setScript(!scriptShown()); return; }
       if (!live && !presenterView) {
         if (key === "p" || key === "P") { e.preventDefault(); present(visible(), true); }
         else if (key === "s" || key === "S") { e.preventDefault(); openPresenter(); }
@@ -1732,6 +1747,8 @@
     if (channel) channel.onmessage = function (m) {
       var d = m.data || {};
       if (d.hello) { channel.postMessage({ at: at, step: step }); return; }
+      if (typeof d.script === "boolean") { document.body.classList.toggle("f-no-script", !d.script);
+        var label = document.querySelector(".f-script-label"); if (label) label.textContent = d.script ? "Hide script" : "Show script"; return; }
       if (typeof d.at === "number") go(d.at, d.step, true);
     };
 
@@ -1752,7 +1769,7 @@
       var now = el("div", { class: "f-pv-now" }), nextBox = el("div"), notesBox = el("div", { class: "f-pv-notes" });
       var view = el("div", { class: "f-presenter-view" }, [
         el("div", { class: "f-presenter-top" }, [timer, count, clock,
-          el("span", { class: "f-pv-hint", text: "→ next · ← back · number + Enter jumps · this window steers the deck" })]),
+          el("span", { class: "f-pv-hint", text: "→ next · ← back · number + Enter jumps · H hides the script · this window steers the deck" })]),
         now,
         el("div", { class: "f-pv-side" }, [el("div", { class: "f-pv-next" }, [el("p", { class: "f-pv-cap", text: "Next" }), nextBox]), notesBox])
       ]);

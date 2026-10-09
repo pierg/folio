@@ -821,6 +821,21 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 .deck .slide figcaption::before { content: none; }
 .deck .notes { margin: .9rem 0 0; padding: .1rem 0 0 1rem; border-left: 2px solid var(--rule-strong); font: 1rem/1.6 var(--serif); color: var(--ink-2); max-width: 52rem; }
 .deck .notes p { margin: 0 0 .6em; }
+/* Structured notes: talking points beside the script; H hides the script to rehearse from the points. */
+.deck .notes:has(.points) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 0 2.2rem; max-width: none; }
+.deck .notes:has(.points)::before { content: none; }
+.deck .notes .points, .deck .notes .script { min-width: 0; margin: 0; }
+.deck .notes .points::before, .deck .notes .script::before { display: block; margin-bottom: .45rem; font: 650 .7rem/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.deck .notes .points::before { content: "Talking points"; }
+.deck .notes .script::before { content: "Script"; }
+.deck .notes ul.points { padding-left: 0; list-style: none; font: 500 1rem/1.45 var(--sans); color: var(--ink); }
+.deck .notes ul.points li { position: relative; margin: 0 0 .5em; padding-left: 1.1em; }
+.deck .notes ul.points li::before { content: ""; position: absolute; left: 0; top: .55em; width: .42em; height: .42em; border-radius: 50%; background: var(--accent); }
+.deck .notes ul.points li b { font-weight: 700; }
+.deck .notes .cue { display: inline-block; margin-right: .3em; padding: 0 .4em; border-radius: 4px; background: var(--sunk); font: 600 .72em/1.6 var(--mono); color: var(--ink-3); vertical-align: .1em; }
+.deck .notes .src { font-size: .85em; color: var(--ink-3); }
+body.f-no-script .deck .notes .script, body.f-no-script .f-pv-notes .script { display: none; }
+body.f-no-script .deck .notes:has(.points) { grid-template-columns: minmax(0, 1fr); }
 .deck .notes::before { content: "Notes"; display: block; margin-bottom: .3rem; font: 650 .7rem/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .deck .slide .f-off { opacity: 0; visibility: hidden; }
 .deck.f-live .slide [data-step], .deck.f-live .slide [data-until] { transition: opacity .35s ease, visibility .35s; }
@@ -855,6 +870,12 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-pv-notes .notes { margin: 0; padding: 0; border: 0; color: inherit; font: inherit; max-width: none; }
 .f-pv-notes .notes::before { content: none; }
 .f-pv-notes p { margin: 0 0 .7em; }
+.f-pv-notes ul.points { margin: 0 0 1rem; padding: 0; list-style: none; font: 600 1.3rem/1.4 var(--sans); }
+.f-pv-notes ul.points li { margin: 0 0 .55em; padding-left: 1em; position: relative; }
+.f-pv-notes ul.points li::before { content: ""; position: absolute; left: 0; top: .55em; width: .38em; height: .38em; border-radius: 50%; background: #e09572; }
+.f-pv-notes .script { padding-top: .8rem; border-top: 1px solid #333; font: 1.1rem/1.55 var(--serif); color: #b7b1a6; }
+.f-pv-notes .cue { padding: 0 .35em; border-radius: 4px; background: #2a2a27; font: 600 .75em/1.6 var(--mono); color: #8b877f; }
+.f-pv-notes .src { display: none; }
 @media (max-aspect-ratio: 1 / 1) {
   .f-presenter-view { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
   .f-pv-side { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); grid-template-rows: minmax(0, 1fr); }

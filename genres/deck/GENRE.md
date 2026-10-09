@@ -44,7 +44,7 @@ The machine reads two parts:
 Inside a slide, by convention, judged, not checked:
 
 - One `<h2>` names the slide. The page's outline lists them, so the outline is the talk's running order.
-- `<aside class="notes">` holds what the speaker says. The page shows it under the slide; Present hides it, and the presenter's window shows it beside the slide.
+- `<aside class="notes">` holds what the speaker says. The page shows it under the slide; Present hides it, and the presenter's window shows it beside the slide. Notes may be structured: `<ul class="points">`, the talking points to cover, beside `<div class="script">`, the words to say. H, or the bar's button, hides every script, to rehearse from the points alone. `<span class="cue">click</span>` in a script marks where the next build comes.
 - `data-step="n"` on an element makes it appear at the nth build of its slide; `data-until="n"` makes it leave after the nth. The slide carries `data-at`, its current build, for styles that change with it. The page shows each slide complete.
 
 What a good deck usually does, judged, not checked:
@@ -62,7 +62,7 @@ What a good deck usually does, judged, not checked:
 
 ## Steps
 
-- Start from the talk's outline: one line per slide saying what the audience should keep. Write the notes before the slide.
+- Start from the talk's outline: one line per slide saying what the audience should keep. Write the notes before the slide: the points first, three to five, then the script that says them.
 - Design the slides as a set: decide the recurring marks and colours first, then draw each slide with them.
 - Present it once from the page (P), and once with the presenter's window (S), before calling it done.
 
