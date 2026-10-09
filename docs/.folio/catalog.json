@@ -708,6 +708,34 @@
       "url": "/content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md"
     },
     {
+      "description": "folio gains a deck genre for the slides of a talk, read and commented as a page and presented full screen from it.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "genre"
+        ],
+        "date": "2026-10-08",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-08-a-ninth-core-genre-the-deck",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md",
+      "status": "live",
+      "tags": [],
+      "title": "A ninth core genre: the deck",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md"
+    },
+    {
       "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
       "field_order": [],
       "fields": {},

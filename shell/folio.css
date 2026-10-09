@@ -2,7 +2,7 @@
    Every colour, face and size is a token on :root. Pages use the tokens and the
    components in COMPONENTS.md, never their own hex values, so both themes hold. */
 
-:root {
+:root, .deck[data-theme="light"] {
   color-scheme: light;
   --paper: #f8f6f1;
   --surface: #fffefb;
@@ -62,7 +62,7 @@
     --kept: #4ade80;  --discarded: #f6c453; --rejected: #f58a8a; --untested: #a19c92;
   }
 }
-:root[data-theme="dark"] {
+:root[data-theme="dark"], .deck[data-theme="dark"] {
   color-scheme: dark;
   --paper: #151513; --surface: #1c1c19; --sunk: #222220;
   --ink: #ece9e2; --ink-2: #b7b1a6; --ink-3: #868075;
@@ -786,6 +786,7 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 
 /* -------------------------------------------------------------- print */
 @media print {
+  body.f-deck-page .f-head, body.f-deck-page .f-deck-bar, body.f-deck-page .deck .notes { display: none !important; }
   .f-top, .f-rail, .f-rail-backdrop, .f-panel, .f-anno-fab, .f-drawer, .f-palette, .f-pager, .f-home-inbox { display: none !important; }
   .f-layout { display: block; max-width: none; padding: 0; margin: 0 !important; }
   main details { break-inside: avoid; }
@@ -797,3 +798,72 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 .f-banners:not(:empty) { margin-top: 1.4rem; }
 .f-banners .f-banner { margin: 0 0 .6rem; }
 .f-banners .f-banner:last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------------ deck */
+/* A deck (COMPONENTS.md): each .slide is drawn at 1600 by 900 and scaled to its frame, so a slide
+   looks the same in the page, on a projector and in print. The page shows every slide in order, its
+   builds complete, with the speaker's notes under it; Present shows one slide at a time, full screen. */
+.deck { --slide-w: 1600px; --slide-h: 900px; display: flex; flex-direction: column; gap: 2.6rem; color: var(--ink); }
+.f-deck-bar { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin: 0 0 1.4rem; font: .85rem/1.4 var(--sans); color: var(--ink-2); }
+.f-deck-bar .f-btn { gap: .4rem; padding: .35rem .7rem; border: 1px solid var(--rule-strong); border-radius: var(--radius); font: 600 .85rem/1 var(--sans); }
+.f-deck-bar kbd { font: .72rem/1 var(--mono); color: var(--ink-3); }
+.f-slide-box { margin: 0; }
+.f-slide-label { display: flex; gap: .6rem; align-items: baseline; margin: 0 0 .45rem; font: 600 .75rem/1.2 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.f-slide-label a { color: inherit; text-decoration: none; }
+.f-slide-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: var(--paper);
+  box-shadow: 0 0 0 1px var(--rule), var(--shadow); }
+.deck .slide { position: absolute; top: 0; left: 0; width: var(--slide-w); height: var(--slide-h); overflow: hidden;
+  transform: scale(var(--k, 1)); transform-origin: 0 0; background: var(--paper); color: var(--ink); font: 400 28px/1.4 var(--sans); }
+/* Inside a slide the reading page's prose rules step aside: the slide's own styles lay it out. */
+.deck .slide :is(h2, h3, h4, p, ul, ol, dl, figure, table, blockquote, pre, details) { margin: 0; }
+.deck .slide :is(h2, h3, h4) { font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+.deck .slide li { margin: 0; }
+.deck .slide figcaption::before { content: none; }
+.deck .notes { margin: .9rem 0 0; padding: .1rem 0 0 1rem; border-left: 2px solid var(--rule-strong); font: 1rem/1.6 var(--serif); color: var(--ink-2); max-width: 52rem; }
+.deck .notes p { margin: 0 0 .6em; }
+.deck .notes::before { content: "Notes"; display: block; margin-bottom: .3rem; font: 650 .7rem/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.deck .slide .f-off { opacity: 0; visibility: hidden; }
+.deck.f-live .slide [data-step], .deck.f-live .slide [data-until] { transition: opacity .35s ease, visibility .35s; }
+.deck.f-snap .slide [data-step], .deck.f-snap .slide [data-until] { transition: none; }
+
+/* Present: the deck covers the window, one slide at a time, letterboxed on black. */
+body.f-presenting { overflow: hidden; }
+body.f-presenting .f-page { container-type: normal; }
+.deck.f-live { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; gap: 0; margin: 0; background: #000; cursor: none; }
+.deck.f-live.f-pointer { cursor: default; }
+.deck.f-live .f-slide-box { display: none; grid-area: 1 / 1; }
+.deck.f-live .f-slide-box.f-current { display: block; }
+.deck.f-live .f-slide-label, .deck.f-live .notes { display: none; }
+.deck.f-live .f-slide-frame { width: min(100vw, calc(100vh * 16 / 9)); border-radius: 0; box-shadow: none; }
+.deck.f-live.f-blank .f-slide-box { visibility: hidden; }
+
+/* The presenter's window: the current slide, the next one, the notes and the clock. */
+body.f-presenter { overflow: hidden; }
+body.f-presenter > :not(.f-presenter-view) { display: none !important; }
+.f-presenter-view { position: fixed; inset: 0; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
+  gap: 1rem 1.4rem; padding: 1.1rem 1.4rem; background: #111; color: #e8e6e1; font: 1rem/1.5 var(--sans); }
+.f-presenter-top { grid-column: 1 / -1; display: flex; gap: 1.6rem; align-items: baseline; font: 600 1.05rem/1 var(--sans); font-variant-numeric: tabular-nums; }
+.f-presenter-top .f-pv-timer { font-size: 2rem; cursor: pointer; }
+.f-presenter-top .f-pv-hint { margin-left: auto; font-weight: 400; font-size: .8rem; color: #8b877f; }
+.f-pv-now, .f-pv-next { min-width: 0; }
+.f-pv-side { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1rem; min-height: 0; }
+.f-pv-cap { margin: 0 0 .35rem; font: 650 .72rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: #8b877f; }
+.f-presenter-view .f-pv-deck { display: block; background: none; }
+.f-presenter-view .f-slide-frame { box-shadow: 0 0 0 1px #333; border-radius: 6px; }
+.f-presenter-view .f-pv-next .f-slide-frame { opacity: .85; }
+.f-pv-notes { overflow-y: auto; padding-right: .4rem; font: 1.3rem/1.55 var(--serif); color: #e8e6e1; }
+.f-pv-notes .notes { margin: 0; padding: 0; border: 0; color: inherit; font: inherit; max-width: none; }
+.f-pv-notes .notes::before { content: none; }
+.f-pv-notes p { margin: 0 0 .7em; }
+@media (max-aspect-ratio: 1 / 1) {
+  .f-presenter-view { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
+  .f-pv-side { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); grid-template-rows: minmax(0, 1fr); }
+}
+
+@media print {
+  @page { size: 1600px 900px; margin: 0; }
+  .deck { display: block; }
+  .deck .f-slide-box { break-after: page; margin: 0; }
+  .deck .f-slide-label { display: none; }
+  .deck .f-slide-frame { width: 1600px; height: 900px; aspect-ratio: auto; border-radius: 0; box-shadow: none; --k: 1 !important; }
+}

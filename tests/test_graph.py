@@ -105,7 +105,7 @@ def test_map_rm_warns_of_an_orphan(sample: Path, monkeypatch, capsys) -> None:
 def test_tags_list_and_rename(sample: Path, monkeypatch, capsys) -> None:
     assert folio(sample, "tags", "--json", monkeypatch=monkeypatch) == 0
     rows = {r["tag"]: r for r in json.loads(out_of(capsys))}
-    assert rows["attention"]["count"] == 4 and "softmax" in rows["attention"]["documents"]
+    assert rows["attention"]["count"] == 5 and "softmax" in rows["attention"]["documents"]
     assert rows["monte-carlo"]["documents"] == ["Q-1"]
     assert folio(sample, "tags", "rename", "attention", "long-context", monkeypatch=monkeypatch) == 0
     out = out_of(capsys)

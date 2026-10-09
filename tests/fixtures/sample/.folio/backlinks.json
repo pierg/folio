@@ -43,9 +43,23 @@
     "retracted_by": [],
     "superseded_by": []
   },
+  "content/decks/attention-in-five-minutes/index.html": {
+    "about": [],
+    "cited_by": [
+      "content/maps/attention.html"
+    ],
+    "cites": [
+      "content/entries/attention-is-quadratic/index.html"
+    ],
+    "fields": {},
+    "id": "attention-in-five-minutes",
+    "retracted_by": [],
+    "superseded_by": []
+  },
   "content/entries/attention-is-quadratic/index.html": {
     "about": [],
     "cited_by": [
+      "content/decks/attention-in-five-minutes/index.html",
       "content/maps/attention.html"
     ],
     "cites": [
@@ -131,6 +145,7 @@
     "cited_by": [],
     "cites": [
       "content/concepts/softmax/index.html",
+      "content/decks/attention-in-five-minutes/index.html",
       "content/entries/attention-is-quadratic/index.html",
       "content/guides/attention-from-scratch/index.html",
       "content/notes/flashattention-tiling.html",

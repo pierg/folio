@@ -40,6 +40,20 @@
     "url": "/content/concepts/softmax/"
   },
   {
+    "description": "A five-minute talk for engineers: why self-attention costs the square of the context.",
+    "genre": "deck",
+    "id": "attention-in-five-minutes",
+    "part": null,
+    "path": "content/decks/attention-in-five-minutes/index.html",
+    "status": "live",
+    "tags": [
+      "attention"
+    ],
+    "text": "Every token scores every token n tokens make n squared scores. The cost is quadratic because of the score matrix, as the entry shows.",
+    "title": "Attention in five minutes",
+    "url": "/content/decks/attention-in-five-minutes/"
+  },
+  {
     "description": "Where the cost of self-attention comes from, for someone who knows matrix products.",
     "genre": "entry",
     "id": "attention-is-quadratic",
@@ -150,7 +164,7 @@
     "tags": [
       "attention"
     ],
-    "text": "Current take The softmax over every pair of tokens sets the cost. Basics Softmax Read first. FlashAttention tiling Why attention is quadratic Attention, from scratch Reading Attention Is All You Need Which attention methods are exact Tiled attention",
+    "text": "Current take The softmax over every pair of tokens sets the cost. Basics Softmax Read first. FlashAttention tiling Why attention is quadratic Attention, from scratch Reading Attention Is All You Need Which attention methods are exact Tiled attention Attention in five minutes",
     "title": "Attention",
     "url": "/content/maps/attention.html"
   },

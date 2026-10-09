@@ -48,7 +48,9 @@
       rail: "M4 5h16v14H4zM9.5 5v14",
       focus: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1",
       copy: "M9 9h11v11H9zM5 15H4V4h11v1",
-      check: "M5 12.5 10 17.5 19 7"
+      check: "M5 12.5 10 17.5 19 7",
+      play: "M7 4.5v15l12-7.5z",
+      print: "M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"
     };
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -306,7 +308,7 @@
 
   function wrapTables() {
     Array.prototype.forEach.call(main.querySelectorAll("table"), function (t) {
-      if (t.parentNode.classList.contains("f-scroll")) return;
+      if (t.parentNode.classList.contains("f-scroll") || t.closest(".deck")) return;
       var box = el("div", { class: "f-scroll" });
       t.parentNode.insertBefore(box, t);
       box.appendChild(t);
@@ -328,7 +330,7 @@
   function isRecordId(id) { return /^[A-Za-z]+-\d+$/.test(String(id || "")); }
 
   /* A genre's mark in the rail: a letter or two, its name on hover and in the rail's key. */
-  var MARKS = { concept: "C", note: "N", entry: "E", guide: "G", map: "M", journal: "J", paper: "P", project: "Pj",
+  var MARKS = { concept: "C", note: "N", entry: "E", guide: "G", map: "M", journal: "J", paper: "P", project: "Pj", deck: "D",
     reading: "R", source: "S", survey: "Sv", question: "Q", protocol: "Pr", result: "Rs", claim: "Cl", report: "Rp" };
   function markOf(genre) { return MARKS[genre] || human(genre).slice(0, 2); }
   /* The order a reader meets genres in: the way in first, then ideas, then the evidence. */
@@ -1567,6 +1569,7 @@
       }
       hookPreviews(document.body);
       figures();
+      deck();
       return math && math.then(typeset).then(mathFonts);
     }).catch(function (err) {
       if (window.console) console.error("folio:", err);
@@ -1579,6 +1582,213 @@
     prerenderLinks();
   }
 
+  /* --------------------------------------------------------------- deck */
+  /* A deck's slides are drawn at 1600 by 900 and scaled to their frames. The page shows them all, each
+     complete, with its notes; Present (P) shows one at a time, full screen, and steps through its builds
+     (data-step="n" appears at step n, data-until="n" leaves after it). S opens the presenter's window,
+     which follows the same deck over a BroadcastChannel. The script moves and toggles; it writes no words. */
+  var SLIDE_W = 1600;
+  function deck() {
+    var root = document.querySelector("main .deck");
+    if (!root) return;
+    var slides = Array.prototype.filter.call(root.children, function (c) { return c.classList.contains("slide"); });
+    if (!slides.length) return;
+    document.body.classList.add("f-deck-page");
+    var boxes = [], at = 0, step = 0, live = false, wantFull = false, typed = "";
+    var channel = window.BroadcastChannel ? new BroadcastChannel("folio-deck:" + location.pathname) : null;
+    function stepsOf(s) {
+      var n = 0;
+      Array.prototype.forEach.call(s.querySelectorAll("[data-step],[data-until]"), function (e) {
+        n = Math.max(n, +e.getAttribute("data-step") || 0, (+e.getAttribute("data-until") || 0) + 1);
+      });
+      return n;
+    }
+    function show(s, k) {
+      s.setAttribute("data-at", k);
+      Array.prototype.forEach.call(s.querySelectorAll("[data-step],[data-until]"), function (e) {
+        var from = +e.getAttribute("data-step") || 0, until = e.hasAttribute("data-until") ? +e.getAttribute("data-until") : Infinity;
+        e.classList.toggle("f-off", k < from || k > until);
+      });
+    }
+    function fit(frame) { frame.style.setProperty("--k", frame.clientWidth / SLIDE_W); }
+    var sizes = window.ResizeObserver ? new ResizeObserver(function (all) { all.forEach(function (r) { fit(r.target); }); }) : null;
+    function framed(s) {
+      var frame = el("div", { class: "f-slide-frame" });
+      s.parentNode.insertBefore(frame, s);
+      frame.appendChild(s);
+      if (sizes) sizes.observe(frame); else fit(frame);
+      return frame;
+    }
+    slides.forEach(function (s, i) {
+      if (!s.id) s.id = "slide-" + (i + 1);
+      s.steps = stepsOf(s);
+      var heading = s.querySelector("h2");
+      var box = el("section", { class: "f-slide-box", "aria-label": "Slide " + (i + 1) });
+      root.insertBefore(box, s);
+      box.appendChild(el("p", { class: "f-slide-label" }, [
+        el("a", { href: "#" + s.id, text: (i + 1) + " / " + slides.length }),
+        s.steps ? el("span", { text: s.steps + (s.steps === 1 ? " build" : " builds") }) : null]));
+      box.appendChild(s);
+      framed(s);
+      var notes = s.querySelector(".notes");
+      if (notes) box.appendChild(notes);  // the notes sit under the slide, never on it
+      show(s, s.steps);
+      boxes.push(box);
+      if (heading && !heading.id) heading.id = s.id + "-title";
+    });
+    var bar = el("div", { class: "f-deck-bar" }, [
+      el("button", { class: "f-btn", type: "button", onclick: function () { present(visible(), true); } },
+        [icon("play"), el("span", { text: "Present" }), el("kbd", { text: "P" })]),
+      el("button", { class: "f-btn", type: "button", onclick: function () { window.print(); } },
+        [icon("print"), el("span", { text: "Print" })]),
+      el("span", { text: slides.length + " slides · S opens the presenter's window" })
+    ]);
+    root.parentNode.insertBefore(bar, root);
+
+    function visible() {
+      var best = 0, mid = window.innerHeight / 2, d = Infinity;
+      boxes.forEach(function (b, i) { var r = b.getBoundingClientRect(), x = Math.abs(r.top + r.height / 2 - mid); if (x < d) { d = x; best = i; } });
+      return best;
+    }
+    function go(i, k, quiet) {
+      i = Math.max(0, Math.min(slides.length - 1, i));
+      k = Math.max(0, Math.min(slides[i].steps, k));
+      if (live) {
+        var entering = !boxes[i].classList.contains("f-current");
+        if (entering) {
+          // Set the new slide's builds before it shows, with no fade, so it never flashes complete.
+          root.classList.add("f-snap");
+          show(slides[i], k);
+          boxes[at].classList.remove("f-current");
+          if (at !== i) show(slides[at], slides[at].steps);
+          boxes[i].classList.add("f-current");
+          fit(boxes[i].querySelector(".f-slide-frame"));
+          requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.remove("f-snap"); }); });
+        } else show(slides[i], k);
+        history.replaceState(null, "", "#" + slides[i].id);
+      }
+      at = i; step = k;
+      if (presenterView) presenterView.paint();
+      if (channel && !quiet) channel.postMessage({ at: at, step: step });
+    }
+    function next() { if (step < slides[at].steps) go(at, step + 1); else if (at < slides.length - 1) go(at + 1, 0); }
+    function prev() { if (step > 0) go(at, step - 1); else if (at > 0) go(at - 1, slides[at - 1].steps); }
+    function present(i, full) {
+      live = true;
+      document.body.classList.add("f-presenting");
+      root.classList.add("f-live");
+      boxes.forEach(function (b) { b.classList.remove("f-current"); });
+      at = i; go(i, 0);
+      wantFull = !!full;
+      if (full && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+    }
+    function stop() {
+      if (!live) return;
+      live = false; root.classList.remove("f-live", "f-blank");
+      document.body.classList.remove("f-presenting");
+      boxes.forEach(function (b, i) { b.classList.remove("f-current"); show(slides[i], slides[i].steps); });
+      if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
+      boxes[at].scrollIntoView({ block: "center" });
+    }
+    document.addEventListener("fullscreenchange", function () { if (!document.fullscreenElement && wantFull && live) { wantFull = false; stop(); } });
+    var idle;
+    root.addEventListener("mousemove", function () {
+      if (!live) return;
+      root.classList.add("f-pointer"); clearTimeout(idle);
+      idle = setTimeout(function () { root.classList.remove("f-pointer"); }, 1500);
+    });
+    root.addEventListener("click", function (e) {
+      if (!live || (e.target.closest && e.target.closest("a, button, input, select, textarea"))) return;
+      if (e.clientX < window.innerWidth / 4) prev(); else next();
+    });
+    function openPresenter() {
+      window.open(location.pathname + "#presenter", "folio-presenter", "width=1280,height=800");
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]"))) return;
+      var key = e.key;
+      if (!live && !presenterView) {
+        if (key === "p" || key === "P") { e.preventDefault(); present(visible(), true); }
+        else if (key === "s" || key === "S") { e.preventDefault(); openPresenter(); }
+        return;
+      }
+      if (/^[0-9]$/.test(key)) { typed += key; return; }
+      var handled = true;
+      if (key === "Enter" && typed) { go(+typed - 1, 0); }
+      else if (key === "ArrowRight" || key === "ArrowDown" || key === "PageDown" || key === " " || key === "Enter" || key === "n") next();
+      else if (key === "ArrowLeft" || key === "ArrowUp" || key === "PageUp" || key === "Backspace" || key === "p") prev();
+      else if (key === "Home") go(0, 0);
+      else if (key === "End") go(slides.length - 1, slides[slides.length - 1].steps);
+      else if ((key === "b" || key === "." ) && live) root.classList.toggle("f-blank");
+      else if (key === "s" || key === "S") openPresenter();
+      else if ((key === "f" || key === "F") && live) {
+        if (document.fullscreenElement) document.exitFullscreen(); else { wantFull = true; document.documentElement.requestFullscreen().catch(function () {}); }
+      }
+      else if (key === "Escape" && live) stop();
+      else handled = false;
+      typed = "";
+      if (handled) e.preventDefault();
+    });
+    if (channel) channel.onmessage = function (m) {
+      var d = m.data || {};
+      if (d.hello) { channel.postMessage({ at: at, step: step }); return; }
+      if (typeof d.at === "number") go(d.at, d.step, true);
+    };
+
+    var presenterView = null;
+    if (location.hash === "#presenter") presenterView = presenter();
+    else {
+      var target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      var i = target ? slides.indexOf(target.closest(".slide")) : -1;
+      if (i >= 0) at = i;
+    }
+
+    /* The presenter's window: no chrome, the slide now and the next, its notes, the time. */
+    function presenter() {
+      document.body.classList.add("f-presenter");
+      var started = Date.now();
+      var timer = el("span", { class: "f-pv-timer", title: "Click to restart the timer", onclick: function () { started = Date.now(); tick(); } });
+      var clock = el("span"), count = el("span");
+      var now = el("div", { class: "f-pv-now" }), nextBox = el("div"), notesBox = el("div", { class: "f-pv-notes" });
+      var view = el("div", { class: "f-presenter-view" }, [
+        el("div", { class: "f-presenter-top" }, [timer, count, clock,
+          el("span", { class: "f-pv-hint", text: "→ next · ← back · number + Enter jumps · this window steers the deck" })]),
+        now,
+        el("div", { class: "f-pv-side" }, [el("div", { class: "f-pv-next" }, [el("p", { class: "f-pv-cap", text: "Next" }), nextBox]), notesBox])
+      ]);
+      document.body.appendChild(view);
+      function two(n) { return (n < 10 ? "0" : "") + n; }
+      function tick() {
+        var t = Math.floor((Date.now() - started) / 1000);
+        timer.textContent = two(Math.floor(t / 60)) + ":" + two(t % 60);
+        var d = new Date(); clock.textContent = two(d.getHours()) + ":" + two(d.getMinutes());
+      }
+      setInterval(tick, 1000); tick();
+      function copy(i, k) {
+        var s = slides[i].cloneNode(true);
+        s.removeAttribute("id");
+        Array.prototype.forEach.call(s.querySelectorAll("[id]"), function (e) { e.removeAttribute("id"); });
+        show(s, k);
+        var frame = el("div", { class: "f-slide-frame" }, [s]);
+        if (sizes) sizes.observe(frame);
+        // inside a copy of the deck element, so the deck's own styles and theme reach the slide
+        return el("div", { class: root.className.replace(/\bf-\S+/g, "") + " f-pv-deck", "data-theme": root.getAttribute("data-theme") }, [frame]);
+      }
+      if (channel) channel.postMessage({ hello: true });
+      return { paint: function () {
+        now.textContent = ""; nextBox.textContent = ""; notesBox.textContent = "";
+        now.appendChild(copy(at, step));
+        var n = step < slides[at].steps ? [at, step + 1] : at < slides.length - 1 ? [at + 1, 0] : null;
+        if (n) nextBox.appendChild(copy(n[0], n[1]));
+        count.textContent = (at + 1) + " / " + slides.length + (slides[at].steps ? "  ·  build " + step + " of " + slides[at].steps : "");
+        var notes = boxes[at].querySelector(".notes");
+        if (notes) notesBox.appendChild(notes.cloneNode(true));
+        Array.prototype.forEach.call(view.querySelectorAll(".f-slide-frame"), fit);
+      } };
+    }
+    if (presenterView) presenterView.paint();
+  }
+
   /* ------------------------------------------------------------ figures */
   /* An inline SVG is drawn for a size: its viewBox. Stretched across a wide canvas its labels grow
      with it, so each one is held near that size (a page opts out with data-fit="wide" on the figure
@@ -1588,6 +1798,7 @@
   function figures() {
     Array.prototype.forEach.call(document.querySelectorAll("main figure"), function (fig) {
       if (fig.parentNode.closest && fig.parentNode.closest("figure")) return;  // a figure inside a figure
+      if (fig.closest(".deck")) return;  // a slide is drawn at its own size, and opens full screen already
       Array.prototype.forEach.call(fig.querySelectorAll("svg[viewBox]"), function (svg) {
         if (fig.getAttribute("data-fit") === "wide" || svg.getAttribute("data-fit") === "wide") return;
         if (svg.closest("button, a")) return;

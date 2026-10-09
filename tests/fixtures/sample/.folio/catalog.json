@@ -57,6 +57,24 @@
       "url": "/content/concepts/softmax/"
     },
     {
+      "description": "A five-minute talk for engineers: why self-attention costs the square of the context.",
+      "field_order": [],
+      "fields": {},
+      "genre": "deck",
+      "id": "attention-in-five-minutes",
+      "parts": [],
+      "path": "content/decks/attention-in-five-minutes/index.html",
+      "status": "live",
+      "tags": [
+        "attention"
+      ],
+      "title": "Attention in five minutes",
+      "topics": [
+        "attention"
+      ],
+      "url": "/content/decks/attention-in-five-minutes/"
+    },
+    {
       "description": "Where the cost of self-attention comes from, for someone who knows matrix products.",
       "field_order": [],
       "fields": {},
@@ -231,7 +249,8 @@
         "content/guides/attention-from-scratch/index.html",
         "content/readings/2017-attention-is-all-you-need-reading.html",
         "content/surveys/exact-attention.html",
-        "content/papers/tiled-attention/main.tex"
+        "content/papers/tiled-attention/main.tex",
+        "content/decks/attention-in-five-minutes/index.html"
       ],
       "sections": [
         {
@@ -247,7 +266,8 @@
           "rows": [
             "content/readings/2017-attention-is-all-you-need-reading.html",
             "content/surveys/exact-attention.html",
-            "content/papers/tiled-attention/main.tex"
+            "content/papers/tiled-attention/main.tex",
+            "content/decks/attention-in-five-minutes/index.html"
           ],
           "title": "Reading"
         }

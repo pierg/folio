@@ -31,6 +31,12 @@
   "content/concepts/genre/index.html": {
     "about": [
       {
+        "date": "2026-10-08",
+        "id": "2026-10-08-a-ninth-core-genre-the-deck",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md"
+      },
+      {
         "date": "2026-10-06",
         "id": "2026-10-06-every-page-is-a-free-canvas",
         "kind": "decision",
@@ -48,6 +54,7 @@
       "content/guides/getting-started/index.html",
       "content/index.html",
       "content/journal/2026/2026-10-06-every-page-is-a-free-canvas.md",
+      "content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md",
       "content/maps/concepts.html"
     ],
     "cites": [
@@ -546,6 +553,17 @@
     ],
     "fields": {},
     "id": "2026-10-06-every-page-is-a-free-canvas",
+    "retracted_by": [],
+    "superseded_by": []
+  },
+  "content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/genre/index.html"
+    ],
+    "fields": {},
+    "id": "2026-10-08-a-ninth-core-genre-the-deck",
     "retracted_by": [],
     "superseded_by": []
   },

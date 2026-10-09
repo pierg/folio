@@ -19,7 +19,7 @@ def test_sample_indices_are_current() -> None:
 def test_sample_uses_every_core_and_pack_genre() -> None:
     lib = library.load_at(FIXTURE)
     used = {d.genre_name for d in lib.documents}
-    core = {"concept", "note", "entry", "map", "guide", "project", "journal", "paper"}
+    core = {"concept", "note", "entry", "map", "guide", "project", "journal", "paper", "deck"}
     packs = {"source", "reading", "survey", "question", "protocol", "result", "claim", "report"}
     assert core | packs <= used
 

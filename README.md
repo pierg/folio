@@ -56,7 +56,7 @@ Hover a link to preview the document it points to; hover a concept to read its d
 
 | Where | Genres | For |
 | --- | --- | --- |
-| Core | concept, note, entry, map, guide, project, journal, paper | Any library: definitions, ideas, arguments, reading paths, tutorials, the state of some work, the dated record, LaTeX papers with frozen versions. |
+| Core | concept, note, entry, map, guide, project, journal, paper, deck | Any library: definitions, ideas, arguments, reading paths, tutorials, the state of some work, the dated record, LaTeX papers with frozen versions, slide decks for a talk. |
 | knowledge-base pack | source, reading, survey | Keeping what you read: a verified citation with the original beside it, your close reading of it, and comparisons across works. Workflows: ingest, quiz. |
 | lab pack | question, protocol, result, claim, report | Work tested against evidence: ranked questions, protocols locked before they run, one home per measured number, claims, plain-English reports. Workflows: record-a-result, write-a-report. |
 

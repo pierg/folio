@@ -21,7 +21,7 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 def test_export_writes_every_page(sample: Path, tmp_path: Path, monkeypatch, capsys) -> None:
     out = tmp_path / "site"
     assert folio(sample, "export", "--out", str(out), monkeypatch=monkeypatch) == 0
-    assert capsys.readouterr().out.startswith("exported 26 pages to ")
+    assert capsys.readouterr().out.startswith("exported 27 pages to ")
     for page in ["index.html", "content/index.html", "content/concepts/softmax/index.html",
                  "content/guides/attention-from-scratch/02-softmax.html", "content/papers/tiled-attention/index.html",
                  "content/journal/index.html", "shell/folio.css", "shell/folio.js",

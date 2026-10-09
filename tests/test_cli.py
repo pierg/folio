@@ -58,7 +58,7 @@ def test_genres_listing(monkeypatch, capsys) -> None:
     assert folio(FIXTURE, "genres", "--json", monkeypatch=monkeypatch) == 0
     rows = {r["name"]: r for r in json.loads(capsys.readouterr().out)}
     assert rows["result"]["source"] == "pack:lab" and rows["note"]["source"] == "core"
-    assert len(rows) == 16
+    assert len(rows) == 17
 
 
 def test_resolve_href() -> None:

@@ -163,6 +163,23 @@ Nothing inside `<code>`, `<pre>`, `<script>`, `<style>` or a `defn-name` is type
 | `<span class="sw-teal">` | A word in a register hue, to tie the prose to a figure's legend: `sw-<hue>`. |
 | `<button class="tbtn" aria-pressed="false">` | A toggle or a tab. The page's script sets `aria-pressed` (or `aria-selected`) on the one picked. |
 
+### A deck
+
+A talk's slides (the `deck` genre). Each slide is drawn at 1600 by 900 pixels and scaled to its frame, so the page lays it out in pixels and it looks the same in the page, full screen and in print.
+
+```html
+<div class="deck" data-theme="dark">
+  <section class="slide">
+    <h2 class="kx-title">One point</h2>
+    <p class="kx-more" data-step="1">appears at the first build</p>
+    <p class="kx-hint" data-until="1">leaves after the first build</p>
+    <aside class="notes"><p>What the speaker says.</p></aside>
+  </section>
+</div>
+```
+
+The page shows every slide complete, numbered, with its notes under it, and a bar above the deck: Present (P) and Print. Present covers the window and shows one slide at a time: the arrow keys, space and a click step through builds and slides, a number and Enter jumps, B blanks the screen, F toggles full screen, Esc ends. S opens the presenter's window: the slide now, the next one, the notes, a timer and the clock; either window steers the other. The slide carries `data-at`, its current build, for styles that change with it. `data-theme` on the deck (`dark` or `light`) sets the tokens for its slides whatever the reader's theme. Inside a slide the reading page's margins and heading styles step aside.
+
 ## Tokens
 
 Colours, faces and sizes are custom properties on `:root`, redefined for dark mode. A page uses only these, never a hex value, so it reads in both themes.

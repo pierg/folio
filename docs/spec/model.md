@@ -165,11 +165,11 @@ Where genres come from, in lookup order:
 
 The first one found wins, but an override in the library holds only what it changes: the card underneath still applies, so folio's upgrades flow in. Genre names are unique across the core and every pack. A pack never redefines a core genre.
 
-- **Core genres (8):** concept, note, entry, map, guide, project, journal, paper.
+- **Core genres (9):** concept, note, entry, map, guide, project, journal, paper, deck.
 - **Knowledge-base pack (3):** source, reading, survey.
 - **Lab pack (5):** question, protocol, result, claim, report.
 
-**What a card checks.** A card checks substance: where a document lives, its metadata and lifecycle, its place on the maps, and its duties to other documents (what it cites, what it must not restate, what it links). It never checks markup or size, except the few parts the machine reads: a concept's definition, a map's rows, a guide's chapters as parts, and the sections of Markdown records that tools parse. Word limits are for short records only (a journal entry, a result, a claim). Everything else in a card is guidance on what a good document of the genre holds, judged, not checked (`genre-format.md`).
+**What a card checks.** A card checks substance: where a document lives, its metadata and lifecycle, its place on the maps, and its duties to other documents (what it cites, what it must not restate, what it links). It never checks markup or size, except the few parts the machine reads: a concept's definition, a map's rows, a guide's chapters as parts, a deck's slides, and the sections of Markdown records that tools parse. Word limits are for short records only (a journal entry, a result, a claim). Everything else in a card is guidance on what a good document of the genre holds, judged, not checked (`genre-format.md`).
 
 **Variants.** A genre can `extend` another (`paper-workshop` extends `paper`). It inherits everything and overrides only what it states: usually the voice, the reader and the limits. A variant is for a second audience. Voice is never set per document.
 
