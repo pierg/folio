@@ -69,6 +69,7 @@ class Site:
         self.base = base
         self.live = live  # served by `folio serve`, so the comment panel talks to the server
         self.comments: dict | None = None  # the server's answer on commenting; None on an exported site
+        self.pdfs: dict[str, str] = {}  # on an export, each deck's key and the site path its PDF is written at
         self._dates: dict[str, dict[str, str]] | None = None
 
     @classmethod
@@ -125,6 +126,7 @@ class Site:
             "dates": {p: d for p, d in sorted(self.dates().items()) if p in known},
             "frozen": self.frozen(),
             "builds": {key: url_of(path) for key, (path, _) in sorted(self.paper_builds().items())},
+            "pdfs": {key: url_of(path) for key, path in sorted(self.pdfs.items())},
             "live": self.live,
             "review": {"url": url_of(REVIEW_VIEW)},
             "comments": self.comments,
@@ -241,13 +243,24 @@ def export(root: Path, out: Path, base: str = "/") -> list[str]:
     return export_site(root, out, base)[0]
 
 
-def export_site(root: Path, out: Path, base: str = "/") -> tuple[list[str], list[str]]:
+def export_site(root: Path, out: Path, base: str = "/",
+                warnings: list[str] | None = None) -> tuple[list[str], list[str]]:
     """Write the static site into `out`; return the paths written and, of them, the pages.
 
     A page is a document's file rendered as HTML, or a view such as the journal;
-    the shell, the indices, assets and redirect stubs are not pages.
+    the shell, the indices, assets and redirect stubs are not pages. Each deck's
+    PDF is rendered from the written site with Chrome; without Chrome the decks
+    are published without one, and `warnings` says so.
     """
+    from . import pdf
+
     site = Site.load(root, base)
+    decks = pdf.decks(site.lib)
+    chrome = pdf.find_chrome() if decks else None
+    if decks and chrome is None and warnings is not None:
+        warnings.append(f"{len(decks)} deck(s) published without a PDF: {pdf.missing()}")
+    if chrome is not None:
+        site.pdfs = {d.key: pdf.site_path(d) for d in decks}
     out = out.resolve()
     lib_root = root.resolve()
     guarded = [lib_root / name for name in (*COPIED, INDEX_DIR)]
@@ -270,4 +283,38 @@ def export_site(root: Path, out: Path, base: str = "/") -> tuple[list[str], list
         written.append(path)
         if path in documents or path == JOURNAL_VIEW:
             pages.append(path)
+    if site.pdfs:
+        written.extend(_render_pdfs(site, out, base, chrome))
     return written, pages
+
+
+def _render_pdfs(site: Site, out: Path, base: str, chrome: str) -> list[str]:
+    """Serve the written site on a loopback port for a moment, and print each deck to its PDF."""
+    import functools
+    import threading
+    from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+    from . import pdf
+
+    class Quiet(SimpleHTTPRequestHandler):
+        def translate_path(self, path: str) -> str:
+            if base != "/" and path.startswith(base):
+                path = "/" + path[len(base):]
+            return super().translate_path(path)
+
+        def log_message(self, *args) -> None:
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(Quiet, directory=str(out)))
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    written = []
+    try:
+        port = server.server_address[1]
+        for doc in pdf.decks(site.lib):
+            path = site.pdfs[doc.key]
+            pdf.render(f"http://127.0.0.1:{port}{base}{doc.url.lstrip('/')}", out / path, chrome)
+            written.append(path)
+    finally:
+        server.shutdown()
+        server.server_close()
+    return written

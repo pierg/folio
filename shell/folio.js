@@ -50,7 +50,7 @@
       copy: "M9 9h11v11H9zM5 15H4V4h11v1",
       check: "M5 12.5 10 17.5 19 7",
       play: "M7 4.5v15l12-7.5z",
-      print: "M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"
+      download: "M12 4v11M7 10l5 5 5-5M5 20h14"
     };
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -1584,7 +1584,7 @@
       }
       hookPreviews(document.body);
       figures();
-      deck();
+      deck(rel);
       return math && math.then(typeset).then(mathFonts);
     }).catch(function (err) {
       if (window.console) console.error("folio:", err);
@@ -1603,7 +1603,7 @@
      (data-step="n" appears at step n, data-until="n" leaves after it). S opens the presenter's window,
      which follows the same deck over a BroadcastChannel. The script moves and toggles; it writes no words. */
   var SLIDE_W = 1600;
-  function deck() {
+  function deck(rel) {
     var root = document.querySelector("main .deck");
     if (!root) return;
     var slides = Array.prototype.filter.call(root.children, function (c) { return c.classList.contains("slide"); });
@@ -1689,6 +1689,34 @@
       markNotes(box.querySelector(".notes"), s.steps, 0);
       if (box.count) box.count.textContent = s.steps + (s.steps === 1 ? " build" : " builds");
     }
+    /* PDF: the slides as the page draws them, one per page. Served, the server renders it with Chrome
+       on request; exported, it was rendered once and published beside the deck (site.json lists it).
+       With neither, there is no button. */
+    function pdfLink() {
+      var url = D.site.live ? href("/_folio/pdf?doc=" + encodeURIComponent(rel))
+        : D.site.pdfs && D.site.pdfs[rel] ? href(D.site.pdfs[rel]) : null;
+      if (!url) return null;
+      var name = (rel.split("/").slice(-2)[0] || "deck") + ".pdf";
+      var label = el("span", { text: "PDF" });
+      var link = el("a", { class: "f-btn", href: url, download: name, title: "Download the slides as a PDF" }, [icon("download"), label]);
+      if (D.site.live) link.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (link.getAttribute("aria-busy")) return;
+        link.setAttribute("aria-busy", "true"); label.textContent = "Preparing PDF…";
+        var old = bar.querySelector(".f-deck-err"); if (old) old.remove();
+        fetch(url).then(function (r) {
+          if (r.ok) return r.blob();
+          return r.json().then(function (j) { throw new Error(j.error || r.statusText); }, function () { throw new Error(r.statusText); });
+        }).then(function (blob) {
+          var a = el("a", { href: URL.createObjectURL(blob), download: name });
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 10000);
+        }).catch(function (err) {
+          bar.appendChild(el("span", { class: "f-deck-err", text: "PDF failed: " + err.message }));
+        }).then(function () { link.removeAttribute("aria-busy"); label.textContent = "PDF"; });
+      });
+      return link;
+    }
     /* Notes may hold talking points (.points) beside a script (.script); the script can be hidden,
        here and in the presenter's window, to rehearse from the points alone. */
     var hasScript = !!root.querySelector(".notes .script");
@@ -1703,8 +1731,7 @@
     var bar = el("div", { class: "f-deck-bar" }, [
       el("button", { class: "f-btn", type: "button", onclick: function () { present(visible(), true); } },
         [icon("play"), el("span", { text: "Present" }), el("kbd", { text: "P" })]),
-      el("button", { class: "f-btn", type: "button", onclick: function () { window.print(); } },
-        [icon("print"), el("span", { text: "Print" })]),
+      pdfLink(),
       hasScript ? el("button", { class: "f-btn f-script-btn", type: "button", onclick: function () { setScript(!scriptShown()); } },
         [el("span", { class: "f-script-label" }), el("kbd", { text: "H" })]) : null,
       el("span", { text: slides.length + " slides · S opens the presenter's window" })

@@ -8,6 +8,7 @@ import os
 import signal
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,7 +19,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 from .. import library as library_mod
 from ..errors import FolioError
 from ..indexer import INDEX_DIR
-from . import notes, review
+from . import notes, pdf, review
 from .identity import Policy, is_loopback
 from .record import Recorder
 from .site import SITE_DATA, Response, Site, shell_dir
@@ -29,6 +30,7 @@ PID_FILE = f"{INDEX_DIR}/serve.pid"
 LOG_FILE = f"{INDEX_DIR}/serve.log"
 API = "/_folio/annotations"
 INBOX = "/_folio/inbox"
+PDF = "/_folio/pdf"
 MAX_BODY = 64 * 1024  # bytes a comment request may carry
 
 
@@ -227,6 +229,32 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
             hosts = {(self.headers.get(h) or "").strip().lower() for h in ("Host", "X-Forwarded-Host")} - {""}
             return urlsplit(origin).netloc.lower() in hosts
 
+        def _pdf(self, ref: str) -> None:
+            """A deck as a PDF, rendered by Chrome from this server's own page, and kept until it changes."""
+            site = live.current()
+            lib = site.lib
+            df = lib.by_path.get(ref.lstrip("/"))
+            found = [df.doc] if df is not None and df.doc is not None else lib.find(ref)
+            found = [d for d in found if d.is_a("deck")]
+            if len(found) != 1:
+                raise FolioError(f"no deck `{ref}`: give a deck's id or its path")
+            doc = found[0]
+            cache = Path(tempfile.gettempdir()) / "folio-pdf" / f"{doc.id}-{pdf.fingerprint(lib, doc, shell_dir(lib))}.pdf"
+            if not cache.is_file():
+                host, port = self.server.server_address[:2]
+                host = "127.0.0.1" if host in ("0.0.0.0", "") else ("[::1]" if host == "::" else
+                                                                      f"[{host}]" if ":" in host else host)
+                pdf.render(f"http://{host}:{port}{doc.url}", cache)
+            body = cache.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/pdf")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Content-Disposition", f'attachment; filename="{doc.id}.pdf"')
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+
         def do_HEAD(self) -> None:
             self.do_GET()
 
@@ -242,6 +270,9 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                     return
                 if url.path == INBOX:
                     self._json(200, review.inbox(live.current().lib))
+                    return
+                if url.path == PDF:
+                    self._pdf(parse_qs(url.query).get("doc", [""])[0])
                     return
             except FolioError as exc:
                 self._json(400, {"error": str(exc)})

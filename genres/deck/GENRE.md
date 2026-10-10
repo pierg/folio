@@ -64,7 +64,7 @@ What a good deck usually does, judged, not checked:
 
 - Start from the talk's outline: one line per slide saying what the audience should keep. Write the notes before the slide: the points first, three to five, then the script that says them.
 - Design the slides as a set: decide the recurring marks and colours first, then draw each slide with them.
-- Present it once from the page (P), and once with the presenter's window (S), before calling it done.
+- Present it once from the page (P), and once with the presenter's window (S), and download its PDF, before calling it done.
 
 ## Lifecycle
 

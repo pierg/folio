@@ -240,8 +240,11 @@ def cmd_export(args: argparse.Namespace) -> int:
 
     lib = _lib()
     out = Path(args.out) if args.out else lib.root / "_site"
-    written, pages = export_site(lib.root, out, args.base)
+    warnings: list[str] = []
+    written, pages = export_site(lib.root, out, args.base, warnings)
     print(f"exported {len(pages)} pages to {out.resolve()} ({len(written)} files in all, base {args.base})")
+    for warning in warnings:
+        print(f"warning: {warning}")
     return 0
 
 

@@ -45,3 +45,15 @@ def edit(path: Path, old: str, new: str) -> None:
 def folio(lib_dir: Path, *args: str, monkeypatch: pytest.MonkeyPatch) -> int:
     monkeypatch.chdir(lib_dir)
     return main(list(args))
+
+
+def pytest_configure(config) -> None:
+    config.addinivalue_line("markers", "chrome: renders a deck's PDF with Chrome; other tests run as if none were installed")
+
+
+@pytest.fixture(autouse=True)
+def _no_chrome_unless_asked(request, monkeypatch) -> None:
+    """Only tests marked `chrome` render PDFs; the rest export decks without one, quickly."""
+    if request.node.get_closest_marker("chrome") is None:
+        from folio.site import pdf
+        monkeypatch.setattr(pdf, "find_chrome", lambda: None)

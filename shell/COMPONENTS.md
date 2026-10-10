@@ -165,7 +165,7 @@ Nothing inside `<code>`, `<pre>`, `<script>`, `<style>` or a `defn-name` is type
 
 ### A deck
 
-A talk's slides (the `deck` genre). Each slide is drawn at 1600 by 900 pixels and scaled to its frame, so the page lays it out in pixels and it looks the same in the page, full screen and in print.
+A talk's slides (the `deck` genre). Each slide is drawn at 1600 by 900 pixels and scaled to its frame, so the page lays it out in pixels and it looks the same in the page, full screen and in its PDF.
 
 ```html
 <div class="deck" data-theme="dark">
@@ -181,7 +181,7 @@ A talk's slides (the `deck` genre). Each slide is drawn at 1600 by 900 pixels an
 </div>
 ```
 
-The page shows every slide complete, numbered, with its notes under it, and a bar above the deck: Present (P) and Print. Present covers the window and shows one slide at a time: the arrow keys, space and a click step through builds and slides, a number and Enter jumps, B blanks the screen, F toggles full screen, Esc ends. S opens the presenter's window: the slide now, the next one, the notes, a timer and the clock; either window steers the other. Notes with talking points (`.points`) and a script (`.script`) show side by side; a point (`li`) or script paragraph (`p`) with `data-step="n"` belongs to build n. On the page, a slide with builds has arrows beside its number, and a click on it steps its builds; its notes light the current build's lines and fade the later ones, as the presenter's window does while presenting; H or the bar's button hides every script, on the page and in the presenter's window, and the choice is remembered. The slide carries `data-at`, its current build, for styles that change with it. `data-theme` on the deck (`dark` or `light`) sets the tokens for its slides whatever the reader's theme. Inside a slide the reading page's margins and heading styles step aside.
+The page shows every slide complete, numbered, with its notes under it, and a bar above the deck: Present (P) and PDF. PDF downloads the slides as the page draws them, one per page, every build shown, rendered by headless Chrome: `folio serve` renders it on request, `folio export` renders it once and publishes it beside the deck; without either there is no button. Present covers the window and shows one slide at a time: the arrow keys, space and a click step through builds and slides, a number and Enter jumps, B blanks the screen, F toggles full screen, Esc ends. S opens the presenter's window: the slide now, the next one, the notes, a timer and the clock; either window steers the other. Notes with talking points (`.points`) and a script (`.script`) show side by side; a point (`li`) or script paragraph (`p`) with `data-step="n"` belongs to build n. On the page, a slide with builds has arrows beside its number, and a click on it steps its builds; its notes light the current build's lines and fade the later ones, as the presenter's window does while presenting; H or the bar's button hides every script, on the page and in the presenter's window, and the choice is remembered. The slide carries `data-at`, its current build, for styles that change with it. `data-theme` on the deck (`dark` or `light`) sets the tokens for its slides whatever the reader's theme. Inside a slide the reading page's margins and heading styles step aside.
 
 ## Tokens
 
