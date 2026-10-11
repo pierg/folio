@@ -39,3 +39,30 @@ Both must pass before a change is done, and CI runs the same two commands. After
 - In `docs/`, a committed journal entry, a committed result and a locked protocol are never edited: the gate checks them against git. Correct them with a new document that points back.
 - The generated indices in `docs/.folio/` and `tests/fixtures/sample/.folio/` are written by `folio index`, never by hand.
 - `.agents/skills` is a link to `skills/`. Edit the skill bodies in `skills/`.
+
+<!-- ops:lanes:start (generated from the owner's central rules; change them there, not here) -->
+## How changes reach main
+
+`main` is the only source of truth and is always clean: every commit on it passes the gate below.
+Pull before you start; never leave work only on a machine.
+
+**Content lane.** Content here means reader comments recorded by the folio server, and pages in the `docs/` library.
+Commit content straight to `main`: pull, change only content, run the gate, commit, push. If the
+push is refused because `main` moved, pull with rebase and push again.
+
+**Change lane.** Everything else (code, scripts, configuration, schemas, skills, this file, CI,
+dependencies) goes through a pull request:
+1. Branch from the latest `origin/main` in a separate worktree, named after the task (its tracker
+   issue, for example `pie-142-fix-login`).
+2. Push early and open a draft pull request.
+3. When the work is done and the gate passes, squash-merge it with a clear title and description,
+   then delete the branch and the worktree.
+
+If a change mixes both, it takes the change lane.
+
+**Gate:** `python -m pytest -q`, then `cd docs && folio check`.
+
+**Authorship.** Every commit is authored with the repository owner's git identity. No co-author
+line, tool or agent name, "generated with" footer or session link appears in a commit message, a
+branch name or a pull request. A check on every push and pull request enforces it.
+<!-- ops:lanes:end -->
