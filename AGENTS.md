@@ -49,6 +49,7 @@ Pull before you start; never leave work only on a machine.
 **Content lane.** Content here means reader comments recorded by the folio server, and pages in the `docs/` library.
 Commit content straight to `main`: pull, change only content, run the gate, commit, push. If the
 push is refused because `main` moved, pull with rebase and push again.
+In the folio library at `docs`, `folio save` does all of this in one step: run it there.
 
 **Change lane.** Everything else (code, scripts, configuration, schemas, skills, this file, CI,
 dependencies) goes through a pull request:
