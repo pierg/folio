@@ -233,9 +233,15 @@ libraries:                         # other libraries this one links to (§4)
 site_url: https://example.org/notes   # where the exported site is published; a paper's \fcite links resolve from it
 comments:
   identity_header: X-Forwarded-User   # the header a sign-in proxy names the reader in, for a deployed server
+save:                              # how `folio save` records content
+  gate: lab-kit check              # the check before saving, run in this folder; default: folio check
+  review: drafts                   # an agent writes drafts; only the owner makes a page live
+  url: https://notes.example.org   # where the library is served live; save prints each page's address
 ```
 
 Defaults: no packs, the folio theme, `assets/`, `root` is the folder holding `folio.yaml`, the reader is the owner, the voice is plain and precise, no `site_url` (a paper's `\fcite` then prints the id as plain text), and no `comments.identity_header` (comments are then taken only on 127.0.0.1, as the git user). `comments.identity_header` must be a header name: letters, digits and hyphens.
+
+**Saving content.** A library's content is its documents and their annotation files under `content/`, its assets and `.folio/`. `folio save` records it: pull, regenerate the indices, the gate, one commit of those folders only, push, again when the branch moved. Content changes often and in small steps, so it is saved straight to the branch. A change to the library itself (the charter, genres, workflows, packs, skills) or to folio is a different kind of change, made the way its repository takes changes, such as a pull request. With `save.review: drafts`, a new document starts as `draft` and a substantive edit to a `live` one sets it back to `draft` with a line saying what changed; only the owner makes a document `live`. `save.review` is `drafts` or absent; `save.url` must be an http(s) address.
 
 Under `libraries:`, each name is a lowercase slug, used as the scheme of a link (§4), and may not be a scheme the web already uses (`http`, `https`, `mailto` and the like). `path` is required, relative to the folder holding `folio.yaml`; `url` is optional and must be an http(s) address. `folio search --all` searches these libraries too, where their path holds one.
 

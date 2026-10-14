@@ -4,7 +4,7 @@ description: >-
   Add or revise any document in a folio library, in its genre's voice and format.
   It picks the genre, checks the fact has no home yet, writes from the sources,
   links concepts, cites by id, flags only what needs the owner, puts the document
-  on a map, runs the gate and commits. Use when the user says "add", "write", "draft",
+  on a map, and saves it with `folio save`. Use when the user says "add", "write", "draft",
   "log", "record", "note down", "explain", "define", "revise", "rewrite", "update",
   "expand", "fix this page", "add a section", "write up", "turn this into a page",
   "add a concept for X", "log today's work", "revise section 3 of the paper", or names
@@ -44,9 +44,9 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 17. Metadata holds every fact the engine needs. Fill `title` and `description` (one line, in the genre's voice) in the metadata, and every field the card declares. Never write a fact into the body that the engine must read back out.
 18. Never write what the shell draws or generates. The body has no `<h1>` and no subtitle: the shell draws the title, description, status, dates and tags. Never write a list of links that follows from the graph (what the document cites, what cites it, its journal entries, a guide's chapters, a record's status): the link panels show them.
 19. Never write the charter, a generated index or a comment file by hand. Commands own them.
-20. A new document is `live`. Skeletons write no status, except for a genre whose states have no `live` (it starts in its first state, such as a protocol's `draft`). Set `status` to `draft` only when the user asks to hold the document. A passage from general knowledge gets a flag (step 8); it never holds the document as a draft. To hold one, pass `--status draft` to `folio new`. Leaving `draft` means editing the `status` field.
+20. A new document is `live`, unless the charter sets `save.review: drafts`: then `folio new` starts it as `draft`, a substantive edit to a `live` document sets its `status` back to `draft` with a line in the body saying what changed (typos and links stay `live`), and you never make a document `live`; the owner does. Otherwise, skeletons write no status, except for a genre whose states have no `live` (it starts in its first state, such as a protocol's `draft`). Set `status` to `draft` only when the user asks to hold the document. A passage from general knowledge gets a flag (step 8); it never holds the document as a draft. To hold one, pass `--status draft` to `folio new`. Leaving `draft` means editing the `status` field.
 21. Ids are unique across the library. `folio new` refuses a taken slug, so pick one that names this document, not its topic alone.
-22. Commit each change. Lifecycles are checked against git, so a record is permanent only once committed.
+22. Save each change with `folio save`. Lifecycles are checked against git, so a record is permanent only once saved.
 23. A document is judged by its content, never its size. Five questions, each judged, not checked:
     - **Does it earn a page?** Not trivial; still true when a result changes or a system it describes is rewritten; adds something beyond its sources and the library. If not, its content goes where it is used.
     - **Is this its one home?** No fact, number or definition written out again from another document. If not, link the home.
@@ -86,7 +86,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 11. **Record it.** When the change is worth a dated record, add a journal entry: `folio journal add --title "<title>" --description "<one line>" --body "<what changed, linking the documents touched>" [--kind <kind>] [--about <id>,..]`. Name the documents it concerns in `--about`, so it shows on each. Use a kind the library accepts. Each entry is a new file; never edit an old one.
 12. **Check a long document.** Re-read it against its sources only. Check every number, id, verdict word and bound. Fix what does not match, then re-read.
 13. **Run the gate.** `folio index`, then `folio check`. Fix everything it names and run it again.
-14. **Commit.** Add exactly: the documents touched, their annotation files (`<stem>.annotations.json`), `.folio/`, and any assets or evidence the documents cite. Never `git add -A`. Commit with one line saying what changed.
+14. **Save.** `folio save -m "<one line saying what changed>"`. It pulls the latest version, re-indexes, runs the library's gate, commits only the library's content (documents, annotation files, assets, `.folio/`) and pushes, again when the branch moved. Fix what it names and save again. If it lists files it left alone (the charter, genres, code), those are a change to the library, not content: make them the way the repository takes changes. Where the repository takes every change by pull request, or has no upstream, use `folio save --no-push` on your branch. Tell the user the address it prints.
 15. **Report.** Tell the user, in a few lines, what changed, where it lives, and the few flags or questions that wait for them.
 
 ## Stops
@@ -104,7 +104,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 - Every flag asks the owner for a decision; routine work carries none.
 - The document is on a map, or linked from one, unless its card says it never is.
 - `folio index` has run and `folio check` passes.
-- The change is committed, with `.folio/`.
+- The change is saved with `folio save`.
 
 ## Commands
 

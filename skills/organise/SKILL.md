@@ -70,7 +70,7 @@ Pick the change, then follow its line.
    6. Apply what the owner approves, in batches, least risk first: fixes that change no meaning, then merges and retirements (steps 3 to 5), then revisions and redesigns through write. Each batch ends with the gate and a commit, and each merge or retirement is recorded (step 11).
 11. **Record it.** `folio journal add --title "<change>" --description "<one line: what moved and why>" --body "<old names and new>" --kind decision --about <id>,..`.
 12. **Run the gate.** `folio index`, then `folio check`.
-13. **Commit.** `folio mv`, `folio promote` and `folio rm` stage in git every file they moved or changed, annotation files included. Add only the new journal entry and `.folio/` (which holds the redirects), then commit. Never `git add -A`.
+13. **Save.** `folio mv`, `folio promote` and `folio rm` stage every file they moved or changed, annotation files included; `folio save -m "<what moved>"` records them with the journal entry and `.folio/` (which holds the redirects). If it lists files it left alone (the charter, genres, code), those are a change to the library, not content: make them the way the repository takes changes. Where the repository takes every change by pull request, or has no upstream, use `folio save --no-push` on your branch.
 
 ## Stops
 
@@ -85,7 +85,7 @@ Pick the change, then follow its line.
 - Every document except a journal entry is on a map, or linked from one that is.
 - Every row links a document that exists, and every top-level map is reachable from home.
 - The journal records each reorganisation.
-- `folio check` passes, and the change is committed.
+- `folio check` passes, and the change is saved with `folio save`.
 
 ## Commands
 

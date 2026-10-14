@@ -905,3 +905,10 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
   .deck .f-slide-label { display: none; }
   .deck .f-slide-frame { width: 1600px; height: 900px; aspect-ratio: auto; border-radius: 0; box-shadow: none; --k: 1 !important; }
 }
+
+/* Served live: the page changed while the reader was typing (folio.js, followEdits). */
+.f-changed { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 50;
+  padding: .5rem .75rem; border: 1px solid var(--rule-strong); border-radius: 6px;
+  background: var(--surface); color: var(--ink); font-size: .9rem; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.f-changed button { margin-left: .5rem; }
+

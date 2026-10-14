@@ -1593,8 +1593,44 @@
       // The browser jumped to the address's #section while the page was hidden and undrawn; jump again now.
       var target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
       if (target) target.scrollIntoView();
+      if (D.site && D.site.live) followEdits();
     });
     prerenderLinks();
+  }
+
+  /* Served live, the page follows its own file: every few seconds, while it is in view, it asks the
+     server for its current ETag and reloads when that changed. It never reloads under a reader who is
+     typing (a comment, a search): it offers the reload instead. */
+  var FOLLOW_MS = 3000;
+  function followEdits() {
+    var url = BASE + "_folio/etag?path=" + encodeURIComponent(location.pathname);
+    var seen = null, offered = false;
+    function typing() {
+      var a = document.activeElement;
+      if (a && (a.isContentEditable || /^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName))) return true;
+      return Array.prototype.some.call(document.querySelectorAll("textarea"), function (x) { return x.value.trim() !== ""; });
+    }
+    function offer() {
+      if (offered) return;
+      offered = true;
+      var bar = el("div", { class: "f-changed", role: "status" }, [
+        el("span", { text: "This page changed. " }),
+        el("button", { type: "button", text: "Reload", onclick: function () { location.reload(); } })
+      ]);
+      document.body.appendChild(bar);
+    }
+    function look() {
+      if (document.hidden) return;
+      fetch(url, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (!j || !j.etag) return;
+        if (seen === null) { seen = j.etag; return; }
+        if (j.etag === seen) return;
+        if (typing()) offer(); else location.reload();
+      }).catch(function () { /* the server is restarting: ask again next time */ });
+    }
+    look();
+    setInterval(look, FOLLOW_MS);
+    document.addEventListener("visibilitychange", look);
   }
 
   /* --------------------------------------------------------------- deck */

@@ -11,7 +11,7 @@ from typing import Any, Callable
 from . import __version__, indexer
 from . import library as library_mod
 from .checks.run import run as run_checks
-from .commands import annotate, charter_cmds, graph_cli, create, genre_cmds, query, setup
+from .commands import annotate, charter_cmds, graph_cli, create, genre_cmds, query, save, setup
 from .errors import FolioError
 
 # Commands the engine names but does not carry yet.
@@ -54,6 +54,21 @@ def cmd_check(args: argparse.Namespace) -> int:
 def cmd_index(args: argparse.Namespace) -> int:
     changed = indexer.write(_lib())
     _print_changes([f"wrote {p}" for p in changed] or ["the indices in .folio/ are current"])
+    return 0
+
+
+def cmd_save(args: argparse.Namespace) -> int:
+    done = save.save(Path.cwd(), message=args.message, push=not args.no_push)
+    if done.commit is None:
+        print("nothing to save: the library's content is as committed")
+    else:
+        print(f"saved {done.commit}{' and pushed' if done.pushed else ''}: {len(done.files)} file(s)")
+        for ident, status, address in done.pages:
+            print(f"  {ident} ({status}) {address}")
+    if done.left:
+        print("not saved, outside the library's content (change these another way):")
+        for path in done.left:
+            print(f"  {path}")
     return 0
 
 
@@ -294,6 +309,10 @@ def parser() -> argparse.ArgumentParser:
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_check)
 
+    s = sub.add_parser("save", help="Record the library's content: pull, index, check, commit, push.")
+    s.add_argument("-m", "--message", help="the commit message (default: names the documents saved)")
+    s.add_argument("--no-push", action="store_true", help="commit only; do not pull or push")
+    s.set_defaults(func=cmd_save)
     s = sub.add_parser("index", help="Regenerate the indices in .folio/.")
     s.set_defaults(func=cmd_index)
 
