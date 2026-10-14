@@ -18,11 +18,13 @@ CHARTER = "folio.yaml"
 
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
-    "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries",
+    "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries", "save",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
 _COMMENTS_KEYS = ("identity_header",)
+_SAVE_KEYS = ("gate", "review", "url")
+REVIEWS = ("drafts",)
 _PACK_KEYS = ("name", "git", "ref")
 _LIBRARY_KEYS = ("path", "url")
 # Schemes the web already uses: a library named like one would make its links ambiguous.
@@ -52,6 +54,14 @@ class LibraryRef:
 
 
 @dataclass
+class SaveSettings:
+    """How `folio save` records content (model §10)."""
+    gate: str = ""  # the shell command run before saving, from the library's folder; empty: folio check
+    review: str = ""  # "drafts": an agent writes drafts and only the owner makes a page live
+    url: str = ""  # where the library is served live; save prints each saved page's address under it
+
+
+@dataclass
 class Charter:
     path: Path
     raw: dict[str, Any]
@@ -72,6 +82,7 @@ class Charter:
     site_url: str = ""  # where the exported site is published; a paper's \fcite links resolve from it
     identity_header: str = ""  # the request header a sign-in proxy names the reader in; empty: none
     libraries: dict[str, LibraryRef] = field(default_factory=dict)
+    save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
 
     @property
     def library(self) -> Path:
@@ -100,6 +111,7 @@ class Charter:
             "comments": {"identity_header": self.identity_header},
             "libraries": {n: {"path": r.path, **({"url": r.url} if r.url else {})}
                           for n, r in self.libraries.items()},
+            "save": {"gate": self.save.gate, "review": self.save.review, "url": self.save.url},
         }
 
 
@@ -198,6 +210,7 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         site_url=_site_url(raw, where),
         identity_header=_identity_header(raw, where),
         libraries=_libraries(raw, where),
+        save=_save(raw, where),
     )
 
 
@@ -224,6 +237,19 @@ def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:
             raise FolioError(f"{where}: `libraries.{name}.url` must be an http(s) address, not `{url}`")
         out[name] = LibraryRef(name, path, url)
     return out
+
+
+def _save(raw: dict[str, Any], where: str) -> SaveSettings:
+    """`save: {gate, review, url}`: how `folio save` records content (model §10)."""
+    table = _only(raw.get("save"), _SAVE_KEYS, "save", where)
+    gate = _str(table, "gate", "", where).strip()
+    review = _str(table, "review", "", where).strip()
+    if review and review not in REVIEWS:
+        raise FolioError(f"{where}: `save.review` must be {' or '.join(REVIEWS)}, or absent, not `{review}`")
+    url = _str(table, "url", "", where).strip().rstrip("/")
+    if url and not re.match(r"^https?://[^\s]+$", url):
+        raise FolioError(f"{where}: `save.url` must be an http(s) address, not `{url}`")
+    return SaveSettings(gate=gate, review=review, url=url)
 
 
 def _identity_header(raw: dict[str, Any], where: str) -> str:

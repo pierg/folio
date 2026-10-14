@@ -108,6 +108,10 @@ def new(lib: Library, genre_name: str, slug: str | None, *, part: tuple[str, str
         if status not in genre.states:
             raise FolioError(f"--status must be one of {', '.join(genre.states)}")
         meta["status"] = status
+    elif (part is None and lib.charter.save.review == "drafts" and genre.lives != "permanent"
+          and "draft" in genre.states):
+        # Under review (model §10), a new document waits for its owner as a draft.
+        meta["status"] = "draft"
     for key, raw in fields.items():
         spec = genre.field(key)
         if spec is None:

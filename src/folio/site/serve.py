@@ -31,6 +31,7 @@ LOG_FILE = f"{INDEX_DIR}/serve.log"
 API = "/_folio/annotations"
 INBOX = "/_folio/inbox"
 PDF = "/_folio/pdf"
+ETAG = "/_folio/etag"  # a page's current ETag, which the shell polls to follow edits
 MAX_BODY = 64 * 1024  # bytes a comment request may carry
 
 
@@ -273,6 +274,11 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                     return
                 if url.path == PDF:
                     self._pdf(parse_qs(url.query).get("doc", [""])[0])
+                    return
+                if url.path == ETAG:
+                    target = unquote(parse_qs(url.query).get("path", [""])[0]).lstrip("/")
+                    found = live.get(target)
+                    self._json(200, {"etag": found[1] if found and found[0].status == 200 else None})
                     return
             except FolioError as exc:
                 self._json(400, {"error": str(exc)})

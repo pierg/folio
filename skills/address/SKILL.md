@@ -49,7 +49,7 @@ Answer each open comment on the document it was left on, and leave a reply that 
 4. **Check other threads on the same document.** If your edit rewrote text another open question quotes, address that one too. The gate fails while an open question quotes text that is gone.
 5. **Withdraw stale flags.** If your edit rewrote a passage under one of your own noted flags, withdraw it with `folio annotations reply <doc> <id> --author agent:<name> --state withdrawn --body "<the passage changed>"`. Flag the new passage if it still goes beyond the sources.
 6. **Run the gate.** `folio index`, then `folio check`.
-7. **Commit.** Add exactly: the documents edited or added, their annotation files (`<stem>.annotations.json`), and `.folio/`. Never `git add -A`. Commit each edited document together with its annotation file: the page's "What changed" compares the document at the commit that opened the thread with the commit that recorded your reply.
+7. **Save.** `folio save -m "<what the replies changed>"`: it records each edited document together with its annotation file, as the page's "What changed" needs (it compares the document at the commit that opened the thread with the commit that recorded your reply). If it lists files it left alone (the charter, genres, code), those are a change to the library, not content: make them the way the repository takes changes. Where the repository takes every change by pull request, or has no upstream, use `folio save --no-push` on your branch.
 8. **Report** each thread in one line: the document, the question, and what you did.
 
 ## Stops
@@ -63,7 +63,7 @@ Answer each open comment on the document it was left on, and leave a reply that 
 - Every open question is `addressed` or `declined`, or left open with a reply that says why.
 - Every flag is untouched, except your own stale ones, which are withdrawn.
 - No thread was deleted.
-- `folio check` passes, and the replies are committed.
+- `folio check` passes, and the replies are saved with `folio save`.
 
 ## Commands
 

@@ -42,7 +42,7 @@ Carry out one workflow, step by step, producing every document through the write
 5. **Honour the stops.** When a stop applies, report where you are, what is done, and the question. Wait.
 6. **Record it,** if the workflow says to: `folio journal add --title ".." --description ".." --body ".." [--kind <kind>] [--about <id>,..]`, through the write skill. Name the documents the run produced in `--about`.
 7. **Run the gate.** `folio index`, then `folio check`.
-8. **Commit,** last, unless the workflow commits in its own steps. Add exactly: the documents the run produced or touched, their annotation files (`<stem>.annotations.json`), `.folio/`, and any assets or evidence the documents cite. Never `git add -A`.
+8. **Save,** last, unless the workflow commits in its own steps: `folio save -m "<what the run produced>"`. If it lists files it left alone (the charter, genres, code), those are a change to the library, not content: make them the way the repository takes changes. Where the repository takes every change by pull request, or has no upstream, use `folio save --no-push` on your branch.
 9. **Report** what the workflow produced, with each document's path, and any flags or questions left for the owner.
 
 ## Stops
@@ -57,7 +57,7 @@ Carry out one workflow, step by step, producing every document through the write
 - Every step ran in order, or the run halted at a stop with a report.
 - Every document produced went through write.
 - The workflow's own "Done when" holds.
-- `folio check` passes, and the run is committed.
+- `folio check` passes, and the run is saved with `folio save`.
 
 ## Commands
 
