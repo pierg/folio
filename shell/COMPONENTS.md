@@ -130,7 +130,7 @@ An inline SVG is shown near the size its `viewBox` was drawn for (at most 1.15 t
 
 ### Code
 
-`<code>` inline and `<pre><code>` for blocks. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code. See `craft/code.md`.
+`<code>` inline and `<pre><code>` for blocks. The shell colours a block's syntax with highlight.js, vendored with it, loaded only on a page with a listing. The language comes from a `language-<name>` class on the `<code>`, the `<pre>` or an element around them (a Markdown fence sets it); `language-plaintext` or `nohighlight` leaves a block plain. A block with no class is guessed: a confident guess is used, a short or unclear one takes the page's main language when it fits, and anything else, such as program output, stays plain. A block with markup inside (marked lines, a stepper) is never touched. Only spans are added, so search and comments read the words as written. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code. See `craft/code.md`.
 
 ### Math
 

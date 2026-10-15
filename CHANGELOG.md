@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2026-10-15)
+
+- Code listings are coloured by their language. The shell vendors highlight.js 11.11.1 (its common languages, plus Verilog and SystemVerilog, VHDL, Tcl, Haskell, OCaml, Coq, Lisp, Scheme, LaTeX, Dockerfile and Nix, and a small Lean grammar) and loads it only on a page with a `<pre><code>`. A `language-<name>` class on the code, the `<pre>` or an element around them names the language, as a Markdown fence does; without one the shell guesses, gives a short or unclear listing the page's main language when it fits, and leaves the rest, such as program output, plain. `language-plaintext` or `nohighlight` opts out, and a listing with markup inside is never touched. The colours come from the shell's registers, so they follow the theme. `craft/code.md` drops its rule against highlighting and asks for the language class.
+
 ## 0.2.0 (2026-10-14)
 
 Pages get a free canvas again. A genre gives structure and voice; the form is the page's. Content is saved in one step, and a served page follows its own file.

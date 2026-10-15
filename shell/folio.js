@@ -1542,6 +1542,119 @@
     ]);
   }
 
+  /* ---------------------------------------------------------------- code */
+  /* highlight.js, vendored beside this script, on a page with a code listing. It colours each
+     <pre><code> by its language: a language-<name> class on the code, the <pre> or an element around
+     them (Markdown fences carry one), or else the language it plainly reads as. A listing it cannot
+     place with confidence takes the page's main language when that fits, and stays plain otherwise,
+     so program output is left alone. A listing with markup inside (marked lines, a stepper) or
+     marked nohighlight is never touched. The words do not change: only spans are added. */
+  var CODE_AUTO = ["json", "python", "verilog", "bash", "shell", "yaml", "ini", "makefile", "c", "cpp",
+    "rust", "go", "java", "javascript", "typescript", "sql", "haskell", "ocaml", "lean", "lisp", "tcl",
+    "latex", "diff", "xml", "dockerfile"];
+  var CODE_ALIAS = { systemverilog: "verilog", sh: "bash", zsh: "bash", console: "shell", text: "plaintext",
+    txt: "plaintext", output: "plaintext", smt: "lisp", smtlib: "lisp", smt2: "lisp", lean4: "lean", tex: "latex" };
+  var CODE_SURE = 10;   // relevance at which a guess stands on its own
+  var CODE_FITS = 1;    // relevance at which the page's main language fits a short listing
+  var CODE_TIE = .8;    // a runner-up this close to the best guess counts as a tie
+
+  function codeRoot() { return main || document.querySelector("main") || document.body; }
+  function codeListings() {
+    return [].slice.call(codeRoot().querySelectorAll("pre > code, pre[class*='language-']")).filter(function (n) {
+      if (n.tagName === "PRE" && n.querySelector("code")) return false;
+      return !n.children.length && n.textContent.trim();
+    });
+  }
+  function loadCode() {
+    var dir = BASE + "shell/vendor/highlight/";
+    function add(src) {
+      return new Promise(function (done, fail) {
+        var n = el("script", { src: dir + src });
+        n.async = false;  // in order: the languages register with the core
+        n.onload = done;
+        n.onerror = function () { fail(new Error("could not load " + dir + src)); };
+        document.head.appendChild(n);
+      });
+    }
+    return Promise.all([add("highlight.min.js"), add("languages.min.js")]).then(function () {
+      window.hljs.registerLanguage("lean", leanGrammar);
+    });
+  }
+  function leanGrammar(hljs) {
+    return {
+      name: "Lean",
+      keywords: {
+        keyword: "theorem lemma def abbrev example structure inductive class instance where extends " +
+          "fun λ by have show from let in match with if then else do return namespace end section " +
+          "open variable universe import calc at deriving mutual private protected noncomputable " +
+          "partial termination_by decreasing_by",
+        built_in: "Nat Int Prop Type Sort List Array String Bool Option Fin rfl simp intro intros " +
+          "apply exact rw induction cases omega decide constructor",
+        literal: "true false True False"
+      },
+      contains: [
+        hljs.COMMENT("--", "$"),
+        hljs.COMMENT("/-", "-/", { contains: ["self"] }),
+        hljs.QUOTE_STRING_MODE,
+        hljs.C_NUMBER_MODE
+      ]
+    };
+  }
+  function codeLanguage(node) {
+    for (var n = node, root = codeRoot(); n && n !== root; n = n.parentElement) {
+      if (/(^|\s)(nohighlight|no-highlight)(\s|$)/.test(n.className)) return "plaintext";
+      var m = /(?:^|\s)lang(?:uage)?-([\w+#-]+)/.exec(n.className || "");
+      if (m) {
+        var name = m[1].toLowerCase();
+        name = CODE_ALIAS[name] || name;
+        // A "shell" listing of commands without prompts reads as a script.
+        if (name === "shell" && !/^\s*[$#] /.test(node.textContent)) name = "bash";
+        return window.hljs.getLanguage(name) ? name : "plaintext";
+      }
+    }
+    return null;
+  }
+  function highlightCode() {
+    var hljs = window.hljs;
+    if (!hljs) return;
+    var items = codeListings().map(function (n) {
+      var lang = codeLanguage(n);
+      return lang ? { n: n, lang: lang } : { n: n, guess: guess(n.textContent) };
+    });
+    // highlight.js's best guess, except that a near tie goes to the language listed first.
+    function guess(text) {
+      var g = hljs.highlightAuto(text, CODE_AUTO), b = g.secondBest;
+      if (b && b.relevance >= g.relevance * CODE_TIE && CODE_AUTO.indexOf(b.language) < CODE_AUTO.indexOf(g.language)) {
+        return { language: b.language, relevance: g.relevance, value: b.value };
+      }
+      return g;
+    }
+    // The page's main language: the one most of its named and confidently guessed listings use.
+    var count = {}, top = null;
+    items.forEach(function (it) {
+      var l = it.lang || (it.guess.relevance >= CODE_SURE && it.guess.language);
+      if (l && l !== "plaintext") count[l] = (count[l] || 0) + 1;
+    });
+    Object.keys(count).forEach(function (l) { if (!top || count[l] > count[top]) top = l; });
+    items.forEach(function (it) {
+      var n = it.n, lang = it.lang, html;
+      if (!lang) {
+        var g = it.guess, fit = top ? hljs.highlight(n.textContent, { language: top, ignoreIllegals: false }) : null;
+        // The page's language wins over a weak guess, or a strong one it nearly ties.
+        if (fit && !fit.illegal && fit.relevance >= CODE_FITS &&
+            (g.relevance < CODE_SURE || fit.relevance >= g.relevance * CODE_TIE)) {
+          lang = top; html = fit.value;
+        } else if (g.language && g.relevance >= CODE_SURE) {
+          lang = g.language; html = g.value;
+        } else return;
+      }
+      if (lang === "plaintext") return;
+      n.innerHTML = html !== undefined ? html : hljs.highlight(n.textContent, { language: lang }).value;
+      n.classList.add("hljs");
+      n.setAttribute("data-lang", lang);
+    });
+  }
+
   /* --------------------------------------------------------------- start */
   function start() {
     var view = meta("folio-view");
@@ -1549,12 +1662,18 @@
     if (view || meta("layout") === "column") document.body.classList.add("f-column");
     // KaTeX loads beside the indices, and the page shows once its math is set, not before.
     var math = document.querySelector('meta[name="math"]') ? loadMath() : null;
+    // highlight.js loads beside them too, and colours the code before comments mark their passages.
+    var code = codeListings().length ? loadCode().catch(function (err) {
+      if (window.console) console.error("folio:", err);
+    }) : null;
     Promise.all([
       optional(fetchJSON(".folio/catalog.json"), { documents: [] }),
       optional(fetchJSON(".folio/backlinks.json"), {}),
       optional(fetchJSON(".folio/nav.json"), {}),
-      optional(fetchJSON(".folio/site.json"), {})
+      optional(fetchJSON(".folio/site.json"), {}),
+      code
     ]).then(function (all) {
+      try { highlightCode(); } catch (err) { if (window.console) console.error("folio:", err); }
       index(all[0]);
       D.backlinks = all[1]; D.nav = all[2]; D.site = all[3];
       loadFocus();

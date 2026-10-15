@@ -412,6 +412,21 @@ main a.f-cite code { color: var(--link); background: none; padding: 0; }
 main pre { overflow-x: auto; padding: .9rem 1rem; border-radius: var(--radius); background: var(--sunk);
            border: 1px solid var(--rule); font: .84rem/1.55 var(--mono); }
 main pre code { padding: 0; background: none; font-size: inherit; overflow-wrap: normal; }
+/* Syntax colours for a highlighted listing (highlight.js classes), drawn from the registers so
+   they follow the theme. */
+.hljs-comment, .hljs-quote { color: var(--ink-3); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-doctag, .hljs-section { color: var(--violet); }
+.hljs-string, .hljs-regexp, .hljs-char.escape_, .hljs-template-tag { color: var(--kept); }
+.hljs-number, .hljs-literal, .hljs-symbol, .hljs-bullet { color: var(--orange); }
+.hljs-title, .hljs-title.function_, .hljs-title.class_ { color: var(--azure); }
+.hljs-type, .hljs-built_in, .hljs-name, .hljs-selector-class, .hljs-selector-id { color: var(--teal); }
+.hljs-meta, .hljs-meta .hljs-keyword, .hljs-attr, .hljs-attribute, .hljs-variable, .hljs-template-variable,
+.hljs-property { color: var(--amber); }
+.hljs-meta .hljs-string { color: var(--kept); }
+.hljs-addition { color: var(--ok); background: var(--ok-soft); }
+.hljs-deletion { color: var(--bad); background: var(--bad-soft); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
 main sup, main sub { line-height: 0; }
 main abbr[title] { text-decoration: underline dotted var(--ink-3); }
 main mark { background: var(--mark); color: inherit; padding: 0 .1em; border-radius: 2px; }
