@@ -186,7 +186,10 @@ def test_the_shell_carries_math_and_the_canvas(sample: Path, tmp_path: Path) -> 
     site = tmp_path / "site"
     for name in ("katex.min.js", "katex.min.css", "contrib/auto-render.min.js"):
         assert (site / "shell/vendor/katex" / name).is_file()
+    for name in ("highlight.min.js", "languages.min.js", "LICENSE"):
+        assert (site / "shell/vendor/highlight" / name).is_file()
     css = (site / "shell/folio.css").read_text()
+    assert ".hljs-keyword" in css
     assert "container: folio-canvas / inline-size" in css and "--teal:" in css
     js = (site / "shell/folio.js").read_text()
     assert 'meta[name="math"]' in js and 'meta("layout") === "column"' in js

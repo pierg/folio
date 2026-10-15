@@ -4,10 +4,10 @@
 
 ## A listing
 
-`<pre><code>`, verbatim. The shell gives it a sunk box and a sideways scroll, so a long line never widens the page. Keep to what the reader needs: cut with a `…` line, and say what was cut.
+`<pre><code>`, verbatim. The shell gives it a sunk box and a sideways scroll, so a long line never widens the page, and colours its syntax. Name the language with a `language-<name>` class on the `<code>` (a Markdown fence's info string does this); without one the shell guesses, and leaves a listing it cannot place plain. Keep to what the reader needs: cut with a `…` line, and say what was cut.
 
 ```html
-<pre><code># folio.yaml: the checks the gate runs as errors
+<pre><code class="language-yaml"># folio.yaml: the checks the gate runs as errors
 checks:
   uncited-number: error
 </code></pre>
@@ -33,10 +33,10 @@ Two listings in `.cols`: a `lane-baseline` lane, then a `lane-kept` lane. A unif
 
 ## Commands and output
 
-The command in one `<pre>`, its output in another, never mixed into prose. Show the exit code when it matters.
+The command in one `<pre>`, its output in another, never mixed into prose. Mark the output `language-plaintext` so it is never coloured as code. Show the exit code when it matters.
 
 ## Do not
 
 - Screenshot code.
-- Load a highlighting library. The shell has none, and pages stay free of dependencies; a marked line carries the emphasis.
+- Load a highlighting library or colour tokens by hand. The shell highlights every listing; a marked line carries the emphasis.
 - Paste a whole file when three lines carry the point.

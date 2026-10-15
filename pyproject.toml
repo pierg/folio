@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 dynamic = ["readme"]
 name = "folio-kb"
-version = "0.2.0"
+version = "0.2.1"
 description = "A knowledge library a coding agent builds and keeps, checked by a gate."
 license = "MIT"
 authors = [{ name = "Piergiuseppe Mallozzi" }]
