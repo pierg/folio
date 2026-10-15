@@ -1,5 +1,7 @@
 # folio
 
+[![PyPI](https://img.shields.io/pypi/v/folio-kb)](https://pypi.org/project/folio-kb/) [![CI](https://github.com/pierg/folio/actions/workflows/ci.yml/badge.svg)](https://github.com/pierg/folio/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 folio turns your coding agent into the librarian of a knowledge library: fast, good-looking HTML pages and Markdown records that live inside any project (lab notes, study notes, a project's docs) or stand on their own. Every document has one genre, and the genre fixes its job, its reader, its voice, its format and its checks. The genre gives structure and voice, never form: every HTML page is a free canvas, and the agent lays it out for what it must show, with figures, diagrams, interactive controls and math. Documents link to each other like a Zettelkasten, and maps give a reader the way in.
 
 You do not run folio yourself. You install it by handing your agent a setup prompt, and from then on you ask in plain words: "add a concept for X", "tidy the maps", "go through my comments", "build the site". The agent follows folio's seven skills, calls the `folio` command, and runs the gate before every commit. folio is the method and the checks that keep an agent-written library honest and consistent, plus the shell that makes it pleasant to read.
@@ -87,6 +89,12 @@ It runs offline, and CI runs the same command. It checks that every link resolve
 - Documentation: [pierg.github.io/folio](https://pierg.github.io/folio/). It is itself a folio library, kept in [`docs/`](docs/), with a guide, the concepts, and a worked example from each pack.
 - The specification: [`docs/spec/`](docs/spec/). [`model.md`](docs/spec/model.md) is the contract the rest builds on; when anything disagrees with it, it wins.
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Changes: [CHANGELOG.md](CHANGELOG.md).
+
+## Related
+
+folio, giro and lab-kit are three kits for working with coding agents: [folio](https://github.com/pierg/folio) for agent-maintained knowledge, [giro](https://github.com/pierg/giro) for implementation with guarantees, and [lab-kit](https://github.com/pierg/lab-kit) for rigorous automated research on top of folio.
+
+Made by [Pier Mallozzi](https://pierg.dev).
 
 ## License
 
