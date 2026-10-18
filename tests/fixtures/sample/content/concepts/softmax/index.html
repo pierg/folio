@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Softmax</title>
+<meta name="genre" content="concept">
+<meta name="title" content="Softmax">
+<meta name="description" content="The function that turns attention scores into weights.">
+<meta name="tags" content="attention">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+<blockquote class="defn" id="softmax">
+<span class="defn-name">Softmax</span><br>
+The softmax of a vector of scores is the exponential of each score divided by the sum of the exponentials.
+</blockquote>
+<h3>The trap</h3>
+<p>Large scores overflow the exponential. <a class="defn-link" href="/content/concepts/self-attention/">Self-attention</a> subtracts the row maximum first.</p>
+<details class="card"><summary>Why subtract the maximum before the softmax?</summary>It keeps the exponentials finite and leaves the result unchanged.</details>
+</main>
+</body>
+</html>

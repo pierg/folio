@@ -1,0 +1,42 @@
+% A folio paper. Its metadata lives in index.html beside this file.
+% Build with `folio paper build <slug>`; freeze a version with `folio paper freeze <slug> --version <v>`.
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% Figures come only from the library's shared assets.
+\graphicspath{%
+{../../../assets/figures/}%
+}
+
+% \fcite{<id>} cites a document of this library by its id.
+% `folio paper build` provides folio.sty, which makes it a link; elsewhere it prints the id.
+\IfFileExists{folio.sty}{\usepackage{folio}}{\providecommand{\fcite}[1]{\texttt{#1}}}
+
+\title{ {{title}} }
+\author{ {{authors}} }
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+{{abstract}}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+{{the problem and the contribution; cite a library document with}} \fcite{ {{id}} }.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{ {{figure file in assets/figures}} }
+  \caption{ {{what the reader should see}} }
+  \label{fig:main}
+\end{figure}
+
+\bibliographystyle{plain}
+\bibliography{../../../assets/refs}
+
+\end{document}

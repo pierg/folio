@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why attention is quadratic</title>
+<meta name="genre" content="entry">
+<meta name="title" content="Why attention is quadratic">
+<meta name="description" content="Where the cost of self-attention comes from, for someone who knows matrix products.">
+<meta name="tags" content="attention, long-context">
+<link rel="stylesheet" href="/shell/folio.css">
+<script src="/shell/folio.js" defer></script>
+</head>
+<body>
+<main>
+<p class="thesis">Every token scores against every other token, so the cost grows with the square of the length.</p>
+<h2 id="scores">Where the scores come from</h2>
+<p>In <a class="defn-link" href="/content/concepts/self-attention/">self-attention</a> each query meets every key.</p>
+<h2 id="weights">Where the weights come from</h2>
+<p>Each row of scores goes through a <a class="defn-link" href="../../concepts/softmax/">softmax</a>.</p>
+<details class="check"><summary>Why does a longer context cost more than it adds?</summary><div class="ans">Every new token scores against all the others.</div></details>
+</main>
+</body>
+</html>

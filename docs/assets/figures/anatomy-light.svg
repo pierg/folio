@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 472" role="img" aria-label="Anatomy of a folio document, using an entry called Why attention is quadratic. One file holds metadata (genre, title, description, status, tags) and a prose body that nothing parses back out. The shell draws the page header from the metadata: the genre as the eyebrow, the title, the description as the subtitle, a status pill, the tags. The body is shown as written. The created and updated dates come from git. The side panels, what the page cites, what cites it and the journal entries about it, come from indices that folio index generates from every document's links." xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTplN2RlNWIwOC1lNGJmLTRmNDctOTczNy05NmI1ZjhjZDk0MTMAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaM64Bksgb85c6zModQpYQSUAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpiMmIzZmQzOS1mMzE4LTQzNTEtOTEyMC0zNDYzNjJiMzIyMTlscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoDOZmsPnIgWNLkt4561WdpQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggVAmDJioloUiJHuNmzEp95J0+F0Gz9aAopMDxD5jqlvakZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaP+foYe/bGiU0VeibhSk2ngAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIGWJ+chjDp0CTiuevnKq7QrnNbhyvyZDW03ptM8ZxQD7ZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GQLSZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmU3ZGU1YjA4LWU0YmYtNGY0Ny05NzM3LTk2YjVmOGNkOTQxMy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmE5ZjU2NzE3LTEwNzgtNDZhYi1hMTNjLTdjZmYxNDUzYjJkMnJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBUCYMmKiWhSIke42bMSn3knT4XQbP1oCikwPEPmOqW9qJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg/VsBwA1nqvSTgL3K5ZcqR8SqFm7G01avaXkPjrLiEY6iY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggybt+yNXoamwBQzV0YhzTXUhpe8k1cI0JP3TiarpwUsJ0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQJRtxJslMqEPPD+83CLBerdU4s250MJOV3zK2AnH45tHZXKgr0AAIdDmlG6KclaLGNYYGIg9kBTjTRVdO0xJVls=</c2pa:manifest></metadata>
+<style>
+svg{--ink:#1f1d1a;--ink-soft:#57524b;--ink-faint:#8a847a;--rule:#e3ded3;--rule-strong:#cfc8ba;--panel:#f6f3ec;--surface:#fffefb;--paper:#f8f6f1;--accent:#8c3b20;--accent-soft:#f4e6dc;--link:#22507a;--mark:#fbe9a6;--ok:#2f6b3a;--ok-soft:#e3f0e2;--lab:#4146a3;--lab-soft:#e9eaf8;}
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+.mono,.lab,.lab-acc,.eyebrow{font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace}
+.serif{font-family:'Iowan Old Style',Charter,'Bitstream Charter',Cambria,Georgia,serif}
+.box{fill:var(--panel);stroke:var(--ink-soft);stroke-width:1.6}
+.tile{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1.3}
+.chip{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1.2}
+.chip-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.page{fill:var(--paper);stroke:var(--ink-soft);stroke-width:1.6}
+.bubble{fill:var(--surface);stroke:var(--rule-strong);stroke-width:1.3}
+.bubble-acc{fill:var(--surface);stroke:var(--accent);stroke-width:1.5}
+.sheet{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.3;stroke-dasharray:4 3}
+.bar{fill:var(--rule)}
+.hl{fill:var(--mark)}
+.fill-acc{fill:var(--accent)}
+.fill-ink{fill:var(--ink-soft)}
+.rule{stroke:var(--rule);stroke-width:1.2}
+.edge{fill:none;stroke:var(--ink-soft);stroke-width:1.6}
+.e-acc{fill:none;stroke:var(--accent);stroke-width:1.7}
+.link{fill:none;stroke:var(--ink-faint);stroke-width:1.3}
+.link-dash{fill:none;stroke:var(--ink-faint);stroke-width:1.3;stroke-dasharray:3 3}
+.t{fill:var(--ink);font-size:14px}
+.t-strong{fill:var(--ink);font-size:14px;font-weight:600}
+.soft{fill:var(--ink-soft);font-size:13px}
+.mono{fill:var(--ink);font-size:13.5px}
+.mono-soft{fill:var(--ink-soft);font-size:13px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace}
+.lab{fill:var(--ink-soft);font-size:13px;letter-spacing:.06em}
+.lab-acc{fill:var(--accent);font-size:13px;letter-spacing:.04em}
+.eyebrow{fill:var(--accent);font-size:13px;font-weight:700;letter-spacing:.08em}
+.chip-t{fill:var(--ink);font-size:13.5px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace}
+.chip-t-acc{fill:var(--accent);font-size:13.5px;font-weight:700;font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace}
+.link-t{fill:var(--link);font-size:13.5px}
+.fill-lab{fill:var(--lab)}
+.e-lab{fill:none;stroke:var(--lab);stroke-width:1.7}
+.box-lab{fill:var(--lab-soft);stroke:var(--lab);stroke-width:1.6}
+.chip-lab{fill:var(--lab-soft);stroke:var(--lab);stroke-width:1.4}
+.lab-lab{fill:var(--lab);font-size:13px;letter-spacing:.06em;font-family:ui-monospace,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace}
+.zone-acc{fill:var(--accent-soft)}
+.zone{fill:var(--panel)}
+.serif-t{fill:var(--ink);font-family:'Iowan Old Style',Charter,'Bitstream Charter',Cambria,Georgia,serif}
+.serif-soft{fill:var(--ink-soft);font-family:'Iowan Old Style',Charter,'Bitstream Charter',Cambria,Georgia,serif}
+.uline{stroke:var(--link);stroke-width:1.2;stroke-dasharray:1.5 2}
+</style>
+<defs>
+<marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="fill-ink"/></marker>
+<marker id="ar-acc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="fill-acc"/></marker>
+<marker id="ar-lab" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="fill-lab"/></marker>
+</defs>
+
+
+<!-- column labels -->
+<text class="lab" x="16" y="24">ONE FILE</text>
+<text class="lab" x="296" y="24">WHAT THE SHELL DRAWS</text>
+
+<!-- ============ THE FILE ============ -->
+<rect class="page" x="16" y="36" width="234" height="420" rx="10" style="fill:var(--surface)"/>
+<text class="mono-soft" x="30" y="56">why-attention-is-quadratic/</text>
+<text class="mono-soft" x="30" y="72">index.html</text>
+<line class="rule" x1="17" y1="82" x2="249" y2="82"/>
+
+<rect class="zone-acc" x="26" y="90" width="214" height="140" rx="6"/>
+<text class="lab-acc" x="38" y="108" font-weight="700">METADATA</text>
+<text class="mono-soft" x="38" y="130">genre</text><text class="mono" x="136" y="130">entry</text>
+<text class="mono-soft" x="38" y="150">title</text><text class="mono" x="136" y="150">Why attent…</text>
+<text class="mono-soft" x="38" y="170">description</text><text class="mono" x="136" y="170">Every token…</text>
+<text class="mono-soft" x="38" y="190">status</text><text class="mono" x="136" y="190">draft</text>
+<text class="mono-soft" x="38" y="210">tags</text><text class="mono" x="136" y="210">attention</text>
+<text class="soft" x="38" y="250">in &lt;meta&gt; tags or front matter</text>
+
+<rect class="zone" x="26" y="264" width="214" height="182" rx="6"/>
+<text class="lab" x="38" y="284">BODY · PROSE</text>
+<text class="serif-t" x="38" y="308" style="font-size:14px">Every token attends to</text>
+<text class="serif-t" x="38" y="326" style="font-size:14px">every other token.</text>
+<rect class="bar" x="38" y="338" width="184" height="6" rx="3"/>
+<text class="serif-t" x="38" y="364" style="font-size:14px">Each row of weights is a</text>
+<text class="serif-t" x="38" y="382" style="font-size:14px"><tspan style="fill:var(--link)">softmax</tspan> over n scores.</text>
+<line class="uline" x1="38" y1="386" x2="89" y2="386"/>
+<rect class="bar" x="38" y="396" width="176" height="6" rx="3"/>
+<text class="soft" x="38" y="430">nothing parses it back out</text>
+
+<!-- ============ THE PAGE ============ -->
+<rect class="page" x="296" y="36" width="372" height="420" rx="10"/>
+<line class="rule" x1="297" y1="68" x2="667" y2="68"/>
+<rect class="fill-acc" x="310" y="48" width="9" height="9" rx="1.5" transform="rotate(45 314.5 52.5)"/>
+<text class="t-strong serif" x="328" y="58">Attention notes</text>
+
+<text class="eyebrow" x="312" y="104">ENTRY</text>
+<text class="serif-t" x="312" y="134" style="font-size:23px;font-weight:700">Why attention is quadratic</text>
+<text class="serif-soft" x="312" y="158" style="font-size:15px">Every token attends to every other token,</text>
+<text class="serif-soft" x="312" y="177" style="font-size:15px">so cost grows with the square of the context.</text>
+<rect x="312" y="190" width="50" height="19" rx="9.5" style="fill:var(--accent-soft)"/>
+<text class="mono" x="337" y="204" text-anchor="middle" style="fill:var(--accent);font-size:13px">draft</text>
+<text class="mono-soft" x="372" y="204">Updated 3 Oct 2026</text>
+<rect x="312" y="216" width="92" height="20" rx="4" style="fill:var(--panel)"/>
+<text class="mono-soft" x="320" y="230">#attention</text>
+<line class="rule" x1="312" y1="250" x2="652" y2="250"/>
+
+<!-- body, as written -->
+<text class="serif-t" x="312" y="278" style="font-size:15px">Every token attends to</text>
+<text class="serif-t" x="312" y="297" style="font-size:15px">every other token.</text>
+<rect class="bar" x="312" y="310" width="188" height="6" rx="3"/>
+<text class="serif-t" x="312" y="340" style="font-size:15px">Each row of weights is a</text>
+<text class="serif-t" x="312" y="359" style="font-size:15px"><tspan style="fill:var(--link)">softmax</tspan> over n scores.</text>
+<line class="uline" x1="312" y1="363" x2="367" y2="363"/>
+<rect class="bar" x="312" y="376" width="184" height="6" rx="3"/>
+<rect class="bar" x="312" y="390" width="170" height="6" rx="3"/>
+<rect class="bar" x="312" y="404" width="120" height="6" rx="3"/>
+
+<!-- generated side panel -->
+<line class="rule" x1="526" y1="264" x2="526" y2="440"/>
+<text class="lab" x="538" y="280" style="font-size:13px">CITES</text>
+<text class="mono-soft" x="538" y="300" style="font-size:13px">concept</text>
+<text class="link-t" x="538" y="318">Softmax</text>
+<text class="lab" x="538" y="346">CITED BY</text>
+<text class="mono-soft" x="538" y="366">map</text>
+<text class="link-t" x="538" y="384">Attention</text>
+<text class="lab" x="538" y="412">JOURNAL</text>
+<text class="link-t" x="538" y="432">Benchmarked</text>
+
+<!-- ============ FROM GIT AND .folio ============ -->
+<rect class="box" x="712" y="176" width="172" height="56" rx="8"/>
+<text class="lab" x="726" y="198">GIT HISTORY</text>
+<text class="mono" x="726" y="220" style="font-size:13px">created · updated</text>
+
+<rect class="box" x="712" y="262" width="172" height="194" rx="8"/>
+<text class="lab" x="726" y="284">.FOLIO/</text>
+<text class="soft" x="726" y="304">folio index writes it</text>
+<text class="soft" x="726" y="320">from every document</text>
+<rect class="chip" x="724" y="334" width="148" height="26" rx="5"/>
+<text class="mono" x="734" y="352" style="font-size:13px">backlinks.json</text>
+<rect class="chip" x="724" y="414" width="148" height="26" rx="5"/>
+<text class="mono" x="734" y="432" style="font-size:13px">journal.json</text>
+<text class="mono-soft" x="734" y="384">catalog.json</text>
+<text class="mono-soft" x="734" y="400" style="font-size:13px">search.json</text>
+
+<!-- ============ ARROWS ============ -->
+<path class="e-acc" d="M242,125 L304,100" marker-end="url(#ar-acc)"/>
+<path class="e-acc" d="M242,145 L304,127" marker-end="url(#ar-acc)"/>
+<path class="e-acc" d="M242,165 L304,163" marker-end="url(#ar-acc)"/>
+<path class="e-acc" d="M242,185 L304,199" marker-end="url(#ar-acc)"/>
+<path class="e-acc" d="M242,205 L304,226" marker-end="url(#ar-acc)"/>
+<path class="edge" d="M242,340 L304,330" marker-end="url(#ar)"/>
+<path class="edge" d="M712,204 L522,204" marker-end="url(#ar)"/>
+<path class="edge" d="M724,347 L690,347 L690,313 L654,313" marker-end="url(#ar)"/>
+<path class="edge" d="M690,347 L690,379 L654,379" marker-end="url(#ar)"/>
+<path class="edge" d="M724,427 L654,427" marker-end="url(#ar)"/>
+</svg>

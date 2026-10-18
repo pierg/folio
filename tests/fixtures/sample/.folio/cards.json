@@ -1,0 +1,22 @@
+[
+  {
+    "answer": "It keeps the exponentials finite and leaves the result unchanged.",
+    "doc": "softmax",
+    "genre": "concept",
+    "path": "content/concepts/softmax/index.html",
+    "question": "Why subtract the maximum before the softmax?",
+    "tags": [
+      "attention"
+    ],
+    "url": "/content/concepts/softmax/"
+  },
+  {
+    "answer": "Large dot products push the softmax into regions with tiny gradients.",
+    "doc": "2017-attention-is-all-you-need-reading",
+    "genre": "reading",
+    "path": "content/readings/2017-attention-is-all-you-need-reading.html",
+    "question": "Why does the paper scale the dot products?",
+    "tags": [],
+    "url": "/content/readings/2017-attention-is-all-you-need-reading.html"
+  }
+]

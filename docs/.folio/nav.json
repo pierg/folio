@@ -1,0 +1,54 @@
+{
+  "content/guides/getting-started/index.html": {
+    "chapters": [
+      {
+        "description": "You leave with folio installed, a library in your project, and the gate passing.",
+        "name": "install",
+        "number": 1,
+        "part": "chapter",
+        "path": "content/guides/getting-started/01-install.html",
+        "title": "Install",
+        "url": "/content/guides/getting-started/01-install.html"
+      },
+      {
+        "description": "You leave knowing how to ask for a document, what the agent does to write it, and where to read it.",
+        "name": "first-documents",
+        "number": 2,
+        "part": "chapter",
+        "path": "content/guides/getting-started/02-first-documents.html",
+        "title": "Your first documents",
+        "url": "/content/guides/getting-started/02-first-documents.html"
+      },
+      {
+        "description": "You leave knowing how a library is structured by maps, and how to move, merge and retire documents without breaking links.",
+        "name": "organising",
+        "number": 3,
+        "part": "chapter",
+        "path": "content/guides/getting-started/03-organising.html",
+        "title": "Organising",
+        "url": "/content/guides/getting-started/03-organising.html"
+      },
+      {
+        "description": "You leave knowing how to question a passage on the page, what the agent's flags mean, and how your comments get answered.",
+        "name": "reviewing-comments",
+        "number": 4,
+        "part": "chapter",
+        "path": "content/guides/getting-started/04-reviewing-comments.html",
+        "title": "Reviewing comments",
+        "url": "/content/guides/getting-started/04-reviewing-comments.html"
+      },
+      {
+        "description": "You leave knowing how to let others comment on a library served from a machine you share, and how each comment reaches git.",
+        "name": "deployed-comments",
+        "number": 5,
+        "part": "chapter",
+        "path": "content/guides/getting-started/05-deployed-comments.html",
+        "title": "Comments on a deployed library",
+        "url": "/content/guides/getting-started/05-deployed-comments.html"
+      }
+    ],
+    "id": "getting-started",
+    "title": "Getting started",
+    "url": "/content/guides/getting-started/"
+  }
+}

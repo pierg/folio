@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "threads": [
+    {
+      "id": "a1",
+      "kind": "flag",
+      "label": "general knowledge",
+      "quote": "The record of what people know is growing faster than anyone's means of consulting it",
+      "state": "withdrawn",
+      "author": "agent:claude",
+      "created": "2026-10-04",
+      "messages": [
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "Added: the claims and their section numbers were written from general knowledge of the essay, not from a copy read in this session.",
+          "state": null
+        },
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "The passage changed: the claims were narrowed to the memex and its trails, without section numbers.",
+          "state": "withdrawn"
+        }
+      ]
+    },
+    {
+      "id": "a2",
+      "kind": "flag",
+      "label": "framing",
+      "quote": "The trail is the part that has aged best.",
+      "state": "noted",
+      "author": "agent:claude",
+      "created": "2026-10-04",
+      "messages": [
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "Added: the take is the agent's draft, comparing trails with folio's maps. It is the owner's to keep or change.",
+          "state": null
+        }
+      ]
+    },
+    {
+      "id": "a3",
+      "kind": "question",
+      "label": null,
+      "quote": "",
+      "state": "open",
+      "author": "agent:claude",
+      "created": "2026-10-04",
+      "messages": [
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "This reading was drafted from general knowledge of the essay. Please check the claims and their section numbers against the text.",
+          "state": null
+        },
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "The claims were narrowed to the widely known ideas, the memex and associative trails, and the section numbers removed. They still need checking against the text.",
+          "state": null
+        }
+      ]
+    },
+    {
+      "id": "a4",
+      "kind": "flag",
+      "label": "general knowledge",
+      "quote": "The record of what people know has outgrown the means of consulting it",
+      "state": "noted",
+      "author": "agent:claude",
+      "created": "2026-10-04",
+      "messages": [
+        {
+          "author": "agent:claude",
+          "date": "2026-10-04",
+          "body": "Added: the claims were written from well-established knowledge of the essay (the memex and its associative trails), not from a copy read in this session.",
+          "state": null
+        }
+      ]
+    }
+  ]
+}

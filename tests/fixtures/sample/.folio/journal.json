@@ -1,0 +1,44 @@
+[
+  {
+    "about": [
+      "R-4",
+      "pi-error-scaling"
+    ],
+    "date": "2026-10-02",
+    "description": "The RMS slope, which supersedes R-3.",
+    "id": "2026-10-02-recorded-r-4",
+    "kind": "run",
+    "path": "content/journal/2026/2026-10-02-recorded-r-4.md",
+    "tags": [],
+    "title": "Recorded R-4",
+    "url": "/content/journal/2026/2026-10-02-recorded-r-4.md"
+  },
+  {
+    "about": [
+      "attention-kernel"
+    ],
+    "date": "2026-10-02",
+    "description": "Agreed to write the report next.",
+    "id": "2026-10-02-lab-meeting",
+    "kind": "meeting",
+    "path": "content/journal/2026/2026-10-02-lab-meeting.md",
+    "tags": [],
+    "title": "Lab meeting",
+    "url": "/content/journal/2026/2026-10-02-lab-meeting.md"
+  },
+  {
+    "about": [
+      "home"
+    ],
+    "date": "2026-10-01",
+    "description": "The library keeps what we know about attention.",
+    "id": "2026-10-01-set-up-the-library",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-01-set-up-the-library.md",
+    "tags": [
+      "setup"
+    ],
+    "title": "Set up the library",
+    "url": "/content/journal/2026/2026-10-01-set-up-the-library.md"
+  }
+]

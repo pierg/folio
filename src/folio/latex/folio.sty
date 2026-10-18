@@ -1,0 +1,30 @@
+% folio.sty: \fcite{<id>} for a folio paper.
+% `folio paper build` puts this file and a generated folio-cites.tex on TEXINPUTS.
+% folio-cites.tex holds one \foliocite{<id>}{<title>}{<address>} per cited id. \fcite prints
+% each id it names as a link to its address, or as plain text when the address is empty.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{folio}[2026/10/04 v0.1 folio citations]
+\RequirePackage{hyperref}
+
+\newcommand\foliocite[3]{%
+  \expandafter\def\csname folio@title@#1\endcsname{#2}%
+  \expandafter\def\csname folio@url@#1\endcsname{#3}}
+
+\newcommand\folio@one[1]{%
+  \@ifundefined{folio@url@#1}{\texttt{#1}}{%
+    \expandafter\ifx\csname folio@url@#1\endcsname\@empty
+      \texttt{#1}%
+    \else
+      \expandafter\href\expandafter{\csname folio@url@#1\endcsname}{\texttt{#1}}%
+    \fi}}
+
+\DeclareRobustCommand\fcite[1]{%
+  \let\folio@sep\@empty
+  \edef\folio@ids{\zap@space#1 \@empty}%
+  \@for\folio@id:=\folio@ids\do{%
+    \folio@sep\let\folio@sep\folio@comma
+    \expandafter\folio@one\expandafter{\folio@id}}}
+\newcommand\folio@comma{, }
+
+\InputIfFileExists{folio-cites.tex}{}{}
+\endinput
