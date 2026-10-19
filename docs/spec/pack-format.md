@@ -13,8 +13,11 @@ genres: [question, protocol, result, claim, report]
 workflows: [record-a-result, write-a-report]
 rules: rules.md
 journal_kinds: [lock, run, kill, instrument, pivot]   # kinds the journal accepts while the pack is on
+evidence: [protocol, result]  # its genres the library rail lists last and apart, unless the charter sets rail.evidence
 ---
 ```
+
+`evidence` names only genres the pack lists under `genres`. A library's charter overrides it with `rail.evidence` (model §10).
 
 The body says, in plain sentences:
 

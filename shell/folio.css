@@ -278,6 +278,12 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-rgroup[data-open] > .f-rhead > .f-rsum { display: none; }
 .f-rail .f-rsec .f-rlist { margin: 0 0 .3rem .62rem; padding-left: .3rem; }
 .f-rail .f-rsec .f-rlist a { padding-left: .35rem; }
+/* The evidence genres, last and apart: one closed group headed like a section, which counts
+   its genres on a line of its own while closed. */
+.f-revidence > .f-rgroup > .f-rhead { flex-wrap: wrap; }
+.f-revidence > .f-rgroup > .f-rhead > .f-rname-btn { font: 650 .66rem/1.3 var(--sans); letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3); }
+.f-revidence > .f-rgroup > .f-rhead:hover > .f-rname-btn { color: var(--ink-2); }
 /* A genre's mark, and the map's way in. */
 .f-gmark { flex: none; align-self: center; display: inline-flex; align-items: center; justify-content: center;
   min-width: 1.15rem; height: 1.15rem; padding: 0 .2rem; border: 1px solid var(--rule); border-radius: 4px;

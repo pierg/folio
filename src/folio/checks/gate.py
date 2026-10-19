@@ -268,6 +268,20 @@ def home_maps(lib: Library) -> Found:
     return out
 
 
+def rail_genres(lib: Library) -> Found:
+    """Every genre the charter lists under `rail.evidence` is a genre this library has on."""
+    out = []
+    for name in lib.charter.rail_evidence or []:
+        genre = lib.registry.genres.get(name)
+        if genre is None:
+            out.append((CHARTER, f"`rail.evidence` names `{name}`, which is no genre; "
+                                 "`folio genres` lists them"))
+        elif not genre.active:
+            why = f"its pack `{genre.pack}` is off" if genre.pack and genre.enabled else "it is switched off"
+            out.append((CHARTER, f"`rail.evidence` names genre `{name}`, but {why}"))
+    return out
+
+
 def unique_id(lib: Library) -> Found:
     """Every id names one document across the whole library; a record id has its form and is never reused."""
     out = []
@@ -310,6 +324,7 @@ GATE_CHECKS: dict[str, GateCheck] = {
     "placeholder": placeholder,
     "orphan": orphan,
     "home-maps": home_maps,
+    "rail-genres": rail_genres,
     "unique-id": unique_id,
     "index-current": index_current,
 }

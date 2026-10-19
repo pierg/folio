@@ -22,6 +22,7 @@ CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("placeholder", "gate", "error"),
     CheckSpec("orphan", "gate", "error"),
     CheckSpec("home-maps", "gate", "error"),
+    CheckSpec("rail-genres", "gate", "error"),
     CheckSpec("unique-id", "gate", "error"),
     CheckSpec("index-current", "gate", "error"),
     CheckSpec("stale-quote", "gate", "error"),

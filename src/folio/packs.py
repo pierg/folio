@@ -10,7 +10,7 @@ from .charter import Charter
 from .errors import FolioError
 from .frontmatter import split
 
-_PACK_KEYS = ("name", "version", "requires", "genres", "workflows", "rules", "journal_kinds")
+_PACK_KEYS = ("name", "version", "requires", "genres", "workflows", "rules", "journal_kinds", "evidence")
 
 
 @dataclass
@@ -24,6 +24,7 @@ class Pack:
     rules: str | None
     journal_kinds: list[str]
     purpose: str
+    evidence: list[str] = field(default_factory=list)  # its genres the rail keeps apart, last
     on: bool = False
     extra: dict = field(default_factory=dict)
 
@@ -63,6 +64,12 @@ def load_pack(folder: Path, source: str) -> Pack:
     for wf in workflows:
         if not (folder / "workflows" / f"{wf}.md").is_file():
             raise FolioError(f"{card}: lists workflow `{wf}` but workflows/{wf}.md is missing")
+    evidence = front.get("evidence") or []
+    if not isinstance(evidence, list) or not all(isinstance(g, str) for g in evidence):
+        raise FolioError(f"{card}: `evidence` must be a list of the pack's genres")
+    for genre in evidence:
+        if genre not in genres:
+            raise FolioError(f"{card}: `evidence` names `{genre}`, which is not one of the pack's genres")
     return Pack(
         name=name,
         folder=folder,
@@ -73,6 +80,7 @@ def load_pack(folder: Path, source: str) -> Pack:
         rules=front.get("rules"),
         journal_kinds=[str(k) for k in front.get("journal_kinds") or []],
         purpose=_purpose(body),
+        evidence=list(evidence),
     )
 
 

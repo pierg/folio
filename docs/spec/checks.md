@@ -24,6 +24,7 @@ These run on every document. No card needs to name them.
 | `placeholder` | No `{{...}}` placeholder is left in a document. | error |
 | `orphan` | The no-orphans rule: a document is on a map, or linked from a map or from a document on a map, as its card's `on_map` asks. A field of type `id` counts as a link both ways, so a document named by a reachable document's field, or naming one, is reachable. Links from journal entries do not count. | error |
 | `home-maps` | Every map the charter lists under `home.maps` exists and is not a `draft`. | error |
+| `rail-genres` | Every genre the charter lists under `rail.evidence` exists and is switched on: its pack is on and it is not disabled. | error |
 | `unique-id` | Every id is unique across the library, whatever the genre, compared without regard to case: slugs, record ids, and journal entry ids (their file stems). A record id is in its genre's prefix and is never reused, even after its document is retired. | error |
 | `index-current` | The generated indices in `.folio/` match what `folio index` would write. | error |
 | `stale-quote` | An open question still quotes text that is on its document. | error |

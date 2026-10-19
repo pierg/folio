@@ -115,13 +115,14 @@ class Site:
         return dict(self.paper_builds().values())
 
     def site_data(self) -> dict:
-        """What the shell needs beyond `.folio/`: the charter's home maps, kinds and dates."""
+        """What the shell needs beyond `.folio/`: the charter's home maps, rail, kinds and dates."""
         lib = self.lib
         known = {f.path for f in lib.files}
         return {
             "name": lib.charter.name,
             "purpose": lib.charter.purpose,
             "home": {"maps": list(lib.charter.home_maps)},
+            "rail": {"evidence": lib.rail_evidence()},
             "journal": {"kinds": lib.journal_kinds(), "url": url_of(JOURNAL_VIEW)},
             "dates": {p: d for p, d in sorted(self.dates().items()) if p in known},
             "frozen": self.frozen(),

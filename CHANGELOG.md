@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 (2026-10-19)
+
+- A library can keep its evidence apart in the rail. The charter's `rail: { evidence: [protocol, result] }` names genres that are audit records rather than reading: the rail's "By genre" section then lists the other genres in reading order, and the evidence genres follow in one closed group headed Evidence, which counts them while closed and opens, as any group does, on the page being read. Without the option the packs decide: a pack's `PACK.md` may name its own genres under `evidence`, and the lab pack names `protocol` and `result`, so a lab library gets this without a change to its charter. `rail: { evidence: [] }` keeps the old rail, every genre listed by name. `folio config get|set rail.evidence` reads and sets it, and the new gate check `rail-genres` (error) names a genre in it that does not exist or is switched off.
+- The rail's reading order places the lab genres: guide, entry, report, concept, claim, question, note, survey, reading, source, map, protocol, result, then any other genre by name. A long map without sections lists its genres in this order.
+
 ## 0.2.2 (2026-10-19)
 
 - The README's closing section describes folio, giro and lab-kit by what each does: folio keeps the documents, giro takes a spec to proof on a branch, and lab-kit runs research on top of folio. No change to the engine.

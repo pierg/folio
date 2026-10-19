@@ -22,6 +22,7 @@ def _show(value: Any) -> str:
 
 def get(lib: Library, key: str | None) -> str:
     effective = lib.charter.effective()
+    effective["rail"]["evidence"] = lib.rail_evidence()  # the packs' default when the charter sets none
     if key is None:
         return yaml.safe_dump(effective, sort_keys=False, allow_unicode=True, width=1000).rstrip()
     value = charter_mod.get_key(effective, key)
@@ -62,7 +63,7 @@ def pack_list(lib: Library) -> list[dict[str, Any]]:
     return [
         {"name": p.name, "on": p.on, "source": p.source, "version": p.version,
          "purpose": p.purpose, "genres": p.genres, "workflows": p.workflows,
-         "journal_kinds": p.journal_kinds}
+         "journal_kinds": p.journal_kinds, "evidence": p.evidence}
         for p in sorted(lib.registry.packs.values(), key=lambda p: p.name)
     ]
 
