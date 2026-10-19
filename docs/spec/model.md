@@ -247,7 +247,7 @@ Defaults: no packs, the folio theme, `assets/`, `root` is the folder holding `fo
 
 Under `libraries:`, each name is a lowercase slug, used as the scheme of a link (§4), and may not be a scheme the web already uses (`http`, `https`, `mailto` and the like). `path` is required, relative to the folder holding `folio.yaml`; `url` is optional and must be an http(s) address. `folio search --all` searches these libraries too, where their path holds one.
 
-Under `rail:`, `evidence` lists genres the library rail shows last, apart from the reading genres (§14). Without it, the `evidence` of every pack switched on applies (the lab pack's is `protocol` and `result`); an empty list keeps every genre with the reading genres. Each genre it names exists and is switched on (check `rail-genres`).
+Under `rail:`, `evidence` lists genres the library rail shows last, apart from the reading genres (§14). Without it, the `evidence` of every pack switched on applies (the lab pack's is `protocol` and `result`); an empty list keeps every genre with the reading genres, listed by name. An empty `evidence:` (null) is an error: write `[]`. Each genre it names exists and is switched on (check `rail-genres`).
 
 Under `genres:`, a genre takes `enabled` and any setting of its card's checks. Under `checks:`, a check takes `error`, `warning` or `off`. Check names are listed in `checks.md`.
 

@@ -25,7 +25,7 @@ This pack is for work that tests ideas against evidence: it gives questions, pla
 - **Every number cites a result** (rule, check `uncited-number`). A number that reports a measurement links the result that holds it.
 - **A citation names a current result** (rule, check `cites-superseded`). A revised document that cites a superseded or retracted result is flagged.
 - **Journal kinds** `lock` (a protocol locked), `run` (a run launched, checkpointed, failed or ended), `kill` (a kill rule fired), `instrument` (a change to how the lab measures) and `pivot` (a change of direction). They join the core's four (`decision`, `lesson`, `correction`, `retraction`) while the pack is on.
-- **Evidence in the rail.** Protocols and results are audit records, so the library rail lists them last, in a closed Evidence group, after the reading genres. The charter's `rail.evidence` changes this; `rail: { evidence: [] }` lists them with the rest.
+- **Evidence in the rail.** Protocols and results are audit records, so the library rail lists them last, in a closed Evidence group, after the reading genres. The charter's `rail.evidence` changes this. `rail: { evidence: [] }` puts them back among the other genres in the "By genre" section, every genre listed by name as before. The reading order that sorts a long map's documents by genre still places protocols and results last.
 
 A result's evidence and its re-derive command usually sit outside the library, in the project around it. They resolve from the charter's `root`, so set `root` to the project root when the library is a folder inside it.
 

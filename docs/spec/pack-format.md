@@ -17,7 +17,7 @@ evidence: [protocol, result]  # its genres the library rail lists last and apart
 ---
 ```
 
-`evidence` names only genres the pack lists under `genres`. A library's charter overrides it with `rail.evidence` (model §10).
+`evidence`, when present, lists genres from the pack's `genres`, each once. A library's charter overrides it with `rail.evidence` (model §10).
 
 The body says, in plain sentences:
 

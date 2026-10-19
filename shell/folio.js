@@ -507,7 +507,9 @@
         title: evidence.map(function (g) { return plural(g); }).join(", ") });
       box.appendChild(el("div", { class: "f-rsection f-revidence" }, [group("evidence", head, proof, false, function (ul) {
         evidence.forEach(function (g) { ul.appendChild(el("li", { class: "f-rsec" }, [genreGroup(g, "f-rname-btn f-rsec-btn")])); });
-      }, el("span", { class: "f-rsum", text: summary(proof) }))]));
+      }, el("span", { class: "f-rsum", text: evidence.map(function (g) {  // in the evidence order, as the groups inside
+        return genres[g].length + " " + (genres[g].length === 1 ? g : plural(g).toLowerCase());
+      }).join(", ") }))]));
     }
 
     var used = Object.keys(marked).sort(function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); });

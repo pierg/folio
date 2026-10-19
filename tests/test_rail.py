@@ -37,6 +37,14 @@ def test_a_genre_switched_off_leaves_the_packs_evidence(sample: Path) -> None:
     assert library.load_at(sample).rail_evidence() == ["result"]
 
 
+def test_config_set_shows_the_packs_default_as_the_old_value(sample: Path, monkeypatch: pytest.MonkeyPatch,
+                                                              capsys) -> None:
+    assert folio(sample, "config", "set", "rail.evidence", "", monkeypatch=monkeypatch) == 0
+    assert "rail.evidence: [protocol, result] -> []" in capsys.readouterr().out
+    assert yaml.safe_load((sample / "folio.yaml").read_text())["rail"] == {"evidence": []}
+    assert library.load_at(sample).rail_evidence() == []
+
+
 def test_the_charter_sets_the_evidence_and_wins_over_the_packs(sample: Path) -> None:
     edit(sample / "folio.yaml", "checks:", "rail:\n  evidence: [result, source]\nchecks:")
     lib = library.load_at(sample)
@@ -51,11 +59,26 @@ def test_an_empty_list_keeps_every_genre_with_the_reading_genres(sample: Path) -
     assert Site.load(sample).site_data()["rail"] == {"evidence": []}
 
 
+@pytest.mark.parametrize("block", ["rail:\n", "rail: {}\n"])
+def test_an_empty_rail_block_leaves_the_packs_to_decide(sample: Path, block: str) -> None:
+    edit(sample / "folio.yaml", "checks:", block + "checks:")
+    lib = library.load_at(sample)
+    assert lib.charter.rail_evidence is None
+    assert lib.rail_evidence() == ["protocol", "result"]
+
+
+def test_an_empty_evidence_line_fails_loud(sample: Path) -> None:
+    edit(sample / "folio.yaml", "checks:", "rail:\n  evidence:\nchecks:")
+    with pytest.raises(FolioError, match=r"rail.evidence.*\[\]"):
+        library.load_at(sample)
+
+
 @pytest.mark.parametrize("bad, message", [
     ({"rail": {"evidence": "protocol"}}, "rail.evidence"),
     ({"rail": {"evidence": ["result", "result"]}}, "listed twice"),
     ({"rail": {"order": ["report"]}}, "rail.order"),
     ({"rail": ["protocol"]}, "`rail` must be a mapping"),
+    ({"rail": {"evidence": None}}, r"write `evidence: \[\]`"),
 ])
 def test_the_rail_block_is_checked(sample: Path, bad: dict, message: str) -> None:
     with pytest.raises(FolioError, match=message):
@@ -75,6 +98,38 @@ def test_the_gate_names_an_evidence_genre_whose_pack_is_off(sample: Path) -> Non
     edit(sample / "folio.yaml", "packs: [lab, knowledge-base]", "packs: [lab]")
     problems = found(sample, "rail-genres")
     assert len(problems) == 1 and "`source`" in problems[0].message and "knowledge-base" in problems[0].message
+
+
+def test_the_gate_names_an_evidence_genre_switched_off(sample: Path) -> None:
+    edit(sample / "folio.yaml", "checks:", "rail:\n  evidence: [protocol, result]\ngenres:\n  protocol: { enabled: false }\nchecks:")
+    problems = found(sample, "rail-genres")
+    assert len(problems) == 1
+    assert "`protocol`" in problems[0].message and "it is switched off" in problems[0].message
+
+
+def _pack(tmp_path: Path, evidence: str) -> Path:
+    pack = tmp_path / "mine"
+    (pack / "genres" / "trial").mkdir(parents=True, exist_ok=True)
+    (pack / "genres" / "trial" / "GENRE.md").write_text("---\nname: trial\n---\n")
+    (pack / "PACK.md").write_text(f"---\nname: mine\ngenres: [trial]\n{evidence}---\n# Mine\n")
+    return pack
+
+
+@pytest.mark.parametrize("evidence, message", [
+    ("evidence:\n", "must be a list"),
+    ("evidence: trial\n", "must be a list"),
+    ("evidence: [trial, 3]\n", "must be a list"),
+    ("evidence: [trial, trial]\n", "listed twice"),
+    ("evidence: [trial, result]\n", "`result`"),
+])
+def test_a_packs_evidence_is_checked(tmp_path: Path, evidence: str, message: str) -> None:
+    with pytest.raises(FolioError, match=message):
+        load_pack(_pack(tmp_path, evidence), "library")
+
+
+def test_a_pack_without_evidence_has_none(tmp_path: Path) -> None:
+    assert load_pack(_pack(tmp_path, ""), "library").evidence == []
+    assert load_pack(_pack(tmp_path, "evidence: []\n"), "library").evidence == []
 
 
 def test_a_pack_lists_only_its_own_genres_as_evidence(tmp_path: Path) -> None:
@@ -103,6 +158,8 @@ def test_the_shell_lists_evidence_last_and_apart() -> None:
     assert 'section("By genre", reading.map(' in SHELL
     assert 'reading.sort(evidence.length ? function (a, b) { return genreRank(a) - genreRank(b)' in SHELL
     assert 'group("evidence", head, proof, false,' in SHELL
+    # The closed group's count line follows the evidence order, as its groups do, not reading order.
+    assert 'text: evidence.map(function (g) {' in SHELL and "summary(proof)" not in SHELL
     assert '"f-rsection f-revidence"' in SHELL and ".f-revidence" in CSS
     reading = SHELL.split("var READING = [", 1)[1].split("];", 1)[0]
     order = [g.strip().strip('"') for g in reading.split(",")]

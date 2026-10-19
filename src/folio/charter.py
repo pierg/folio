@@ -229,6 +229,9 @@ def _rail_evidence(raw: dict[str, Any], where: str) -> list[str] | None:
     rail = _only(raw.get("rail"), _RAIL_KEYS, "rail", where)
     if "evidence" not in rail:
         return None
+    if rail["evidence"] is None:
+        raise FolioError(f"{where}: `rail.evidence` is empty; write `evidence: []` to list every genre "
+                         "together, or name the evidence genres, such as `[protocol, result]`")
     names = _str_list(rail["evidence"], "rail.evidence", where)
     if len(set(names)) != len(names):
         raise FolioError(f"{where}: a genre is listed twice in `rail.evidence`")

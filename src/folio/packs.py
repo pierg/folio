@@ -64,9 +64,13 @@ def load_pack(folder: Path, source: str) -> Pack:
     for wf in workflows:
         if not (folder / "workflows" / f"{wf}.md").is_file():
             raise FolioError(f"{card}: lists workflow `{wf}` but workflows/{wf}.md is missing")
-    evidence = front.get("evidence") or []
-    if not isinstance(evidence, list) or not all(isinstance(g, str) for g in evidence):
-        raise FolioError(f"{card}: `evidence` must be a list of the pack's genres")
+    evidence: list[str] = []
+    if "evidence" in front:
+        evidence = front["evidence"]
+        if not isinstance(evidence, list) or not all(isinstance(g, str) for g in evidence):
+            raise FolioError(f"{card}: `evidence` must be a list of the pack's genres, such as `[protocol, result]`")
+        if len(set(evidence)) != len(evidence):
+            raise FolioError(f"{card}: a genre is listed twice in `evidence`")
     for genre in evidence:
         if genre not in genres:
             raise FolioError(f"{card}: `evidence` names `{genre}`, which is not one of the pack's genres")
