@@ -317,8 +317,9 @@
 
   /* --------------------------------------------------------- library rail */
   /* The library on the left of every page: the charter's home maps, each with the documents
-     it lists, then every document by genre. All of it comes from the catalog, the guides'
-     nav and the site data. A group the reader opens or closes is remembered in this browser. */
+     it lists, then every document by genre, and the evidence genres last and apart when the
+     library names some. All of it comes from the catalog, the guides' nav and the site data.
+     A group the reader opens or closes is remembered in this browser. */
   var NARROW = "(max-width: 77.99rem)";
   function narrow() { return !!(window.matchMedia && matchMedia(NARROW).matches); }
   function plural(word) {
@@ -334,7 +335,8 @@
     reading: "R", source: "S", survey: "Sv", question: "Q", protocol: "Pr", result: "Rs", claim: "Cl", report: "Rp" };
   function markOf(genre) { return MARKS[genre] || human(genre).slice(0, 2); }
   /* The order a reader meets genres in: the way in first, then ideas, then the evidence. */
-  var READING = ["guide", "entry", "concept", "note", "survey", "reading", "source", "map"];
+  var READING = ["guide", "entry", "report", "concept", "claim", "question", "note", "survey", "reading", "source", "map",
+    "protocol", "result"];
   function genreRank(genre) { var i = READING.indexOf(genre); return i < 0 ? READING.length : i; }
   function summary(docs) {
     var n = {};
@@ -483,13 +485,32 @@
       if (!inFocus(d) && d !== hereDoc) return;  // the page being read stays in the rail, marked
       (genres[d.genre] = genres[d.genre] || []).push(d);
     });
-    var byGenre = Object.keys(genres).sort().map(function (g) {
-      var docs = genres[g].slice().sort(function (a, b) {
+    function genreDocs(g) {
+      return genres[g].slice().sort(function (a, b) {
         return isRecordId(a.id) && isRecordId(b.id) ? a.id.localeCompare(b.id, undefined, { numeric: true }) : a.title.localeCompare(b.title);
       });
-      return group("genre:" + g, el("button", { class: "f-rname-btn", type: "button", text: plural(g) }), docs, false);
-    });
-    section("By genre", byGenre);
+    }
+    function genreGroup(g, cls) {
+      return group("genre:" + g, el("button", { class: cls || "f-rname-btn", type: "button", text: plural(g) }), genreDocs(g), false);
+    }
+    /* The charter's (or its packs') evidence genres, such as a lab's protocols and results, are
+       audit records: they go last, in one closed group of their own, and the reading genres
+       above them follow reading order. Without any, the genres are listed as they always were. */
+    var evidence = (((D.site.rail || {}).evidence) || []).filter(function (g) { return genres[g]; });
+    var reading = Object.keys(genres).filter(function (g) { return evidence.indexOf(g) < 0; });
+    reading.sort(evidence.length ? function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); } : undefined);
+    section("By genre", reading.map(function (g) { return genreGroup(g); }));
+    if (evidence.length) {
+      var proof = [];
+      evidence.forEach(function (g) { proof = proof.concat(genres[g]); });
+      var head = el("button", { class: "f-rname-btn", type: "button", text: "Evidence",
+        title: evidence.map(function (g) { return plural(g); }).join(", ") });
+      box.appendChild(el("div", { class: "f-rsection f-revidence" }, [group("evidence", head, proof, false, function (ul) {
+        evidence.forEach(function (g) { ul.appendChild(el("li", { class: "f-rsec" }, [genreGroup(g, "f-rname-btn f-rsec-btn")])); });
+      }, el("span", { class: "f-rsum", text: evidence.map(function (g) {  // in the evidence order, as the groups inside
+        return genres[g].length + " " + (genres[g].length === 1 ? g : plural(g).toLowerCase());
+      }).join(", ") }))]));
+    }
 
     var used = Object.keys(marked).sort(function (a, b) { return genreRank(a) - genreRank(b) || a.localeCompare(b); });
     if (used.length) box.appendChild(el("p", { class: "f-rlegend" }, used.map(function (g) {

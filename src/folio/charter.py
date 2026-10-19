@@ -19,11 +19,13 @@ CHARTER = "folio.yaml"
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
     "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries", "save",
+    "rail",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
 _COMMENTS_KEYS = ("identity_header",)
 _SAVE_KEYS = ("gate", "review", "url")
+_RAIL_KEYS = ("evidence",)
 REVIEWS = ("drafts",)
 _PACK_KEYS = ("name", "git", "ref")
 _LIBRARY_KEYS = ("path", "url")
@@ -32,7 +34,7 @@ _WEB_SCHEMES = {"http", "https", "mailto", "ftp", "ftps", "file", "data", "javas
                 "ws", "wss", "about", "blob", "chrome", "git", "ssh", "urn", "news", "irc", "vbscript"}
 SEVERITIES = ("error", "warning", "off")
 # Keys whose value is a list, so `config set` splits a comma-separated value.
-LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search")
+LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search", "rail.evidence")
 
 DEFAULT_READER = "One reader, the owner."
 DEFAULT_VOICE = "Plain and precise."
@@ -83,6 +85,8 @@ class Charter:
     identity_header: str = ""  # the request header a sign-in proxy names the reader in; empty: none
     libraries: dict[str, LibraryRef] = field(default_factory=dict)
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
+    # Genres the rail keeps apart, last, as evidence; None: the charter does not say, the packs do.
+    rail_evidence: list[str] | None = None
 
     @property
     def library(self) -> Path:
@@ -112,6 +116,7 @@ class Charter:
             "libraries": {n: {"path": r.path, **({"url": r.url} if r.url else {})}
                           for n, r in self.libraries.items()},
             "save": {"gate": self.save.gate, "review": self.save.review, "url": self.save.url},
+            "rail": {"evidence": None if self.rail_evidence is None else list(self.rail_evidence)},
         }
 
 
@@ -211,7 +216,26 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         identity_header=_identity_header(raw, where),
         libraries=_libraries(raw, where),
         save=_save(raw, where),
+        rail_evidence=_rail_evidence(raw, where),
     )
+
+
+def _rail_evidence(raw: dict[str, Any], where: str) -> list[str] | None:
+    """`rail: {evidence: [...]}`: the genres the rail lists last, apart, as evidence (model §14).
+
+    None when the charter does not set it, so the packs switched on decide; an empty
+    list keeps every genre with the reading genres.
+    """
+    rail = _only(raw.get("rail"), _RAIL_KEYS, "rail", where)
+    if "evidence" not in rail:
+        return None
+    if rail["evidence"] is None:
+        raise FolioError(f"{where}: `rail.evidence` is empty; write `evidence: []` to list every genre "
+                         "together, or name the evidence genres, such as `[protocol, result]`")
+    names = _str_list(rail["evidence"], "rail.evidence", where)
+    if len(set(names)) != len(names):
+        raise FolioError(f"{where}: a genre is listed twice in `rail.evidence`")
+    return names
 
 
 def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:

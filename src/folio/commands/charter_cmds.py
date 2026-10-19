@@ -20,8 +20,15 @@ def _show(value: Any) -> str:
     return str(value)
 
 
-def get(lib: Library, key: str | None) -> str:
+def _effective(lib: Library) -> dict[str, Any]:
+    """The charter's every key with its value, and the defaults the packs give filled in."""
     effective = lib.charter.effective()
+    effective["rail"]["evidence"] = lib.rail_evidence()  # the packs' default when the charter sets none
+    return effective
+
+
+def get(lib: Library, key: str | None) -> str:
+    effective = _effective(lib)
     if key is None:
         return yaml.safe_dump(effective, sort_keys=False, allow_unicode=True, width=1000).rstrip()
     value = charter_mod.get_key(effective, key)
@@ -51,7 +58,7 @@ def _commit(lib: Library, raw: dict[str, Any], key: str) -> list[str]:
 def set_value(lib: Library, key: str, value: str) -> str:
     typed = charter_mod.coerce(key, value)
     try:
-        old = charter_mod.get_key(lib.charter.effective(), key)
+        old = charter_mod.get_key(_effective(lib), key)
     except FolioError:
         old = None
     indices = _commit(lib, charter_mod.set_key(lib.charter.raw, key, typed), key)
@@ -62,7 +69,7 @@ def pack_list(lib: Library) -> list[dict[str, Any]]:
     return [
         {"name": p.name, "on": p.on, "source": p.source, "version": p.version,
          "purpose": p.purpose, "genres": p.genres, "workflows": p.workflows,
-         "journal_kinds": p.journal_kinds}
+         "journal_kinds": p.journal_kinds, "evidence": p.evidence}
         for p in sorted(lib.registry.packs.values(), key=lambda p: p.name)
     ]
 

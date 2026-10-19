@@ -71,6 +71,21 @@ class Library:
         kinds.extend(self.charter.journal_kinds)
         return list(dict.fromkeys(kinds))
 
+    def rail_evidence(self) -> list[str]:
+        """The genres the rail lists last, apart, as evidence (model §14).
+
+        The charter's `rail.evidence` when it sets one; else the `evidence` of every
+        pack switched on, keeping only the genres that are active.
+        """
+        if self.charter.rail_evidence is not None:
+            return list(self.charter.rail_evidence)
+        out: list[str] = []
+        for pack in self.registry.packs.values():
+            if pack.on:
+                out.extend(g for g in pack.evidence
+                           if g in self.registry.genres and self.registry.genres[g].active)
+        return list(dict.fromkeys(out))
+
     def find(self, ident: str, genre: str | None = None) -> list[Document]:
         docs = self.by_id.get(ident, [])
         if genre is not None:
