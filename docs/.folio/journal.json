@@ -1,6 +1,20 @@
 [
   {
     "about": [
+      "map",
+      "using-folio"
+    ],
+    "date": "2026-10-20",
+    "description": "A placed page is one row on one home map, under one heading; a source is cited, never a row; pages can land live and be reviewed after.",
+    "id": "2026-10-20-every-page-has-one-place-on",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-10-20-every-page-has-one-place-on.md",
+    "tags": [],
+    "title": "Every page has one place on the maps",
+    "url": "/content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+  },
+  {
+    "about": [
       "genre"
     ],
     "date": "2026-10-08",

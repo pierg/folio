@@ -796,6 +796,35 @@
       "url": "/content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md"
     },
     {
+      "description": "A placed page is one row on one home map, under one heading; a source is cited, never a row; pages can land live and be reviewed after.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "map",
+          "using-folio"
+        ],
+        "date": "2026-10-20",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-20-every-page-has-one-place-on",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-20-every-page-has-one-place-on.md",
+      "status": "live",
+      "tags": [],
+      "title": "Every page has one place on the maps",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+    },
+    {
       "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
       "field_order": [],
       "fields": {},
