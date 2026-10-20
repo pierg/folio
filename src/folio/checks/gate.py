@@ -249,11 +249,68 @@ def orphan(lib: Library) -> Found:
             continue
         if genre.on_map == "required" and doc not in on_map:
             out.append((doc.key, "is on no map; add it with `folio map add <map> <doc>`"))
-        elif genre.on_map == "optional" and doc not in reached:
+        elif genre.on_map in ("optional", "placed", "cited") and doc not in reached:
             out.append((doc.key, "is on no map and linked from nothing on one"))
         for df in doc.files:
             if df.part is not None and genre.parts[df.part].on_map == "never" and df.path in files_on_map:
                 out.append((df.path, f"a `{df.part}` is never listed on a map; list its document instead"))
+    return out
+
+
+def placement(lib: Library) -> Found:
+    """One place per document: a placed document is one row on one home map, under a heading;
+    a cited document is never a row."""
+    from .. import placement as pl
+
+    out: Found = []
+    maps = pl.home_maps(lib)
+    placed = [d for d in lib.documents if pl.is_placed(d) and d.status != "retired" and not d.misplaced]
+    if not maps:
+        if placed:
+            out.append((CHARTER, f"{len(placed)} placed document(s) need a home map, and the charter "
+                                 "lists none under `home.maps`"))
+    else:
+        rows = pl.home_rows(lib)
+        for doc in placed:
+            found = rows.get(doc, [])
+            if not found:
+                out.append((doc.key, f"is on no home map; give it one place: `folio map add <map> {doc.id} "
+                                     "--section <heading>`"))
+                continue
+            if len(found) > 1:
+                named = ", ".join(dict.fromkeys(r.map.id for r in found))
+                out.append((doc.key, f"has {len(found)} places, on home map(s) {named}; keep one row and "
+                                     f"remove the others (`folio map rm <map> {doc.id}`), or move it with "
+                                     f"`folio map move {doc.id} --to <map>#<heading>`"))
+                continue
+            row = found[0]
+            if row.heading is None:
+                bare = not any(h.title for h in pl.headings(row.map.main.text if row.map.main else ""))
+                why = " (the map has no heading)" if bare else ""
+                out.append((doc.key, f"is on home map `{row.map.id}` outside every heading{why}; "
+                                     f"`folio map move {doc.id} --to {row.map.id}#<heading>` puts it under one"))
+    for m, found in pl.all_rows(lib).items():
+        for row in found:
+            if pl.is_cited(row.doc) and row.doc.status != "retired":
+                out.append((row.doc.key, f"is a row on map `{m.id}`; a {row.doc.genre_name} is cited, never "
+                                         f"placed: remove the row (`folio map rm {m.id} {row.doc.id}`) and "
+                                         "link it from the pages that use it"))
+    return out
+
+
+def heading_size(lib: Library) -> Found:
+    """No heading on a map holds more than HEADING_ROWS rows."""
+    from ..placement import HEADING_ROWS
+
+    out: Found = []
+    for doc in lib.documents:
+        if not doc.is_a("map"):
+            continue
+        for section in indexer._map_sections(lib, doc):
+            n = len(section["rows"])
+            if section["title"] and n > HEADING_ROWS:
+                out.append((doc.key, f"heading `{section['title']}` holds {n} rows; past {HEADING_ROWS} it asks "
+                                     "for a split (the organise skill's rebalance pass)"))
     return out
 
 
@@ -323,6 +380,8 @@ GATE_CHECKS: dict[str, GateCheck] = {
     "status": status,
     "placeholder": placeholder,
     "orphan": orphan,
+    "placement": placement,
+    "heading-size": heading_size,
     "home-maps": home_maps,
     "rail-genres": rail_genres,
     "unique-id": unique_id,

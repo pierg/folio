@@ -11,7 +11,7 @@ fields:
   - { name: source, type: id, genre: source, required: true }
 checks:
   cites: any
-on_map: required
+on_map: placed
 ---
 
 # Reading

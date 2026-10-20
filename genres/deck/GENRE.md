@@ -9,7 +9,7 @@ states: [draft, live, historical, retired]
 checks:
   require: [deck, slide]
   cites: any
-on_map: optional
+on_map: placed
 ---
 
 # Deck

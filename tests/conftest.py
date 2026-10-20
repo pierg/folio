@@ -42,6 +42,11 @@ def edit(path: Path, old: str, new: str) -> None:
     path.write_text(text.replace(old, new, 1), encoding="utf-8")
 
 
+def unplace(lib_dir: Path) -> None:
+    """Take the self-attention concept off the attention map, for a test that places it again."""
+    edit(lib_dir / "content/maps/attention.html", '<li><a href="/content/concepts/self-attention/">Self-attention</a></li>\n', "")
+
+
 def folio(lib_dir: Path, *args: str, monkeypatch: pytest.MonkeyPatch) -> int:
     monkeypatch.chdir(lib_dir)
     return main(list(args))

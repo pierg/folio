@@ -163,6 +163,26 @@ def new(lib: Library, genre_name: str, slug: str | None, *, part: tuple[str, str
     return written
 
 
+def after_new(lib: Library, main: str) -> list[str]:
+    """What a new document still needs, said once it is written: its place on a map (model §5),
+    and, under `save.review: after`, its mark on the To review list (model §12)."""
+    from .. import placement, reviews
+    from ..checks.run import severity
+    from ..site.identity import local
+
+    df = lib.by_path.get(main)
+    if df is None or df.doc is None:
+        return []
+    doc = df.doc
+    out = []
+    if lib.charter.save.review == "after" and reviews.mark_new(lib, doc, local(lib.root).name or "agent"):
+        out.append(f"{doc.id} is live and on the To review list (save.review: after)")
+    if placement.is_placed(doc) and severity(lib, "placement") != "off":
+        out.append(f"note: {doc.id} needs a place before it is saved: one row on one home map, under a heading "
+                   f"(`folio map add <map> {doc.id} --section <heading>`)")
+    return out
+
+
 def _new_part(lib: Library, genre: Genre, slug: str | None, part: tuple[str, str],
               values: dict[str, str], meta: dict[str, Any]) -> list[str]:
     part_name, name = part

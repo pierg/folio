@@ -8,7 +8,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from conftest import edit, folio, found
+from conftest import edit, folio, found, unplace
 
 from folio import library, redirects
 
@@ -179,15 +179,16 @@ def test_cite_takes_a_path_and_gives_one_form(sample: Path, monkeypatch, capsys)
 # Map rows in place (kb 15, lab 16)
 
 def test_map_add_group_and_after(sample: Path, monkeypatch) -> None:
+    unplace(sample)
     assert folio(sample, "map", "add", "attention", "self-attention", "--after", "softmax",
                  monkeypatch=monkeypatch) == 0
     text = (sample / "content/maps/attention.html").read_text()
     assert text.index("/content/concepts/softmax/") < text.index("/content/concepts/self-attention/") \
         < text.index("/content/notes/flashattention-tiling.html")
-    assert folio(sample, "map", "add", "lab-work", "softmax", "--group", "Background",
+    assert folio(sample, "map", "add", "lab-work", "attention-kernel", "--section", "Background",
                  monkeypatch=monkeypatch) == 0
     text = (sample / "content/maps/lab-work.html").read_text()
-    assert '<h2 id="background">Background</h2>\n<ul class="rows">\n<li><a href="/content/concepts/softmax/"' in text
+    assert '<h2 id="background">Background</h2>\n<ul class="rows">\n<li><a href="/content/projects/attention-kernel/"' in text
     assert folio(sample, "map", "add", "attention", "tiled-attention", "--group", "Reading",
                  monkeypatch=monkeypatch) == 2  # already listed
     assert folio(sample, "map", "rm", "attention", "tiled-attention", monkeypatch=monkeypatch) == 0

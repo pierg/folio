@@ -112,3 +112,61 @@ def register(sub: Any) -> None:
         s.add_argument(flag)
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=run)
+
+
+REVIEW_USAGE = ('usage: folio review list [--all] [--json] | add <doc> --note ".." [--author <who>] | '
+                'done <doc> [--author <who>]')
+
+
+def run_review(args: argparse.Namespace) -> int:
+    from .. import reviews
+    from ..site.identity import local
+
+    lib = library_mod.load(Path.cwd())
+    words = args.words
+    action = words[0] if words else "list"
+    author = args.author or local(lib.root).name
+    if action == "list":
+        if len(words) > 1 or args.note is not None:
+            raise FolioError(REVIEW_USAGE)
+        rows = reviews.to_review(lib, every=args.all)
+        if args.json:
+            print(json.dumps(rows, indent=2, ensure_ascii=False))
+        elif not rows:
+            print("Nothing to review.")
+        for r in [] if args.json else rows:
+            note = f": {r['note']}" if r["note"] else ""
+            state = f" [{r['state']}]" if args.all else ""
+            print(f"{r['date']} {r['doc']} ({r['genre']}){state} {r['path']}{note}")
+        return 0
+    if len(words) != 2 or args.all:
+        raise FolioError(REVIEW_USAGE)
+    if action == "add":
+        if args.note is None:
+            raise FolioError("folio review add needs --note")
+        lines = reviews.changed(lib, words[1], args.note, author)
+    elif action == "done":
+        if args.note is not None:
+            raise FolioError(REVIEW_USAGE)
+        lines = reviews.done(lib, words[1], author)
+    else:
+        raise FolioError(REVIEW_USAGE)
+    for line in lines:
+        print(line)
+    return 0
+
+
+def register_review(sub: Any) -> None:
+    s = sub.add_parser(
+        "review", help="The To review list: `list` it, `add` a document to it, mark one `done`.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="Documents changed since their owner last read them (model §12). <doc> is an id or a path.\n\n"
+                    "  list [--all] [--json]            the documents to review, newest change first\n"
+                    "  add <doc> --note .. [--author ..]   put a document on the list, saying what changed\n"
+                    "  done <doc> [--author ..]          take it off the list: it has been reviewed")
+    s.add_argument("words", nargs="*", metavar="list|add|done ...")
+    s.add_argument("--note", help="add: what changed, in one line")
+    s.add_argument("--author", help="who writes the mark (default: the git user)")
+    s.add_argument("--all", action="store_true", help="list: also the documents reviewed since their last change")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(func=run_review)

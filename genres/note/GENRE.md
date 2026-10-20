@@ -9,7 +9,7 @@ states: [draft, live, historical, retired]
 checks:
   cites: any
   min_links: 1
-on_map: optional
+on_map: placed
 ---
 
 # Note

@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from conftest import edit, folio, found
+from conftest import edit, folio, found, unplace
 
 from folio import library
 from folio.cli import parser
@@ -213,11 +213,12 @@ def test_map_add_on_a_fresh_map_replaces_the_placeholder(sample: Path, monkeypat
 
 
 def test_map_add_new_group_at_the_end_or_after_a_group(sample: Path, monkeypatch, capsys) -> None:
+    unplace(sample)
     attention = sample / "content/maps/attention.html"
     assert folio(sample, "map", "add", "attention", "self-attention", "--group", "Later", monkeypatch=monkeypatch) == 0
     text = attention.read_text()
     assert text.index('<h2 id="later">') > text.index('<h2 id="reading">')
-    assert folio(sample, "map", "add", "attention", "2022-flashattention", "--group", "Surveys", "--after", "Basics",
+    assert folio(sample, "map", "add", "attention", "attention-kernel", "--group", "Surveys", "--after", "Basics",
                  monkeypatch=monkeypatch) == 0
     text = attention.read_text()
     assert text.index('<h2 id="basics">') < text.index('<h2 id="surveys">') < text.index('<h2 id="reading">')

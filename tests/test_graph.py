@@ -8,7 +8,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from conftest import edit, folio, problems
+from conftest import edit, folio, problems, unplace
 
 from folio import library, redirects
 
@@ -44,6 +44,7 @@ def commit_all(lib_dir: Path) -> None:
 # maps and rows
 
 def test_maps_listing(sample: Path, monkeypatch, capsys) -> None:
+    unplace(sample)
     assert folio(sample, "maps", "--json", monkeypatch=monkeypatch) == 0
     data = json.loads(out_of(capsys))
     maps = {m["id"]: m for m in data["maps"]}
@@ -81,6 +82,7 @@ def test_map_add_reason_rm(sample: Path, monkeypatch, capsys) -> None:
 
 
 def test_map_add_without_rows_and_ambiguous_ids(sample: Path, monkeypatch, capsys) -> None:
+    unplace(sample)
     # The map command takes the map by its id.
     assert folio(sample, "map", "add", "attention", "self-attention", monkeypatch=monkeypatch) == 0
     assert '<a href="/content/concepts/self-attention/">Self-attention</a></li>' in \
@@ -245,7 +247,6 @@ def test_promote_refusals(sample: Path, monkeypatch, capsys) -> None:
 def test_rm_retires_into_another(sample: Path, monkeypatch, capsys) -> None:
     edit(sample / "content/entries/attention-is-quadratic/index.html", "</main>",
          '<p>See <a href="/content/concepts/self-attention/">self-attention</a>.</p>\n</main>')
-    assert folio(sample, "map", "add", "attention", "self-attention", monkeypatch=monkeypatch) == 0
     out_of(capsys)
     assert folio(sample, "rm", "self-attention", "--to", "softmax", monkeypatch=monkeypatch) == 0
     out = out_of(capsys)

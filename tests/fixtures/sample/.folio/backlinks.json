@@ -17,7 +17,8 @@
     "about": [],
     "cited_by": [
       "content/concepts/softmax/index.html",
-      "content/entries/attention-is-quadratic/index.html"
+      "content/entries/attention-is-quadratic/index.html",
+      "content/maps/attention.html"
     ],
     "cites": [],
     "fields": {},
@@ -144,6 +145,7 @@
     "about": [],
     "cited_by": [],
     "cites": [
+      "content/concepts/self-attention/index.html",
       "content/concepts/softmax/index.html",
       "content/decks/attention-in-five-minutes/index.html",
       "content/entries/attention-is-quadratic/index.html",

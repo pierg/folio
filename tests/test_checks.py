@@ -88,9 +88,19 @@ def test_placeholder(sample: Path) -> None:
 
 
 def test_orphan_required(sample: Path) -> None:
+    edit(sample / "content/maps/lab-work.html",
+         '<li><a href="/content/questions/Q-1.md">Does the error of a Monte Carlo estimate of pi shrink as 1/sqrt(n)?</a></li>', "")
+    assert [p.path for p in found(sample, "orphan")] == ["content/questions/Q-1.md"]
+
+
+def test_orphan_placed_is_met_by_a_link(sample: Path) -> None:
+    # A placed entry linked from a page on a map is no orphan; check `placement` asks for its row.
     edit(sample / "content/maps/attention.html",
          '<li><a href="/content/entries/attention-is-quadratic/">Why attention is quadratic</a></li>', "")
-    assert [p.path for p in found(sample, "orphan")] == ["content/entries/attention-is-quadratic/index.html"]
+    edit(sample / "content/concepts/softmax/index.html", "</main>",
+         '<p><a href="/content/entries/attention-is-quadratic/">Why</a></p>\n</main>')
+    assert found(sample, "orphan") == []
+    assert [p.path for p in found(sample, "placement")] == ["content/entries/attention-is-quadratic/index.html"]
 
 
 def test_orphan_optional(sample: Path) -> None:

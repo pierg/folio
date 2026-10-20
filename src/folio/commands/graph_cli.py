@@ -11,8 +11,8 @@ from .. import library as library_mod
 from ..errors import FolioError
 from . import lookup, maps_cmds, move, pack_add, tags_cmds
 
-MAP_USAGE = ('usage: folio map add <map> <doc> [--reason ".."] [--group <heading>] [--after <doc>] | '
-             'reason <map> <doc> ".." | rm <map> <doc>')
+MAP_USAGE = ('usage: folio map add <map> <doc> [--reason ".."] [--section <heading>] [--after <doc>] | '
+             'move <doc> --to <map>[#<heading>] [--from <map>] | reason <map> <doc> ".." | rm <map> <doc>')
 COMMANDS = ("maps", "map", "tags", "mv", "promote", "rm", "search", "cards")
 
 
@@ -53,10 +53,16 @@ def cmd_map(args: argparse.Namespace) -> int:
     lib = _lib()
     w = args.words
     placed = args.group is not None or args.after is not None
-    if w[0] == "add" and len(w) == 3:
+    if w[0] == "add" and len(w) == 3 and args.to is None and args.source is None:
         return _print(maps_cmds.add(lib, w[1], w[2], args.reason, group=args.group, after=args.after))
     if placed:
-        raise FolioError("--group and --after go with `folio map add`")
+        raise FolioError("--section and --after go with `folio map add`")
+    if w[0] == "move" and len(w) == 2 and args.reason is None:
+        if args.to is None:
+            raise FolioError("usage: folio map move <doc> --to <map>[#<heading>] [--from <map>]")
+        return _print(maps_cmds.move(lib, w[1], args.to, args.source))
+    if args.to is not None or args.source is not None:
+        raise FolioError("--to and --from go with `folio map move`")
     if w[0] == "reason" and len(w) == 4 and args.reason is None:
         return _print(maps_cmds.reason(lib, w[1], w[2], w[3]))
     if w[0] == "rm" and len(w) == 3 and args.reason is None:
@@ -128,17 +134,21 @@ def register(sub: Any) -> None:
     s.set_defaults(func=cmd_maps)
 
     s = sub.add_parser(
-        "map", help="Change a map's rows: `add`, `reason` or `rm` one.",
+        "map", help="Change a map's rows: `add`, `move`, `reason` or `rm` one.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="Change a map's rows.\n\n"
-                    "  folio map add <map> <doc> [--reason ..] [--group <heading>] [--after <doc>]\n"
-                    "      add a row; at the end of the last group, at the end of the group under\n"
-                    "      <heading> (a new group when none has it), or right after <doc>'s row\n"
+                    "  folio map add <map> <doc> [--reason ..] [--section <heading>] [--after <doc>]\n"
+                    "      add a row; at the end of the last heading, at the end of the rows under\n"
+                    "      <heading> (a new heading when none has it), or right after <doc>'s row\n"
+                    "  folio map move <doc> --to <map>[#<heading>] [--from <map>]\n"
+                    "      move a document's row to another map or heading, keeping its reason\n"
                     "  folio map reason <map> <doc> \"..\"   set or clear a row's one-line reason\n"
                     "  folio map rm <map> <doc>             remove a row")
-    s.add_argument("words", nargs="+", metavar="add|reason|rm ...")
+    s.add_argument("words", nargs="+", metavar="add|move|reason|rm ...")
     s.add_argument("--reason", help="why to follow the document from this map, in one line")
-    s.add_argument("--group", help="the heading of the group to add the row to")
+    s.add_argument("--section", "--group", dest="group", help="the heading to add the row under")
+    s.add_argument("--to", help="move: the map, and after # the heading, the row moves to")
+    s.add_argument("--from", dest="source", help="move: the map whose row moves, when several list the document")
     s.add_argument("--after", help="the document whose row the new row follows")
     s.set_defaults(func=cmd_map)
 

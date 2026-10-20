@@ -26,7 +26,7 @@ _JOURNAL_KEYS = ("kinds",)
 _COMMENTS_KEYS = ("identity_header",)
 _SAVE_KEYS = ("gate", "review", "url")
 _RAIL_KEYS = ("evidence",)
-REVIEWS = ("drafts",)
+REVIEWS = ("drafts", "after")
 _PACK_KEYS = ("name", "git", "ref")
 _LIBRARY_KEYS = ("path", "url")
 # Schemes the web already uses: a library named like one would make its links ambiguous.
@@ -59,7 +59,7 @@ class LibraryRef:
 class SaveSettings:
     """How `folio save` records content (model §10)."""
     gate: str = ""  # the shell command run before saving, from the library's folder; empty: folio check
-    review: str = ""  # "drafts": an agent writes drafts and only the owner makes a page live
+    review: str = ""  # "drafts": only the owner makes a page live; "after": pages land live, for review after
     url: str = ""  # where the library is served live; save prints each saved page's address under it
 
 

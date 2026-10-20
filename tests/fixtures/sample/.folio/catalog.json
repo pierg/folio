@@ -28,6 +28,11 @@
       "id": "self-attention",
       "parts": [],
       "path": "content/concepts/self-attention/index.html",
+      "place": {
+        "anchor": "basics",
+        "map": "attention",
+        "section": "Basics"
+      },
       "status": "live",
       "tags": [
         "attention"
@@ -46,6 +51,11 @@
       "id": "softmax",
       "parts": [],
       "path": "content/concepts/softmax/index.html",
+      "place": {
+        "anchor": "basics",
+        "map": "attention",
+        "section": "Basics"
+      },
       "status": "live",
       "tags": [
         "attention"
@@ -64,6 +74,11 @@
       "id": "attention-in-five-minutes",
       "parts": [],
       "path": "content/decks/attention-in-five-minutes/index.html",
+      "place": {
+        "anchor": "reading",
+        "map": "attention",
+        "section": "Reading"
+      },
       "status": "live",
       "tags": [
         "attention"
@@ -82,6 +97,11 @@
       "id": "attention-is-quadratic",
       "parts": [],
       "path": "content/entries/attention-is-quadratic/index.html",
+      "place": {
+        "anchor": "basics",
+        "map": "attention",
+        "section": "Basics"
+      },
       "status": "live",
       "tags": [
         "attention",
@@ -120,6 +140,11 @@
         }
       ],
       "path": "content/guides/attention-from-scratch/index.html",
+      "place": {
+        "anchor": "basics",
+        "map": "attention",
+        "section": "Basics"
+      },
       "status": "live",
       "tags": [],
       "title": "Attention, from scratch",
@@ -244,6 +269,7 @@
       "path": "content/maps/attention.html",
       "rows": [
         "content/concepts/softmax/index.html",
+        "content/concepts/self-attention/index.html",
         "content/notes/flashattention-tiling.html",
         "content/entries/attention-is-quadratic/index.html",
         "content/guides/attention-from-scratch/index.html",
@@ -256,6 +282,7 @@
         {
           "rows": [
             "content/concepts/softmax/index.html",
+            "content/concepts/self-attention/index.html",
             "content/notes/flashattention-tiling.html",
             "content/entries/attention-is-quadratic/index.html",
             "content/guides/attention-from-scratch/index.html"
@@ -321,6 +348,11 @@
       "id": "flashattention-tiling",
       "parts": [],
       "path": "content/notes/flashattention-tiling.html",
+      "place": {
+        "anchor": "basics",
+        "map": "attention",
+        "section": "Basics"
+      },
       "status": "live",
       "tags": [],
       "title": "FlashAttention tiling",
@@ -425,6 +457,11 @@
       "id": "2017-attention-is-all-you-need-reading",
       "parts": [],
       "path": "content/readings/2017-attention-is-all-you-need-reading.html",
+      "place": {
+        "anchor": "reading",
+        "map": "attention",
+        "section": "Reading"
+      },
       "status": "live",
       "tags": [],
       "title": "Attention Is All You Need",
@@ -533,7 +570,10 @@
       "tags": [],
       "title": "Attention Is All You Need",
       "topics": [],
-      "url": "/content/sources/2017-attention-is-all-you-need/"
+      "url": "/content/sources/2017-attention-is-all-you-need/",
+      "used_by": [
+        "attention"
+      ]
     },
     {
       "description": "An exact attention algorithm that reads and writes memory in tiles.",
@@ -555,7 +595,10 @@
       "tags": [],
       "title": "FlashAttention",
       "topics": [],
-      "url": "/content/sources/2022-flashattention/"
+      "url": "/content/sources/2022-flashattention/",
+      "used_by": [
+        "attention"
+      ]
     },
     {
       "description": "Which ways of computing attention give the exact result, according to the works we keep?",
@@ -565,6 +608,11 @@
       "id": "exact-attention",
       "parts": [],
       "path": "content/surveys/exact-attention.html",
+      "place": {
+        "anchor": "reading",
+        "map": "attention",
+        "section": "Reading"
+      },
       "status": "live",
       "tags": [],
       "title": "Which attention methods are exact",

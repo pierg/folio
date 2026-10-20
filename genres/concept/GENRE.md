@@ -10,7 +10,7 @@ checks:
   require: [defn]
   cites: { defn: none }
   defined_once: true
-on_map: optional
+on_map: placed
 ---
 
 # Concept
