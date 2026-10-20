@@ -128,13 +128,21 @@
     "superseded_by": []
   },
   "content/concepts/map/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-10-20",
+        "id": "2026-10-20-every-page-has-one-place-on",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/journal/index.html",
       "content/concepts/library/index.html",
       "content/entries/why-metadata-first/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
+      "content/journal/2026/2026-10-20-every-page-has-one-place-on.md",
       "content/maps/concepts.html",
       "content/readings/1945-as-we-may-think-reading.html"
     ],
@@ -567,6 +575,18 @@
     "retracted_by": [],
     "superseded_by": []
   },
+  "content/journal/2026/2026-10-20-every-page-has-one-place-on.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/map/index.html",
+      "content/maps/using-folio.html"
+    ],
+    "fields": {},
+    "id": "2026-10-20-every-page-has-one-place-on",
+    "retracted_by": [],
+    "superseded_by": []
+  },
   "content/maps/building-folio.html": {
     "about": [
       {
@@ -646,6 +666,12 @@
   "content/maps/using-folio.html": {
     "about": [
       {
+        "date": "2026-10-20",
+        "id": "2026-10-20-every-page-has-one-place-on",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+      },
+      {
         "date": "2026-10-04",
         "id": "2026-10-04-home-maps-set",
         "kind": "decision",
@@ -660,7 +686,8 @@
     ],
     "cited_by": [
       "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
-      "content/journal/2026/2026-10-04-home-maps-set.md"
+      "content/journal/2026/2026-10-04-home-maps-set.md",
+      "content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
     ],
     "cites": [
       "content/entries/how-corrections-work/index.html",

@@ -8,6 +8,11 @@
       "id": "gate",
       "parts": [],
       "path": "content/concepts/gate/index.html",
+      "place": {
+        "anchor": "how-the-work-is-done",
+        "map": "concepts",
+        "section": "How the work is done"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -28,6 +33,11 @@
       "id": "genre",
       "parts": [],
       "path": "content/concepts/genre/index.html",
+      "place": {
+        "anchor": "start-here",
+        "map": "concepts",
+        "section": "Start here"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -48,6 +58,11 @@
       "id": "journal",
       "parts": [],
       "path": "content/concepts/journal/index.html",
+      "place": {
+        "anchor": "the-record",
+        "map": "concepts",
+        "section": "The record"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -68,6 +83,11 @@
       "id": "library",
       "parts": [],
       "path": "content/concepts/library/index.html",
+      "place": {
+        "anchor": "start-here",
+        "map": "concepts",
+        "section": "Start here"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -88,6 +108,11 @@
       "id": "map",
       "parts": [],
       "path": "content/concepts/map/index.html",
+      "place": {
+        "anchor": "start-here",
+        "map": "concepts",
+        "section": "Start here"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -108,6 +133,11 @@
       "id": "pack",
       "parts": [],
       "path": "content/concepts/pack/index.html",
+      "place": {
+        "anchor": "how-the-work-is-done",
+        "map": "concepts",
+        "section": "How the work is done"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -128,6 +158,11 @@
       "id": "permanent-record",
       "parts": [],
       "path": "content/concepts/permanent-record/index.html",
+      "place": {
+        "anchor": "the-record",
+        "map": "concepts",
+        "section": "The record"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -148,6 +183,11 @@
       "id": "skill",
       "parts": [],
       "path": "content/concepts/skill/index.html",
+      "place": {
+        "anchor": "how-the-work-is-done",
+        "map": "concepts",
+        "section": "How the work is done"
+      },
       "status": "live",
       "tags": [
         "concepts"
@@ -168,6 +208,11 @@
       "id": "how-corrections-work",
       "parts": [],
       "path": "content/entries/how-corrections-work/index.html",
+      "place": {
+        "anchor": "why-it-works-this-way",
+        "map": "using-folio",
+        "section": "Why it works this way"
+      },
       "status": "live",
       "tags": [
         "design",
@@ -187,6 +232,11 @@
       "id": "one-fact-one-home",
       "parts": [],
       "path": "content/entries/one-fact-one-home/index.html",
+      "place": {
+        "anchor": "why-it-works-this-way",
+        "map": "using-folio",
+        "section": "Why it works this way"
+      },
       "status": "live",
       "tags": [
         "design"
@@ -205,6 +255,11 @@
       "id": "why-metadata-first",
       "parts": [],
       "path": "content/entries/why-metadata-first/index.html",
+      "place": {
+        "anchor": "why-it-works-this-way",
+        "map": "using-folio",
+        "section": "Why it works this way"
+      },
       "status": "live",
       "tags": [
         "design"
@@ -269,6 +324,11 @@
         }
       ],
       "path": "content/guides/getting-started/index.html",
+      "place": {
+        "anchor": "start-here",
+        "map": "using-folio",
+        "section": "Start here"
+      },
       "status": "live",
       "tags": [
         "using"
@@ -736,6 +796,35 @@
       "url": "/content/journal/2026/2026-10-08-a-ninth-core-genre-the-deck.md"
     },
     {
+      "description": "A placed page is one row on one home map, under one heading; a source is cited, never a row; pages can land live and be reviewed after.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "map",
+          "using-folio"
+        ],
+        "date": "2026-10-20",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-10-20-every-page-has-one-place-on",
+      "parts": [],
+      "path": "content/journal/2026/2026-10-20-every-page-has-one-place-on.md",
+      "status": "live",
+      "tags": [],
+      "title": "Every page has one place on the maps",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+    },
+    {
       "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
       "field_order": [],
       "fields": {},
@@ -865,7 +954,6 @@
         "content/entries/one-fact-one-home/index.html",
         "content/entries/how-corrections-work/index.html",
         "content/readings/1945-as-we-may-think-reading.html",
-        "content/sources/1945-as-we-may-think/index.html",
         "content/questions/Q-1.md"
       ],
       "sections": [
@@ -887,7 +975,6 @@
         {
           "rows": [
             "content/readings/1945-as-we-may-think-reading.html",
-            "content/sources/1945-as-we-may-think/index.html",
             "content/questions/Q-1.md"
           ],
           "title": "Worked examples"
@@ -985,6 +1072,11 @@
       "id": "1945-as-we-may-think-reading",
       "parts": [],
       "path": "content/readings/1945-as-we-may-think-reading.html",
+      "place": {
+        "anchor": "worked-examples",
+        "map": "using-folio",
+        "section": "Worked examples"
+      },
       "status": "live",
       "tags": [
         "hypertext",
@@ -1088,10 +1180,12 @@
         "linking"
       ],
       "title": "As We May Think",
-      "topics": [
-        "using-folio"
-      ],
-      "url": "/content/sources/1945-as-we-may-think/"
+      "topics": [],
+      "url": "/content/sources/1945-as-we-may-think/",
+      "used_by": [
+        "using-folio",
+        "concepts"
+      ]
     }
   ]
 }

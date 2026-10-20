@@ -72,7 +72,8 @@ def act(lib: Library, request: dict[str, Any], who: Who, recorder: Recorder) -> 
     `reopen` to open a closed thread again), `keep` (id: a resting flag
     closes as kept), `change` (id, body: a resting flag reopens as an open
     question carrying what to change), `delete` (id: the thread's author
-    removes it).
+    removes it), `reviewed` (the document, not a thread: takes it off the To review list with a
+    `reviewed` mark, committed as "Review <id>").
     """
     if not isinstance(request, dict):
         raise FolioError("expected a JSON object")
@@ -115,6 +116,19 @@ def act(lib: Library, request: dict[str, Any], who: Who, recorder: Recorder) -> 
         if not body:
             raise FolioError("say what to change")
         return save(lambda: annotations.reply(lib, rel, thread_id, body, who.name, state="open"))
+    if action == "reviewed":
+        from .. import reviews
+
+        doc = df.doc
+        if doc is None:
+            raise FolioError(f"{rel} is not a document")
+        if reviews.pending(lib, doc) is None:
+            raise FolioError(f"{doc.id} is not on the To review list")
+        home = doc.address_file.path
+        recorder.save(annotations.sidecar_path(home), who, doc.id,
+                      lambda: reviews.done(lib, doc.key, who.name),
+                      message=f"Review {doc.id}")
+        return {"reviewed": doc.id, "path": home}
     if action == "delete":
         _thread(lib, rel, thread_id)
         return recorder.save(sidecar, who, doc_id,

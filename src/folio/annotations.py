@@ -81,6 +81,8 @@ def _data(root: Path, sidecar: str) -> dict[str, Any]:
         raise FolioError(f"{sidecar}: expected an object with a `threads` list")
     if not isinstance(data.get("deleted", []), list):
         raise FolioError(f"{sidecar}: `deleted` must be a list of thread ids")
+    if not isinstance(data.get("review", []), list):
+        raise FolioError(f"{sidecar}: `review` must be a list of review marks")
     return data
 
 
@@ -92,15 +94,41 @@ def _deleted(root: Path, rel: str) -> list[str]:
     return [str(i) for i in _data(root, sidecar_path(rel)).get("deleted", [])]
 
 
-def _write(root: Path, rel: str, threads: list[dict[str, Any]], deleted: list[str] | None = None) -> str:
+def _write(root: Path, rel: str, threads: list[dict[str, Any]], deleted: list[str] | None = None,
+           review: list[dict[str, Any]] | None = None) -> str:
     sidecar = sidecar_path(rel)
     gone = _deleted(root, rel) if deleted is None else deleted
+    marks = review_marks(root, rel) if review is None else review
     data: dict[str, Any] = {"version": 1, "threads": threads}
     if gone:
         data["deleted"] = gone
+    if marks:
+        data["review"] = marks
     text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
     (root / sidecar).write_text(text, encoding="utf-8")
     return sidecar
+
+
+REVIEW_MARKS = ("changed", "reviewed")
+
+
+def review_marks(root: Path, rel: str) -> list[dict[str, Any]]:
+    """A document file's review marks, oldest first (model §12); empty when it has none."""
+    return list(_data(root, sidecar_path(rel)).get("review", []))
+
+
+def add_review_mark(root: Path, rel: str, mark: str, author: str, note: str | None = None) -> dict[str, Any]:
+    """Add a `changed` or `reviewed` mark to a document file's annotation file. Marks are only added."""
+    if mark not in REVIEW_MARKS:
+        raise FolioError(f"a review mark is one of {', '.join(REVIEW_MARKS)}, not `{mark}`")
+    if not author.strip():
+        raise FolioError("a review mark needs an author")
+    entry: dict[str, Any] = {"mark": mark, "date": today().isoformat(), "author": author}
+    if note:
+        entry["note"] = note
+    marks = review_marks(root, rel) + [entry]
+    _write(root, rel, load_threads(root, rel), review=marks)
+    return entry
 
 
 def normalise(text: str) -> str:

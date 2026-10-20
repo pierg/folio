@@ -6,7 +6,7 @@ id: slug
 skeleton: skeleton.html
 lives: revised
 states: [draft, live, historical, retired]
-on_map: required
+on_map: placed
 parts:
   chapter:
     path: content/guides/{slug}/{nn}-{name}.html
@@ -64,7 +64,7 @@ What a good guide usually does, judged, not checked:
 - Write chapters in order. Before each one, reread what the earlier chapters actually said.
 - Add a chapter with `folio new guide <slug> --part chapter <name>`, which takes the next number. To insert one, renumber with `folio mv`, which keeps links and comments.
 - An invented example that a reader could take for a reported fact says in the page that it is illustrative.
-- Add the front page to at least one map. Give a reason when the description does not say who should start it.
+- Give the front page its one place: a row on one home map, under a heading (`folio map add <map> <doc> --section <heading>`). Give a reason when the description does not say who should start it.
 
 ## Lifecycle
 

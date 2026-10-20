@@ -15,7 +15,7 @@ checks:
   require: [identifiers]
   cites: none
   original_beside: true
-on_map: optional
+on_map: cited
 ---
 
 # Source
@@ -68,6 +68,7 @@ What a good source page usually adds, judged, not checked: a few sentences on wh
 
 - Look up every identifier before writing it down, and record the date (rule `unverified-identifier`).
 - Search the library for the work first (`folio search`, by title and by identifier). A work is filed once.
+- Put no row on a map. A source is cited, not placed: the maps whose pages cite it list it in their Sources panel, and its page shows the maps that use it (check `placement`).
 - The slug is `{year}-{short-title}`, lowercase, for example `2017-attention-is-all-you-need`.
 - Name the kept file `original.<ext>`: `original.pdf`, `original.html` for a saved web page, `original.md` for a transcript.
 - Keep the original only when its licence allows a private copy. Otherwise write `Not kept:` and why. `folio export` never publishes it; `folio serve` shows it locally.

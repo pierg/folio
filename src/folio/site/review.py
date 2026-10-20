@@ -68,7 +68,8 @@ def plain(thread: dict[str, Any]) -> dict[str, str | None]:
 
 
 def inbox(lib: "Library") -> dict[str, Any]:
-    """Every question waiting on the agent and every flag resting for the owner, newest first."""
+    """Every question waiting on the agent and every flag resting for the owner, newest first, and the
+    documents to review (model §12), newest change first."""
     rows = []
     for rel, t in ann.all_threads(lib):
         if t.get("state") not in ann.UNSETTLED:
@@ -91,10 +92,15 @@ def inbox(lib: "Library") -> dict[str, Any]:
     rows.sort(key=lambda r: r["_order"], reverse=True)
     for r in rows:
         del r["_order"]
+    from .. import reviews
+
+    to_review = reviews.to_review(lib)
     return {
         "waiting": sum(1 for r in rows if r["state"] == "open"),
         "resting": sum(1 for r in rows if r["state"] == "noted"),
         "threads": rows,
+        "to_review": to_review,
+        "reviewing": len(to_review),
     }
 
 

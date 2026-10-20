@@ -14,7 +14,8 @@ from ..library import Library
 from ..links import resolve_href
 from ..util import html_attr, html_text, slugify
 
-_ROWS_RE = re.compile(r"(<ul\b[^>]*\bclass=\"[^\"]*\brows\b[^\"]*\"[^>]*>)(.*?)(</ul>)", re.S)
+# `rows` must be a whole class name: a list styled `x-rows` without `rows` is prose, not rows.
+_ROWS_RE = re.compile(r"(<ul\b[^>]*\bclass=\"(?:[^\"]*\s)?rows(?:\s[^\"]*)?\"[^>]*>)(.*?)(</ul>)", re.S)
 _ROW_RE = re.compile(r"([ \t]*)<li\b.*?</li>[ \t]*\n?", re.S)
 _HREF_RE = re.compile(r"\bhref\s*=\s*[\"']([^\"']*)[\"']")
 _WHY_RE = re.compile(r"\s*<span\b[^>]*\bclass=\"[^\"]*\bwhy\b[^\"]*\"[^>]*>.*?</span>", re.S)
@@ -46,7 +47,7 @@ def _rows(lib: Library, m: Document, text: str) -> list[dict[str, Any]]:
 
 
 def listing(lib: Library) -> dict[str, Any]:
-    """Each map with its rows, and the documents no map lists."""
+    """Each map with its rows, and the documents no map lists (a cited document, never a row, aside)."""
     maps = [d for d in lib.documents if d.is_a("map")]
     top = lib.charter.home_maps
     listed: set[Document] = set()
@@ -68,7 +69,8 @@ def listing(lib: Library) -> dict[str, Any]:
     unmapped = [{"id": d.id, "path": d.key, "genre": d.genre_name, "title": d.title,
                  "orphan": d.key in orphans}
                 for d in lib.documents
-                if d not in listed and not d.is_home and not d.is_a("journal") and d.status != "retired"]
+                if d not in listed and not d.is_home and not d.is_a("journal") and d.status != "retired"
+                and not (d.genre is not None and d.genre.on_map == "cited")]  # a source is never a row
     return {"maps": out_maps, "unmapped": unmapped}
 
 
@@ -147,6 +149,48 @@ def _insert_in_group(text: str, group: str, row: str, where: str) -> str:
     return text[:end] + lead + row + "\n" + text[end:]
 
 
+def _placement_on(lib: Library) -> bool:
+    from ..checks.run import severity
+
+    return severity(lib, "placement") != "off"
+
+
+def _is_home_map(lib: Library, m: Document) -> bool:
+    from .. import placement
+
+    return m in placement.home_maps(lib)
+
+
+def _refuse_cited(lib: Library, m: Document, doc: Document) -> None:
+    from .. import placement
+
+    if _placement_on(lib) and placement.is_cited(doc):
+        raise FolioError(f"{doc.id} is a {doc.genre_name}: it is cited, never placed, so it takes no row on "
+                         f"{m.id}; link it from the pages that use it, and the map lists it among its sources")
+
+
+def _check_heading(lib: Library, m: Document, doc: Document, text: str) -> None:
+    """On a home map, a placed document's row sits under a heading."""
+    from .. import placement
+
+    if not (_placement_on(lib) and placement.is_placed(doc) and _is_home_map(lib, m)):
+        return
+    row = next((r for r in placement.rows_in(lib, m, text) if r.doc is doc), None)
+    if row is not None and row.heading is None:
+        raise FolioError(f"the row for {doc.id} would sit outside every heading on home map {m.id}; give "
+                         "--section <heading> (a new heading goes at the end of the map)")
+
+
+def _insert(lib: Library, m: Document, text: str, row: str, group: str | None, after: str | None) -> str:
+    """The map's text with a row put in: at the end of the last group, at the end of `group`, or after a row."""
+    text = _drop_placeholder(text)
+    fresh = _SLOT in text
+    if fresh and after is None and (group is None or _find_group(text, group) is None):
+        return text.replace(_SLOT, _new_group(group, row) if group else f'<ul class="rows">\n{row}\n</ul>\n')
+    text = text.replace(_SLOT, "")
+    return _place(lib, m, text, row, group, after)
+
+
 def add(lib: Library, map_ref: str, doc_ref: str, reason: str | None, group: str | None = None,
         after: str | None = None) -> list[str]:
     """Add a row: at the end of the last group, at the end of `group` (made at the end of the map
@@ -154,9 +198,14 @@ def add(lib: Library, map_ref: str, doc_ref: str, reason: str | None, group: str
     right after that group. The first row on a fresh map takes the place of the skeleton's
     placeholder group.
 
+    While check `placement` is not off, a cited document takes no row, and on a home map a placed
+    document takes a row only when it has none on another home map, and only under a heading.
+
     The row's link text is the document's title, a fallback for reading without the shell: the
     shell draws every row's text from the catalog.
     """
+    from .. import placement
+
     m, doc = _map(lib, map_ref), find_doc(lib, doc_ref)
     if doc is m:
         raise FolioError("a map does not list itself")
@@ -164,17 +213,76 @@ def add(lib: Library, map_ref: str, doc_ref: str, reason: str | None, group: str
     original = plan.text(m.key)
     if _find_row(lib, m, doc, original) is not None:
         raise FolioError(f"{m.id} already lists {doc.id}; `folio map reason` changes its reason")
-    row = _row(doc, reason)
-    text = _drop_placeholder(original)
-    fresh = _SLOT in text
-    if fresh and after is None and (group is None or _find_group(text, group) is None):
-        text = text.replace(_SLOT, _new_group(group, row) if group else f'<ul class="rows">\n{row}\n</ul>\n')
-    else:
-        text = text.replace(_SLOT, "")
-        text = _place(lib, m, text, row, group, after)
+    _refuse_cited(lib, m, doc)
+    if _placement_on(lib) and placement.is_placed(doc) and _is_home_map(lib, m):
+        elsewhere = [r.map.id for r in placement.home_rows(lib).get(doc, []) if r.map is not m]
+        if elsewhere:
+            raise FolioError(f"{doc.id} already has its place on home map {elsewhere[0]}; a document has one "
+                             f"place: move it with `folio map move {doc.id} --to {m.id}#<heading>`, or link it "
+                             f"from {m.id}'s prose")
+    text = _insert(lib, m, original, _row(doc, reason), group, after)
+    _check_heading(lib, m, doc, text)
     where = f" after {after}" if after else (f" in `{group}`" if group else "")
     plan.write(m.key, text, f"row added for {doc.id}{where}" + (f" ({reason})" if reason else ""))
     return plan.apply()
+
+
+def move(lib: Library, doc_ref: str, to: str, from_ref: str | None = None) -> list[str]:
+    """Move a document's row to another map or heading in one step, keeping its reason.
+
+    `to` is `<map>` or `<map>#<heading>` (the heading's text or id; a new one goes at the end of the
+    map). The row comes off the map named by `from_ref`, else the one home map that lists the
+    document, else the one map that does.
+    """
+    from .. import placement
+
+    doc = find_doc(lib, doc_ref)
+    map_ref, _, heading = to.partition("#")
+    heading = heading.strip() or None
+    if not map_ref.strip():
+        raise FolioError("--to names a map: `<map>` or `<map>#<heading>`")
+    target = _map(lib, map_ref.strip())
+    if doc is target:
+        raise FolioError("a map does not list itself")
+    _refuse_cited(lib, target, doc)
+    holders = [mm for mm in lib.documents if mm.is_a("map")
+               and _find_row(lib, mm, doc, mm.main.text if mm.main else "") is not None]
+    if from_ref is not None:
+        source = _map(lib, from_ref)
+        if source not in holders:
+            raise FolioError(f"{source.id} has no row for {doc.id}")
+    else:
+        homes = [mm for mm in placement.home_maps(lib) if mm in holders]
+        pool = homes or holders
+        if not pool:
+            raise FolioError(f"{doc.id} is on no map; `folio map add <map> {doc.id}` adds its row")
+        if len(pool) > 1:
+            raise FolioError(f"{doc.id} has rows on {', '.join(mm.id for mm in pool)}; give --from <map> to say "
+                             "which row moves")
+        source = pool[0]
+    plan = Plan(lib)
+    src_text = plan.text(source.key)
+    old = _find_row(lib, source, doc, src_text)
+    assert old is not None
+    src_text = src_text[: old["start"]] + src_text[old["end"]:]
+    row = _row(doc, old["reason"])
+    if target is source:
+        text = _insert(lib, target, src_text, row, heading, None)
+    else:
+        if _find_row(lib, target, doc, plan.text(target.key)) is not None:
+            raise FolioError(f"{target.id} already lists {doc.id}; remove one row with `folio map rm`")
+        text = _insert(lib, target, plan.text(target.key), row, heading, None)
+        plan.write(source.key, src_text, f"row for {doc.id} moved to {target.id}")
+    _check_heading(lib, target, doc, text)
+    where = f" in `{heading}`" if heading else ""
+    plan.write(target.key, text, f"row for {doc.id} moved here from {source.id}{where}")
+    out = plan.apply()
+    if _placement_on(lib) and placement.is_placed(doc) and _is_home_map(lib, target):
+        others = [r.map.id for r in placement.home_rows(lib).get(doc, []) if r.map not in (source, target)]
+        if others:
+            out.append(f"note: {doc.id} still has rows on {', '.join(dict.fromkeys(others))}; a document has one "
+                       "place, so `folio check` will say so until they go")
+    return out
 
 
 def _place(lib: Library, m: Document, text: str, row: str, group: str | None, after: str | None) -> str:
@@ -249,6 +357,6 @@ def remove(lib: Library, map_ref: str, doc_ref: str) -> list[str]:
     out = plan.apply()
     others = [mm for mm in lib.documents if mm.is_a("map") and mm is not m
               and _find_row(lib, mm, doc, mm.main.text if mm.main else "") is not None]
-    if not others and doc.genre is not None and doc.genre.on_map == "required":
+    if not others and doc.genre is not None and doc.genre.on_map in ("required", "placed"):
         out.append(f"note: {doc.id} is now on no map; `folio check` will say so until a map lists it")
     return out

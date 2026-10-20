@@ -203,8 +203,11 @@ def topics(lib: Library) -> dict[str, list[str]]:
 
 
 def catalog(lib: Library) -> dict[str, Any]:
+    from . import placement
+
     docs = []
     under = topics(lib)
+    sources = placement.used_by(lib)
     for doc in lib.documents:
         entry = {
             "id": doc.id, "genre": doc.genre_name, "path": doc.key, "url": doc.url,
@@ -213,6 +216,10 @@ def catalog(lib: Library) -> dict[str, Any]:
             "parts": [_part_entry(f) for f in doc.files if f.part is not None],
             "topics": under[doc.key],
         }
+        if placement.is_placed(doc):
+            entry["place"] = placement.place(lib, doc)
+        if placement.is_cited(doc):
+            entry["used_by"] = sources.get(doc, [])
         if doc.is_a("map"):
             entry["rows"] = _map_rows(lib, doc)
             entry["sections"] = _map_sections(lib, doc)

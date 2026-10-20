@@ -10,7 +10,7 @@ states: [draft, live, historical, retired]
 checks:
   cites: any
   min_sources: 2
-on_map: required
+on_map: placed
 ---
 
 # Survey

@@ -105,7 +105,6 @@ def test_without_a_url_the_link_is_served_as_written(pair: tuple[Path, Path]) ->
 
 def test_rm_retires_a_document_into_another_library(pair: tuple[Path, Path], monkeypatch, capsys) -> None:
     sample, _ = pair
-    assert folio(sample, "map", "add", "attention", "self-attention", monkeypatch=monkeypatch) == 0
     edit(sample / ENTRY, "</main>",
          '<p>See <a class="defn-link" href="/content/concepts/self-attention/">self-attention</a>.</p>\n</main>')
     out_of(capsys)

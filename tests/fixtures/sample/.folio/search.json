@@ -164,7 +164,7 @@
     "tags": [
       "attention"
     ],
-    "text": "Current take The softmax over every pair of tokens sets the cost. Basics Softmax Read first. FlashAttention tiling Why attention is quadratic Attention, from scratch Reading Attention Is All You Need Which attention methods are exact Tiled attention Attention in five minutes",
+    "text": "Current take The softmax over every pair of tokens sets the cost. Basics Softmax Read first. Self-attention FlashAttention tiling Why attention is quadratic Attention, from scratch Reading Attention Is All You Need Which attention methods are exact Tiled attention Attention in five minutes",
     "title": "Attention",
     "url": "/content/maps/attention.html"
   },

@@ -8,7 +8,7 @@ lives: revised
 states: [draft, live, historical, retired]
 checks:
   cites: any
-on_map: required
+on_map: placed
 ---
 
 # Entry
@@ -60,7 +60,7 @@ Files only this entry uses, such as a source's full text or a figure's data, may
 - Before writing, list the concepts the subject needs. Link each with `class="defn-link"`. A term the entry must define, and another page also needs, becomes a concept first.
 - Write the position last, then move it to the top. It must match where the argument actually lands.
 - A claim the argument rests on that no source supports gets a flag for the owner (the write skill's rule 11); an illustrative example says it is illustrative.
-- Add the entry to at least one map: `folio map add <map> <doc>`. Give a `--reason` only when it says more than the description.
+- Give the entry its one place: a row on one home map, under the heading it fits, `folio map add <map> <doc> --section <heading>`. Give a `--reason` only when it says more than the description.
 
 ## Lifecycle
 

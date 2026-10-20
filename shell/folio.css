@@ -291,6 +291,8 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-rlist a.f-here .f-gmark, .f-rlist a[aria-current="page"] .f-gmark { color: inherit; border-color: currentColor; }
 .f-start { flex: none; align-self: center; margin-left: auto; padding: .1rem .4rem; border-radius: 999px;
   font-size: .64rem; font-weight: 500; color: var(--accent); background: var(--accent-soft); }
+.f-rdraft { flex: none; align-self: center; padding: .05rem .35rem; border: 1px dashed var(--rule-strong); border-radius: 999px;
+  font-size: .62rem; color: var(--ink-3); }
 .f-rlegend { display: flex; flex-wrap: wrap; gap: .3rem .7rem; margin: 1rem .55rem .25rem; font-size: .7rem; color: var(--ink-3); }
 .f-rlegend > span { display: inline-flex; align-items: center; gap: .3rem; }
 /* the parent row of a chapter being read is marked, not filled */
@@ -311,6 +313,15 @@ img, svg, video { max-width: 100%; height: auto; }
 
 /* ----------------------------------------------------------------- header */
 .f-head { margin-bottom: 2rem; }
+/* The path to the page: Home › Map › Heading › Page, from the catalog's place. */
+.f-path { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .9rem; margin-bottom: .7rem; font: 500 .8rem/1.4 var(--sans); color: var(--ink-3); }
+.f-path ol { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 0; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.f-path li { min-width: 0; }
+.f-path li + li::before { content: "\203A"; margin: 0 .45rem; color: var(--rule-strong); }
+.f-path a { color: var(--ink-2); text-decoration: none; }
+.f-path a:hover { color: var(--link); text-decoration: underline; }
+.f-path [aria-current] { color: var(--ink-3); }
+.f-path .f-used a { color: var(--ink-2); }
 .f-eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .6rem; margin-bottom: .9rem;
              font: 600 .72rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .f-eyebrow a { color: inherit; text-decoration: none; }
@@ -761,6 +772,14 @@ mark.f-anno[data-w="closed"] { background: transparent; border-bottom: 1px dashe
 .f-inbox-msg strong { color: var(--ink); font-weight: 600; }
 .f-inbox-go { display: inline-block; margin-top: .4rem; font-size: .82rem; }
 .f-review .f-filters { padding: .5rem .75rem; }
+.f-review-act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; margin-top: .5rem; }
+.f-reviewed { padding: .3rem .8rem; border-radius: var(--radius); border: 1px solid var(--rule-strong); background: var(--paper);
+              color: var(--ink); font: 600 .82rem/1.2 var(--sans); cursor: pointer; }
+.f-reviewed:hover { background: var(--sunk); }
+.f-reviewed[disabled] { opacity: .55; cursor: default; }
+/* a map's sources, in the page panel */
+.f-sources h3 { display: flex; align-items: baseline; gap: .4rem; margin: .7rem 0 .25rem; font: 600 .78rem/1.3 var(--sans); color: var(--ink-2); }
+.f-sources h3 .f-count { margin-left: auto; }
 
 /* ------------------------------------------------- shared page components */
 /* A canvas page builds its own layout; these are the few pieces pages share (COMPONENTS.md). */

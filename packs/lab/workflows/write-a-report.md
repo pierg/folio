@@ -36,7 +36,7 @@ Take every input the request or the `from` file gives. Read the rest from the re
 6. **Cite every number.** Run `folio cite <id>` for each result's link markup. Every measured number sits beside the link to its result.
 7. **Score it, and give the nulls their place.** In "What happened", mark each decision rule and each prediction hit or miss, by id, exactly against the locked protocol. Each miss and each null gets the same plainness as each hit. Every bound the results carry goes in "What this does not show".
 8. **Reuse the figures.** Take figures from `assets/figures/`. If a figure the report needs does not exist, make it there, so a paper can reuse it.
-9. **Put it on a map.** Run `folio map add <map> <report> [--group "<heading>"] [--after <doc>]`. Add `--reason "..."` only when one line on why to follow it says more than the report's description.
+9. **Put it on a map.** Run `folio map add <map> <report> --section "<heading>" [--after <doc>]`. Add `--reason "..."` only when one line on why to follow it says more than the report's description.
 10. **Publish it.** Set the status to `live`. Write no list of links: the generated panels show what it cites.
 11. **Log it.** Through the write skill, which runs `folio journal add --title "Reported <the report's title>" --description ".." --body ".." --about <report>,<result ids>`. The body says in a sentence what the report concludes.
 12. **Run the gate.** `folio index`, then `folio check` passes.

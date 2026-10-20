@@ -140,6 +140,8 @@ def cmd_new(args: argparse.Namespace, extra: list[str]) -> int:
                          title=args.title, description=args.description, tags=args.tags, fields=fields,
                          status=args.status)
     _print_changes([f"created {p}" for p in written])
+    if not args.part:
+        _print_changes(create.after_new(_lib(), written[0]))
     return 0
 
 
@@ -409,6 +411,7 @@ def parser() -> argparse.ArgumentParser:
     s.set_defaults(func=cmd_export)
 
     annotate.register(sub)
+    annotate.register_review(sub)
     graph_cli.register(sub)
 
     s = sub.add_parser("skills", help="The installed skills against folio's own; `update` refreshes the stale ones.")

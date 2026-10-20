@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.0 (2026-10-20)
+
+Every page has one place: one row on one home map, under one heading. Sources are cited, not placed. Pages can land live and be reviewed after.
+
+- The genre card's `on_map` takes two new values. `placed`: the document is exactly one row on one of the charter's home maps, under a heading of that map. `cited`: it is never a map row; the maps whose pages cite it list it. Concept, note, entry, guide, deck, reading and survey are `placed`; source is `cited`. `required` and `optional` still work, for the other genres and for a library's own cards. For the no-orphans rule, `placed` and `cited` are met as `optional` is.
+- A new gate check, `placement` (warning; the charter makes it an error), names a placed page on no home map, on two or more, or outside every heading (rows above a map's first heading are under none), with the maps, and a cited page that is a row. A link in a map's prose is not a place, and neither is a row on a map that is not a home map. A second new check, `heading-size` (warning), names a map heading holding more than 12 rows.
+- `folio index` writes each placed document's `place: {map, section, anchor}` into `catalog.json` (`null` while it has no single place), and each cited document's `used_by`: the home maps that link it or whose rows cite it.
+- The shell draws a path above the title: `Home › Map › Heading › Page`, the heading linking to its anchor on the map; a source shows `Home › Sources › Page` and the maps it is used in. The rail's map groups read the same `place`, so a placed page sits only in its own map, and a draft shows there with a draft mark instead of being hidden. A map page's panel lists its Sources: every source its rows cite, grouped by heading, with counts.
+- `folio map add` takes `--section <heading>` (`--group` still works). While `placement` is not off, it refuses a placed page that already has a place on another home map, a placed row on a home map outside every heading, and a cited page on any map. `folio map move <doc> --to <map>[#<heading>] [--from <map>]` moves a row in one step, keeping its reason.
+- `folio new` says when a new page still needs its place.
+- Review after landing: `save.review: after`. `folio new` starts a page live and puts it on the To review list; `folio save` puts on it every page it records for the first time; `folio review add <doc> --note ".."` puts back a substantively revised one. Each mark lives in the page's annotation file, under `review`, and the server commits it like a comment. The Review page has a To review tab, newest first, with a Reviewed button; `folio review list [--all]` and `folio review done <doc>` do the same from the command line. The home page's line counts the pages to review. `drafts` stays available.
+- The write skill makes choosing the one home map and heading a required step, lands pages live under `after`, and after adding pages runs organise's new rebalance pass on the maps it touched: new pages are placed without asking, and every move or rename of an existing page, heading or map is proposed in one short table and waits for the owner's yes, or is left as a question on the map page. The organise skill moves rows with `folio map move`.
+
+Migrating a library to 0.3.0:
+
+1. Run `folio check`: the `placement` warnings name every page with no single place. Give each one home with `folio map move <doc> --to <map>#<heading>`, and remove the extra rows with `folio map rm`; link the page from the other maps' prose where it helps. Remove the rows of sources.
+2. Turn the check on: `folio config set checks.placement error`.
+3. To land pages live and review them after, `folio config set save.review after`, then put each remaining draft on the list as it goes live: `folio review add <doc> --note ".."`.
+4. `folio skills update`, then commit `.agents/skills/`.
+
 ## 0.2.3 (2026-10-19)
 
 - A library can keep its evidence apart in the rail. The charter's `rail: { evidence: [protocol, result] }` names genres that are audit records rather than reading: the rail's "By genre" section then lists the other genres in reading order, and the evidence genres follow in one closed group headed Evidence, which counts them while closed and opens, as any group does, on the page being read. Without the option the packs decide: a pack's `PACK.md` may name its own genres under `evidence`, and the lab pack names `protocol` and `result`, so a lab library gets this without a change to its charter. `rail: { evidence: [] }` lists every genre together in "By genre", by name, as before; an empty `evidence:` is an error asking for `[]`. `folio config get|set rail.evidence` reads and sets it, and the new gate check `rail-genres` (error) names a genre in it that does not exist or is switched off.

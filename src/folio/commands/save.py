@@ -143,6 +143,8 @@ def save(start: Path, message: str | None = None, push: bool = True) -> Saved:
         if upstream:
             _pull(git, index)
         lib = library_mod.load(start)
+        if lib.charter.save.review == "after":
+            _mark_new(lib, git, top)
         indexer.write(lib)
         lib = library_mod.load(start)
         files = _changed(git, scope)
@@ -165,6 +167,23 @@ def save(start: Path, message: str | None = None, push: bool = True) -> Saved:
         git.must("git reset", "reset", "--soft", "--quiet", "HEAD~1")
         git.must("git reset", "reset", "--quiet", "--", *scope)
     raise FolioError(f"the branch kept moving: {ATTEMPTS} attempts to push were refused; nothing was pushed")
+
+
+def _mark_new(lib: library_mod.Library, git: Git, top: Path) -> None:
+    """Under `save.review: after`, put on the To review list each document recorded for the first time."""
+    from .. import reviews
+    from ..site.identity import local
+
+    head = git.run("ls-tree", "-r", "-z", "--name-only", "HEAD")
+    tracked = {p for p in head.stdout.split("\0") if p} if head.returncode == 0 else set()
+    author = local(lib.root).name or "agent"
+    for doc in lib.documents:
+        try:
+            rel = (lib.root / doc.key).resolve().relative_to(top).as_posix()
+        except ValueError:
+            continue
+        if rel not in tracked:
+            reviews.mark_new(lib, doc, author)
 
 
 def _pages(lib: library_mod.Library, top: Path, staged: list[str]) -> list[tuple[str, str, str]]:

@@ -15,7 +15,7 @@ from .util import deep_merge
 
 FORMATS = {"html": ".html", "markdown": ".md", "latex": ".tex"}
 LIVES = ("revised", "permanent", "frozen")
-ON_MAP = ("required", "optional", "never", "exempt")
+ON_MAP = ("placed", "cited", "required", "optional", "never", "exempt")
 FIELD_TYPES = ("string", "integer", "date", "enum", "id", "ids", "path")
 CORE_FIELDS = ("title", "description", "genre", "status", "tags", "id")
 _CARD_KEYS = (
