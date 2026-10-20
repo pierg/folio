@@ -14,7 +14,8 @@ from ..library import Library
 from ..links import resolve_href
 from ..util import html_attr, html_text, slugify
 
-_ROWS_RE = re.compile(r"(<ul\b[^>]*\bclass=\"[^\"]*\brows\b[^\"]*\"[^>]*>)(.*?)(</ul>)", re.S)
+# `rows` must be a whole class name: a list styled `x-rows` without `rows` is prose, not rows.
+_ROWS_RE = re.compile(r"(<ul\b[^>]*\bclass=\"(?:[^\"]*\s)?rows(?:\s[^\"]*)?\"[^>]*>)(.*?)(</ul>)", re.S)
 _ROW_RE = re.compile(r"([ \t]*)<li\b.*?</li>[ \t]*\n?", re.S)
 _HREF_RE = re.compile(r"\bhref\s*=\s*[\"']([^\"']*)[\"']")
 _WHY_RE = re.compile(r"\s*<span\b[^>]*\bclass=\"[^\"]*\bwhy\b[^\"]*\"[^>]*>.*?</span>", re.S)

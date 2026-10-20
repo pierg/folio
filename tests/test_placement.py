@@ -82,6 +82,13 @@ def test_two_home_maps_are_two_places(sample: Path) -> None:
     assert catalog(sample)["attention-is-quadratic"]["place"] is None
 
 
+def test_a_list_styled_like_rows_without_the_rows_class_is_a_pointer(sample: Path) -> None:
+    edit(sample / LAB, "<ul class=\"rows\">", '<h2 id="background">Background</h2>\n<ul class="lab-rows">\n'
+         '<li><a href="/content/entries/attention-is-quadratic/">Why</a></li>\n</ul>\n<ul class="rows">')
+    assert messages(sample, "placement") == []
+    assert catalog(sample)["attention-is-quadratic"]["place"]["map"] == "attention"
+
+
 def test_a_row_above_the_first_heading_is_under_none(sample: Path) -> None:
     edit(sample / ATTENTION, ENTRY_ROW, "")
     edit(sample / ATTENTION, '<h2 id="take">', '<ul class="rows">\n' + ENTRY_ROW + '</ul>\n<h2 id="take">')
