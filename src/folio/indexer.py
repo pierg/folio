@@ -121,7 +121,7 @@ def latex_abstract(latex: str | None) -> str:
         if name in _TEX_DROP:
             return ""
         if name == "fcite":
-            return ", ".join(v.strip() for v in value.split(","))
+            return ""  # the id stays in the source; the sentence stands without it
         return value
 
     for _ in range(10):  # nested commands unwrap from the inside out

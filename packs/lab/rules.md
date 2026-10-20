@@ -12,7 +12,7 @@ What the check reads:
 
 - **Where.** HTML pages, papers, and the body of claims. Journal entries, questions, protocols and results are records: the journal is where a number is first written down, a protocol's numbers are predictions, and a result is the number's home. None is flagged.
 - **Which numbers.** Numbers shaped like measurements: percentages, ratios, `a of b`, `a/b`, multipliers such as `3×`, numbers with a decimal point, and numbers with a unit of measure. Dates, ids, section numbers, version numbers and numbers inside code are skipped.
-- **What counts as cited.** A link to a result (`R-n`) in the same sentence, list item or table row. A link to a protocol there counts too: its number is a pre-registered threshold, not a measurement. In a paper, `\fcite{R-n}` in the same sentence. With the knowledge-base pack on, a link to the source that reported the number also counts.
+- **What counts as cited.** A link to a result (`R-n`) in the same sentence, list item or table row. A link to a protocol there counts too: its number is a pre-registered threshold, not a measurement. In a paper, `\fcite{R-n}` in the same sentence of the source; the PDF prints no id, so the sentence carries what the reader needs on its own. With the knowledge-base pack on, a link to the source that reported the number also counts.
 - **Map rows.** The link text of a map row is not read. The shell draws it from the catalog's title, so the text in the file is only a fallback.
 - **Not a measurement.** A number that only looks like one, such as "a 2/3 majority", is wrapped to say so. In HTML or Markdown that is `<span class="not-measured">`; in LaTeX, `\notmeasured{}`. Whether that is honest is judged, not checked.
 

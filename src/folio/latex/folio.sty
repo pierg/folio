@@ -1,10 +1,19 @@
 % folio.sty: \fcite{<id>} for a folio paper.
 % `folio paper build` puts this file and a generated folio-cites.tex on TEXINPUTS.
-% folio-cites.tex holds one \foliocite{<id>}{<title>}{<address>} per cited id. \fcite prints
-% each id it names as a link to its address, or as plain text when the address is empty.
+% folio-cites.tex holds one \foliocite{<id>}{<title>}{<address>} per cited id.
+%
+% A paper is read outside the library, so \fcite prints nothing: the ids stay in the source,
+% where the gate reads them, and the sentence stands on its own. A review build
+% (`folio paper build --ids`, or `\usepackage[ids]{folio}`) prints each id after the text it
+% backs, small and raised, as a link to its address when the address is known.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{folio}[2026/10/04 v0.1 folio citations]
+\ProvidesPackage{folio}[2026/10/20 v0.2 folio citations]
 \RequirePackage{hyperref}
+
+\newif\iffolio@ids
+\DeclareOption{ids}{\folio@idstrue}
+\ProcessOptions\relax
+\newcommand\folioshowids{\folio@idstrue}
 
 \newcommand\foliocite[3]{%
   \expandafter\def\csname folio@title@#1\endcsname{#2}%
@@ -18,13 +27,18 @@
       \expandafter\href\expandafter{\csname folio@url@#1\endcsname}{\texttt{#1}}%
     \fi}}
 
-\DeclareRobustCommand\fcite[1]{%
+\newcommand\folio@marks[1]{%
   \let\folio@sep\@empty
   \edef\folio@ids{\zap@space#1 \@empty}%
-  \@for\folio@id:=\folio@ids\do{%
-    \folio@sep\let\folio@sep\folio@comma
-    \expandafter\folio@one\expandafter{\folio@id}}}
+  \textsuperscript{[%
+    \@for\folio@id:=\folio@ids\do{%
+      \folio@sep\let\folio@sep\folio@comma
+      \expandafter\folio@one\expandafter{\folio@id}}%
+  ]}}
 \newcommand\folio@comma{, }
+
+\DeclareRobustCommand\fcite[1]{%
+  \iffolio@ids\folio@marks{#1}\else\ignorespaces\fi}
 
 \InputIfFileExists{folio-cites.tex}{}{}
 \endinput

@@ -35,6 +35,14 @@ def catalog_entry(lib_dir: Path) -> dict:
     return next(e for e in entries if e["id"] == "tiled-attention")
 
 
+def words(pdf: Path) -> str:
+    """The PDF's text, one space between words; empty when pdftotext is not installed."""
+    if shutil.which("pdftotext") is None:
+        return ""
+    text = subprocess.run(["pdftotext", "-layout", str(pdf), "-"], capture_output=True, text=True, check=True).stdout
+    return " ".join(text.split())
+
+
 def uris(pdf: Path) -> list[bytes]:
     data = pdf.read_bytes()
     found_uris = re.findall(rb"/URI\s*\(([^)]*)\)", data)
@@ -50,10 +58,10 @@ def test_abstract_is_read_from_the_source(sample: Path) -> None:
     entry = catalog_entry(sample)
     assert entry["abstract"] == "Attention computed one tile of keys at a time is exact when the softmax is rescaled."
     assert entry["versions"] == []
-    edit(sample / f"{PAPER}/main.tex", "is rescaled.", "is rescaled, as \\fcite{softmax} defines it.\n\nA second \\emph{point}.")
+    # An \fcite is not part of the text: the abstract reads as the PDF prints it.
+    edit(sample / f"{PAPER}/main.tex", "is rescaled.", "is rescaled\\fcite{softmax}.\n\nA second \\emph{point}.")
     assert catalog_entry(sample)["abstract"] == (
-        "Attention computed one tile of keys at a time is exact when the softmax is rescaled, as softmax "
-        "defines it.\n\nA second point.")
+        "Attention computed one tile of keys at a time is exact when the softmax is rescaled.\n\nA second point.")
 
 
 def test_build_needs_latexmk(sample: Path, monkeypatch, capsys) -> None:
@@ -82,16 +90,28 @@ def test_build_freeze_and_publish(sample: Path, monkeypatch, capsys) -> None:
     git(sample, "init", "-q")
     commit(sample, "first")
 
-    # Without a site_url, an \fcite prints its id and links nowhere.
+    # The PDF prints no id: the sentence around an \fcite stands on its own, and nothing links out.
     assert folio(sample, "paper", "build", "tiled-attention", monkeypatch=monkeypatch) == 0
     pdf = sample / ".folio/build/tiled-attention/main.pdf"
     assert pdf.is_file() and uris(pdf) == []
+    text = words(pdf)
+    assert "[softmax]" not in text and ("standard definition of the softmax, after [1]" in text or not text)
     with (sample / "folio.yaml").open("a") as f:
         f.write("site_url: https://example.org/notes/\n")
     assert folio(sample, "paper", "build", "tiled-attention", monkeypatch=monkeypatch) == 0
     cites = (sample / ".folio/build/tiled-attention/folio-cites.tex").read_text()
     assert "\\foliocite{softmax}{Softmax}{https://example.org/notes/content/concepts/softmax/}" in cites
+    assert "\\folioshowids" not in cites and uris(pdf) == []
+    # A review build prints each id after the text it backs, linked to its page.
+    assert folio(sample, "paper", "build", "tiled-attention", "--ids", monkeypatch=monkeypatch) == 0
+    cites = (sample / ".folio/build/tiled-attention/folio-cites.tex").read_text()
+    assert cites.splitlines()[1] == "\\folioshowids"
     assert uris(pdf) == [b"https://example.org/notes/content/concepts/softmax/"]
+    text = words(pdf)
+    assert "softmax[softmax]" in text or not text  # pdftotext may space the raised mark from the comma
+    # The copy that leaves the library is the plain build.
+    assert folio(sample, "paper", "build", "tiled-attention", monkeypatch=monkeypatch) == 0
+    assert uris(pdf) == []
     commit(sample, "site url")  # the build folder stays out of git
     assert "folio-cites" not in subprocess.run(["git", "ls-files"], cwd=sample, capture_output=True, text=True).stdout
 

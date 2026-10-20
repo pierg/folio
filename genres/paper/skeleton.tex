@@ -10,9 +10,11 @@
 {../../../assets/figures/}%
 }
 
-% \fcite{<id>} cites a document of this library by its id.
-% `folio paper build` provides folio.sty, which makes it a link; elsewhere it prints the id.
-\IfFileExists{folio.sty}{\usepackage{folio}}{\providecommand{\fcite}[1]{\texttt{#1}}}
+% \fcite{<id>} cites a document of this library by its id, for the gate and the reviewer.
+% The reader never sees it: the PDF prints nothing where it stands, so write it right after
+% what it backs, with no space before it, and make sure the sentence reads whole without it.
+% `folio paper build --ids` prints the ids, as links, for a review copy.
+\IfFileExists{folio.sty}{\usepackage{folio}}{\providecommand{\fcite}[1]{}}
 
 \title{ {{title}} }
 \author{ {{authors}} }
@@ -27,7 +29,7 @@
 
 \section{Introduction}
 \label{sec:introduction}
-{{the problem and the contribution; cite a library document with}} \fcite{ {{id}} }.
+{{the problem and the contribution, each claim backed by a library document}}\fcite{ {{id}} }.
 
 \begin{figure}[t]
   \centering

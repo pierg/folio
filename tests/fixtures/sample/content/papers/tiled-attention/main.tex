@@ -4,7 +4,7 @@
 \graphicspath{%
 {../../../assets/figures/}%
 }
-\IfFileExists{folio.sty}{\usepackage{folio}}{\providecommand{\fcite}[1]{\texttt{#1}}}
+\IfFileExists{folio.sty}{\usepackage{folio}}{\providecommand{\fcite}[1]{}}
 \title{Tiled attention}
 \author{The owner}
 \begin{document}
@@ -13,7 +13,7 @@
 Attention computed one tile of keys at a time is exact when the softmax is rescaled.
 \end{abstract}
 \section{Background}
-We use the definition in \fcite{softmax}, after \cite{vaswani2017}.
+We use the standard definition of the softmax\fcite{softmax}, after \cite{vaswani2017}.
 \begin{figure}[t]
   \includegraphics[width=\linewidth]{attention-tiling}
   \caption{Each tile of keys rescales the running sum.}
