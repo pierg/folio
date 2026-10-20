@@ -23,7 +23,7 @@ checks:                       # what the gate checks; each a named check with it
   require: [defn]             # required parts the machine reads, by the names the card defines
   cites: { defn: none }       # the definition cites nothing
   defined_once: true
-on_map: required              # required | optional | never | exempt
+on_map: placed                # placed | cited | required | optional | never | exempt
 parts:                        # only for a genre whose documents have more than one file
   chapter:                    # each part: its own path and skeleton, and checks and on_map if they differ
     path: content/guides/{slug}/{nn}-{name}.html
@@ -42,7 +42,15 @@ parts:                        # only for a genre whose documents have more than 
   - `path`, a file or folder that must exist, resolved from the charter's `root`.
   - The core metadata (`title`, `description`, `genre`, `status`, `tags`, and `id` for a record) is never declared again.
 - A field is declared only when the engine renders, filters or checks it. Anything else belongs in the body.
-- `on_map`: `required` means the document is a row on at least one map. `optional` means a map row, or a link from a document that is on a map. `never` means it is reached only through its parent (a guide's chapter). `exempt` means it is outside the no-orphans rule (a journal entry).
+- `on_map`: where the document sits on the maps (model.md §5).
+  - `placed`: it has one place, exactly one row on one home map, under a heading of that map (check `placement`). A concept, note, entry, guide, deck, reading and survey are placed.
+  - `cited`: it is never a map row. The maps whose pages cite it list it for it (a source).
+  - `required`: it is a row on at least one map.
+  - `optional`: a map row, or a link from a document that is on a map.
+  - `never`: it is reached only through its parent (a guide's chapter).
+  - `exempt`: it is outside the no-orphans rule (a journal entry).
+
+  For the no-orphans rule, `placed` and `cited` are met as `optional` is: check `placement` asks for the one row.
 - `parts`: each extra part has a `path` and a `skeleton`, and its own title and description. It takes the genre's checks and `on_map` unless it states its own. A part may set `lives: permanent` (default `revised`): it is a snapshot a command writes, never edited once committed, together with every file in its own folder when its path gives it one (check `permanent`). `folio new` never makes a permanent part. `address: true` marks the part a link to the document lands on. `folio new <genre> <slug> --part <part> <name>` creates one.
 - `checks`: the names and settings are listed in [`checks.md`](checks.md), with their defaults. A card uses only names from that list. Card keys are snake_case.
 - **A card checks substance, never form.** It checks where a document lives, its metadata and lifecycle, its place on the maps, and its duties to other documents: what it must cite, what it must not restate, what it must link. It does not check markup or size. `require` names only a part the engine or the shell reads (a concept's `defn`, a map's `rows`), or one a tool built on folio parses (a lab record's sections). `max_words` is for short records, such as a journal entry or a result, never for a page. A library's own card may add a form check of its own, with `forbid`, `require` or `max_words`.
