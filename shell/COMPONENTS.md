@@ -40,11 +40,12 @@ A Markdown record needs nothing: the site renders it as an HTML page at the same
 
 ## What the shell draws, so a page never writes it
 
-- **The library rail**: on the left of every page, links to the home page, the journal and (when served) the Review page; then the charter's home maps, each a group of the documents it lists; then every document other than a journal entry, grouped by genre. The current page is marked. `[` hides or shows it; on a narrow screen it is a drawer opened from the top bar.
+- **The library rail**: on the left of every page, links to the home page, the journal and (when served) the Review page; then the charter's home maps, each a group of the documents it lists; then every document other than a journal entry, grouped by genre. A placed document sits only in the map its `place` names, and a draft shows with a draft mark. The current page is marked. `[` hides or shows it; on a narrow screen it is a drawer opened from the top bar.
 - **Topic focus**: the top bar's Focus control narrows the rail, search, the journal, Review and the home page to the documents under the chosen home maps (`model.md` §5). A chip names the focus and clears it; a page outside it says so under its header. It reads `topics` from the catalog, so a page writes nothing for it.
+- **The path**: above the title, where the page lives, read from the catalog's `place`: `Home › Map › Heading › Page`, the heading linking to its anchor on the map. A source shows `Home › Sources › Page` and the maps it is used in. A page writes no breadcrumb of its own.
 - **The header**: the genre, the record id, the title, the description as a subtitle, the status (unless `live`), the `date` or the dates from git, the tags, "Frozen since <date>" for a document in a frozen state (the date of the commit that froze it), and the genre's fields as a short list, in the order the card declares them. Beside the genre, a button shows the page's path in the library (a folder page by its folder, such as `content/entries/x/`) and copies it, so a reader can hand the page to an agent or a command. So a body has no `<h1>`, no subtitle and no status line.
 - **Banners**: a superseded record links the one that supersedes it; a retracted record links the retraction; a journal entry of kind `correction` shows on the document it is `about`, with its text.
-- **The page panel**: the outline (every `<h2>` and `<h3>`), what the page cites (on a map, besides its rows), what cites it, the journal entries about it, and a list for each field of type `id` that names it ("As its protocol"). On a narrow screen the panel follows the page.
+- **The page panel**: the outline (every `<h2>` and `<h3>`), what the page cites (on a map, besides its rows), what cites it, the journal entries about it, and a list for each field of type `id` that names it ("As its protocol"). A map's panel also lists its Sources: every source its rows cite, grouped by the map's headings, with counts. On a narrow screen the panel follows the page.
 - **A guide**: the chapter list on its front page, and on each chapter its place ("Chapter 2 of 5") and links to the previous and next chapter.
 - **The home page**: its title is the charter's `name` and its subtitle the page's description (or the charter's `purpose`); the page carries no title of its own. Below, a card for each map the charter lists under `home.maps`, in that order, each showing that map's first rows in its own order ("and N more"), and the latest journal entries.
 - **The journal**: one timeline at `/content/journal/`, newest first, filtered by kind, tag, `about` and date. Each entry's `about` chips show the target's genre beside its title, so a source and its reading stay apart. A filter lives in the address (`?kind=decision`), so a filtered view can be linked.
@@ -102,7 +103,7 @@ May sit in any HTML document. `folio index` collects every card into `.folio/car
 </ul>
 ```
 
-The reason is optional. Without one, the shell shows the target's description. The shell draws each row's link text from the catalog's title, so a renamed document reads right everywhere; the text in the file is a fallback for reading without the shell, and `folio map add` writes the title there. The shell adds the target's genre, and its status when it is not `live`.
+Rows sit under the map's headings (`<h2 id="..">`): a placed document's one place is its row under a heading on a home map, and the heading's id is the anchor its path links to. The reason is optional. Without one, the shell shows the target's description. The shell draws each row's link text from the catalog's title, so a renamed document reads right everywhere; the text in the file is a fallback for reading without the shell, and `folio map add` writes the title there. The shell adds the target's genre, and its status when it is not `live`.
 
 ### Text parts
 
@@ -212,7 +213,7 @@ When a library is served with `folio serve` or `folio up`, every page shows a Co
 
 The panel lists every thread on the page, with its quote (or "About the whole page"), its messages and its state in plain words: waiting, resting, or closed with how (changed, kept, declined, withdrawn). A resting flag has two buttons, Keep and Change. An addressed thread shows "What changed": the passage before and after, from git. A closed thread takes a reply and can be reopened. A thread's author sees a Delete button on it; after a confirmation the thread leaves the page and the file, and the server commits the deletion, so git keeps it. Quoted passages are highlighted on the page. A link ending `#comment-<id>` opens the panel at that thread.
 
-Review, at `/content/review/`, lists every waiting question and resting flag in the library, newest first, and the home page shows one line linking to it.
+Review, at `/content/review/`, lists every waiting question and resting flag in the library, newest first, and the home page shows one line linking to it. Its To review tab lists the pages changed since their owner last read them (`docs/spec/model.md` §12), newest first, each with a Reviewed button that the server records and commits.
 
 Where the server takes no comments (a public address without `comments.identity_header`, or a request without that header), the panel shows the threads and says why it is read-only. An exported site has no comment button and carries no annotation files, no review page, and no source's kept `original.*`; its page panel says "Comments are open where this library is served with folio serve."
 

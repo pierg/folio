@@ -1,6 +1,7 @@
 /* folio: the shell's one script.
    It draws, on every page, what metadata and the generated indices say: the top bar,
-   the library rail, the header, the banners, the page panel, guide navigation, map rows, the home page's maps, topic focus, the
+   the library rail, the path to the page, the header, the banners, the page panel (with a map's sources), guide navigation,
+   map rows, the home page's maps, topic focus, the
    journal timeline, search, previews, concept popovers and, when served by `folio serve`,
    the comment panel and the Review page, and KaTeX math on a page that asks for it. The page holds its
    <head> metadata and its <main>, which is a free canvas: it may carry its own style and script, and lays
@@ -386,6 +387,7 @@
         opts.mark ? el("span", { class: "f-gmark", "data-g": doc.genre, title: human(doc.genre), text: markOf(doc.genre) }) : null,
         isRecordId(doc.id) ? el("span", { class: "f-rid", text: doc.id }) : null,
         el("span", { class: "f-rname", text: doc.title }),
+        doc.status === "draft" ? el("span", { class: "f-rdraft", title: "A draft, not yet live", text: "draft" }) : null,
         opts.start ? el("span", { class: "f-start", text: "Start" }) : null
       ]);
       var li = el("li", null, [a]);
@@ -452,7 +454,10 @@
     (((D.site.home || {}).maps) || []).forEach(function (id) {
       var map = byId(id).filter(function (d) { return d.rows; })[0];
       if (!map || !inFocus(map)) return;
-      var docs = (map.rows || []).map(byKey).filter(function (d) { return d && d.status !== "draft" && inFocus(d); });
+      // A placed document sits only in the map its place names, as its path says; a draft shows, marked.
+      var docs = (map.rows || []).map(byKey).filter(function (d) {
+        return d && inFocus(d) && !(d.place && d.place.map !== map.id);
+      });
       var name = el("a", { class: "f-rmap", href: docURL(map), title: map.description, text: map.title,
         "aria-current": hereDoc === map ? "page" : null });
       if (!docs.length) {
@@ -637,6 +642,44 @@
     return btn;
   }
 
+  /* Where the page lives, from the catalog: Home › Map › Heading › Page for a placed document,
+     Home › Sources › Page and the maps that use it for a cited one, Home › Map for a home map.
+     The rail reads the same `place`, so the two agree. */
+  function placePath(doc, part) {
+    if (doc.id === "home") return null;
+    var home = byId("home").filter(function (d) { return d.rows; })[0];
+    var homeMaps = ((D.site.home || {}).maps) || [];
+    var steps = [];
+    function step(text, url) { steps.push(url ? el("a", { href: url, text: text }) : el("span", { text: text })); }
+    step("Home", home ? docURL(home) : href("/content/"));
+    if (doc.place) {
+      var map = byId(doc.place.map).filter(function (d) { return d.rows; })[0];
+      if (!map) return null;
+      step(map.title, docURL(map));
+      if (doc.place.section) step(doc.place.section, docURL(map) + "#" + encodeURIComponent(doc.place.anchor || ""));
+    } else if (doc.used_by) {
+      step(plural(doc.genre));
+    } else if (!(doc.rows && homeMaps.indexOf(doc.id) >= 0)) {
+      return null;
+    }
+    var chapter = part && part.number;
+    if (chapter) step(doc.title, docURL(doc));
+    var ol = el("ol");
+    steps.forEach(function (s) { ol.appendChild(el("li", null, [s])); });
+    ol.appendChild(el("li", null, [el("span", { "aria-current": "page", text: chapter ? part.title : doc.title })]));
+    var nav = el("nav", { class: "f-path", "aria-label": "Where this page lives" }, [ol]);
+    if (doc.used_by) {
+      var used = doc.used_by.map(function (id) { return byId(id).filter(function (d) { return d.rows; })[0]; }).filter(Boolean);
+      var also = el("span", { class: "f-used" }, [used.length ? "Used in " : "Used in no map yet"]);
+      used.forEach(function (m, i) {
+        if (i) also.appendChild(document.createTextNode(", "));
+        also.appendChild(el("a", { href: docURL(m), text: m.title }));
+      });
+      nav.appendChild(also);
+    }
+    return nav;
+  }
+
   function header(info) {
     var doc = info ? info.doc : null;
     var part = info ? info.part : null;
@@ -686,6 +729,7 @@
 
     var outside = doc && !isHome && !inFocus(doc);
     var head = el("header", { class: "f-head" }, [
+      doc ? placePath(doc, part) : null,
       eyebrow.childNodes.length ? eyebrow : null,
       el("h1", { class: "f-title", text: title }),
       description ? el("p", { class: "f-sub", text: description }) : null,
@@ -824,6 +868,33 @@
     if (cites.length) panelSection("Cites", docList(cites), cites.length);
     if (citedBy.length) panelSection("Cited by", docList(citedBy), citedBy.length);
     if (about.length) panelSection("In the journal", docList(about, true), about.length);
+  }
+
+  /* A map's sources: every cited document its rows cite, grouped by the map's headings, with counts. */
+  function mapSources(map) {
+    var all = {};
+    var groups = [];
+    (map.sections || []).forEach(function (sec) {
+      var found = {};
+      sec.rows.forEach(function (p) {
+        ((D.backlinks[p] || {}).cites || []).forEach(function (q) {
+          var s = byKey(q);
+          if (s && s.used_by && inFocus(s)) found[q] = 1;
+        });
+      });
+      var paths = Object.keys(found).sort(function (a, b) { return byKey(a).title.localeCompare(byKey(b).title); });
+      if (!paths.length) return;
+      paths.forEach(function (q) { all[q] = 1; });
+      groups.push({ title: sec.title, paths: paths });
+    });
+    var total = Object.keys(all).length;
+    if (!total) return;
+    var box = el("div", { class: "f-sources" });
+    groups.forEach(function (g) {
+      box.appendChild(el("h3", null, [g.title || "Rows under no heading", el("span", { class: "f-count", text: String(g.paths.length) })]));
+      box.appendChild(docList(g.paths));
+    });
+    panelSection("Sources", box, total, "f-sources-box");
   }
 
   function detailsPanel(doc, rel) {
@@ -1450,7 +1521,8 @@
   function focusInbox(j) {
     if (!focused()) return j;
     var threads = (j.threads || []).filter(function (t) { return pathInFocus(t.path); });
-    return { threads: threads,
+    var toReview = (j.to_review || []).filter(function (r) { return pathInFocus(r.path); });
+    return { threads: threads, to_review: toReview, reviewing: toReview.length,
       waiting: threads.filter(function (t) { return t.state === "open"; }).length,
       resting: threads.filter(function (t) { return t.state === "noted"; }).length };
   }
@@ -1463,6 +1535,7 @@
       var q = j.waiting === 1 ? "1 question" : j.waiting + " questions";
       var f = j.resting === 1 ? "1 flag" : j.resting + " flags";
       var text = j.waiting || j.resting ? q + " waiting on the agent, " + f + " for you" : "Nothing waiting: no open questions, no resting flags";
+      if (j.reviewing) text += "; " + (j.reviewing === 1 ? "1 page" : j.reviewing + " pages") + " to review";
       if (focused()) text += ", in your focus";
       box.appendChild(el("a", { class: "f-inbox-line", href: reviewURL() }, [icon("chat"), el("span", { text: text })]));
       return j;
@@ -1489,12 +1562,45 @@
       chips.appendChild(chip("", "All", j.threads.length));
       chips.appendChild(chip("open", "Waiting on the agent", j.waiting));
       chips.appendChild(chip("noted", "Flags for you", j.resting));
+      var toReview = j.to_review || [];
+      var reviewChip = chip("review", "To review", toReview.length);
+      chips.appendChild(reviewChip);
       var list = el("ol", { class: "f-inbox" });
+      /* Pages that landed live and changed since the owner last read them, newest first. */
+      function renderReview() {
+        reviewChip.querySelector(".f-count").textContent = String(toReview.length);
+        if (!toReview.length) { list.appendChild(el("li", { class: "f-empty", text: "Nothing to review." })); return; }
+        var open = !!(D.site.comments && D.site.comments.open);
+        toReview.forEach(function (r) {
+          var err = el("p", { class: "f-error" });
+          var btn = el("button", { type: "button", class: "f-reviewed", disabled: open ? null : "",
+            title: open ? "Mark this page reviewed" : ((D.site.comments || {}).reason || "Read-only here"), text: "Reviewed" });
+          btn.addEventListener("click", function () {
+            btn.disabled = true;
+            postJSON({ action: "reviewed", doc: r.path }).then(function () {
+              toReview = toReview.filter(function (x) { return x !== r; });
+              render();
+            }, function (e) { btn.disabled = false; err.textContent = e.message; });
+          });
+          list.appendChild(el("li", { class: "f-inbox-row f-review-row" }, [
+            el("div", { class: "f-entry-top" }, [
+              r.date ? el("time", { datetime: r.date, text: fmtDate(r.date) }) : null,
+              el("span", { class: "f-kind", text: r.note === "new" ? "new" : "changed" }),
+              r.author ? el("span", { class: "f-who", text: r.author }) : null]),
+            el("div", null, [r.genre ? el("span", { class: "f-genre", text: r.genre }) : null,
+              el("a", { class: "f-inbox-doc", href: href(r.url), text: r.title })]),
+            r.note && r.note !== "new" ? el("p", { class: "f-inbox-msg", text: r.note }) : null,
+            el("div", { class: "f-review-act" }, [btn, el("span", { class: "f-cnote", text: "Comment on the page to ask for a change." })]),
+            err
+          ]));
+        });
+      }
       main.appendChild(el("div", { class: "f-filters" }, [chips]));
       main.appendChild(list);
       function render() {
         Array.prototype.forEach.call(chips.children, function (c) { c.setAttribute("aria-pressed", String(c.getAttribute("data-v") === shown)); });
         list.textContent = "";
+        if (shown === "review") { renderReview(); return; }
         var rows = j.threads.filter(function (t) { return !shown || t.state === shown; });
         if (!rows.length) { list.appendChild(el("li", { class: "f-empty", text: "Nothing here." })); return; }
         rows.forEach(function (t) {
@@ -1712,6 +1818,7 @@
           if (doc.versions) paperLanding(doc);
           guideNav(doc, info.part && info.part.number ? info.part : null);
           outline();
+          if (doc.rows) mapSources(doc);
           linkPanels(doc, links);
           detailsPanel(doc, (info.part || doc).path);
         } else {
