@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+A paper is written for readers outside the library.
+
+- `\fcite` prints nothing in the built PDF. The ids stay in the LaTeX source, where the gate and the lab pack's `uncited-number` rule read them, and the sentence around each one must stand on its own. `folio paper build <slug> --ids` makes a review copy that prints each id after the text it backs, raised and in brackets, linked to its page at the charter's `site_url`; `folio paper freeze` always builds the plain copy. `folio.sty` takes the same as a package option, `\usepackage[ids]{folio}`.
+- The paper genre's card says who the reader is (someone who has never seen the library), what the reader gets (a page that stands on its own, each section opening with its finding, counts in prose and intervals in tables, the counting rules stated once in the method) and what is forbidden (a library id or term the reader can see, a results section that reads as an audit trail). The write and publish skills, the lab pack and the specs say the same.
+- The abstract `folio index` reads from `main.tex` drops each `\fcite` as the PDF does, instead of printing its id.
+- The paper skeleton's fallback, for a build without `folio.sty`, is `\providecommand{\fcite}[1]{}`.
+
+Migrating: in every paper, move each `\fcite` so that its sentence reads whole without it (`7 of 9\fcite{R-12}.`, not `7 of 9 (\fcite{R-12}).`), and take every id, result page and lab term out of the prose, tables and figures. `folio paper build --ids` shows where each id stands while you revise.
+
 ## 0.3.0 (2026-10-20)
 
 Every page has one place: one row on one home map, under one heading. Sources are cited, not placed. Pages can land live and be reviewed after.

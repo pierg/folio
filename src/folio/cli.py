@@ -270,7 +270,7 @@ def cmd_paper(args: argparse.Namespace) -> int:
 
     lib = _lib()
     if args.action == "build":
-        print(f"built {paper.build(lib, args.slug).rel}")
+        print(f"built {paper.build(lib, args.slug, ids=args.ids).rel}")
     elif args.action == "freeze":
         if not args.version:
             raise FolioError("usage: folio paper freeze <slug> --version <v>")
@@ -390,6 +390,8 @@ def parser() -> argparse.ArgumentParser:
     s.add_argument("action", choices=["build", "freeze", "versions"])
     s.add_argument("slug")
     s.add_argument("--version", dest="version", help="freeze: the new version's name, such as v1")
+    s.add_argument("--ids", action="store_true",
+                   help="build: print each \\fcite id after the text it backs, for a review copy")
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_paper)
 

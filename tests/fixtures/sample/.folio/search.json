@@ -200,7 +200,7 @@
     "path": "content/papers/tiled-attention/main.tex",
     "status": "live",
     "tags": [],
-    "text": "11pt article graphicx hyperref ../../../assets/figures/ folio.sty folio 1 #1 Tiled attention The owner document abstract Attention computed one tile of keys at a time is exact when the softmax is rescaled. abstract Background We use the definition in softmax , after vaswani2017 . figure t width= attention-tiling Each tile of keys rescales the running sum. figure plain ../../../assets/refs document",
+    "text": "11pt article graphicx hyperref ../../../assets/figures/ folio.sty folio 1 Tiled attention The owner document abstract Attention computed one tile of keys at a time is exact when the softmax is rescaled. abstract Background We use the standard definition of the softmax softmax , after vaswani2017 . figure t width= attention-tiling Each tile of keys rescales the running sum. figure plain ../../../assets/refs document",
     "title": "Tiled attention",
     "url": "/content/papers/tiled-attention/main.tex"
   },

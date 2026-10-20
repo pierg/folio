@@ -55,5 +55,5 @@ The organise skill then proposes fixes, one page at a time. Usually that means r
 
 - **With the knowledge-base pack.** A number quoted from someone else's work cites the source it came from, and `uncited-number` accepts that. Your own measurements are results, never sources.
 - **The journal is core.** The lab writes into the library's one journal. A run's raw numbers may appear there first; a journal entry is a record, so the rule does not flag it.
-- **The paper is core.** With this pack on, every measured number in a paper carries `\fcite{R-n}`.
+- **The paper is core.** With this pack on, every measured number in a paper carries `\fcite{R-n}` in its source. The PDF prints none of them: the gate reads the source, and the reader gets a paper, not the record.
 - **Concepts stay clean.** A concept's definition cites no result, so it survives when the numbers change. Cite results below the definition, not inside it.

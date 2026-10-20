@@ -81,7 +81,7 @@ class Charter:
     theme: str
     journal_kinds: list[str]
     search: list[str] = field(default_factory=list)
-    site_url: str = ""  # where the exported site is published; a paper's \fcite links resolve from it
+    site_url: str = ""  # where the exported site is published; a paper's review build links each cited id from it
     identity_header: str = ""  # the request header a sign-in proxy names the reader in; empty: none
     libraries: dict[str, LibraryRef] = field(default_factory=dict)
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())

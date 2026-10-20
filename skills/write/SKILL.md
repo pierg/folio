@@ -29,7 +29,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 2. The house voice in the charter sits under every genre's voice. Both apply.
 3. One fact has one home. Search before you write, and cite the home instead of restating its value.
 4. Write from the sources, never from another page, a summary or memory. A number quoted forward from a summary is a rumour.
-5. Every number carries its source, as a citation by id. A reader can check it in one click.
+5. Every number carries its source, as a citation by id. A reader can check it in one click. In a paper the citation is for the gate and the author, not the reader: `\fcite` prints nothing, so the sentence stands without it, and no id, path or library term reaches the page.
 6. Nulls are as prominent as wins. A failure, a drop or a dead end is stated as plainly, in the same place and voice.
 7. Plain is not vague. "It did not help" is vague; "12 of 40 pass, against 14 yesterday" is plain and precise.
 8. Codes are links, not content. An id, a path or a hash rides beside the sentence it supports and is never its subject.
@@ -75,6 +75,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
    - Cite every other document by id. Run `folio cite <id>` to get its path and the right markup for this format.
    - A document in another library the charter names under `libraries`: `folio cite <library>:<id>` prints the link into it. Such a link is not a citation, and it never stands in for a number's source.
    - A number cites the document that holds it. If nothing holds it yet, say so and leave the number out, or write its home first.
+   - In a paper, write `\fcite{<id>}` right after what it backs, with no space before it, and read every sentence without its `\fcite`: that is what the reader gets. The paper genre's card says what else the reader must not see.
 7. **Design the page.** An HTML page is a canvas: read `craft/layout.md` (`folio genre <name>` names where the craft guides are) and pick the form that shows the material, from its "Choosing a form" table. Lead with the figure, control or contrast that carries the idea, when one does, then the prose it cannot show. A figure, control or animation is there because it shows what prose cannot, never to decorate.
    - Lay it out with the page's own `<style>`, behind one short class prefix, and adapt with `@container folio-canvas` queries, never `@media`.
    - The words stay in the markup. A script may arrange, reveal and highlight them, never write them, and only toggles classes and attributes.

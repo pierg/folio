@@ -62,9 +62,11 @@ def current_pdf(lib: Library, doc: Document) -> Path | None:
     return pdf if pdf.is_file() else None
 
 
-def _cites_file(lib: Library, df: DocFile) -> str:
+def _cites_file(lib: Library, df: DocFile, ids: bool = False) -> str:
     """One `\\foliocite{id}{title}{address}` per cited id; an id that names no document fails the build."""
     lines = ["% Written by `folio paper build`. Do not edit.\n"]
+    if ids:
+        lines.append("\\folioshowids\n")
     seen: set[str] = set()
     missing = []
     for link in lib.links.get(df.path, []):
@@ -122,8 +124,12 @@ def _first_error(log: Path) -> str:
     return "see the log"
 
 
-def build(lib: Library, ref: str) -> Build:
-    """Compile a paper in `.folio/build/<slug>/` and return its PDF."""
+def build(lib: Library, ref: str, ids: bool = False) -> Build:
+    """Compile a paper in `.folio/build/<slug>/` and return its PDF.
+
+    The PDF prints no library id: `\\fcite` leaves only the sentence around it. With `ids`,
+    a review build, each id is printed after the text it backs, linked to its page.
+    """
     doc = paper(lib, ref)
     main = doc.main
     assert main is not None and main.latex is not None
@@ -132,10 +138,10 @@ def build(lib: Library, ref: str) -> Build:
         raise FolioError("`folio paper build` needs latexmk, which is not installed; install a TeX "
                          "distribution that includes it, such as TeX Live, and build again")
     if not _USES_FOLIO_RE.search(main.latex):
-        raise FolioError(f"{main.path} does not load folio.sty, so its \\fcite would not link; add "
-                         "`\\IfFileExists{folio.sty}{\\usepackage{folio}}{\\providecommand{\\fcite}[1]"
-                         "{\\texttt{#1}}}` after hyperref, as the paper skeleton does")
-    cites = _cites_file(lib, main)
+        raise FolioError(f"{main.path} does not load folio.sty, so its \\fcite is undefined; add "
+                         "`\\IfFileExists{folio.sty}{\\usepackage{folio}}{\\providecommand{\\fcite}[1]{}}` "
+                         "after hyperref, as the paper skeleton does")
+    cites = _cites_file(lib, main, ids)
     out = build_dir(lib, doc)
     out.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(STY, out / STY.name)
