@@ -46,7 +46,7 @@ def _rows(lib: Library, m: Document, text: str) -> list[dict[str, Any]]:
 
 
 def listing(lib: Library) -> dict[str, Any]:
-    """Each map with its rows, and the documents no map lists."""
+    """Each map with its rows, and the documents no map lists (a cited document, never a row, aside)."""
     maps = [d for d in lib.documents if d.is_a("map")]
     top = lib.charter.home_maps
     listed: set[Document] = set()
@@ -68,7 +68,8 @@ def listing(lib: Library) -> dict[str, Any]:
     unmapped = [{"id": d.id, "path": d.key, "genre": d.genre_name, "title": d.title,
                  "orphan": d.key in orphans}
                 for d in lib.documents
-                if d not in listed and not d.is_home and not d.is_a("journal") and d.status != "retired"]
+                if d not in listed and not d.is_home and not d.is_a("journal") and d.status != "retired"
+                and not (d.genre is not None and d.genre.on_map == "cited")]  # a source is never a row
     return {"maps": out_maps, "unmapped": unmapped}
 
 
@@ -243,15 +244,15 @@ def move(lib: Library, doc_ref: str, to: str, from_ref: str | None = None) -> li
     if doc is target:
         raise FolioError("a map does not list itself")
     _refuse_cited(lib, target, doc)
-    listing = [mm for mm in lib.documents if mm.is_a("map")
+    holders = [mm for mm in lib.documents if mm.is_a("map")
                and _find_row(lib, mm, doc, mm.main.text if mm.main else "") is not None]
     if from_ref is not None:
         source = _map(lib, from_ref)
-        if source not in listing:
+        if source not in holders:
             raise FolioError(f"{source.id} has no row for {doc.id}")
     else:
-        homes = [mm for mm in placement.home_maps(lib) if mm in listing]
-        pool = homes or listing
+        homes = [mm for mm in placement.home_maps(lib) if mm in holders]
+        pool = homes or holders
         if not pool:
             raise FolioError(f"{doc.id} is on no map; `folio map add <map> {doc.id}` adds its row")
         if len(pool) > 1:

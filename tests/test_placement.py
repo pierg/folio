@@ -173,6 +173,12 @@ def test_an_anchor_is_the_headings_id_or_its_text_as_the_shell_slugs_it(sample: 
     assert "function slug(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, \"-\")" in SHELL
 
 
+def test_folio_maps_does_not_list_a_source_as_on_no_map(sample: Path, monkeypatch, capsys) -> None:
+    assert folio(sample, "maps", "--json", monkeypatch=monkeypatch) == 0
+    unmapped = {d["id"] for d in json.loads(out_of(capsys))["unmapped"]}
+    assert "2017-attention-is-all-you-need" not in unmapped and "2017-attention-is-all-you-need-reading" not in unmapped
+
+
 def test_a_source_is_used_by_each_home_map_that_links_it_in_the_charters_order(sample: Path) -> None:
     edit(sample / LAB, "<ul class=\"rows\">",
          '<p>Background: <a href="/content/sources/2017-attention-is-all-you-need/">the paper</a>.</p>\n<ul class="rows">')
