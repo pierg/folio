@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+The recommended review mode is none: with `save.review` unset, pages land live, the journal shows every change, and the write skill puts a page on the To review list only when it truly needs the owner. The configure skill recommends it; `after` and `drafts` stay as opt-ins.
+
 A paper is written for readers outside the library.
 
 - `\fcite` prints nothing in the built PDF. The ids stay in the LaTeX source, where the gate and the lab pack's `uncited-number` rule read them, and the sentence around each one must stand on its own. `folio paper build <slug> --ids` makes a review copy that prints each id after the text it backs, raised and in brackets, linked to its page at the charter's `site_url`; `folio paper freeze` always builds the plain copy. `folio.sty` takes the same as a package option, `\usepackage[ids]{folio}`.
