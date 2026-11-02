@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.1 (2026-11-02)
 
 The recommended review mode is none: with `save.review` unset, pages land live, the journal shows every change, and the write skill puts a page on the To review list only when it truly needs the owner. The configure skill recommends it; `after` and `drafts` stay as opt-ins.
 
