@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 (2026-11-03)
+
+Deck fixes in the shell.
+
+- A deck's `data-theme` now sets the tokens for its slides only. It used to set them on the whole deck, so the notes and slide numbers under each slide took the slides' theme: on a light deck read in dark mode they were dark text on a dark page.
+- Notes with talking points and no script take one column, and a paragraph after the points (such as a sources line) runs under them instead of filling the script's column.
+
 ## 0.3.1 (2026-11-02)
 
 The recommended review mode is none: with `save.review` unset, pages land live, the journal shows every change, and the write skill puts a page on the To review list only when it truly needs the owner. The configure skill recommends it; `after` and `drafts` stay as opt-ins.
