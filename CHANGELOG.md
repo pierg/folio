@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The specs say what the skills already do: `save.review` absent is the default, `folio init` writes none, and `folio review add` works whatever it says. The write skill's command list and the configure skill's note on leaving `drafts` match.
+
 ## 0.3.1 (2026-11-02)
 
 The recommended review mode is none: with `save.review` unset, pages land live, the journal shows every change, and the write skill puts a page on the To review list only when it truly needs the owner. The configure skill recommends it; `after` and `drafts` stay as opt-ins.
