@@ -299,6 +299,7 @@ def test_under_review_after_a_new_page_starts_live_and_on_the_list(sample: Path,
 # -- review after landing -----------------------------------------------------------------
 
 def test_review_add_list_and_done(sample: Path, monkeypatch, capsys) -> None:
+    assert library.load_at(sample).charter.save.review == ""  # the list works with save.review absent
     assert folio(sample, "review", "list", monkeypatch=monkeypatch) == 0
     assert "Nothing to review." in out_of(capsys)
     assert folio(sample, "review", "add", "softmax", "--note", "New overflow section", "--author", "agent:w",
