@@ -2,7 +2,7 @@
    Every colour, face and size is a token on :root. Pages use the tokens and the
    components in COMPONENTS.md, never their own hex values, so both themes hold. */
 
-:root, .deck[data-theme="light"] {
+:root, .deck[data-theme="light"] :is(.f-slide-frame, .slide) {
   color-scheme: light;
   --paper: #f8f6f1;
   --surface: #fffefb;
@@ -62,7 +62,7 @@
     --kept: #4ade80;  --discarded: #f6c453; --rejected: #f58a8a; --untested: #a19c92;
   }
 }
-:root[data-theme="dark"], .deck[data-theme="dark"] {
+:root[data-theme="dark"], .deck[data-theme="dark"] :is(.f-slide-frame, .slide) {
   color-scheme: dark;
   --paper: #151513; --surface: #1c1c19; --sunk: #222220;
   --ink: #ece9e2; --ink-2: #b7b1a6; --ink-3: #868075;
@@ -866,6 +866,9 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 .deck .notes p { margin: 0 0 .6em; }
 /* Structured notes: talking points beside the script; H hides the script to rehearse from the points. */
 .deck .notes:has(.points) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 0 2.2rem; max-width: none; }
+/* Points without a script take one column, and the sources line sits under them. */
+.deck .notes:has(.points):not(:has(.script)) { display: block; max-width: 52rem; }
+.deck .notes:has(.points) > p { grid-column: 1 / -1; }
 .deck .notes:has(.points)::before { content: none; }
 .deck .notes .points, .deck .notes .script { min-width: 0; margin: 0; }
 .deck .notes .points::before, .deck .notes .script::before { display: block; margin-bottom: .45rem; font: 650 .7rem/1.2 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
