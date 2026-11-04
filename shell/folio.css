@@ -214,6 +214,18 @@ img, svg, video { max-width: 100%; height: auto; }
     margin-left: calc(var(--rail) + max(0px, (100% - var(--rail) - var(--lw)) / 2)); margin-right: auto; }
 }
 
+/* The page panel's button: only on a page that has one, and only where it sits beside the page.
+   Hidden (]), the panel leaves its column to the page, as the journal's wide layout does. */
+.f-panel-btn { display: none; padding: 0 .5rem; margin-right: -.5rem; }
+@media (min-width: 72rem) {
+  .f-has-panel .f-panel-btn { display: inline-flex; }
+  html[data-panel="closed"] .f-has-panel .f-panel-btn { color: var(--ink-3); }
+  html[data-panel="closed"] .f-has-panel .f-layout { grid-template-columns: minmax(0, 1fr); }
+  html[data-panel="closed"] .f-column.f-has-panel .f-layout { --lw: calc(var(--measure) + 2 * var(--gutter)); }
+  html[data-panel="closed"] .f-column.f-has-panel .f-foot { max-width: calc(var(--measure) + 2 * var(--gutter)); }
+  html[data-panel="closed"] .f-panel { display: none; }
+}
+
 /* ------------------------------------------------------- the library rail */
 .f-rail-btn { padding: 0 .5rem; margin-left: -.5rem; }
 .f-rail {
@@ -297,7 +309,7 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-rlegend > span { display: inline-flex; align-items: center; gap: .3rem; }
 /* the parent row of a chapter being read is marked, not filled */
 .f-rlist a.f-here:not([aria-current]) { background: none; }
-.f-rkeys { margin: 1.5rem .55rem 0; color: var(--ink-3); font-size: .74rem; }
+.f-rkeys { margin: 1.5rem .55rem 0; color: var(--ink-3); font-size: .74rem; line-height: 1.9; }
 .f-rkeys kbd { font: 500 .7rem/1 var(--mono); border: 1px solid var(--rule-strong); border-radius: 4px; padding: .1rem .3rem; color: var(--ink-2); }
 .f-rail-backdrop { display: none; }
 @media (min-width: 78rem) {

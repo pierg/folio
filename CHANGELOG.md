@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4 (2026-11-04)
+
+- The page panel, on the right, hides and shows like the library rail: the `]` key or a new button at the right of the top bar, on a wide screen. While it is hidden the page takes its room, and the choice is remembered in that browser. On a narrower screen the panel still follows the page.
+
 ## 0.3.3 (2026-11-04)
 
 - A long link in a page's text, such as a DOI or URL identifier on a source page, now breaks mid-word rather than widening the page on a phone. A library that worked around it with its own `overflow-wrap` rule on `ul.identifiers a.identifier` can drop that rule.

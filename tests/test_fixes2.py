@@ -330,3 +330,14 @@ def test_a_retired_document_skips_its_card_checks(sample: Path, monkeypatch) -> 
     assert any("flashattention-tiling" in p.path and p.check == "min_links" for p in problems(sample))
     assert folio(sample, "rm", "flashattention-tiling", "--to", "attention", monkeypatch=monkeypatch) == 0
     assert not any("flashattention-tiling" in p.path and p.check == "min_links" for p in problems(sample))
+
+
+def test_the_page_panel_hides_and_shows_like_the_rail() -> None:
+    # `]` or the top bar's button hides the panel on a wide screen; the choice is remembered and set before paint.
+    css = (Path(__file__).resolve().parents[1] / "shell" / "folio.css").read_text()
+    assert 'e.key === "]"' in SHELL and "function setPanel(open)" in SHELL
+    assert 'store("panel") === "closed"' in SHELL and 'store("panel", open ? null : "closed")' in SHELL
+    assert '"aria-controls": "f-panel"' in SHELL and 'id: "f-panel"' in SHELL
+    assert 'document.body.classList.add("f-has-panel")' in SHELL
+    assert 'html[data-panel="closed"] .f-panel { display: none; }' in css
+    assert ".f-has-panel .f-panel-btn { display: inline-flex; }" in css

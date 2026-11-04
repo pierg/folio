@@ -47,6 +47,7 @@
       expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
       home: "M4 11 12 4l8 7M6 9.5V20h12V9.5",
       rail: "M4 5h16v14H4zM9.5 5v14",
+      panel: "M4 5h16v14H4zM14.5 5v14",
       focus: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1",
       copy: "M9 9h11v11H9zM5 15H4V4h11v1",
       check: "M5 12.5 10 17.5 19 7",
@@ -246,6 +247,8 @@
   applyTheme(store("theme"));
   // The library rail's place on a wide screen, set before the page paints so it never jumps.
   if (store("rail") === "closed") document.documentElement.setAttribute("data-rail", "closed");
+  // The page panel's too, on the right.
+  if (store("panel") === "closed") document.documentElement.setAttribute("data-panel", "closed");
   function currentTheme() {
     var set = document.documentElement.getAttribute("data-theme");
     if (set) return set;
@@ -258,7 +261,7 @@
   function frame(view, rel) {
     main = document.querySelector("main") || el("main");
     page = el("article", { class: "f-page" });
-    panel = el("aside", { class: "f-panel", "aria-label": "About this page" });
+    panel = el("aside", { class: "f-panel", id: "f-panel", "aria-label": "About this page" });
     var layout = el("div", { class: "f-layout" }, [page, panel]);
     if (!main.parentNode) document.body.appendChild(main);
     main.parentNode.insertBefore(layout, main);
@@ -302,7 +305,9 @@
         focusControl(),
         el("button", { class: "f-btn f-search-btn", type: "button", onclick: openSearch, "aria-label": "Search" },
           [icon("search"), el("span", { class: "f-label", text: "Search" }), el("kbd", { text: mac ? "⌘K" : "Ctrl K" })]),
-        themeBtn
+        themeBtn,
+        el("button", { class: "f-btn f-panel-btn", type: "button", "aria-label": "Page panel", "aria-controls": "f-panel",
+          "aria-expanded": String(panelShown()), title: "Page panel  ]", onclick: function () { setPanel(!panelShown()); } }, [icon("panel")])
       ])
     ]);
   }
@@ -323,6 +328,8 @@
      A group the reader opens or closes is remembered in this browser. */
   var NARROW = "(max-width: 77.99rem)";
   function narrow() { return !!(window.matchMedia && matchMedia(NARROW).matches); }
+  /* Wide enough for the page panel to sit beside the page (the stylesheet's 72rem). */
+  function wide() { return !(window.matchMedia && matchMedia("(max-width: 71.99rem)").matches); }
   function plural(word) {
     var w = human(word);
     if (/[^aeiou]y$/.test(w)) return w.slice(0, -1) + "ies";
@@ -521,7 +528,8 @@
     if (used.length) box.appendChild(el("p", { class: "f-rlegend" }, used.map(function (g) {
       return el("span", null, [el("span", { class: "f-gmark", "data-g": g, text: markOf(g) }), " " + g]);
     })));
-    box.appendChild(el("p", { class: "f-rkeys" }, [el("kbd", { text: "[" }), " shows or hides the library"]));
+    box.appendChild(el("p", { class: "f-rkeys" }, [el("kbd", { text: "[" }), " shows or hides the library", el("br"),
+      el("kbd", { text: "]" }), " shows or hides the page panel"]));
     box.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest("a");
       if (!a) return;
@@ -559,6 +567,17 @@
     side.inert = !open;
     document.body.classList.add("f-has-rail");
     Array.prototype.forEach.call(document.querySelectorAll(".f-rail-btn"), function (b) { b.setAttribute("aria-expanded", String(open)); });
+  }
+  /* The page panel, on the right of a wide screen: shown unless the reader hid it (remembered), as the
+     rail is. On a narrower screen it follows the page and stays. Its button shows only when the page has
+     a panel (.f-has-panel, set once the panel is drawn). */
+  function panelShown() { return document.documentElement.getAttribute("data-panel") !== "closed"; }
+  function setPanel(open) {
+    if (!document.body.classList.contains("f-has-panel")) return;
+    store("panel", open ? null : "closed");
+    if (open) document.documentElement.removeAttribute("data-panel");
+    else document.documentElement.setAttribute("data-panel", "closed");
+    Array.prototype.forEach.call(document.querySelectorAll(".f-panel-btn"), function (b) { b.setAttribute("aria-expanded", String(open)); });
   }
   /* The current page's row, in view in a long rail. */
   function keepInView(side) {
@@ -1221,6 +1240,9 @@
     if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) { e.preventDefault(); openSearch(); }
     else if (e.key === "/" && !typing) { e.preventDefault(); openSearch(); }
     else if (e.key === "[" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); setRail(!railShown()); }
+    else if (e.key === "]" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && document.body.classList.contains("f-has-panel") && wide()) {
+      e.preventDefault(); setPanel(!panelShown());
+    }
     else if (e.key === "Escape") {
       if (narrow() && document.body.classList.contains("f-rail-open")) setRail(false);
       closeSearch(); hidePop();
@@ -1828,6 +1850,7 @@
         if (served()) { if (info) annotations(rel); }
         else if (info) staticNote();
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
+        else document.body.classList.add("f-has-panel");
       }
       hookPreviews(document.body);
       figures();
