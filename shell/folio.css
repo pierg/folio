@@ -423,6 +423,8 @@ main hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5em 0; }
 main blockquote { margin-left: 0; padding-left: 1.1rem; border-left: 2px solid var(--rule-strong); color: var(--ink-2); }
 main code { font: .84em/1.4 var(--mono); padding: .08em .3em; border-radius: 4px; background: var(--sunk); overflow-wrap: anywhere; }
 main a code { color: inherit; }
+/* A long URL or identifier as link text breaks mid-word rather than widening a phone's page. */
+main a { overflow-wrap: anywhere; }
 /* An id cited in backticks reads as a link, not as code. */
 main a.f-cite { text-decoration-line: underline; }
 main a.f-cite code { color: var(--link); background: none; padding: 0; }
