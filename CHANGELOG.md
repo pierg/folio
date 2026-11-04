@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 (2026-11-04)
+
+- A long link in a page's text, such as a DOI or URL identifier on a source page, now breaks mid-word rather than widening the page on a phone. A library that worked around it with its own `overflow-wrap` rule on `ul.identifiers a.identifier` can drop that rule.
+
 ## 0.3.2 (2026-11-03)
 
 Deck fixes in the shell.
