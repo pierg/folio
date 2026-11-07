@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from collections import deque
+from pathlib import Path
 from typing import Any, Callable
 
 from .. import indexer
@@ -19,6 +20,19 @@ from ..util import PLACEHOLDER_RE, has_placeholder, is_slug, parse_date
 Found = list[tuple[str, str]]
 GateCheck = Callable[[Library], Found]
 LAYOUTS = ("canvas", "column")  # a page's `layout`: the whole canvas (default), or the reading column
+
+
+def _behind_unresolved_link(root: Path, rel: str) -> bool:
+    """Whether a path runs through a link that does not resolve on this machine, such as a lab's `runs/`
+    linking to a store this machine does not mount: it cannot be checked here, so it is not reported."""
+    here = root
+    for part in Path(rel).parts[:-1]:
+        here = here / part
+        if here.is_symlink() and not here.exists():
+            return True
+        if not here.exists():
+            return False
+    return False
 
 
 def broken_link(lib: Library) -> Found:
@@ -136,7 +150,8 @@ def fields(lib: Library) -> Found:
                 out.append((mf.path, f"field `{spec.name}` {problem}"))
                 continue
             if spec.type == "path":
-                if not (lib.charter.root_dir / str(value)).exists():
+                if not (lib.charter.root_dir / str(value)).exists() and \
+                        not _behind_unresolved_link(lib.charter.root_dir, str(value)):
                     out.append((mf.path, f"field `{spec.name}`: `{value}` does not exist under the root"))
             if spec.type in ("id", "ids"):
                 values = value if isinstance(value, list) else [v.strip() for v in str(value).split(",")]

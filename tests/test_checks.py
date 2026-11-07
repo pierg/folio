@@ -323,3 +323,16 @@ def test_charter_genre_setting_overrides_card(sample: Path) -> None:
     edit(sample / "folio.yaml", "checks:\n", "genres:\n  concept: { max_words: 5 }\nchecks:\n")
     assert {p.path for p in found(sample, "max_words")} == {
         "content/concepts/softmax/index.html", "content/concepts/self-attention/index.html"}
+
+
+def test_a_path_behind_a_link_that_does_not_resolve_is_not_checked_here(sample) -> None:
+    import re
+
+    from conftest import edit, found
+    result = sample / "content/results/R-3.md"
+    old = re.search(r'(?m)^evidence: "?([^"\n]+)"?$', result.read_text()).group(1)
+    (sample / "runs").symlink_to(sample.parent / "a-store-not-mounted-here")
+    edit(result, old, "runs/exp/run/out/x.tsv")
+    assert not [p for p in found(sample, "fields") if "does not exist" in p.message]
+    edit(result, "runs/exp/run/out/x.tsv", "nowhere/x.tsv")
+    assert [p for p in found(sample, "fields") if "does not exist" in p.message]
