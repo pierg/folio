@@ -19,7 +19,7 @@ CHARTER = "folio.yaml"
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
     "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries", "save",
-    "rail",
+    "rail", "baseline",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
@@ -87,6 +87,9 @@ class Charter:
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
     # Genres the rail keeps apart, last, as evidence; None: the charter does not say, the packs do.
     rail_evidence: list[str] | None = None
+    # A commit whose tree the lifecycle checks take as every file's first version; history before it is
+    # not read by them. Set once, for a recorded rewrite of permanent and frozen files; empty: none.
+    baseline: str = ""
 
     @property
     def library(self) -> Path:
@@ -117,6 +120,7 @@ class Charter:
                           for n, r in self.libraries.items()},
             "save": {"gate": self.save.gate, "review": self.save.review, "url": self.save.url},
             "rail": {"evidence": None if self.rail_evidence is None else list(self.rail_evidence)},
+            "baseline": self.baseline,
         }
 
 
@@ -217,7 +221,18 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         libraries=_libraries(raw, where),
         save=_save(raw, where),
         rail_evidence=_rail_evidence(raw, where),
+        baseline=_baseline(raw, where),
     )
+
+
+def _baseline(raw: dict[str, Any], where: str) -> str:
+    """`baseline: <commit>`: the full hash of the commit the lifecycle checks start from (model §10)."""
+    value = raw.get("baseline")
+    if value is None or value == "":
+        return ""
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{40}", value):
+        raise FolioError(f"{where}: `baseline` must be a full 40-character commit hash")
+    return value
 
 
 def _rail_evidence(raw: dict[str, Any], where: str) -> list[str] | None:

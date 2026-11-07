@@ -1,5 +1,7 @@
 """The lifecycle checks, `permanent` and `frozen`, and record-id reuse (check `unique-id`), against git history.
 
+They read history from the charter's `baseline` on, when it names one: its tree is every file's first version.
+
 The working tree is the newest version, so an uncommitted edit is an edit.
 A file that was never committed has no history yet and is not flagged.
 """
@@ -59,7 +61,7 @@ def permanent(lib: Library, doc: Document) -> Found:
         return []
     out: Found = []
     for df in doc.files:
-        found = history.commits(lib, [df.path])
+        found = history.commits(lib, [df.path], checked=True)
         if not found:
             continue  # never committed: nothing is fixed yet
         first = found[0][0]
@@ -93,7 +95,7 @@ def permanent_parts(lib: Library, doc: Document) -> Found:
         spec = genre.parts.get(df.part) if df.part is not None else None
         if spec is None or spec.lives != "permanent":
             continue
-        found = history.commits(lib, [df.path])
+        found = history.commits(lib, [df.path], checked=True)
         if not found:
             continue  # never committed: nothing is fixed yet
         first = found[0][0]
@@ -135,7 +137,7 @@ def frozen(lib: Library, doc: Document) -> Found:
     if genre is None or mf is None or not history.in_git(lib):
         return []
     paths = [f.path for f in doc.files]
-    found = history.versions(lib, paths)
+    found = history.versions(lib, paths, checked=True)
     first = next((i for i, v in enumerate(found)
                   if status_of(v.files.get(mf.path), mf.path) in genre.frozen_in), None)
     if first is None:
@@ -191,7 +193,7 @@ def reused_ids(lib: Library) -> Found:
     """A record id held now by a document once held by a file that was deleted."""
     by_prefix = {g.prefix: g for g in lib.registry.genres.values() if g.prefix}
     out: Found = []
-    for path, commit in history.deleted(lib):
+    for path, commit in history.deleted(lib, checked=True):
         stem = PurePosixPath(path).stem
         match = RECORD_ID_RE.match(stem)
         if not match or match.group(1) not in by_prefix:
