@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The specs say what the skills already do: `save.review` absent is the default, `folio init` writes none, and `folio review add` works whatever it says. The write skill's command list and the configure skill's note on leaving `drafts` match.
+
 ## 0.3.7 (2026-11-07)
 
 - A `path` field that runs through a link which does not resolve on this machine, such as a lab's `runs/` linking to a store that CI does not mount, is not reported by `fields`: it cannot be checked here. A path that is simply missing is still an error.
