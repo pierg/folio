@@ -5,3 +5,7 @@ dist/
 build/
 *.egg-info/
 _site/
+
+# Virtual environments
+.venv/
+venv/

@@ -264,7 +264,7 @@ def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:
     for name, entry in table.items():
         name = str(name)
         if not re.match(r"^[a-z][a-z0-9-]*$", name):
-            raise FolioError(f"{where}: library name `{name}` must be a lowercase slug, such as pier-folio")
+            raise FolioError(f"{where}: library name `{name}` must be a lowercase slug, such as team-notes")
         if name in _WEB_SCHEMES:
             raise FolioError(f"{where}: library name `{name}` is a scheme the web already uses; pick another")
         entry = _only(entry, _LIBRARY_KEYS, f"libraries.{name}", where)
