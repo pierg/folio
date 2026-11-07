@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.7 (2026-11-07)
+
+- A `path` field that runs through a link which does not resolve on this machine, such as a lab's `runs/` linking to a store that CI does not mount, is not reported by `fields`: it cannot be checked here. A path that is simply missing is still an error.
+
 ## 0.3.6 (2026-11-07)
 
 - `baseline: <file>` in `folio.yaml`: a list of `<sha256>  <path>` for files rewritten on the record, such as a lab renaming the run paths its results cite. `permanent` compares a listed file with the listed bytes instead of its first commit; `frozen` compares a listed document's text with the version holding them, and still reads its status over its whole history. It names contents, not a commit, so it survives a squash merge; its lines are only ever added.
