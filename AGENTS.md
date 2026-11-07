@@ -53,8 +53,8 @@ In the folio library at `docs`, `folio save` does all of this in one step: run i
 
 **Change lane.** Everything else (code, scripts, configuration, schemas, skills, this file, CI,
 dependencies) goes through a pull request:
-1. Branch from the latest `origin/main` in a separate worktree, named after the task (its tracker
-   issue, for example `pie-142-fix-login`).
+1. Branch from the latest `origin/main` in a separate worktree, named after the task, for example
+   `fix-login`.
 2. Push early and open a draft pull request.
 3. When the work is done and the gate passes, squash-merge it with a clear title and description,
    then delete the branch and the worktree.
