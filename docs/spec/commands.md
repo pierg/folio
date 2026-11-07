@@ -24,7 +24,7 @@ The `--json` output of `folio cite`, `folio maps`, `folio cards`, `folio genres`
 | `folio map reason <map> <doc> ".."` | Changes a row's reason. |
 | `folio map rm <map> <doc>` | Removes a row from a map. |
 | `folio review list [--all] [--json]` | The documents to review (model §12), newest change first: each with its id, path, the date and note of its latest `changed` mark, and who wrote it. `--all` also lists every document with a review mark, with its state, `to review` or `reviewed`. |
-| `folio review add <doc> --note ".." [--author <who>]` | Puts a document on the To review list: adds a `changed` mark, with a line saying what changed, to its annotation file. The write skill runs it after a substantive revision under `save.review: after`. |
+| `folio review add <doc> --note ".." [--author <who>]` | Puts a document on the To review list: adds a `changed` mark, with a line saying what changed, to its annotation file. It works whatever `save.review` says. The write skill runs it when the owner really must look at something specific, and after a substantive revision under `save.review: after`. |
 | `folio review done <doc> [--author <who>]` | Takes a document off the To review list: adds a `reviewed` mark, dated today. The author defaults to the git user, as a comment's does. It refuses a document that is not to review. |
 | `folio tags [rename <old> <new>]` | The tags in use, and renames one everywhere. |
 | `folio mv <doc> <to>` | Moves a document: links rewritten, comments and dates kept. A committed document keeps its id and its old address is redirected; a document never committed takes its new slug as its id, with no redirect. It stages the rename, and every file it changed, in git and says so. |

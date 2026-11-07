@@ -135,7 +135,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 - `folio maps` lists the maps and the documents on none.
 - `folio map add <map> <doc> --section ".." [--reason ".."] [--after <doc>]` gives a document its place: a row under a heading.
 - `folio map move <doc> --to <map>#<heading>` moves a row, once the owner has agreed.
-- `folio review add <doc> --note ".."` puts a substantively revised document on the To review list, under `save.review: after`.
+- `folio review add <doc> --note ".."` puts a document on the To review list: one the owner really must look at, or, under `save.review: after`, a substantively revised one.
 - `folio annotations show|add <doc>` reads open comments and adds flags or questions; `add` without `--quote` is about the whole document.
 - `folio journal add --title ".." --description ".." --body ".." [--kind <kind>] [--about <id>,..]` writes a new journal entry.
 - `folio index` regenerates the indices.
