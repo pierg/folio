@@ -1,8 +1,12 @@
 # Changelog
 
+## 0.3.6 (2026-11-07)
+
+- `baseline: <file>` in `folio.yaml`: a list of `<sha256>  <path>` for files rewritten on the record, such as a lab renaming the run paths its results cite. `permanent` compares a listed file with the listed bytes instead of its first commit; `frozen` compares a listed document's text with the version holding them, and still reads its status over its whole history. It names contents, not a commit, so it survives a squash merge; its lines are only ever added.
+
 ## 0.3.5 (2026-11-07)
 
-- `baseline: <commit>` in `folio.yaml`: the lifecycle checks (`permanent`, `frozen`, `unique-id`) read history from that commit on, taking its tree as every file's first version. It is for one recorded rewrite of permanent and frozen files, such as a lab renaming the run paths its results cite. The commit must be in the branch's history, so CI that runs the gate checks out with full history.
+- `baseline: <commit>` in `folio.yaml`. Withdrawn in 0.3.6: a commit does not survive a squash merge, and this form could unfreeze a document. Use 0.3.6.
 
 ## 0.3.4 (2026-11-04)
 
