@@ -87,8 +87,8 @@ class Charter:
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
     # Genres the rail keeps apart, last, as evidence; None: the charter does not say, the packs do.
     rail_evidence: list[str] | None = None
-    # A commit whose tree the lifecycle checks take as every file's first version; history before it is
-    # not read by them. Set once, for a recorded rewrite of permanent and frozen files; empty: none.
+    # A file, from the library, listing `<sha256>  <path>` for files rewritten once on the record: the
+    # lifecycle checks read each listed file's history from the oldest version with that text. Empty: none.
     baseline: str = ""
 
     @property
@@ -226,12 +226,12 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
 
 
 def _baseline(raw: dict[str, Any], where: str) -> str:
-    """`baseline: <commit>`: the full hash of the commit the lifecycle checks start from (model §10)."""
+    """`baseline: <file>`: the list of rewritten files the lifecycle checks start from (model §10)."""
     value = raw.get("baseline")
     if value is None or value == "":
         return ""
-    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{40}", value):
-        raise FolioError(f"{where}: `baseline` must be a full 40-character commit hash")
+    if not isinstance(value, str) or Path(value).is_absolute() or ".." in Path(value).parts:
+        raise FolioError(f"{where}: `baseline` names a file inside the library, such as baseline.sha256")
     return value
 
 

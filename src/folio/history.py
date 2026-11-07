@@ -9,6 +9,8 @@ ask `in_git` first.
 from __future__ import annotations
 
 import datetime as _dt
+import hashlib
+import re
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -56,38 +58,13 @@ def _has_head(lib: "Library") -> bool:
     return bool(lib.cache["history.head"])
 
 
-def baseline(lib: "Library") -> str:
-    """The charter's `baseline` commit, checked to be in this history; empty when the charter names none.
-
-    The lifecycle checks read history from it on: its tree is every file's first version.
-    """
-    commit = lib.charter.baseline
-    if not commit or not _has_head(lib):
-        return ""
-    if "history.baseline" not in lib.cache:
-        if _git(lib, "merge-base", "--is-ancestor", commit, "HEAD", check=False).returncode != 0:
-            raise FolioError(f"folio.yaml: `baseline` {commit[:7]} is not a commit in this branch's history "
-                             "(a shallow clone needs the full history: fetch-depth 0)")
-        lib.cache["history.baseline"] = _dt.date.fromisoformat(
-            _git(lib, "show", "-s", "--format=%cs", commit).stdout.strip())
-    return commit
-
-
-def commits(lib: "Library", paths: list[str], checked: bool = False) -> list[tuple[str, _dt.date]]:
-    """The commits that touched any of these paths, oldest first, with their dates.
-
-    `checked`: as the lifecycle checks read history. With a charter `baseline`, the baseline commit comes
-    first when any of the paths exists in its tree, then only the commits after it.
-    """
+def commits(lib: "Library", paths: list[str]) -> list[tuple[str, _dt.date]]:
+    """The commits that touched any of these paths, oldest first, with their dates."""
     if not _has_head(lib):
         return []
-    base = baseline(lib) if checked else ""
-    span = [f"{base}..HEAD"] if base else []
-    out = _git(lib, "log", "--format=%H %cs", *span, "--", *paths).stdout.split()
-    pairs = list(reversed([(out[i], _dt.date.fromisoformat(out[i + 1])) for i in range(0, len(out), 2)]))
-    if base and any(_git(lib, "cat-file", "-e", f"{base}:./{p}", check=False).returncode == 0 for p in paths):
-        pairs.insert(0, (base, lib.cache["history.baseline"]))
-    return pairs
+    out = _git(lib, "log", "--format=%H %cs", "--", *paths).stdout.split()
+    pairs = [(out[i], _dt.date.fromisoformat(out[i + 1])) for i in range(0, len(out), 2)]
+    return list(reversed(pairs))
 
 
 def show(lib: "Library", commit: str, path: str) -> str | None:
@@ -101,13 +78,9 @@ def _working(lib: "Library", path: str) -> str | None:
     return target.read_text(encoding="utf-8") if target.is_file() else None
 
 
-def versions(lib: "Library", paths: list[str], checked: bool = False) -> list[Version]:
-    """Every committed version of these files, oldest first, then the working tree if it differs.
-
-    `checked`: from the charter's `baseline` on, as `commits` reads it.
-    """
-    out = [Version(sha, day, {p: show(lib, sha, p) for p in paths})
-           for sha, day in commits(lib, paths, checked)]
+def versions(lib: "Library", paths: list[str]) -> list[Version]:
+    """Every committed version of these files, oldest first, then the working tree if it differs."""
+    out = [Version(sha, day, {p: show(lib, sha, p) for p in paths}) for sha, day in commits(lib, paths)]
     now = {p: _working(lib, p) for p in paths}
     if not out or out[-1].files != now:
         if out or any(v is not None for v in now.values()):
@@ -125,17 +98,12 @@ def dates(lib: "Library", path: str) -> tuple[_dt.date | None, _dt.date | None]:
     return found[0][1], found[-1][1]
 
 
-def deleted(lib: "Library", under: str = "content", checked: bool = False) -> list[tuple[str, str]]:
-    """Files deleted from history under a folder, as (path, deleting commit), oldest first.
-
-    `checked`: only deletions after the charter's `baseline`.
-    """
+def deleted(lib: "Library", under: str = "content") -> list[tuple[str, str]]:
+    """Files deleted from history under a folder, as (path, deleting commit), oldest first."""
     if not in_git(lib) or not _has_head(lib):
         return []
-    base = baseline(lib) if checked else ""
-    span = [f"{base}..HEAD"] if base else []
     text = _git(lib, "log", "--diff-filter=D", "--name-only", "--relative", "--format=@%H",
-                *span, "--", under).stdout
+                "--", under).stdout
     out: list[tuple[str, str]] = []
     commit = ""
     for line in text.splitlines():
@@ -160,3 +128,88 @@ def tree(lib: "Library", commit: str, folder: str) -> list[str]:
         return []
     prefix = _git(lib, "rev-parse", "--show-prefix").stdout.strip()
     return sorted(p[len(prefix):] for p in result.stdout.splitlines() if p.startswith(prefix))
+
+
+def _digest(data: bytes | None) -> str | None:
+    return None if data is None else hashlib.sha256(data).hexdigest()
+
+
+def baseline(lib: "Library") -> dict[str, str]:
+    """The files the charter's `baseline` lists, each with the sha256 of the bytes it was last rewritten to
+    on the record; empty when the charter names none (model §10).
+
+    The file's lines are only ever added: a line changed or removed since any committed version of the file
+    is an error, so a listed text cannot be swapped silently for a later edit. A path listed twice takes the
+    later line, a second rewrite on the record.
+    """
+    if "history.baseline" in lib.cache:
+        return lib.cache["history.baseline"]
+    found: dict[str, str] = {}
+    name = lib.charter.baseline
+    if name:
+        path = lib.charter.library / name
+        rel = path.relative_to(lib.root).as_posix()
+        if not path.is_file():
+            raise FolioError(f"folio.yaml: `baseline` names {name}, which does not exist")
+        text = path.read_text(encoding="utf-8")
+        lines = _baseline_lines(text, name)
+        if in_git(lib):
+            charter = lib.charter.path.relative_to(lib.root).as_posix()
+            for sha, _ in commits(lib, [charter]):
+                named = re.search(r"(?m)^baseline:\s*(\S+)", show(lib, sha, charter) or "")
+                if named and named.group(1).strip("'\"") != name:
+                    raise FolioError(f"folio.yaml: `baseline` named {named.group(1)} in {sha[:7]}; once set, it "
+                                     "names the same file for good")
+            for sha, _ in commits(lib, [rel]):
+                before = show(lib, sha, rel)
+                if before is not None and lines[:len(_baseline_lines(before, name))] != _baseline_lines(before, name):
+                    raise FolioError(f"{name}: a line committed in {sha[:7]} was changed or removed; "
+                                     "its lines are only ever added")
+        for digest, listed in lines:
+            found[listed] = digest
+    lib.cache["history.baseline"] = found
+    return found
+
+
+def _baseline_lines(text: str, name: str) -> list[tuple[str, str]]:
+    out = []
+    for number, line in enumerate(text.splitlines(), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        digest, sep, rel = line.partition("  ")
+        if not sep or not rel or len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+            raise FolioError(f"{name}:{number}: expected `<sha256 in lowercase hex>  <path from the library>`")
+        out.append((digest, rel))
+    return out
+
+
+def listed_now(lib: "Library", path: str) -> bool | None:
+    """For a file the baseline lists: whether its bytes now are the listed ones. None when it is not listed."""
+    digest = baseline(lib).get(path)
+    if digest is None:
+        return None
+    target = lib.root / path
+    return _digest(target.read_bytes() if target.is_file() else None) == digest
+
+
+def baseline_version(lib: "Library", found: list[Version], paths: list[str]) -> int | None:
+    """The index of the newest version whose files all hold the bytes the baseline lists, when every one of
+    the document's files is listed; None otherwise."""
+    listed = baseline(lib)
+    if not paths or any(p not in listed for p in paths):
+        return None
+    for i in range(len(found) - 1, -1, -1):
+        version = found[i]
+        ok = True
+        for p in paths:
+            if version.commit == WORKING:
+                target = lib.root / p
+                data = target.read_bytes() if target.is_file() else None
+            else:
+                data = show_bytes(lib, version.commit, p)
+            if _digest(data) != listed[p]:
+                ok = False
+                break
+        if ok:
+            return i
+    return None

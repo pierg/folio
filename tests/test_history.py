@@ -136,9 +136,11 @@ def test_dates(repo: Path) -> None:
     assert history.dates(lib, "content/nothing.md") == (None, None)
 
 
-def _head(repo: Path) -> str:
-    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True,
-                          text=True).stdout.strip()
+def _baseline(repo: Path, *paths: str) -> None:
+    import hashlib
+    lines = "".join(f"{hashlib.sha256((repo / p).read_bytes()).hexdigest()}  {p}\n" for p in paths)
+    (repo / "baseline.sha256").write_text(lines)
+    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: baseline.sha256\n")
 
 
 def test_baseline_accepts_a_recorded_rewrite(repo: Path) -> None:
@@ -146,23 +148,66 @@ def test_baseline_accepts_a_recorded_rewrite(repo: Path) -> None:
     edit(repo / PROTOCOL, "Each point is an independent draw, inside the quarter circle or not.", "Each point is a draw.")
     commit(repo, "rewrite")
     assert found(repo, "permanent") and found(repo, "frozen")
-    rewrite = _head(repo)
-    edit(repo / "folio.yaml", "\nroot:", f"\nbaseline: {rewrite}\nroot:") if "\nroot:" in \
-        (repo / "folio.yaml").read_text() else (repo / "folio.yaml").write_text(
-            (repo / "folio.yaml").read_text() + f"baseline: {rewrite}\n")
+    _baseline(repo, JOURNAL, PROTOCOL)
     commit(repo, "baseline")
     assert found(repo, "permanent") == [] and found(repo, "frozen") == []
     edit(repo / JOURNAL, "Set up this library", "Set up a library")  # after the baseline: an edit again
     assert [p.path for p in found(repo, "permanent")] == [JOURNAL]
+    edit(repo / PROTOCOL, "Each point is a draw.", "Each point is one draw.")
+    assert [p.path for p in found(repo, "frozen")] == [PROTOCOL]
 
 
-def test_baseline_must_be_in_history(repo: Path) -> None:
-    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: " + "a" * 40 + "\n")
-    with pytest.raises(Exception, match="not a commit in this branch's history"):
+def test_baseline_passes_before_the_commit(repo: Path) -> None:
+    edit(repo / JOURNAL, "Set up the library", "Set up this library")
+    edit(repo / PROTOCOL, "Each point is an independent draw, inside the quarter circle or not.", "Each point is a draw.")
+    _baseline(repo, JOURNAL, PROTOCOL)  # nothing committed: `folio save` runs the gate first
+    assert found(repo, "permanent") == [] and found(repo, "frozen") == []
+
+
+def test_baseline_never_unfreezes(repo: Path) -> None:
+    edit(repo / PROTOCOL, "status: locked", "status: draft")
+    _baseline(repo, PROTOCOL)
+    commit(repo, "a rewrite that also sets the status back")
+    msgs = found(repo, "frozen")
+    assert len(msgs) == 1 and "draft" in msgs[0].message
+
+
+def test_baseline_lines_are_only_added(repo: Path) -> None:
+    edit(repo / JOURNAL, "Set up the library", "Set up this library")
+    _baseline(repo, JOURNAL)
+    commit(repo, "rewrite")
+    edit(repo / JOURNAL, "Set up this library", "Set up a library")
+    import hashlib
+    digest = hashlib.sha256((repo / JOURNAL).read_bytes()).hexdigest()
+    (repo / "baseline.sha256").write_text(f"{digest}  {JOURNAL}\n")  # swapping the line for a later edit
+    with pytest.raises(Exception, match="only ever added"):
         problems(repo)
 
 
-def test_baseline_must_be_a_full_hash(repo: Path) -> None:
-    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: abc123\n")
-    with pytest.raises(Exception, match="40-character"):
+def test_baseline_survives_a_squash(repo: Path) -> None:
+    edit(repo / JOURNAL, "Set up the library", "Set up this library")
+    _baseline(repo, JOURNAL)
+    commit(repo, "rewrite and baseline in one commit, as a squash merge lands them")
+    assert found(repo, "permanent") == []
+
+
+def test_baseline_file_must_exist(repo: Path) -> None:
+    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: nowhere.sha256\n")
+    with pytest.raises(Exception, match="does not exist"):
+        problems(repo)
+
+
+def test_baseline_stays_in_the_library(repo: Path) -> None:
+    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: ../outside.sha256\n")
+    with pytest.raises(Exception, match="inside the library"):
         library.load_at(repo)
+
+
+def test_baseline_key_is_fixed_once_set(repo: Path) -> None:
+    edit(repo / JOURNAL, "Set up the library", "Set up this library")
+    _baseline(repo, JOURNAL)
+    commit(repo, "rewrite")
+    (repo / "b2.sha256").write_text("")
+    edit(repo / "folio.yaml", "baseline: baseline.sha256", "baseline: b2.sha256")
+    with pytest.raises(Exception, match="names the same file for good"):
+        problems(repo)
