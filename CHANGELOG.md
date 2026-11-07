@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.5 (2026-11-07)
+
+- `baseline: <commit>` in `folio.yaml`: the lifecycle checks (`permanent`, `frozen`, `unique-id`) read history from that commit on, taking its tree as every file's first version. It is for one recorded rewrite of permanent and frozen files, such as a lab renaming the run paths its results cite. The commit must be in the branch's history, so CI that runs the gate checks out with full history.
+
 ## 0.3.4 (2026-11-04)
 
 - The page panel, on the right, hides and shows like the library rail: the `]` key or a new button at the right of the top bar, on a wide screen. While it is hidden the page takes its room, and the choice is remembered in that browser. On a narrower screen the panel still follows the page.

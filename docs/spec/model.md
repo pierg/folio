@@ -253,6 +253,8 @@ Under `libraries:`, each name is a lowercase slug, used as the scheme of a link 
 
 Under `rail:`, `evidence` lists genres the library rail shows last, apart from the reading genres (§14). Without it, the `evidence` of every pack switched on applies (the lab pack's is `protocol` and `result`); an empty list keeps every genre with the reading genres, listed by name. An empty `evidence:` (null) is an error: write `[]`. Each genre it names exists and is switched on (check `rail-genres`).
 
+`baseline` is optional: the full hash of one commit. The lifecycle checks (`permanent`, `frozen`, `unique-id`) then read history from it on: its tree is every file's first version, and only later commits count. It exists for one recorded rewrite of permanent and frozen files, such as renaming the paths they cite; set it to the commit that made the rewrite, in the next commit, and record why in the journal. It must be in the branch's history, so a clone that runs the gate fetches the full history.
+
 Under `genres:`, a genre takes `enabled` and any setting of its card's checks. Under `checks:`, a check takes `error`, `warning` or `off`. Check names are listed in `checks.md`.
 
 

@@ -134,3 +134,35 @@ def test_dates(repo: Path) -> None:
     created, updated = history.dates(lib, JOURNAL)
     assert created is not None and created == updated
     assert history.dates(lib, "content/nothing.md") == (None, None)
+
+
+def _head(repo: Path) -> str:
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True,
+                          text=True).stdout.strip()
+
+
+def test_baseline_accepts_a_recorded_rewrite(repo: Path) -> None:
+    edit(repo / JOURNAL, "Set up the library", "Set up this library")
+    edit(repo / PROTOCOL, "Each point is an independent draw, inside the quarter circle or not.", "Each point is a draw.")
+    commit(repo, "rewrite")
+    assert found(repo, "permanent") and found(repo, "frozen")
+    rewrite = _head(repo)
+    edit(repo / "folio.yaml", "\nroot:", f"\nbaseline: {rewrite}\nroot:") if "\nroot:" in \
+        (repo / "folio.yaml").read_text() else (repo / "folio.yaml").write_text(
+            (repo / "folio.yaml").read_text() + f"baseline: {rewrite}\n")
+    commit(repo, "baseline")
+    assert found(repo, "permanent") == [] and found(repo, "frozen") == []
+    edit(repo / JOURNAL, "Set up this library", "Set up a library")  # after the baseline: an edit again
+    assert [p.path for p in found(repo, "permanent")] == [JOURNAL]
+
+
+def test_baseline_must_be_in_history(repo: Path) -> None:
+    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: " + "a" * 40 + "\n")
+    with pytest.raises(Exception, match="not a commit in this branch's history"):
+        problems(repo)
+
+
+def test_baseline_must_be_a_full_hash(repo: Path) -> None:
+    (repo / "folio.yaml").write_text((repo / "folio.yaml").read_text() + "baseline: abc123\n")
+    with pytest.raises(Exception, match="40-character"):
+        library.load_at(repo)
