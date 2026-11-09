@@ -33,7 +33,7 @@ Change where documents live and how the maps reach them, with every link, commen
 5. A map row links a document. Give it a one-line reason only when this map's reader needs one; without it, the row shows the document's description.
 6. Every page has one place: a document whose card says `on_map: placed` is one row on one home map, under one heading. Move a place with `folio map move`, never by adding a second row. A document whose card says `cited` (a source) takes no row; the maps whose pages cite it list it.
 7. Tags are facets for filtering, never structure. Structure lives in maps.
-8. Structural changes are the owner's call: a new top-level map, a merge, a retirement of their own writing, and any move or rename of an existing page, heading or map. Propose, say why, and act when asked. Placing a new page is not structural: do it.
+8. A change that removes or merges the owner's own writing is the owner's call: a merge, a retirement of their own writing. Propose, say why, and act when asked. Everything else is yours to do and report: placing a new page, a new map, and any move or rename of an existing page, heading or map (each is one command to undo).
 9. Record every reorganisation as a journal entry of kind `decision`, old names to new, about the documents and maps it touched.
 10. An audit proposes and the owner decides. Report every verdict before changing anything, and apply only what the owner approved.
 
@@ -55,15 +55,15 @@ Pick the change, then follow its line.
 7. **Rebalance the maps**, after the write skill adds pages (it runs this pass on the maps it touched), when `folio check` warns `heading-size`, or when asked:
    1. For each map, read its headings and their rows (`folio maps`, the map page).
    2. Look for: a heading past about 12 rows, or too mixed to name in a few words (split it); an empty heading (remove it); an existing page that now fits another heading, or a new one, better; a heading that has grown into a topic of its own (a new map, which configure puts on the home page).
-   3. Placing a new page needs no approval. Every change to an existing page, heading or map is a proposal: one short table (page, from, to, why), and wait for the owner's yes. New pages land meanwhile.
-   4. Apply what the owner approved: `folio map move <doc> --to <map>#<heading>` for each row, a heading renamed through write on the map page.
-   5. If the owner does not answer in the session, leave the table as a question on the map page so it shows on the Review page: `folio annotations add <map> --kind question --label "rebalance" --body "<the table>" --author agent:<name>`.
+   3. Apply each change without waiting: `folio map move <doc> --to <map>#<heading>` for each row, a heading renamed through write on the map page.
+   4. Report it in one short table (page, from, to, why), in your reply and in the journal entry of rule 9. The owner reverts any move they dislike with `folio map move`.
+   5. A change that would merge or retire the owner's own writing stays a proposal (rule 8): leave it as a question on the map page so it shows on the Review page: `folio annotations add <map> --kind question --label "rebalance" --body "<the table>" --author agent:<name>`.
 8. **Tags:** `folio tags` lists them. Merge spellings that look alike with `folio tags rename <old> <new>`. A tag on one document earns a second or goes.
 9. **Pack fixes:** after a pack is switched on, `folio check` names what its rules flag. Propose one fix per document, and apply each the owner approves through this skill or write.
 10. **Health pass**, when asked or after a large change:
    1. `folio check` passes.
    2. Orphans: `folio maps` lists documents on no map. Add each to a map, or link it from one.
-   3. Places: `folio check` names each placed page on no home map, on two, or outside every heading (check `placement`), and each source that is a row. Propose one place for each in a table and apply it with `folio map move` and `folio map rm` once approved. Headings past 12 rows get the rebalance pass (step 7).
+   3. Places: `folio check` names each placed page on no home map, on two, or outside every heading (check `placement`), and each source that is a row. Give each one place, apply it with `folio map move` and `folio map rm`, and report the table. Headings past 12 rows get the rebalance pass (step 7).
    4. Thin documents: fold them into the document they belong to.
    5. Duplicates: `folio search` for each key term. Two homes for one fact become one.
    6. Stale maps: a map whose opening take predates most of its rows gets a revision through write.

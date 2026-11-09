@@ -94,10 +94,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
     - `cited`: no row. Cite it from the pages that use it.
     - `required`: add a row. `optional`: add a row, or link the document from one that is already on a map. `never` and `exempt`: nothing to do.
     - A reason is optional and one line, written for a reader choosing where to go; without one, the row shows the document's description.
-11. **Rebalance the maps you touched.** After adding pages, run the organise skill's rebalance pass on each map you added rows to: a heading grown past about 12 rows (`folio check` warns, check `heading-size`) or too mixed to name in a few words, an existing page that now fits a new heading better, a topic that has earned its own map. New pages are placed without asking. Any change that moves or renames an existing page, heading or map is proposed, not applied:
-    - Show one short table: page, from, to, why. Wait for the owner's yes, then apply it with `folio map move <doc> --to <map>#<heading>` (organise).
-    - The new pages land meanwhile; never hold them back for the proposal.
-    - If the owner does not answer in the session, leave the proposal as a question on the map page, so it shows on the Review page: `folio annotations add <map> --kind question --label "rebalance" --body "<the table, in a few lines>" --author agent:<name>`.
+11. **Rebalance the maps you touched.** After adding pages, run the organise skill's rebalance pass on each map you added rows to: a heading grown past about 12 rows (`folio check` warns, check `heading-size`) or too mixed to name in a few words, an existing page that now fits a new heading better, a topic that has earned its own map. New pages are placed, and existing pages, headings and maps moved or renamed, without asking: apply each move with `folio map move <doc> --to <map>#<heading>` (organise), and report the moves in one short table: page, from, to, why. Only a merge or a retirement of the owner's own writing stays a proposal (organise, rule 8).
 12. **Record it.** When the change is worth a dated record, add a journal entry: `folio journal add --title "<title>" --description "<one line>" --body "<what changed, linking the documents touched>" [--kind <kind>] [--about <id>,..]`. Name the documents it concerns in `--about`, so it shows on each. Use a kind the library accepts. Each entry is a new file; never edit an old one.
 13. **Check a long document.** Re-read it against its sources only. Check every number, id, verdict word and bound. Fix what does not match, then re-read.
 14. **Run the gate.** `folio index`, then `folio check`. Fix everything it names and run it again.
@@ -118,7 +115,7 @@ Add a document to the library, or revise one in place, in its genre's voice and 
 - Every number and fact cites its home, and every defined term links to its definition.
 - Every flag asks the owner for a decision; routine work carries none.
 - The document has its one place (a placed card: one row on one home map, under a heading) or is on a map or linked from one, as its card's `on_map` says.
-- Every map you touched has had its rebalance pass; any move of an existing page, heading or map waits for the owner's yes, in the session or as a question on the map.
+- Every map you touched has had its rebalance pass; its moves are applied and reported in one table.
 - Under `save.review: after`, every new or substantively revised document is on the To review list.
 - `folio index` has run and `folio check` passes.
 - The change is saved with `folio save`.
