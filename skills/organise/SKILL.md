@@ -33,7 +33,7 @@ Change where documents live and how the maps reach them, with every link, commen
 5. A map row links a document. Give it a one-line reason only when this map's reader needs one; without it, the row shows the document's description.
 6. Every page has one place: a document whose card says `on_map: placed` is one row on one home map, under one heading. Move a place with `folio map move`, never by adding a second row. A document whose card says `cited` (a source) takes no row; the maps whose pages cite it list it.
 7. Tags are facets for filtering, never structure. Structure lives in maps.
-8. A change that removes or merges the owner's own writing is the owner's call: a merge, a retirement of their own writing. Propose, say why, and act when asked. Everything else is yours to do and report: placing a new page, a new map, and any move or rename of an existing page, heading or map (each is one command to undo).
+8. A change that removes, merges or rewrites the owner's own writing is the owner's call: a merge, a retirement of their own writing, a fix to its prose. Propose, say why, and act when asked. Everything else is yours to do and report: placing a new page, a new map, and any move or rename of an existing page, heading or map (each is one command to undo).
 9. Record every reorganisation as a journal entry of kind `decision`, old names to new, about the documents and maps it touched.
 10. An audit proposes and the owner decides. Report every verdict before changing anything, and apply only what the owner approved.
 
