@@ -1,25 +1,18 @@
-"""The checks that read git history, annotations, or a pack's rules, registered by name.
+"""The checks that read git history or a pack's rules, registered by name.
 
 The lifecycle checks and record-id reuse live in `lifecycle`, the pack rules
-in `rules`, the annotation threads in `folio.annotations`.
+in `rules`.
 """
 
 from __future__ import annotations
 
-from .. import annotations, history
+from .. import history
 from ..library import Library
 from .lifecycle import frozen, permanent
 from .problems import Problem
 from .rules import cites_superseded, source_pointer, uncited_number, unverified_identifier
 
-Found = list[tuple[str, str]]
-
 GIT_CHECKS = ("permanent", "frozen", "unique-id")
-
-
-def stale_quote(lib: Library) -> Found:
-    """An open question still quotes text that is on its document."""
-    return annotations.stale_quotes(lib)
 
 
 def history_notice(lib: Library, severity: dict[str, str]) -> list[Problem]:
@@ -45,7 +38,6 @@ def history_notice(lib: Library, severity: dict[str, str]) -> list[Problem]:
                     f"{', '.join(live)} could not be checked against history and were skipped")]
 
 
-LIBRARY_CHECKS = {"stale-quote": stale_quote}
 LIFECYCLE_CHECKS = {"permanent": permanent, "frozen": frozen}
 RULE_CHECKS = {
     "uncited-number": uncited_number,

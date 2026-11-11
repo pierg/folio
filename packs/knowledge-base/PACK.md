@@ -34,7 +34,7 @@ Nothing is rewritten. The pack adds three genres and two workflows.
 
 The identifier rule looks only at source documents. A library that had the pack off has none, so that rule flags nothing at first. The `source-pointer` rule reads every page, so it may warn about pointers already written; the organise skill can rewrite them.
 
-Older notes or entries may already describe works you read. The organise skill can propose promoting each one to a source and a reading. You approve each move, and promotion keeps ids, links, comments and dates.
+Older notes or entries may already describe works you read. The organise skill can propose promoting each one to a source and a reading. You approve each move, and promotion keeps ids, links and dates.
 
 ## Working with other packs
 

@@ -16,7 +16,7 @@ Vary the form. A system with parts, a flow, a set to compare, a mechanism with a
 
 The page's layout is the author's: grids, columns, widths, type scale, sections, interaction, motion. Five things stay fixed, because the library reads them:
 
-1. **The words are in the markup.** Write every sentence, label and caption in the HTML. A script may arrange, reveal, highlight and animate them, and must not write them. Comments are anchored by quoting the page file, and search and the gate read the same file, so text a script generates is invisible to all three. The one exception is a label that repeats words already in the markup, such as a dial's tick names or a chart's axis.
+1. **The words are in the markup.** Write every sentence, label and caption in the HTML. A script may arrange, reveal, highlight and animate them, and must not write them. Search and the gate read the page file, so text a script generates is invisible to both. The one exception is a label that repeats words already in the markup, such as a dial's tick names or a chart's axis.
 2. **The genre's hooks stay.** A concept keeps its `defn`; a map keeps its `ul.rows`; a guide's chapters stay parts. The card names them.
 3. **The voice stays.** Take a position where the genre does, support every claim where it is made, cite every number, state a null as plainly as a win, and flag only what needs the owner's judgement.
 4. **Colours come from the shell's tokens.** Use `var(--teal)`, `var(--surface)`, `var(--ink-2)` and the rest (`shell/COMPONENTS.md`), never a hex value, so the page works in both themes. One register per figure.

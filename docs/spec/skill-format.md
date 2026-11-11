@@ -1,6 +1,6 @@
 # SKILL.md: how a skill is written
 
-Read [`model.md`](model.md) first. folio has seven skills, and the set is fixed: set-up, configure, write, organise, address, publish, run. A skill holds how to act. What is specific to a genre lives in its GENRE.md, and what is specific to a procedure lives in its WORKFLOW.md.
+Read [`model.md`](model.md) first. folio has six skills, and the set is fixed: set-up, configure, write, organise, publish, run. A skill holds how to act. What is specific to a genre lives in its GENRE.md, and what is specific to a procedure lives in its WORKFLOW.md.
 
 ## Front matter
 
@@ -32,6 +32,6 @@ The description says when to use the skill, with the user's own words for it, so
 - A skill never edits the charter, except set-up and configure.
 - A skill never writes a document directly. It goes through write, and write goes through the genre's card and the gate.
 - A skill records a decision (a pack switched on, a topic merged, a genre added) as a new journal entry: `folio journal add --title .. --description .. --body .. --kind decision --about ..`. It never edits an existing entry.
-- A skill that changes the library ends each change with a commit, after `folio index` and a green `folio check`. The commit holds exactly the documents touched, their annotation files (`<stem>.annotations.json`), `.folio/` (the indices and redirects are committed), the charter if it changed, and any assets or evidence the documents cite. Never `git add -A`. Lifecycles are checked against git, so an uncommitted record is not yet permanent.
+- A skill that changes the library ends each change with a commit, after `folio index` and a green `folio check`. The commit holds exactly the documents touched, `.folio/` (the indices and redirects are committed), the charter if it changed, and any assets or evidence the documents cite. Never `git add -A`. Lifecycles are checked against git, so an uncommitted record is not yet permanent.
 - A skill is written for any coding agent that reads `.agents/skills/`, not for one product.
 - Plain words, short sentences. No reference to any particular project, person or organisation.

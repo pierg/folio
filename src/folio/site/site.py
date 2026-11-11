@@ -23,7 +23,7 @@ from ..library import Library
 from . import dates, render
 
 JOURNAL_VIEW = "content/journal/index.html"
-REVIEW_VIEW = "content/review/index.html"
+LEFTOVER = ".annotations.json"  # a comment file from before folio 0.4.0, never served or exported
 SITE_DATA = f"{INDEX_DIR}/site.json"
 COPIED = ("content", "assets")  # library folders served as they are, besides the documents
 
@@ -67,8 +67,7 @@ class Site:
             raise FolioError(f"--base must start and end with `/`, not `{base}`")
         self.lib = lib
         self.base = base
-        self.live = live  # served by `folio serve`, so the comment panel talks to the server
-        self.comments: dict | None = None  # the server's answer on commenting; None on an exported site
+        self.live = live  # served by `folio serve`, so a page follows its own file
         self.pdfs: dict[str, str] = {}  # on an export, each deck's key and the site path its PDF is written at
         self._dates: dict[str, dict[str, str]] | None = None
 
@@ -129,8 +128,6 @@ class Site:
             "builds": {key: url_of(path) for key, (path, _) in sorted(self.paper_builds().items())},
             "pdfs": {key: url_of(path) for key, path in sorted(self.pdfs.items())},
             "live": self.live,
-            "review": {"url": url_of(REVIEW_VIEW)},
-            "comments": self.comments,
             "libraries": {name: {"url": ref.url} for name, ref in sorted(lib.charter.libraries.items())},
         }
 
@@ -151,15 +148,15 @@ class Site:
                 rel = path.relative_to(lib.root).as_posix()
                 if not path.is_file() or any(p.startswith(".") for p in path.relative_to(lib.root).parts):
                     continue
-                if rel.endswith(".annotations.json"):
-                    continue  # comments stay in the library, never on a published site
+                if rel.endswith(LEFTOVER):
+                    continue  # comment files from before folio 0.4.0 name readers: never published
                 if rel.startswith("content/") and path.name.startswith("original."):
                     continue  # a source's kept original is a private copy: `folio serve` shows it, export never
                 if rel in moved or rel in builds:
                     continue
                 yield _served(rel) if rel in lib.by_path else rel
         yield from sorted(builds)
-        yield JOURNAL_VIEW  # the review page is not exported: an exported site carries no comments
+        yield JOURNAL_VIEW
         for name in sorted(p.name for p in (lib.root / INDEX_DIR).glob("*.json")):
             if name != "redirects.json":
                 yield f"{INDEX_DIR}/{name}"
@@ -188,16 +185,13 @@ class Site:
         if path == JOURNAL_VIEW and JOURNAL_VIEW not in lib.by_path:
             return self._page(JOURNAL_VIEW, render.view(
                 "Journal", "journal", "What happened and what was decided, newest first."))
-        if path == REVIEW_VIEW and REVIEW_VIEW not in lib.by_path:
-            return self._page(REVIEW_VIEW, render.view(
-                "Review", "review", "Questions waiting on the agent and flags resting for you, newest first."))
         if path == SITE_DATA:
             return Response(json.dumps(self.site_data(), indent=1).encode(), _type(path))
         if path.startswith("shell/"):
             return self._file(shell_dir(lib) / path[len("shell/"):], path)
         if path.startswith(INDEX_DIR + "/") and path.endswith(".json") and path != redirects_mod.FILE:
             return self._file(lib.root / path, path)
-        if path.split("/", 1)[0] not in COPIED or path.endswith(".annotations.json"):
+        if path.split("/", 1)[0] not in COPIED or path.endswith(LEFTOVER):
             return None
         if path.endswith(".html"):
             record = path[: -len(".html")] + ".md"

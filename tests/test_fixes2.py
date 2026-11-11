@@ -193,12 +193,6 @@ def test_catalog_keeps_a_maps_sections_under_their_headings(sample: Path) -> Non
     assert "sectionsOf(map, docs)" in SHELL and "f-gmark" in SHELL
 
 
-# 15. A whole-page comment from the drawer
-
-def test_drawer_offers_a_whole_page_comment() -> None:
-    assert "Comment on the whole page" in SHELL and 'pendingQuote = ""; render();' in SHELL
-
-
 # 17 and 21. New groups, and a fresh map's placeholder group
 
 def test_map_add_on_a_fresh_map_replaces_the_placeholder(sample: Path, monkeypatch) -> None:

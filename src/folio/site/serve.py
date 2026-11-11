@@ -1,8 +1,9 @@
-"""`folio serve`, `folio up` and `folio down`: the site, served with the comment panel."""
+"""`folio serve`, `folio up` and `folio down`: the site, served live and read only."""
 
 from __future__ import annotations
 
 import hashlib
+import ipaddress
 import json
 import os
 import signal
@@ -13,49 +14,31 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Mapping
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .. import library as library_mod
 from ..errors import FolioError
 from ..indexer import INDEX_DIR
-from . import notes, pdf, review
-from .identity import Policy, is_loopback
-from .record import Recorder
+from . import pdf
 from .site import SITE_DATA, Response, Site, shell_dir
 
 HOST = "127.0.0.1"
 PORT = 5170
 PID_FILE = f"{INDEX_DIR}/serve.pid"
 LOG_FILE = f"{INDEX_DIR}/serve.log"
-API = "/_folio/annotations"
-INBOX = "/_folio/inbox"
 PDF = "/_folio/pdf"
 ETAG = "/_folio/etag"  # a page's current ETag, which the shell polls to follow edits
-MAX_BODY = 64 * 1024  # bytes a comment request may carry
 
 
-class Comments:
-    """How one running server takes comments: who may write, and how a comment is recorded."""
-
-    def __init__(self, root: Path, host: str = HOST, push: bool = False) -> None:
-        lib = library_mod.load_at(root)
-        self.root = root
-        self.host = host
-        self.policy = Policy(root, host, lib.charter.identity_header)
-        self.recorder = Recorder(lib.root, push)
-
-    def startup(self) -> str:
-        refusal = self.policy.refusal()
-        if refusal:
-            return "comments are read-only: a public address needs comments.identity_header in folio.yaml"
-        who = f"the {self.policy.header} header" if self.policy.header else "your git user.name"
-        return f"comments are written as {who}; {self.recorder.describe()}"
-
-    def status(self, headers: Mapping[str, str]) -> dict[str, object]:
-        """What the shell needs to know about commenting, for one request."""
-        who, refusal = self.policy.who(headers)
-        return {"open": who is not None, "who": who.name if who else None, "reason": refusal}
+def is_loopback(host: str) -> bool:
+    """True when the address only this machine can reach: 127.0.0.1, ::1, localhost."""
+    host = host.strip("[]")
+    if host == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
 
 
 class LiveSite:
@@ -150,7 +133,7 @@ class LiveSite:
             return self._site
 
     def site_data(self) -> dict:
-        """`.folio/site.json`'s data, kept until a file changes; the caller adds the commenter."""
+        """`.folio/site.json`'s data, kept until a file changes."""
         site = self.current()
         with self._lock:
             if site is self._site and self._data is not None:
@@ -182,8 +165,8 @@ def _hostname(value: str) -> str:
     return value.rsplit(":", 1)[0] if value.count(":") == 1 else value
 
 
-def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRequestHandler]:
-    comments = comments or Comments(root)
+def handler_for(root: Path, host: str = HOST) -> type[BaseHTTPRequestHandler]:
+    public = not is_loopback(host)
     live = LiveSite(root)
 
     class Handler(BaseHTTPRequestHandler):
@@ -195,7 +178,7 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
         def _send(self, status: int, body: bytes, kind: str, location: str | None = None,
                   etag: str | None = None) -> None:
             """A response. With an ETag the browser keeps it and asks again with If-None-Match;
-            without one (the comment API, errors) it keeps nothing."""
+            without one (the server's own answers, errors) it keeps nothing."""
             if etag is not None and etag in (self.headers.get("If-None-Match") or ""):
                 self.send_response(304)
                 self.send_header("ETag", etag)
@@ -219,16 +202,9 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
 
         def _host_ok(self) -> bool:
             """On a loopback address, only a loopback Host: another site's name pointed here gets nothing."""
-            if comments.policy.public:
+            if public:
                 return True
             return is_loopback(_hostname(self.headers.get("Host") or ""))
-
-        def _same_origin(self) -> bool:
-            origin = self.headers.get("Origin")
-            if origin is None:
-                return True
-            hosts = {(self.headers.get(h) or "").strip().lower() for h in ("Host", "X-Forwarded-Host")} - {""}
-            return urlsplit(origin).netloc.lower() in hosts
 
         def _pdf(self, ref: str) -> None:
             """A deck as a PDF, rendered by Chrome from this server's own page, and kept until it changes."""
@@ -265,13 +241,6 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                 return
             url = urlsplit(self.path)
             try:
-                if url.path == API:
-                    doc = parse_qs(url.query).get("doc", [""])[0]
-                    self._json(200, {"threads": notes.threads(live.current().lib, doc)})
-                    return
-                if url.path == INBOX:
-                    self._json(200, review.inbox(live.current().lib))
-                    return
                 if url.path == PDF:
                     self._pdf(parse_qs(url.query).get("doc", [""])[0])
                     return
@@ -285,10 +254,7 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                 return
             path = unquote(url.path).lstrip("/")
             if path == SITE_DATA:
-                # Whether this reader may comment depends on the request, so this one is not kept.
-                data = live.site_data()
-                data["comments"] = comments.status(self.headers)
-                self._json(200, data)
+                self._json(200, live.site_data())
                 return
             found = live.get(path)
             if found is None:
@@ -299,42 +265,16 @@ def handler_for(root: Path, comments: Comments | None = None) -> type[BaseHTTPRe
                        etag if response.status == 200 else None)
 
         def do_POST(self) -> None:
-            if urlsplit(self.path).path != API:
-                self._send(405, b"Read only", "text/plain; charset=utf-8")
-                return
-            if not self._host_ok() or not self._same_origin():
-                self._json(403, {"error": "Comments are taken only from pages this server serves."})
-                return
-            kind = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
-            if kind != "application/json":
-                self._json(415, {"error": "Send the comment as JSON."})
-                return
-            try:
-                length = int(self.headers.get("Content-Length") or 0)
-            except ValueError:
-                length = -1
-            if length < 0 or length > MAX_BODY:
-                self._json(413, {"error": f"A comment request may hold at most {MAX_BODY // 1024} KB."})
-                return
-            who, refusal = comments.policy.who(self.headers)
-            if who is None:
-                self._json(403, {"error": refusal})
-                return
-            try:
-                request = json.loads(self.rfile.read(length) or b"{}")
-                self._json(200, {"thread": notes.act(live.current().lib, request, who, comments.recorder)})
-            except (FolioError, ValueError) as exc:
-                self._json(400, {"error": str(exc)})
+            self._send(405, b"Read only", "text/plain; charset=utf-8")
 
     return Handler
 
 
-def serve(root: Path, port: int = PORT, host: str = HOST, push: bool = False) -> None:
+def serve(root: Path, port: int = PORT, host: str = HOST) -> None:
     Site.load(root)  # fail before listening when the library does not load
-    comments = Comments(root, host, push)
-    server = ThreadingHTTPServer((host, port), handler_for(root, comments))
+    server = ThreadingHTTPServer((host, port), handler_for(root, host))
     shown = f"[{host}]" if ":" in host else host
-    print(f"serving {root} at http://{shown}:{port}/content/; {comments.startup()} (Ctrl-C stops)", flush=True)
+    print(f"serving {root} at http://{shown}:{port}/content/ (Ctrl-C stops)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -356,17 +296,16 @@ def _running(root: Path) -> dict | None:
     return info
 
 
-def up(root: Path, port: int = PORT, host: str = HOST, push: bool = False) -> str:
+def up(root: Path, port: int = PORT, host: str = HOST) -> str:
     info = _running(root)
     if info is not None:
         return f"already serving at http://{info.get('host', HOST)}:{info['port']}/content/ (pid {info['pid']})"
     Site.load(root)
-    Comments(root, host, push)  # fail here, not in the background, when --push cannot work
     (root / INDEX_DIR).mkdir(exist_ok=True)  # `folio init`'s .gitignore covers the runtime files
     log = open(root / LOG_FILE, "ab")
     command = [sys.executable, "-m", "folio", "serve", "--host", host, "--port", str(port)]
     proc = subprocess.Popen(
-        command + (["--push"] if push else []),
+        command,
         cwd=root, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,
     )
     time.sleep(0.5)

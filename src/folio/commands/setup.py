@@ -80,11 +80,16 @@ def _files(folder: Path) -> dict[str, bytes]:
             for p in sorted(folder.rglob("*")) if p.is_file()}
 
 
+# Skills folio once shipped and has retired: `folio skills update` removes an installed copy.
+RETIRED_SKILLS = ("address",)  # folio 0.4.0 removed reader comments
+
+
 def skills_status(root: Path) -> list[tuple[str, str]]:
     """Each skill in the project's `.agents/skills/` against folio's own, by name.
 
     `current` matches folio's copy, `stale` differs from it, `missing` is shipped but not
-    installed, and `own` is a skill the project added that folio does not ship.
+    installed, `retired` is one folio no longer ships, and `own` is a skill the project added
+    that folio does not ship.
     """
     shipped = {s.name: s for s in sorted(data.shipped("skills").iterdir()) if (s / "SKILL.md").is_file()}
     target = root / ".agents" / "skills"
@@ -97,17 +102,23 @@ def skills_status(root: Path) -> list[tuple[str, str]]:
             out.append((name, "missing"))
         else:
             out.append((name, "current" if _files(installed[name]) == _files(source) else "stale"))
-    out.extend((name, "own") for name in installed if name not in shipped)
+    out.extend((name, "retired" if name in RETIRED_SKILLS else "own")
+               for name in installed if name not in shipped)
     return out
 
 
 def update_skills(root: Path) -> list[str]:
-    """Copy folio's skills over the stale and missing ones; leave current and own skills alone."""
+    """Copy folio's skills over the stale and missing ones, remove the retired ones, and leave
+    current and own skills alone."""
     target = root / ".agents" / "skills"
     if target.resolve() == data.shipped("skills").resolve():
         return []  # the project shares folio's own skills folder (folio's repository)
     changed = []
     for name, state in skills_status(root):
+        if state == "retired":
+            shutil.rmtree(target / name)
+            changed.append(f"removed {(target / name).relative_to(root)}/ (folio no longer ships it)")
+            continue
         if state not in ("stale", "missing"):
             continue
         dest = target / name

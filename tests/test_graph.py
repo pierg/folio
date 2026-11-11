@@ -215,14 +215,11 @@ def test_mv_uses_git_mv_inside_a_work_tree(sample: Path, monkeypatch, capsys) ->
 
 def test_promote_note_to_entry(sample: Path, monkeypatch, capsys) -> None:
     note = sample / "content/notes/flashattention-tiling.html"
-    (sample / "content/notes/flashattention-tiling.annotations.json").write_text('{"threads": []}\n')
     edit(note, "<main>\n", '<main>\n<p class="thesis">Tiles need a rescaled softmax.</p>\n'
                           "<h2>Why</h2>\n")
     assert folio(sample, "promote", "flashattention-tiling", "entry", monkeypatch=monkeypatch) == 0
     out = out_of(capsys)
     assert "moved content/notes/flashattention-tiling.html -> content/entries/flashattention-tiling/index.html" in out
-    assert "moved content/notes/flashattention-tiling.annotations.json -> " \
-           "content/entries/flashattention-tiling/index.annotations.json" in out
     page = (sample / "content/entries/flashattention-tiling/index.html").read_text()
     assert '<meta name="genre" content="entry">' in page
     assert '<li><a href="/content/entries/flashattention-tiling/">' in (sample / "content/maps/attention.html").read_text()

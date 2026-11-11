@@ -83,14 +83,19 @@ def test_skills_lists_and_updates_only_what_changed(tmp_path: Path, monkeypatch,
     (skills / "mine").mkdir()
     (skills / "mine" / "SKILL.md").write_text("a skill of the project's own\n")
     (skills / "run").rename(tmp_path / "run-aside")
+    (skills / "address").mkdir()
+    (skills / "address" / "SKILL.md").write_text("a skill folio retired\n")
     capsys.readouterr()
     assert folio(lib, "skills", monkeypatch=monkeypatch) == 0
     states = dict(line.split() for line in capsys.readouterr().out.splitlines())
     assert states["write"] == "stale" and states["run"] == "missing" and states["mine"] == "own"
+    assert states["address"] == "retired"
     assert states["organise"] == "current"
     assert folio(lib, "skills", "update", monkeypatch=monkeypatch) == 0
-    assert sorted(capsys.readouterr().out.split()) == sorted(
-        ["updated", ".agents/skills/write/", "created", ".agents/skills/run/"])
+    assert sorted(capsys.readouterr().out.splitlines()) == sorted(
+        ["updated .agents/skills/write/", "created .agents/skills/run/",
+         "removed .agents/skills/address/ (folio no longer ships it)"])
+    assert not (skills / "address").exists()
     assert {s for _, s in setup.skills_status(lib)} == {"current", "own"}
     assert (skills / "mine" / "SKILL.md").read_text() == "a skill of the project's own\n"
     assert folio(lib, "skills", "update", monkeypatch=monkeypatch) == 0

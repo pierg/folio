@@ -29,7 +29,6 @@ def test_export_writes_every_page(sample: Path, tmp_path: Path, monkeypatch, cap
                  "assets/data/pi-errors.csv"]:
         assert (out / page).is_file(), page
     assert not (out / "content/results/R-3.md").exists()
-    assert not list(out.rglob("*.annotations.json"))
     assert "url=/content/" in (out / "index.html").read_text()
     # kb finding 6: a source's kept original is never published, though `folio serve` shows it.
     assert (sample / "content/sources/2017-attention-is-all-you-need/original.pdf").is_file()
@@ -129,15 +128,6 @@ def _get(url: str) -> tuple[int, str]:
         return exc.code, exc.read().decode()
 
 
-def _post(url: str, data: dict) -> tuple[int, dict]:
-    req = urllib.request.Request(url, json.dumps(data).encode(), {"Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req) as r:
-            return r.status, json.loads(r.read())
-    except urllib.error.HTTPError as exc:
-        return exc.code, json.loads(exc.read())
-
-
 def test_serve_matches_export(live: str) -> None:
     status, page = _get(live + "/content/results/R-4.html")
     assert status == 200 and '<meta name="folio-source" content="content/results/R-4.md">' in page
@@ -147,25 +137,6 @@ def test_serve_matches_export(live: str) -> None:
     assert _get(live + "/content/concepts/softmax/")[0] == 200
     status, _ = _get(live + "/content/journal/")
     assert status == 200
-
-
-def test_serve_reads_and_writes_annotations(live: str, sample: Path) -> None:
-    doc = "content/notes/flashattention-tiling.html"
-    status, body = _post(live + "/_folio/annotations", {
-        "action": "add", "doc": doc, "kind": "question", "quote": "the exact result",
-        "body": "Why?", "author": "reader"})
-    assert status == 200, body
-    thread = body["thread"]
-    status, body = _post(live + "/_folio/annotations", {
-        "action": "reply", "doc": doc, "id": thread["id"], "body": "Because.", "state": "addressed"})
-    assert status == 200 and body["thread"]["state"] == "open"  # a reader's reply never moves the state
-    status, text = _get(live + "/_folio/annotations?doc=" + doc)
-    assert [(t["state"], t["word"]) for t in json.loads(text)["threads"]] == [("open", "waiting")]
-    status, body = _post(live + "/_folio/annotations", {"action": "add", "doc": doc, "body": "x"})
-    assert status == 200 and body["thread"]["quote"] == ""  # a thread about the whole page
-    status, body = _post(live + "/_folio/annotations", {"action": "add", "doc": doc, "body": "x",
-                                                         "quote": "not on this page at all"})
-    assert status == 400 and "quote" in body["error"]
 
 
 def test_up_and_down(sample: Path, monkeypatch) -> None:

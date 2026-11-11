@@ -40,7 +40,7 @@ Take every input the request or the `from` file gives. Read the rest from the re
 10. **Publish it.** Set the status to `live`. Write no list of links: the generated panels show what it cites.
 11. **Log it.** Through the write skill, which runs `folio journal add --title "Reported <the report's title>" --description ".." --body ".." --about <report>,<result ids>`. The body says in a sentence what the report concludes.
 12. **Run the gate.** `folio index`, then `folio check` passes.
-13. **Commit.** Add exactly: the report, its annotation file if any, the map, the journal entry, `.folio/`, and any figure made in `assets/figures/`. Never `git add -A`. From this commit on the report is frozen and never rewritten.
+13. **Commit.** Add exactly: the report, the map, the journal entry, `.folio/`, and any figure made in `assets/figures/`. Never `git add -A`. From this commit on the report is frozen and never rewritten.
 
 ## Stops
 

@@ -11,7 +11,7 @@ from typing import Any, Callable
 from . import __version__, indexer
 from . import library as library_mod
 from .checks.run import run as run_checks
-from .commands import annotate, charter_cmds, graph_cli, create, genre_cmds, query, save, setup
+from .commands import charter_cmds, graph_cli, create, genre_cmds, query, save, setup
 from .errors import FolioError
 
 # Commands the engine names but does not carry yet.
@@ -244,9 +244,9 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
     lib = _lib()
     if args.command == "serve":
-        serve.serve(lib.root, args.port, args.host, args.push)
+        serve.serve(lib.root, args.port, args.host)
     elif args.command == "up":
-        print(serve.up(lib.root, args.port, args.host, args.push))
+        print(serve.up(lib.root, args.port, args.host))
     else:
         print(serve.down(lib.root))
     return 0
@@ -403,8 +403,6 @@ def parser() -> argparse.ArgumentParser:
             s.add_argument("--port", type=int, default=5170)
             s.add_argument("--host", default="127.0.0.1",
                            help="the address to listen on (default 127.0.0.1, this machine only)")
-            s.add_argument("--push", action="store_true",
-                           help="pull before and push after each comment's commit (for a deployed server)")
         s.set_defaults(func=cmd_serve)
 
     s = sub.add_parser("export", help="Write the static site.")
@@ -412,8 +410,6 @@ def parser() -> argparse.ArgumentParser:
     s.add_argument("--base", default="/")
     s.set_defaults(func=cmd_export)
 
-    annotate.register(sub)
-    annotate.register_review(sub)
     graph_cli.register(sub)
 
     s = sub.add_parser("skills", help="The installed skills against folio's own; `update` refreshes the stale ones.")

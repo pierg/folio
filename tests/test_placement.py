@@ -1,18 +1,16 @@
 """One place per page: the placement and heading-size checks, place and used_by in the catalog,
-`folio map add --section` and `folio map move`, `folio new`'s note, and review after landing."""
+`folio map add --section` and `folio map move`, and `folio new`'s note."""
 
 from __future__ import annotations
 
 import json
-import subprocess
 from pathlib import Path
 
 import pytest
 
 from conftest import edit, folio, found, problems
-from folio import annotations, indexer, library, reviews
+from folio import indexer, library
 from folio.charter import load as load_charter
-from folio.commands import save
 
 ATTENTION = "content/maps/attention.html"
 LAB = "content/maps/lab-work.html"
@@ -20,29 +18,6 @@ ENTRY = "content/entries/attention-is-quadratic/index.html"
 ENTRY_ROW = '<li><a href="/content/entries/attention-is-quadratic/">Why attention is quadratic</a></li>\n'
 SOURCE = "content/sources/2017-attention-is-all-you-need/index.html"
 SHELL = (Path(__file__).resolve().parents[1] / "shell/folio.js").read_text(encoding="utf-8")
-
-
-@pytest.fixture(autouse=True)
-def plain_git(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    empty = tmp_path / "gitconfig"
-    empty.write_text("")
-    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(empty))
-    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
-
-
-def git(repo: Path, *args: str) -> str:
-    result = subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
-    assert result.returncode == 0, result.stderr
-    return result.stdout.strip()
-
-
-def make_repo(path: Path) -> Path:
-    git(path, "init", "-q", "-b", "main")
-    git(path, "config", "user.name", "Ada")
-    git(path, "config", "user.email", "ada@example.org")
-    git(path, "add", "-A", ".")
-    git(path, "commit", "-q", "-m", "start")
-    return path
 
 
 def messages(lib_dir: Path, check: str) -> list[tuple[str, str]]:
@@ -272,7 +247,6 @@ def test_new_says_a_placed_page_needs_a_place(sample: Path, monkeypatch, capsys)
                  monkeypatch=monkeypatch) == 0
     out = out_of(capsys)
     assert "note: rope needs a place before it is saved" in out and "--section <heading>" in out
-    assert "To review" not in out
     assert folio(sample, "new", "map", "other-map", monkeypatch=monkeypatch) == 0
     assert "needs a place" not in out_of(capsys)
     edit(sample / "folio.yaml", "checks:\n", "checks:\n  placement: off\n")
@@ -280,145 +254,25 @@ def test_new_says_a_placed_page_needs_a_place(sample: Path, monkeypatch, capsys)
     assert "needs a place" not in out_of(capsys)
 
 
-def test_under_review_after_a_new_page_starts_live_and_on_the_list(sample: Path, monkeypatch, capsys) -> None:
+def test_the_charter_names_what_was_removed(sample: Path) -> None:
     edit(sample / "folio.yaml", "checks:", "save:\n  review: after\nchecks:")
-    assert load_charter(sample).save.review == "after"
-    assert folio(sample, "new", "note", "rope", "--title", "RoPE", "--description", "Rotary.",
-                 monkeypatch=monkeypatch) == 0
-    assert "rope is live and on the To review list" in out_of(capsys)
-    text = (sample / "content/notes/rope.html").read_text()
-    assert 'name="status"' not in text
-    marks = annotations.review_marks(sample, "content/notes/rope.html")
-    assert [(m["mark"], m["note"], m["date"]) for m in marks] == [("changed", "new", "2026-10-03")]
-    assert folio(sample, "journal", "add", "--title", "A day", "--description", "D.", "--body", "B.",
-                 monkeypatch=monkeypatch) == 0
-    lib = library.load_at(sample)
-    assert [r["doc"] for r in reviews.to_review(lib)] == ["rope"]
-
-
-# -- review after landing -----------------------------------------------------------------
-
-def test_review_add_list_and_done(sample: Path, monkeypatch, capsys) -> None:
-    assert library.load_at(sample).charter.save.review == ""  # the list works with save.review absent
-    assert folio(sample, "review", "list", monkeypatch=monkeypatch) == 0
-    assert "Nothing to review." in out_of(capsys)
-    assert folio(sample, "review", "add", "softmax", "--note", "New overflow section", "--author", "agent:w",
-                 monkeypatch=monkeypatch) == 0
-    monkeypatch.setenv("FOLIO_TODAY", "2026-10-05")
-    assert folio(sample, "review", "add", "attention-is-quadratic", "--note", "Rewrote the opening",
-                 "--author", "agent:w", monkeypatch=monkeypatch) == 0
-    out_of(capsys)
-    assert folio(sample, "review", "list", "--json", monkeypatch=monkeypatch) == 0
-    rows = json.loads(out_of(capsys))
-    assert [(r["doc"], r["date"], r["note"], r["state"]) for r in rows] == [
-        ("attention-is-quadratic", "2026-10-05", "Rewrote the opening", "to review"),
-        ("softmax", "2026-10-03", "New overflow section", "to review")]
-    assert folio(sample, "review", "done", "softmax", "--author", "Ada", monkeypatch=monkeypatch) == 0
-    assert "softmax reviewed" in out_of(capsys)
-    assert folio(sample, "review", "list", monkeypatch=monkeypatch) == 0
-    out = out_of(capsys)
-    assert "attention-is-quadratic" in out and "softmax" not in out
-    assert folio(sample, "review", "list", "--all", monkeypatch=monkeypatch) == 0
-    assert "softmax (concept) [reviewed]" in out_of(capsys)
-    assert folio(sample, "review", "done", "softmax", "--author", "Ada", monkeypatch=monkeypatch) == 2
-    assert "not on the To review list" in capsys.readouterr().err
-    sidecar = json.loads((sample / "content/concepts/softmax/index.annotations.json").read_text())
-    assert [m["mark"] for m in sidecar["review"]] == ["changed", "reviewed"] and sidecar["threads"] == []
-    # A later change puts it back.
-    assert folio(sample, "review", "add", "softmax", "--note", "Fixed the bound", monkeypatch=monkeypatch) == 0
-    assert {r["doc"] for r in reviews.to_review(library.load_at(sample))} == {"attention-is-quadratic", "softmax"}
-
-
-def test_review_marks_live_beside_threads_and_are_kept(sample: Path, monkeypatch) -> None:
-    rel = "content/notes/flashattention-tiling.html"
-    assert folio(sample, "review", "add", "flashattention-tiling", "--note", "Shorter", "--author", "a",
-                 monkeypatch=monkeypatch) == 0
-    lib = library.load_at(sample)
-    annotations.add(lib, rel, "question", "the exact result", "Why?", "Ada")
-    data = json.loads((sample / annotations.sidecar_path(rel)).read_text())
-    assert len(data["threads"]) == 1 and data["review"][0]["note"] == "Shorter"
-    assert found(sample, "stale-quote") == []
-
-
-def test_review_refuses_what_never_goes_on_the_list(sample: Path, monkeypatch, capsys) -> None:
-    assert folio(sample, "review", "add", "R-4", "--note", "x", monkeypatch=monkeypatch) == 2
-    assert "does not go on the To review list" in capsys.readouterr().err
-    assert folio(sample, "review", "add", "softmax", monkeypatch=monkeypatch) == 2
-    assert "needs --note" in capsys.readouterr().err
-
-
-def test_a_retired_page_leaves_the_list(sample: Path, monkeypatch) -> None:
-    assert folio(sample, "review", "add", "attention-is-quadratic", "--note", "x", monkeypatch=monkeypatch) == 0
-    assert folio(sample, "rm", "attention-is-quadratic", "--to", "softmax", monkeypatch=monkeypatch) == 0
-    assert reviews.to_review(library.load_at(sample)) == []
-
-
-def test_save_under_after_puts_new_pages_on_the_list(sample: Path, monkeypatch) -> None:
-    edit(sample / "folio.yaml", "checks:", "save:\n  review: after\nchecks:")
-    make_repo(sample)
-    (sample / "content/notes/plain.html").write_text(
-        (sample / "content/notes/flashattention-tiling.html").read_text().replace("FlashAttention tiling", "Plain"))
-    edit(sample / ATTENTION, "</ul>\n<h2 id=\"reading\">",
-         '<li><a href="/content/notes/plain.html">Plain</a></li>\n</ul>\n<h2 id="reading">')
-    edit(sample / "content/concepts/softmax/index.html", "</main>", "<p>More.</p>\n</main>")
-    monkeypatch.chdir(sample)
-    done = save.save(sample, push=False)
-    assert done.commit is not None
-    assert "content/notes/plain.annotations.json" in done.files
-    lib = library.load_at(sample)
-    assert [r["doc"] for r in reviews.to_review(lib)] == ["plain"]  # an edit is a change only when said
-    assert git(sample, "status", "--porcelain") == ""
-
-
-def test_the_server_records_a_reviewed_mark_as_a_commit(sample: Path, server_for) -> None:
-    edit(sample / "folio.yaml", "checks:", "save:\n  review: after\nchecks:")
-    make_repo(sample)
-    lib = library.load_at(sample)
-    reviews.changed(lib, "softmax", "New section", "agent")
-    srv = server_for(sample)
-    status, body = srv.get("/_folio/inbox")
-    data = json.loads(body)
-    assert status == 200 and data["reviewing"] == 1 and data["to_review"][0]["doc"] == "softmax"
-    status, reply = srv.post({"action": "reviewed", "doc": "content/concepts/softmax/index.html"})
-    assert status == 200 and reply["thread"]["reviewed"] == "softmax"
-    assert git(sample, "log", "-1", "--format=%s %an") == "Review softmax Ada"
-    assert git(sample, "show", "--name-only", "--format=", "HEAD") == "content/concepts/softmax/index.annotations.json"
-    assert json.loads(srv.get("/_folio/inbox")[1])["reviewing"] == 0
-    status, reply = srv.post({"action": "reviewed", "doc": "content/concepts/softmax/index.html"})
-    assert status == 400 and "not on the To review list" in reply["error"]
-
-
-def test_charter_takes_after_and_refuses_other_words(sample: Path) -> None:
-    edit(sample / "folio.yaml", "checks:", "save:\n  review: later\nchecks:")
-    with pytest.raises(Exception, match="drafts or after"):
+    with pytest.raises(Exception, match="save.review` was removed"):
+        load_charter(sample)
+    edit(sample / "folio.yaml", "save:\n  review: after\n", "comments:\n  identity_header: X-User\n")
+    with pytest.raises(Exception, match="comments` was removed"):
         load_charter(sample)
 
 
 # -- the shell ----------------------------------------------------------------------
 
-def test_the_shell_draws_the_path_the_rail_the_sources_and_the_review_tab() -> None:
+def test_the_shell_draws_the_path_the_rail_and_the_sources() -> None:
     assert "function placePath(doc, part)" in SHELL and '"aria-label": "Where this page lives"' in SHELL
     assert "!(d.place && d.place.map !== map.id)" in SHELL  # the rail reads the same place
     assert 'class: "f-rdraft"' in SHELL and 'd.status !== "draft" && inFocus(d); });\n      var name' not in SHELL
     assert "function mapSources(map)" in SHELL and 'panelSection("Sources"' in SHELL
-    assert 'chip("review", "To review"' in SHELL and 'action: "reviewed"' in SHELL
+    assert "_folio/annotations" not in SHELL and "_folio/inbox" not in SHELL
 
 
 def test_problems_name_no_file_twice_for_one_place(sample: Path) -> None:
     edit(sample / ATTENTION, ENTRY_ROW, "")
     assert [p.path for p in problems(sample) if p.check == "placement"] == [ENTRY]
-
-
-@pytest.fixture
-def server_for():
-    from test_comments import Server
-
-    servers = []
-
-    def start(root: Path):
-        s = Server(root)
-        servers.append(s)
-        return s
-    yield start
-    for s in servers:
-        s.close()

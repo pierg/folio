@@ -1,8 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (2026-11-11)
 
-- The specs say what the skills already do: `save.review` absent is the default, `folio init` writes none, and `folio review add` works whatever it says. The write skill's command list and the configure skill's note on leaving `drafts` match.
+Reader comments and the review list are removed. Nobody used them, and they were the largest part of the server and the shell.
+
+- Gone: the comment panel, the Review page and the home page's line to it, the `folio annotations` and `folio review` commands, the `address` skill, the `stale-quote` check, and the `<page>.annotations.json` files beside documents. `folio serve` and `folio up` are read only (every POST answers 405) and lose `--push`.
+- Gone from the charter: `comments.identity_header` and `save.review` (`drafts`, `after`). A charter that still sets either is refused with a line saying to delete it. Pages are live from the start, and the journal shows every change; `folio new --status draft` still holds a page.
+- A flag is now a line in the agent's report to the owner (model §12), not a stored thread. The write and organise skills say so.
+- `folio skills` lists an installed skill folio no longer ships as `retired`, and `folio skills update` removes it.
+- A leftover `*.annotations.json` is never served or exported, since it names readers.
+- To upgrade a library: delete `comments:` and `save.review` from `folio.yaml`, delete every `*.annotations.json` under `content/`, run `folio skills update`, then `folio index` and `folio check`. A host that ran `folio serve --push` drops `--push`.
 
 ## 0.3.7 (2026-11-07)
 
