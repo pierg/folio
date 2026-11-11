@@ -105,3 +105,13 @@ def test_an_unchanged_file_is_answered_with_304(sample: Path, server_for) -> Non
 def test_the_header_offers_the_page_path_to_copy() -> None:
     shell = (Path(__file__).resolve().parents[1] / "shell" / "folio.js").read_text()
     assert "function copyPath(path)" in shell and r"index\.html$" in shell
+
+
+def test_a_leftover_comment_file_is_never_served_or_exported(sample: Path, tmp_path: Path) -> None:
+    from folio.site.site import export_site
+
+    left = sample / "content/notes/flashattention-tiling.annotations.json"
+    left.write_text('{"threads": [{"author": "a reader"}]}\n')
+    assert Site.load(sample).get("content/notes/flashattention-tiling.annotations.json") is None
+    export_site(sample, tmp_path / "site")
+    assert not list((tmp_path / "site").rglob("*.annotations.json"))

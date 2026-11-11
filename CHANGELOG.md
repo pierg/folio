@@ -8,6 +8,7 @@ Reader comments and the review list are removed. Nobody used them, and they were
 - Gone from the charter: `comments.identity_header` and `save.review` (`drafts`, `after`). A charter that still sets either is refused with a line saying to delete it. Pages are live from the start, and the journal shows every change; `folio new --status draft` still holds a page.
 - A flag is now a line in the agent's report to the owner (model §12), not a stored thread. The write and organise skills say so.
 - `folio skills` lists an installed skill folio no longer ships as `retired`, and `folio skills update` removes it.
+- A leftover `*.annotations.json` is never served or exported, since it names readers.
 - To upgrade a library: delete `comments:` and `save.review` from `folio.yaml`, delete every `*.annotations.json` under `content/`, run `folio skills update`, then `folio index` and `folio check`. A host that ran `folio serve --push` drops `--push`.
 
 ## 0.3.7 (2026-11-07)

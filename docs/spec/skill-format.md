@@ -1,6 +1,6 @@
 # SKILL.md: how a skill is written
 
-Read [`model.md`](model.md) first. folio has seven skills, and the set is fixed: set-up, configure, write, organise, address, publish, run. A skill holds how to act. What is specific to a genre lives in its GENRE.md, and what is specific to a procedure lives in its WORKFLOW.md.
+Read [`model.md`](model.md) first. folio has six skills, and the set is fixed: set-up, configure, write, organise, publish, run. A skill holds how to act. What is specific to a genre lives in its GENRE.md, and what is specific to a procedure lives in its WORKFLOW.md.
 
 ## Front matter
 

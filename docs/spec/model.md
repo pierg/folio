@@ -4,7 +4,7 @@ This is the contract every other spec builds on: the genre cards, the packs, the
 
 ## 1. What folio is
 
-folio lets a coding agent build and keep a knowledge library inside any project. A library is a graph of documents. Each document has one genre, and the genre fixes its job, its reader, its voice, its format and its checks. A genre gives structure and voice, never form: how a page looks is the author's, on a free canvas (§14). Every change to a library goes through one of seven skills. The `folio` command exists, but only skills call it, the way an agent calls git.
+folio lets a coding agent build and keep a knowledge library inside any project. A library is a graph of documents. Each document has one genre, and the genre fixes its job, its reader, its voice, its format and its checks. A genre gives structure and voice, never form: how a page looks is the author's, on a free canvas (§14). Every change to a library goes through one of six skills. The `folio` command exists, but only skills call it, the way an agent calls git.
 
 ## 2. The library
 

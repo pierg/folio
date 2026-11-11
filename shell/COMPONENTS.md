@@ -15,7 +15,7 @@ Every HTML page gets all the room between the library rail and the page panel, w
 
 Five things stay fixed, because the library reads them:
 
-1. **The words are in the markup.** A script may arrange, reveal, highlight and animate them, and never writes them. Comments are anchored by quoting the file, and search and the gate read the file. The one exception is a label that repeats words already in the markup, such as a chart's axis.
+1. **The words are in the markup.** A script may arrange, reveal, highlight and animate them, and never writes them. Search and the gate read the file. The one exception is a label that repeats words already in the markup, such as a chart's axis.
 2. **The genre's hooks stay:** a concept's `defn`, a map's `rows`, and whatever else its card names.
 3. **The voice stays:** the genre's register, a claim supported where it is made, every number cited, a flag on what goes beyond the sources.
 4. **Colours come from the tokens below,** never a hex value, so the page reads in both themes.
@@ -131,7 +131,7 @@ An inline SVG is shown near the size its `viewBox` was drawn for (at most 1.15 t
 
 ### Code
 
-`<code>` inline and `<pre><code>` for blocks. The shell colours a block's syntax with highlight.js, vendored with it, loaded only on a page with a listing. The language comes from a `language-<name>` class on the `<code>`, the `<pre>` or an element around them (a Markdown fence sets it); `language-plaintext` or `nohighlight` leaves a block plain. A block with no class is guessed: a confident guess is used, a short or unclear one takes the page's main language when it fits, and anything else, such as program output, stays plain. A block with markup inside (marked lines, a stepper) is never touched. Only spans are added, so search and comments read the words as written. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code. See `craft/code.md`.
+`<code>` inline and `<pre><code>` for blocks. The shell colours a block's syntax with highlight.js, vendored with it, loaded only on a page with a listing. The language comes from a `language-<name>` class on the `<code>`, the `<pre>` or an element around them (a Markdown fence sets it); `language-plaintext` or `nohighlight` leaves a block plain. A block with no class is guessed: a confident guess is used, a short or unclear one takes the page's main language when it fits, and anything else, such as program output, stays plain. A block with markup inside (marked lines, a stepper) is never touched. Only spans are added, so search reads the words as written. In a Markdown record, an id in backticks (`R-12`) that names a document becomes a link to it (`<a class="f-cite">`), drawn as a link rather than as code. See `craft/code.md`.
 
 ### Math
 

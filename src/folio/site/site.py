@@ -23,6 +23,7 @@ from ..library import Library
 from . import dates, render
 
 JOURNAL_VIEW = "content/journal/index.html"
+LEFTOVER = ".annotations.json"  # a comment file from before folio 0.4.0, never served or exported
 SITE_DATA = f"{INDEX_DIR}/site.json"
 COPIED = ("content", "assets")  # library folders served as they are, besides the documents
 
@@ -147,6 +148,8 @@ class Site:
                 rel = path.relative_to(lib.root).as_posix()
                 if not path.is_file() or any(p.startswith(".") for p in path.relative_to(lib.root).parts):
                     continue
+                if rel.endswith(LEFTOVER):
+                    continue  # comment files from before folio 0.4.0 name readers: never published
                 if rel.startswith("content/") and path.name.startswith("original."):
                     continue  # a source's kept original is a private copy: `folio serve` shows it, export never
                 if rel in moved or rel in builds:
@@ -188,7 +191,7 @@ class Site:
             return self._file(shell_dir(lib) / path[len("shell/"):], path)
         if path.startswith(INDEX_DIR + "/") and path.endswith(".json") and path != redirects_mod.FILE:
             return self._file(lib.root / path, path)
-        if path.split("/", 1)[0] not in COPIED:
+        if path.split("/", 1)[0] not in COPIED or path.endswith(LEFTOVER):
             return None
         if path.endswith(".html"):
             record = path[: -len(".html")] + ".md"
