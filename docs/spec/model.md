@@ -286,7 +286,6 @@ A flag is a line in the agent's report to the owner: the document, the passage a
 - one fact, one home: a concept's definition is not restated, and pack rules hold (for the lab pack, every number cites a result);
 - ids are unique across the library, and record ids are never reused;
 - the generated indices in `.folio/` are current;
-- open questions still quote text that is on the page;
 - papers: every `\fcite` resolves, every figure comes from `assets/figures/`.
 
 Every check has a name, listed with its settings and default severity in `checks.md`. A card or a pack uses only names from that list. The charter can make any check an error, a warning, or off.
