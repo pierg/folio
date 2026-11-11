@@ -1,7 +1,7 @@
 """`folio mv`, `folio promote` and `folio rm --to`: a document changes place, keeping its graph.
 
-Every link to the document is rewritten to its new address, its annotation
-sidecars and the files beside it travel with it, its id stays (a renamed
+Every link to the document is rewritten to its new address, the files
+beside it travel with it, its id stays (a renamed
 slug-id document writes its old id into its metadata), git keeps its dates
 (`git mv` inside a work tree), and the old address is redirected
 (`.folio/redirects.json`). A permanent or frozen document that links the old
@@ -27,15 +27,6 @@ from ..metaedit import set_meta
 from ..util import is_slug
 from .maps_cmds import _HREF_RE, _ROW_RE, _ROWS_RE
 
-SIDECAR = ".annotations.json"
-
-
-def sidecar(path: str) -> str:
-    """The annotation sidecar beside a document file: `<stem>.annotations.json`."""
-    p = PurePosixPath(path)
-    return str(p.with_name(p.stem + SIDECAR))
-
-
 def _template(genre: Genre, part: str | None) -> str:
     return genre.path if part is None else genre.parts[part].path
 
@@ -55,7 +46,7 @@ def _refuse_fixed(doc: Document, verb: str) -> None:
 
 
 def _file_moves(lib: Library, doc: Document, genre: Genre, values: dict[str, str]) -> dict[str, str]:
-    """Each of the document's files, its sidecars and the files kept beside it, old path to new."""
+    """Each of the document's files and the files kept beside it, old path to new."""
     moves: dict[str, str] = {}
     for df in doc.files:
         captures = {**df.captures, **values}
@@ -66,9 +57,6 @@ def _file_moves(lib: Library, doc: Document, genre: Genre, values: dict[str, str
                              + ", ".join("{" + p + "}" for p in left))
         moves[df.path] = new
     old_main, new_main = doc.key, moves[doc.key]
-    for old, new in list(moves.items()):
-        if (lib.root / sidecar(old)).is_file():
-            moves[sidecar(old)] = sidecar(new)
     if _is_folder_doc(old_main):
         folder = PurePosixPath(old_main).parent
         extra = sorted(str(PurePosixPath(p.relative_to(lib.root).as_posix()))

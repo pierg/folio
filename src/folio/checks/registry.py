@@ -27,7 +27,6 @@ CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("rail-genres", "gate", "error"),
     CheckSpec("unique-id", "gate", "error"),
     CheckSpec("index-current", "gate", "error"),
-    CheckSpec("stale-quote", "gate", "error"),
     CheckSpec("require", "card", "error"),
     CheckSpec("forbid", "card", "error"),
     CheckSpec("max_words", "card", "error"),

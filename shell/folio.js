@@ -2,8 +2,7 @@
    It draws, on every page, what metadata and the generated indices say: the top bar,
    the library rail, the path to the page, the header, the banners, the page panel (with a map's sources), guide navigation,
    map rows, the home page's maps, topic focus, the
-   journal timeline, search, previews, concept popovers and, when served by `folio serve`,
-   the comment panel and the Review page, and KaTeX math on a page that asks for it. The page holds its
+   journal timeline, search, previews, concept popovers, and KaTeX math on a page that asks for it. The page holds its
    <head> metadata and its <main>, which is a free canvas: it may carry its own style and script, and lays
    itself out in the room between the rail and the panel, or in the reading column when it asks for one. */
 (function () {
@@ -42,7 +41,6 @@
       journal: "M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6zM6 3v18M10 8h5M10 12h5",
       alert: "M12 3 2 20h20L12 3zM12 10v4M12 17h0",
       info: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM12 11v6M12 7h0",
-      chat: "M4 5h16v11H9l-5 4z",
       close: "M6 6l12 12M18 6 6 18",
       expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
       home: "M4 11 12 4l8 7M6 9.5V20h12V9.5",
@@ -300,8 +298,6 @@
       el("nav", { class: "f-nav", "aria-label": "Library" }, [
         el("a", { href: journalURL, "aria-current": view === "journal" ? "page" : null },
           [icon("journal"), el("span", { class: "f-label", text: "Journal" })]),
-        D.site.comments ? el("a", { href: href(((D.site.review || {}).url) || "/content/review/"), "aria-current": view === "review" ? "page" : null },
-          [icon("chat"), el("span", { class: "f-label", text: "Review" })]) : null,
         focusControl(),
         el("button", { class: "f-btn f-search-btn", type: "button", onclick: openSearch, "aria-label": "Search" },
           [icon("search"), el("span", { class: "f-label", text: "Search" }), el("kbd", { text: mac ? "⌘K" : "Ctrl K" })]),
@@ -439,7 +435,7 @@
       box.appendChild(el("div", { class: "f-rsection" }, [el("h2", { text: label })].concat(kids)));
     }
 
-    // Home, the journal and, when served, the Review page.
+    // Home and the journal.
     var home = byId("home").filter(function (d) { return d.rows; })[0];
     var journal = D.catalog.filter(function (d) { return d.genre === "journal" && inFocus(d); });
     var links = el("ul", { class: "f-rlinks" });
@@ -451,7 +447,6 @@
     link(home ? docURL(home) : BASE + "content/", "Home", "home", !!(home && hereDoc === home));
     link(href((D.site.journal || {}).url || "/content/journal/"), "Journal", "journal",
       view === "journal" ? true : hereDoc && hereDoc.genre === "journal" ? "near" : false, journal.length);
-    if (D.site.comments) link(reviewURL(), "Review", "chat", view === "review");
     box.appendChild(links);
     if (focused()) box.appendChild(el("div", { class: "f-rfocus" }, [icon("focus"),
       el("span", null, ["Focus: ", el("strong", { text: focusNames() })]), clearFocusButton("Clear")]));
@@ -999,11 +994,6 @@
   }
 
   /* --------------------------------------------------------- home page */
-  function homeInbox() {
-    var box = el("div", { class: "f-home-inbox" });
-    page.insertBefore(box, main);
-    optional(inboxLine(box), null);
-  }
   function homeMaps() {
     var ids = ((D.site.home || {}).maps) || [];
     if (ids.length) {
@@ -1312,340 +1302,11 @@
     root.addEventListener("focusout", hidePop);
   }
 
-  /* ------------------------------------------------------- comments */
-  // Served by `folio serve`, the site says whether this reader may comment (D.site.comments).
-  // An exported site has no server: the panel says where comments are open, and nothing more.
-  var API = BASE + "_folio/annotations";
-  var INBOX = BASE + "_folio/inbox";
-  var STATIC_LINE = "Comments are open where this library is served with folio serve.";
-  function served() { return !!D.site.comments; }
-  function reviewURL() { return href(((D.site.review || {}).url) || "/content/review/"); }
-  // The file keeps five states; a reader sees three words, and how a closed thread closed.
-  function stateChip(t) {
-    var word = t.word || (t.state === "open" ? "waiting" : t.state === "noted" ? "resting" : "closed");
-    var text = word === "closed" && t.how ? "closed · " + t.how : word;
-    return el("span", { class: "f-cstate", "data-w": word, "data-how": t.how || null, text: text });
-  }
-  function postJSON(body) {
-    return fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-      .then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (j) {
-          if (!r.ok) throw new Error(j.error || ("The server answered " + r.status));
-          return j;
-        });
-      });
-  }
-  function staticNote() {
-    panelSection("Comments", el("p", { class: "f-cnote", text: STATIC_LINE }));
-  }
-  function whatChanged(c) {
-    function side(label, part, cls) {
-      return el("div", { class: "f-side" }, [el("span", { text: label }),
-        el("p", null, [part.lead ? part.lead + " " : "", el(cls, { text: part.text || "(nothing)" }), part.tail ? " " + part.tail : ""])]);
-    }
-    return el("div", { class: "f-changed" }, [
-      el("div", { class: "f-changed-head", text: "What changed" }),
-      side("Before", c.before, "del"),
-      side("After", c.after, "ins")
-    ]);
-  }
-
-  function annotations(rel) {
-    var status = D.site.comments;
-    var source = rel;
-    var info = lookup(rel);
-    if (info) source = (info.part || info.doc).path;
-    var threads = [];
-    var fab = el("button", { class: "f-anno-fab", type: "button", "aria-label": "Comments", onclick: function () { openDrawer(); } }, [icon("chat")]);
-    document.body.classList.add("f-live");
-    var list = el("div", { class: "f-threads" });
-    var drawer = el("aside", { class: "f-drawer", "aria-label": "Comments" }, [
-      el("header", null, [el("h2", { text: "Comments on this page" }),
-        el("button", { class: "f-btn", type: "button", "aria-label": "Close", onclick: function () { drawer.removeAttribute("data-open"); } }, [icon("close")])]),
-      list
-    ]);
-    var ask = el("button", { class: "f-anno-ask", type: "button", text: "Comment" });
-    var pendingQuote = null;  // null: not writing; "": a comment on the whole page; else the passage
-    var changing = null;      // the id of a resting flag whose Change form is open
-    document.body.appendChild(fab);
-    document.body.appendChild(drawer);
-
-    function load() {
-      return fetch(API + "?doc=" + encodeURIComponent(source)).then(function (r) { return r.json(); }).then(function (j) {
-        threads = j.threads || [];
-        render();
-      });
-    }
-    function send(data, error) {
-      data.doc = source;
-      return postJSON(data).then(load).catch(function (err) { error.textContent = err.message; throw err; });
-    }
-    function form(fields, label, submit) {
-      var error = el("p", { class: "f-error", role: "alert" });
-      var f = el("form", { class: "f-form" }, fields.concat([error, el("button", { type: "submit", text: label || "Send" })]));
-      f.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var data = {};
-        Array.prototype.forEach.call(f.elements, function (x) {
-          if (!x.name) return;
-          data[x.name] = x.type === "checkbox" ? x.checked : x.value;
-        });
-        submit(data, error).catch(function () {});
-      });
-      return f;
-    }
-    function render() {
-      var waiting = threads.filter(function (t) { return t.state === "open"; }).length;
-      fab.textContent = "";
-      fab.appendChild(icon("chat"));
-      fab.appendChild(el("span", { class: "f-label", text: "Comments" }));
-      if (waiting) fab.appendChild(el("span", { class: "f-count", title: waiting + " waiting", text: String(waiting) }));
-      list.textContent = "";
-      if (!status.open) {
-        list.appendChild(el("p", { class: "f-cnote f-readonly", text: status.reason || "Comments are read-only here." }));
-      } else if (pendingQuote === null) {
-        list.appendChild(el("div", { class: "f-cwho" }, [
-          el("span", { text: "Commenting as " }), el("strong", { text: status.who }),
-          el("button", { class: "f-btn f-whole-btn", type: "button", text: "Comment on the whole page",
-            onclick: function () { pendingQuote = ""; render(); } })]));
-      } else {
-        list.appendChild(el("div", { class: "f-thread f-new" }, [el("strong", { text: "New comment" }),
-          pendingQuote ? el("blockquote", { text: pendingQuote }) : el("p", { class: "f-whole", text: "About the whole page" }),
-          form([
-            el("select", { name: "kind", "aria-label": "Kind" }, [el("option", { value: "question", text: "Question" }), el("option", { value: "flag", text: "Flag" })]),
-            el("textarea", { name: "body", placeholder: "What should change, or what do you want to know?", required: true })
-          ], "Send", function (data, error) {
-            data.action = "add"; data.quote = pendingQuote;
-            return send(data, error).then(function () { pendingQuote = null; render(); });
-          }),
-          el("button", { class: "f-btn", type: "button", text: "Cancel", onclick: function () { pendingQuote = null; render(); } })]));
-      }
-      if (!threads.length && pendingQuote === null)
-        list.appendChild(el("p", { class: "f-empty", text: status.open ? "No comments yet. Select a passage to ask about it, or comment on the whole page." : "No comments on this page." }));
-      threads.slice().reverse().forEach(function (t) { list.appendChild(threadBox(t)); });
-      highlightQuotes();
-    }
-    function threadBox(t) {
-      var box = el("div", { class: "f-thread", id: "comment-" + t.id, "data-w": t.word || null }, [
-        el("div", { class: "f-entry-top" }, [el("span", { class: "f-kind", text: t.kind }),
-          t.label ? el("span", { text: t.label }) : null, stateChip(t)]),
-        t.quote ? el("blockquote", { text: t.quote }) : el("p", { class: "f-whole", text: "About the whole page" })
-      ]);
-      var was = t.kind === "flag" ? "noted" : "open";
-      var MOVES = { open: "reopened", noted: "rested", declined: "declined", withdrawn: "withdrew" };
-      (t.messages || []).forEach(function (m, i) {
-        var moved = "";
-        if (i && m.state) {
-          moved = m.state === "addressed" ? (was === "noted" ? "kept" : "changed") : MOVES[m.state] || m.state;
-          was = m.state;
-        }
-        box.appendChild(el("div", { class: "f-msg" }, [el("small", { text: m.author + " · " + fmtDate(m.date) + (moved ? " · " + moved : "") }),
-          el("p", { text: m.body })]));
-      });
-      if (t.changed) box.appendChild(whatChanged(t.changed));
-      if (!status.open) return box;
-      if (t.author === status.who) {
-        var delError = el("p", { class: "f-error", role: "alert" });
-        box.appendChild(el("div", { class: "f-thread-tools" }, [
-          el("button", { class: "f-btn f-delete", type: "button", text: "Delete", title: "Delete this thread; git keeps the history",
-            onclick: function () {
-              if (!window.confirm("Delete this comment thread? It disappears from the page; the commit history keeps it.")) return;
-              send({ action: "delete", id: t.id }, delError).catch(function () {});
-            } }), delError]));
-      }
-      if (t.kind === "flag" && t.state === "noted") {
-        var error = el("p", { class: "f-error", role: "alert" });
-        if (changing === t.id) {
-          box.appendChild(form([el("textarea", { name: "body", placeholder: "What should change?", required: true })], "Ask for the change",
-            function (data, err) { data.action = "change"; data.id = t.id; return send(data, err).then(function () { changing = null; render(); }); }));
-          box.appendChild(el("button", { class: "f-btn", type: "button", text: "Cancel", onclick: function () { changing = null; render(); } }));
-        } else {
-          box.appendChild(el("div", { class: "f-choice" }, [
-            el("button", { class: "f-keep", type: "button", text: "Keep", title: "Keep the passage as it is; the flag closes",
-              onclick: function () { send({ action: "keep", id: t.id }, error).catch(function () {}); } }),
-            el("button", { class: "f-change", type: "button", text: "Change", title: "Say what to change; the agent picks it up",
-              onclick: function () { changing = t.id; render(); } })]));
-          box.appendChild(error);
-        }
-        return box;
-      }
-      var closed = t.state !== "open" && t.state !== "noted";
-      box.appendChild(form([
-        el("textarea", { name: "body", placeholder: closed ? "Reply, or reopen with what is still wrong" : "Reply", required: true }),
-        closed ? el("label", { class: "f-reopen" }, [el("input", { type: "checkbox", name: "reopen" }), " Reopen"]) : null
-      ], "Reply", function (data, err) { data.action = "reply"; data.id = t.id; return send(data, err); }));
-      return box;
-    }
-    function highlightQuotes() {
-      Array.prototype.forEach.call(main.querySelectorAll("mark.f-anno"), function (m) {
-        m.replaceWith(document.createTextNode(m.textContent));
-      });
-      main.normalize();
-      threads.forEach(function (t) {
-        if (!t.quote || t.state === "withdrawn") return;
-        // The quote may run across tags (`<b>x</b>, y`): match the page's characters, whitespace
-        // ignored, and mark each text node the match covers.
-        var nodes = [], at = [], flat = "";
-        var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-        var node;
-        while ((node = walker.nextNode())) {
-          if (/^(SCRIPT|STYLE)$/.test(node.parentNode.nodeName)) continue;
-          for (var k = 0; k < node.nodeValue.length; k++) {
-            if (/\s/.test(node.nodeValue[k])) continue;
-            flat += node.nodeValue[k]; at.push([nodes.length, k]);
-          }
-          nodes.push(node);
-        }
-        var q = t.quote.replace(/\s+/g, "");
-        var i = flat.indexOf(q);
-        if (i < 0) return;
-        var first = at[i], last = at[i + q.length - 1];
-        for (var n = last[0]; n >= first[0]; n--) {
-          var text = nodes[n];
-          var from = n === first[0] ? first[1] : 0, to = n === last[0] ? last[1] + 1 : text.nodeValue.length;
-          if (!text.nodeValue.slice(from, to).trim()) continue;
-          var piece = from ? text.splitText(from) : text;
-          if (to - from < piece.nodeValue.length) piece.splitText(to - from);
-          var m = el("mark", { class: "f-anno", "data-w": t.word || null, title: t.kind + ": " + (t.word || t.state) });
-          m.addEventListener("click", function () { openDrawer(t.id); });
-          piece.replaceWith(m); m.appendChild(piece);
-        }
-      });
-    }
-    function openDrawer(id) {
-      drawer.setAttribute("data-open", "");
-      render();
-      if (id) {
-        var t = document.getElementById("comment-" + id);
-        if (t) { t.scrollIntoView({ block: "start" }); t.classList.add("f-thread-on"); }
-      }
-    }
-    if (status.open) document.addEventListener("mouseup", function () {
-      setTimeout(function () {
-        var sel = window.getSelection();
-        var text = sel ? sel.toString().trim() : "";
-        if (!text || !main.contains(sel.anchorNode)) { ask.remove(); return; }
-        var r = sel.getRangeAt(0).getBoundingClientRect();
-        ask.style.left = (window.scrollX + r.left) + "px";
-        ask.style.top = (window.scrollY + r.top - 36) + "px";
-        ask.onclick = function () { pendingQuote = text.replace(/\s+/g, " "); ask.remove(); openDrawer(); };
-        document.body.appendChild(ask);
-      }, 0);
-    });
-    load().then(function () {
-      var m = /^#comment-(.+)$/.exec(location.hash);
-      if (m) openDrawer(decodeURIComponent(m[1]));
-    });
-  }
-
-  /* -------------------------------------------------------- review page */
-  /* The inbox, narrowed to the focus: its threads, and its counts taken again. */
-  function focusInbox(j) {
-    if (!focused()) return j;
-    var threads = (j.threads || []).filter(function (t) { return pathInFocus(t.path); });
-    var toReview = (j.to_review || []).filter(function (r) { return pathInFocus(r.path); });
-    return { threads: threads, to_review: toReview, reviewing: toReview.length,
-      waiting: threads.filter(function (t) { return t.state === "open"; }).length,
-      resting: threads.filter(function (t) { return t.state === "noted"; }).length };
-  }
+  /* ------------------------------------------------------- focus note */
   function focusNote(what) {
     return el("p", { class: "f-outside f-focus-note" }, [icon("focus"),
       el("span", { text: "Showing the " + what + " in your focus on " + focusNames() + "." }), clearFocusButton("Show all")]);
   }
-  function inboxLine(box) {
-    return fetch(INBOX).then(function (r) { return r.json(); }).then(focusInbox).then(function (j) {
-      var q = j.waiting === 1 ? "1 question" : j.waiting + " questions";
-      var f = j.resting === 1 ? "1 flag" : j.resting + " flags";
-      var text = j.waiting || j.resting ? q + " waiting on the agent, " + f + " for you" : "Nothing waiting: no open questions, no resting flags";
-      if (j.reviewing) text += "; " + (j.reviewing === 1 ? "1 page" : j.reviewing + " pages") + " to review";
-      if (focused()) text += ", in your focus";
-      box.appendChild(el("a", { class: "f-inbox-line", href: reviewURL() }, [icon("chat"), el("span", { text: text })]));
-      return j;
-    });
-  }
-  function reviewView() {
-    document.body.classList.add("f-journal", "f-review");
-    page.insertBefore(el("header", { class: "f-head" }, [
-      el("div", { class: "f-eyebrow" }, [el("span", { text: "Review" })]),
-      el("h1", { class: "f-title", text: meta("title") || "Review" }),
-      el("p", { class: "f-sub", text: meta("description") })
-    ]), main);
-    panel.remove();
-    document.body.classList.add("f-wide");
-    if (!served()) { main.appendChild(el("p", { class: "f-cnote", text: STATIC_LINE })); return; }
-    fetch(INBOX).then(function (r) { return r.json(); }).then(focusInbox).then(function (j) {
-      if (focused()) main.appendChild(focusNote("comments"));
-      var shown = "";
-      var chips = el("div", { class: "f-chips", role: "group", "aria-label": "Show" });
-      function chip(value, label, count) {
-        return el("button", { type: "button", class: "f-chip", "data-v": value, "aria-pressed": String(shown === value),
-          onclick: function () { shown = value; render(); } }, [label, el("span", { class: "f-count", text: String(count) })]);
-      }
-      chips.appendChild(chip("", "All", j.threads.length));
-      chips.appendChild(chip("open", "Waiting on the agent", j.waiting));
-      chips.appendChild(chip("noted", "Flags for you", j.resting));
-      var toReview = j.to_review || [];
-      var reviewChip = chip("review", "To review", toReview.length);
-      chips.appendChild(reviewChip);
-      var list = el("ol", { class: "f-inbox" });
-      /* Pages that landed live and changed since the owner last read them, newest first. */
-      function renderReview() {
-        reviewChip.querySelector(".f-count").textContent = String(toReview.length);
-        if (!toReview.length) { list.appendChild(el("li", { class: "f-empty", text: "Nothing to review." })); return; }
-        var open = !!(D.site.comments && D.site.comments.open);
-        toReview.forEach(function (r) {
-          var err = el("p", { class: "f-error" });
-          var btn = el("button", { type: "button", class: "f-reviewed", disabled: open ? null : "",
-            title: open ? "Mark this page reviewed" : ((D.site.comments || {}).reason || "Read-only here"), text: "Reviewed" });
-          btn.addEventListener("click", function () {
-            btn.disabled = true;
-            postJSON({ action: "reviewed", doc: r.path }).then(function () {
-              toReview = toReview.filter(function (x) { return x !== r; });
-              render();
-            }, function (e) { btn.disabled = false; err.textContent = e.message; });
-          });
-          list.appendChild(el("li", { class: "f-inbox-row f-review-row" }, [
-            el("div", { class: "f-entry-top" }, [
-              r.date ? el("time", { datetime: r.date, text: fmtDate(r.date) }) : null,
-              el("span", { class: "f-kind", text: r.note === "new" ? "new" : "changed" }),
-              r.author ? el("span", { class: "f-who", text: r.author }) : null]),
-            el("div", null, [r.genre ? el("span", { class: "f-genre", text: r.genre }) : null,
-              el("a", { class: "f-inbox-doc", href: href(r.url), text: r.title })]),
-            r.note && r.note !== "new" ? el("p", { class: "f-inbox-msg", text: r.note }) : null,
-            el("div", { class: "f-review-act" }, [btn, el("span", { class: "f-cnote", text: "Comment on the page to ask for a change." })]),
-            err
-          ]));
-        });
-      }
-      main.appendChild(el("div", { class: "f-filters" }, [chips]));
-      main.appendChild(list);
-      function render() {
-        Array.prototype.forEach.call(chips.children, function (c) { c.setAttribute("aria-pressed", String(c.getAttribute("data-v") === shown)); });
-        list.textContent = "";
-        if (shown === "review") { renderReview(); return; }
-        var rows = j.threads.filter(function (t) { return !shown || t.state === shown; });
-        if (!rows.length) { list.appendChild(el("li", { class: "f-empty", text: "Nothing here." })); return; }
-        rows.forEach(function (t) {
-          var link = href(t.url) + "#comment-" + encodeURIComponent(t.id);
-          var mine = t.state === "noted";
-          list.appendChild(el("li", { class: "f-inbox-row", "data-w": t.word }, [
-            el("div", { class: "f-entry-top" }, [
-              el("time", { datetime: t.last.date || t.created, text: fmtDate(t.last.date || t.created) }),
-              el("span", { class: "f-kind", text: t.kind }), t.label ? el("span", { text: t.label }) : null,
-              stateChip(t),
-              el("span", { class: "f-who", text: mine ? "for you" : "waiting on the agent" })]),
-            el("div", null, [t.genre ? el("span", { class: "f-genre", text: t.genre }) : null,
-              el("a", { class: "f-inbox-doc", href: link, text: t.title })]),
-            t.quote ? el("blockquote", { text: t.quote }) : el("p", { class: "f-whole", text: "About the whole page" }),
-            el("p", { class: "f-inbox-msg" }, [el("strong", { text: (t.last.author || t.author) + ": " }), t.last.body || ""]),
-            el("a", { class: "f-inbox-go", href: link, text: mine ? "Keep or change it on the page" : "Open the passage" })
-          ]));
-        });
-      }
-      render();
-    }).catch(function (err) { main.appendChild(el("p", { class: "f-error", text: err.message })); });
-  }
-
   /* ---------------------------------------------------------------- math */
   /* KaTeX, vendored beside this script, on a page with <meta name="math">. It typesets $…$, $$…$$,
      \(…\) and \[…\] inside <main>, never in code, scripts or a definition's name. */
@@ -1811,7 +1472,7 @@
     if (view || meta("layout") === "column") document.body.classList.add("f-column");
     // KaTeX loads beside the indices, and the page shows once its math is set, not before.
     var math = document.querySelector('meta[name="math"]') ? loadMath() : null;
-    // highlight.js loads beside them too, and colours the code before comments mark their passages.
+    // highlight.js loads beside them too, and colours the code before the page shows.
     var code = codeListings().length ? loadCode().catch(function (err) {
       if (window.console) console.error("folio:", err);
     }) : null;
@@ -1828,7 +1489,6 @@
       loadFocus();
       frame(view, rel);
       if (view === "journal") { journalView(); }
-      else if (view === "review") { reviewView(); }
       else {
         var info = lookup(rel);
         header(info);
@@ -1836,7 +1496,7 @@
           var doc = info.doc, links = D.backlinks[doc.path] || {};
           banners(doc, links);
           mapRows();
-          if (doc.id === "home") { if (served()) homeInbox(); homeMaps(); }
+          if (doc.id === "home") homeMaps();
           if (doc.versions) paperLanding(doc);
           guideNav(doc, info.part && info.part.number ? info.part : null);
           outline();
@@ -1847,8 +1507,6 @@
           mapRows();
           outline();
         }
-        if (served()) { if (info) annotations(rel); }
-        else if (info) staticNote();
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
         else document.body.classList.add("f-has-panel");
       }
@@ -1870,7 +1528,7 @@
 
   /* Served live, the page follows its own file: every few seconds, while it is in view, it asks the
      server for its current ETag and reloads when that changed. It never reloads under a reader who is
-     typing (a comment, a search): it offers the reload instead. */
+     typing (a search): it offers the reload instead. */
   var FOLLOW_MS = 3000;
   function followEdits() {
     var url = BASE + "_folio/etag?path=" + encodeURIComponent(location.pathname);

@@ -62,7 +62,7 @@ What a good guide usually does, judged, not checked:
 
 - Plan the chapters first. Each chapter adds one thing the next one needs, and its description says what.
 - Write chapters in order. Before each one, reread what the earlier chapters actually said.
-- Add a chapter with `folio new guide <slug> --part chapter <name>`, which takes the next number. To insert one, renumber with `folio mv`, which keeps links and comments.
+- Add a chapter with `folio new guide <slug> --part chapter <name>`, which takes the next number. To insert one, renumber with `folio mv`, which keeps links and dates.
 - An invented example that a reader could take for a reported fact says in the page that it is illustrative.
 - Give the front page its one place: a row on one home map, under a heading (`folio map add <map> <doc> --section <heading>`). Give a reason when the description does not say who should start it.
 

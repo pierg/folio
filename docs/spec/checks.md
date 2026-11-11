@@ -29,7 +29,6 @@ These run on every document. No card needs to name them.
 | `rail-genres` | Every genre the charter lists under `rail.evidence` exists and is switched on: its pack is on and it is not disabled. | error |
 | `unique-id` | Every id is unique across the library, whatever the genre, compared without regard to case: slugs, record ids, and journal entry ids (their file stems). A record id is in its genre's prefix and is never reused, even after its document is retired. | error |
 | `index-current` | The generated indices in `.folio/` match what `folio index` would write. | error |
-| `stale-quote` | An open question still quotes text that is on its document. | error |
 
 ## Card checks
 
@@ -45,7 +44,7 @@ A retired document is held only to its lifecycle checks (`permanent`, `frozen`):
 | `min_links` | a number | The document links to at least this many other documents. | error | note |
 | `forward_links` | `marked` | A link to a later chapter carries `data-fwd`. | error | none in the core; a library may set it on a guide's chapters |
 | `stale_after_days` | a number | A `live` document's `reviewed` date is no older than this. | warning | project |
-| `permanent` | `true` | Compared with git history: the file is unchanged since its first commit. Turned on by `lives: permanent`. A part marked `lives: permanent` is checked the same way, and when its path gives it a folder of its own, so is every file in that folder: none may change, appear or disappear (annotation files aside). | error | journal, result, paper (`version` part) |
+| `permanent` | `true` | Compared with git history: the file is unchanged since its first commit. Turned on by `lives: permanent`. A part marked `lives: permanent` is checked the same way, and when its path gives it a folder of its own, so is every file in that folder: none may change, appear or disappear. | error | journal, result, paper (`version` part) |
 | `frozen` | `true` | Once the status has reached one of the card's `frozen_in` states, the file matches the first commit that set such a state, except its `status` field. The status may then change only to one of the card's `frozen_exits`. Turned on by `lives: frozen`. | error | report, protocol |
 | `kinds` | a list of kinds | A journal entry's `kind`, when present, is one the library accepts: this list, plus the `journal_kinds` of every pack switched on, plus the charter's `journal.kinds`. | error | journal |
 | `bib` | a path | Every `\cite` key is in this file, and the paper has no bibliography of its own. | error | paper |

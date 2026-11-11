@@ -93,7 +93,7 @@ def permanent_parts(lib: Library, doc: Document) -> Found:
 
     A part whose path gives it a folder of its own (a paper's `versions/<name>/`)
     owns every file there: none may change, appear or disappear after the
-    commit that first added the part. Annotation files may change.
+    commit that first added the part.
     """
     genre = doc.genre
     if genre is None or not history.in_git(lib):
@@ -117,8 +117,6 @@ def permanent_parts(lib: Library, doc: Document) -> Found:
             files = sorted(set(history.tree(lib, first, folder)) | set(now))
         changed = []
         for path in files:
-            if path.endswith(".annotations.json"):
-                continue
             target = lib.root / path
             current = target.read_bytes() if target.is_file() else None
             if history.show_bytes(lib, first, path) != current:

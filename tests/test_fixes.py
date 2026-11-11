@@ -157,14 +157,6 @@ def test_config_set_keeps_order_and_comments(sample: Path, monkeypatch) -> None:
 
 # Annotations about the whole document (kb 4, decision 12)
 
-def test_annotation_without_a_quote(sample: Path, monkeypatch, capsys) -> None:
-    assert folio(sample, "annotations", "add", "softmax", "--kind", "question", "--body", "Too short?",
-                 "--author", "owner", monkeypatch=monkeypatch) == 0
-    assert folio(sample, "annotations", "list", monkeypatch=monkeypatch) == 0
-    assert "(the whole document)" in out_of(capsys)
-    assert found(sample, "stale-quote") == []
-
-
 # Cite (kb 17, lab 11)
 
 def test_cite_takes_a_path_and_gives_one_form(sample: Path, monkeypatch, capsys) -> None:

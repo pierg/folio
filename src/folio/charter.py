@@ -18,15 +18,13 @@ CHARTER = "folio.yaml"
 
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
-    "checks", "assets", "root", "theme", "journal", "search", "site_url", "comments", "libraries", "save",
+    "checks", "assets", "root", "theme", "journal", "search", "site_url", "libraries", "save",
     "rail", "baseline",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
-_COMMENTS_KEYS = ("identity_header",)
-_SAVE_KEYS = ("gate", "review", "url")
+_SAVE_KEYS = ("gate", "url")
 _RAIL_KEYS = ("evidence",)
-REVIEWS = ("drafts", "after")
 _PACK_KEYS = ("name", "git", "ref")
 _LIBRARY_KEYS = ("path", "url")
 # Schemes the web already uses: a library named like one would make its links ambiguous.
@@ -59,7 +57,6 @@ class LibraryRef:
 class SaveSettings:
     """How `folio save` records content (model §10)."""
     gate: str = ""  # the shell command run before saving, from the library's folder; empty: folio check
-    review: str = ""  # "drafts": only the owner makes a page live; "after": pages land live, for review after
     url: str = ""  # where the library is served live; save prints each saved page's address under it
 
 
@@ -82,7 +79,6 @@ class Charter:
     journal_kinds: list[str]
     search: list[str] = field(default_factory=list)
     site_url: str = ""  # where the exported site is published; a paper's review build links each cited id from it
-    identity_header: str = ""  # the request header a sign-in proxy names the reader in; empty: none
     libraries: dict[str, LibraryRef] = field(default_factory=dict)
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
     # Genres the rail keeps apart, last, as evidence; None: the charter does not say, the packs do.
@@ -115,10 +111,9 @@ class Charter:
             "checks": self.checks, "assets": self.assets, "root": self.root,
             "theme": self.theme, "journal": {"kinds": list(self.journal_kinds)},
             "search": list(self.search), "site_url": self.site_url,
-            "comments": {"identity_header": self.identity_header},
             "libraries": {n: {"path": r.path, **({"url": r.url} if r.url else {})}
                           for n, r in self.libraries.items()},
-            "save": {"gate": self.save.gate, "review": self.save.review, "url": self.save.url},
+            "save": {"gate": self.save.gate, "url": self.save.url},
             "rail": {"evidence": None if self.rail_evidence is None else list(self.rail_evidence)},
             "baseline": self.baseline,
         }
@@ -164,6 +159,9 @@ def _only(mapping: Any, allowed: tuple[str, ...], key: str, where: str) -> dict:
 def parse(raw: dict[str, Any], path: Path) -> Charter:
     where = str(path)
     for key in raw:
+        if key == "comments":
+            raise FolioError(f"{where}: `comments` was removed in folio 0.4.0, with reader comments; "
+                             "delete it from the charter")
         if key not in KEYS:
             raise FolioError(f"{where}: unknown key `{key}`")
     packs: list[PackRef] = []
@@ -217,7 +215,6 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         journal_kinds=_str_list(journal.get("kinds"), "journal.kinds", where),
         search=_str_list(raw.get("search"), "search", where),
         site_url=_site_url(raw, where),
-        identity_header=_identity_header(raw, where),
         libraries=_libraries(raw, where),
         save=_save(raw, where),
         rail_evidence=_rail_evidence(raw, where),
@@ -279,26 +276,16 @@ def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:
 
 
 def _save(raw: dict[str, Any], where: str) -> SaveSettings:
-    """`save: {gate, review, url}`: how `folio save` records content (model §10)."""
+    """`save: {gate, url}`: how `folio save` records content (model §10)."""
+    if isinstance(raw.get("save"), dict) and "review" in raw["save"]:
+        raise FolioError(f"{where}: `save.review` was removed in folio 0.4.0, with the To review list; "
+                         "delete it from the charter")
     table = _only(raw.get("save"), _SAVE_KEYS, "save", where)
     gate = _str(table, "gate", "", where).strip()
-    review = _str(table, "review", "", where).strip()
-    if review and review not in REVIEWS:
-        raise FolioError(f"{where}: `save.review` must be {' or '.join(REVIEWS)}, or absent, not `{review}`")
     url = _str(table, "url", "", where).strip().rstrip("/")
     if url and not re.match(r"^https?://[^\s]+$", url):
         raise FolioError(f"{where}: `save.url` must be an http(s) address, not `{url}`")
-    return SaveSettings(gate=gate, review=review, url=url)
-
-
-def _identity_header(raw: dict[str, Any], where: str) -> str:
-    """The header naming the signed-in reader on a deployed server, such as `X-Forwarded-User`."""
-    comments = _only(raw.get("comments"), _COMMENTS_KEYS, "comments", where)
-    value = _str(comments, "identity_header", "", where).strip()
-    if value and not re.match(r"^[A-Za-z0-9][A-Za-z0-9-]*$", value):
-        raise FolioError(f"{where}: `comments.identity_header` must be a header name, such as "
-                         f"X-Forwarded-User, not `{value}`")
-    return value
+    return SaveSettings(gate=gate, url=url)
 
 
 def _site_url(raw: dict[str, Any], where: str) -> str:

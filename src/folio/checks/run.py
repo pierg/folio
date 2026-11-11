@@ -6,7 +6,7 @@ from ..library import Library
 from .card import CARD_CHECKS
 from .gate import GATE_CHECKS
 from .lifecycle import permanent_parts
-from .later import GIT_CHECKS, LIBRARY_CHECKS, LIFECYCLE_CHECKS, RULE_CHECKS, history_notice
+from .later import GIT_CHECKS, LIFECYCLE_CHECKS, RULE_CHECKS, history_notice
 from .problems import Problem
 from .registry import BY_NAME
 
@@ -27,8 +27,6 @@ def run(lib: Library) -> list[Problem]:
     problems.extend(history_notice(lib, {n: severity(lib, n) for n in GIT_CHECKS}))
     for name, gate in GATE_CHECKS.items():
         add(name, gate(lib))
-    for name, check in LIBRARY_CHECKS.items():
-        add(name, check(lib))
     on = {p.name for p in lib.registry.packs.values() if p.on}
     for name, rule in RULE_CHECKS.items():
         if BY_NAME[name].pack in on:

@@ -347,9 +347,6 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-eyebrow .f-copypath .f-icon { width: .9rem; height: .9rem; flex: none; }
 .f-eyebrow .f-copypath:hover, .f-eyebrow .f-copypath:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
 .f-offscreen { position: fixed; left: -9999px; top: 0; opacity: 0; }
-.f-thread-tools { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; margin-top: .4rem; }
-.f-thread-tools .f-delete { font-size: .78rem; color: var(--ink-3); }
-.f-thread-tools .f-delete:hover { color: var(--red); }
 .f-title { margin: 0; font: 600 clamp(1.85rem, 1.3rem + 2.4vw, 2.6rem)/1.12 var(--serif); letter-spacing: -.012em;
            color: var(--ink); text-wrap: balance; }
 .f-sub { margin: .8rem 0 0; font: 400 clamp(1.08rem, 1rem + .4vw, 1.25rem)/1.45 var(--serif); color: var(--ink-2);
@@ -670,7 +667,6 @@ main ul.rows .f-genre { grid-column: 2; grid-row: 1; align-self: baseline; }
 .f-about a { padding: .05rem .45rem; border-radius: 4px; border: 1px solid var(--rule); color: var(--ink-2); font-size: .74rem; text-decoration: none; }
 .f-about a:hover { border-color: var(--rule-strong); color: var(--ink); }
 .f-about a .f-genre { margin-right: .3rem; font-size: .58rem; }
-.f-whole-btn { margin-bottom: .75rem; }
 .f-empty { color: var(--ink-3); font: italic .95rem var(--serif); }
 
 /* -------------------------------------------------------------- popovers */
@@ -704,93 +700,6 @@ main ul.rows .f-genre { grid-column: 2; grid-row: 1; align-self: baseline; }
 .f-palette .f-hint { padding: .55rem 1.1rem; border-top: 1px solid var(--rule); font: .72rem/1.4 var(--sans); color: var(--ink-3); }
 @media (max-width: 39.99rem) { .f-palette { padding-top: .75rem; } .f-palette-box { max-height: 85vh; } }
 
-/* ----------------------------------------------------------- annotations */
-.f-anno-fab { position: fixed; right: 1rem; bottom: 1rem; z-index: 40; display: inline-flex; align-items: center; gap: .45rem;
-              padding: .55rem .9rem; border-radius: 999px; border: 1px solid var(--rule-strong); background: var(--surface);
-              box-shadow: var(--shadow); cursor: pointer; font: 600 .8rem/1 var(--sans); color: var(--ink); }
-@media (max-width: 39.99rem) { .f-anno-fab { padding: .6rem; } .f-anno-fab .f-label { display: none; } .f-live .f-layout { padding-bottom: 6rem; } }
-.f-anno-fab .f-count { padding: .1rem .4rem; border-radius: 999px; background: var(--accent); color: var(--surface); font-size: .7rem; }
-.f-anno-ask { position: absolute; z-index: 45; padding: .4rem .7rem; border-radius: 6px; border: 0; background: var(--ink); color: var(--paper);
-              font: 600 .78rem/1 var(--sans); cursor: pointer; box-shadow: var(--shadow); }
-.f-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 55; width: min(26rem, 100vw); display: flex; flex-direction: column;
-            background: var(--surface); border-left: 1px solid var(--rule-strong); box-shadow: var(--shadow); transform: translateX(105%);
-            transition: transform .2s ease; font: .88rem/1.5 var(--sans); }
-.f-drawer[data-open] { transform: none; }
-.f-drawer header { display: flex; align-items: center; gap: .5rem; padding: .85rem 1rem; border-bottom: 1px solid var(--rule); }
-.f-drawer header h2 { margin: 0; font: 650 .75rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
-.f-drawer header button { margin-left: auto; }
-.f-drawer .f-threads { flex: 1; overflow-y: auto; padding: .75rem 1rem 2rem; }
-.f-thread { padding: .8rem 0 1rem; border-bottom: 1px solid var(--rule); }
-.f-thread blockquote { margin: .45rem 0; padding: .1rem 0 .1rem .7rem; border-left: 2px solid var(--mark); color: var(--ink-2);
-                       font: italic .92rem/1.5 var(--serif); }
-.f-thread .f-msg { margin: .45rem 0 0; }
-.f-thread .f-msg small { color: var(--ink-3); }
-.f-thread .f-msg p { margin: .1rem 0 0; color: var(--ink); white-space: pre-wrap; }
-.f-form { display: grid; gap: .45rem; margin-top: .6rem; }
-.f-form textarea, .f-form input, .f-form select { width: 100%; padding: .45rem .55rem; border-radius: 6px; border: 1px solid var(--rule-strong);
-  background: var(--paper); color: var(--ink); font: .85rem/1.4 var(--sans); }
-.f-form textarea { min-height: 4.5rem; resize: vertical; }
-.f-form .f-row { display: flex; gap: .45rem; }
-.f-form button[type="submit"] { justify-self: start; padding: .45rem .9rem; border-radius: 6px; border: 0; background: var(--ink);
-  color: var(--paper); font-weight: 600; cursor: pointer; }
-.f-form .f-error { color: var(--bad); font-size: .8rem; }
-mark.f-anno { background: var(--mark); color: inherit; border-bottom: 2px solid var(--warn); cursor: pointer; padding: 0; }
-mark.f-anno[data-w="resting"] { background: var(--info-soft); border-bottom-color: var(--info); }
-mark.f-anno[data-w="closed"] { background: transparent; border-bottom: 1px dashed var(--rule-strong); }
-/* a thread's state in a reader's words: waiting, resting, closed (and how) */
-.f-cstate { display: inline-block; padding: 0 .45rem; border-radius: 999px; font: 600 .68rem/1.6 var(--sans);
-            background: var(--sunk); color: var(--ink-2); }
-.f-cstate[data-w="waiting"] { background: var(--warn-soft); color: var(--warn); }
-.f-cstate[data-w="resting"] { background: var(--info-soft); color: var(--info); }
-.f-cstate[data-how="changed"], .f-cstate[data-how="kept"] { background: var(--ok-soft); color: var(--ok); }
-.f-cnote { margin: 0; color: var(--ink-3); font: .85rem/1.5 var(--sans); }
-.f-readonly { padding: .6rem .75rem; border-radius: var(--radius); background: var(--sunk); color: var(--ink-2); }
-.f-cwho { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; padding-bottom: .6rem; color: var(--ink-3); font-size: .8rem; }
-.f-cwho strong { color: var(--ink); font-weight: 600; }
-.f-cwho .f-whole-btn { margin: 0 0 0 auto; border-color: var(--rule); }
-.f-thread.f-thread-on { margin: 0 -.5rem; padding-left: .5rem; padding-right: .5rem; border-radius: var(--radius); background: var(--accent-soft); }
-.f-choice { display: flex; gap: .5rem; margin-top: .7rem; }
-.f-choice button { padding: .45rem 1rem; border-radius: 6px; font: 600 .82rem/1 var(--sans); cursor: pointer; }
-.f-keep { border: 0; background: var(--ink); color: var(--paper); }
-.f-change { border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); }
-.f-change:hover { background: var(--sunk); }
-.f-reopen { display: inline-flex; align-items: center; gap: .35rem; color: var(--ink-2); font-size: .8rem; }
-.f-form .f-reopen input { width: auto; }
-.f-changed { margin-top: .7rem; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; font-size: .84rem; }
-.f-changed-head { padding: .35rem .65rem; background: var(--sunk); color: var(--ink-2);
-                  font: 650 .66rem/1.4 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
-.f-side { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: .5rem; padding: .5rem .65rem; }
-.f-side + .f-side { border-top: 1px solid var(--rule); }
-.f-side > span { font: 600 .7rem/1.7 var(--sans); color: var(--ink-3); }
-.f-side p { margin: 0; font: .88rem/1.55 var(--serif); color: var(--ink-2); }
-.f-side del { color: var(--ink); background: var(--bad-soft); text-decoration-color: color-mix(in srgb, var(--bad) 55%, transparent); }
-.f-side ins { color: var(--ink); background: var(--ok-soft); text-decoration: none; box-shadow: inset 0 -1px 0 var(--ok); }
-.f-form .f-error:empty { display: none; }
-.f-thread .f-whole, .f-inbox-row .f-whole { margin: .35rem 0; color: var(--ink-3); font: italic .9rem/1.5 var(--serif); }
-.f-inbox-row .f-genre { margin-right: .4rem; color: var(--ink-3); font: 650 .64rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; vertical-align: .15em; }
-/* the review page and the home page's line to it */
-.f-home-inbox:not(:empty) { margin: 0 0 1.75rem; }
-.f-inbox-line { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem .8rem; border-radius: var(--radius);
-                border: 1px solid var(--rule); background: var(--surface); color: var(--ink); font: 500 .88rem/1.3 var(--sans); text-decoration: none; }
-.f-inbox-line:hover { border-color: var(--rule-strong); background: var(--sunk); }
-.f-inbox-line .f-icon { color: var(--accent); }
-.f-inbox { list-style: none; margin: 0; padding: 0; }
-.f-inbox-row { padding: 1rem 0 1.15rem; border-top: 1px solid var(--rule); font-family: var(--sans); }
-.f-inbox-row .f-who { margin-left: auto; }
-.f-inbox-doc { display: inline-block; margin-top: .25rem; font: 600 1.08rem/1.35 var(--serif); color: var(--ink); text-decoration: none; }
-.f-inbox-doc:hover { color: var(--link); }
-.f-inbox-row blockquote { margin: .4rem 0; padding: .1rem 0 .1rem .7rem; border-left: 2px solid var(--mark); color: var(--ink-2);
-                          font: italic .95rem/1.5 var(--serif); }
-.f-inbox-row[data-w="resting"] blockquote { border-left-color: var(--info); }
-.f-inbox-msg { margin: .25rem 0 0; color: var(--ink-2); font-size: .88rem; }
-.f-inbox-msg strong { color: var(--ink); font-weight: 600; }
-.f-inbox-go { display: inline-block; margin-top: .4rem; font-size: .82rem; }
-.f-review .f-filters { padding: .5rem .75rem; }
-.f-review-act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; margin-top: .5rem; }
-.f-reviewed { padding: .3rem .8rem; border-radius: var(--radius); border: 1px solid var(--rule-strong); background: var(--paper);
-              color: var(--ink); font: 600 .82rem/1.2 var(--sans); cursor: pointer; }
-.f-reviewed:hover { background: var(--sunk); }
-.f-reviewed[disabled] { opacity: .55; cursor: default; }
 /* a map's sources, in the page panel */
 .f-sources h3 { display: flex; align-items: baseline; gap: .4rem; margin: .7rem 0 .25rem; font: 600 .78rem/1.3 var(--sans); color: var(--ink-2); }
 .f-sources h3 .f-count { margin-left: auto; }
@@ -841,7 +750,7 @@ main .katex-display { margin: .6em 0; overflow-x: auto; overflow-y: hidden; }
 /* -------------------------------------------------------------- print */
 @media print {
   body.f-deck-page .f-head, body.f-deck-page .f-deck-bar, body.f-deck-page .deck .notes { display: none !important; }
-  .f-top, .f-rail, .f-rail-backdrop, .f-panel, .f-anno-fab, .f-drawer, .f-palette, .f-pager, .f-home-inbox { display: none !important; }
+  .f-top, .f-rail, .f-rail-backdrop, .f-panel, .f-palette, .f-pager { display: none !important; }
   .f-layout { display: block; max-width: none; padding: 0; margin: 0 !important; }
   main details { break-inside: avoid; }
   main details.check .ans, main details.card > :not(summary) { display: block; }

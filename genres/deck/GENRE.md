@@ -57,7 +57,7 @@ What a good deck usually does, judged, not checked:
 
 - A deck that cites nothing. Caught by `cites: any`: the talk rests on the library's documents.
 - A slide that is a page of text. Judged, not checked: the notes carry the words, the slide carries the point.
-- Words written by a script. The shell's rule, judged, not checked (`shell/COMPONENTS.md`): every word is in the markup, so comments, search and the gate read it.
+- Words written by a script. The shell's rule, judged, not checked (`shell/COMPONENTS.md`): every word is in the markup, so search and the gate read it.
 - A number on a slide that no document holds. Judged, not checked; cite the document that holds it.
 
 ## Steps

@@ -46,7 +46,7 @@ Both must pass before a change is done, and CI runs the same two commands. After
 `main` is the only source of truth and is always clean: every commit on it passes the gate below.
 Pull before you start; never leave work only on a machine.
 
-**Content lane.** Content here means reader comments recorded by the folio server, and pages in the `docs/` library.
+**Content lane.** Content here means pages in the `docs/` library.
 Commit content straight to `main`: pull, change only content, run the gate, commit, push. If the
 push is refused because `main` moved, pull with rebase and push again.
 In the folio library at `docs`, `folio save` does all of this in one step: run it there.

@@ -1,6 +1,6 @@
 # The shell's components
 
-This is the shared vocabulary a page may use. The shell is one stylesheet, `folio.css`, and one script, `folio.js`. Together they draw everything around a page: the top bar, the library rail, the header, the banners, the page panel, guide navigation, search and the comment panel. A page writes its metadata and its `<main>`. Below the header, `<main>` is a free canvas: the page lays it out for what it must show, with its own `<style>` and `<script>` when it needs them, and uses the components below where they fit. How to choose a page's form is in `craft/layout.md`. Read `docs/spec/model.md` §3, §4 and §14 first.
+This is the shared vocabulary a page may use. The shell is one stylesheet, `folio.css`, and one script, `folio.js`. Together they draw everything around a page: the top bar, the library rail, the header, the banners, the page panel, guide navigation and search. A page writes its metadata and its `<main>`. Below the header, `<main>` is a free canvas: the page lays it out for what it must show, with its own `<style>` and `<script>` when it needs them, and uses the components below where they fit. How to choose a page's form is in `craft/layout.md`. Read `docs/spec/model.md` §3, §4 and §14 first.
 
 ## The canvas
 
@@ -40,8 +40,8 @@ A Markdown record needs nothing: the site renders it as an HTML page at the same
 
 ## What the shell draws, so a page never writes it
 
-- **The library rail**: on the left of every page, links to the home page, the journal and (when served) the Review page; then the charter's home maps, each a group of the documents it lists; then every document other than a journal entry, grouped by genre. A placed document sits only in the map its `place` names, and a draft shows with a draft mark. The current page is marked. `[` hides or shows it; on a narrow screen it is a drawer opened from the top bar.
-- **Topic focus**: the top bar's Focus control narrows the rail, search, the journal, Review and the home page to the documents under the chosen home maps (`model.md` §5). A chip names the focus and clears it; a page outside it says so under its header. It reads `topics` from the catalog, so a page writes nothing for it.
+- **The library rail**: on the left of every page, links to the home page and the journal; then the charter's home maps, each a group of the documents it lists; then every document other than a journal entry, grouped by genre. A placed document sits only in the map its `place` names, and a draft shows with a draft mark. The current page is marked. `[` hides or shows it; on a narrow screen it is a drawer opened from the top bar.
+- **Topic focus**: the top bar's Focus control narrows the rail, search, the journal and the home page to the documents under the chosen home maps (`model.md` §5). A chip names the focus and clears it; a page outside it says so under its header. It reads `topics` from the catalog, so a page writes nothing for it.
 - **The path**: above the title, where the page lives, read from the catalog's `place`: `Home › Map › Heading › Page`, the heading linking to its anchor on the map. A source shows `Home › Sources › Page` and the maps it is used in. A page writes no breadcrumb of its own.
 - **The header**: the genre, the record id, the title, the description as a subtitle, the status (unless `live`), the `date` or the dates from git, the tags, "Frozen since <date>" for a document in a frozen state (the date of the commit that froze it), and the genre's fields as a short list, in the order the card declares them. Beside the genre, a button shows the page's path in the library (a folder page by its folder, such as `content/entries/x/`) and copies it, so a reader can hand the page to an agent or a command. So a body has no `<h1>`, no subtitle and no status line.
 - **Banners**: a superseded record links the one that supersedes it; a retracted record links the retraction; a journal entry of kind `correction` shows on the document it is `about`, with its text.
@@ -140,7 +140,7 @@ A page with `<meta name="math" content="katex">` in its `<head>` has its math ty
 - inline: `$H(s) \wedge \neg H(s')$`, or `\(…\)`;
 - display: `$$\forall s.\ H(s) \Rightarrow H(s')$$`, or `\[…\]`. Wrap a display formula that may run wide in `<p class="formula">`, which scrolls sideways on a phone.
 
-Nothing inside `<code>`, `<pre>`, `<script>`, `<style>` or a `defn-name` is typeset, so `<code>Init</code>` stays an identifier. The words stay in the markup as LaTeX, so search and comments read them as written. Introduce every symbol before using it, in a definition above all: the popover shows the definition with no context.
+Nothing inside `<code>`, `<pre>`, `<script>`, `<style>` or a `defn-name` is typeset, so `<code>Init</code>` stays an identifier. The words stay in the markup as LaTeX, so search reads them as written. Introduce every symbol before using it, in a definition above all: the popover shows the definition with no context.
 
 ### Side by side
 
@@ -206,17 +206,6 @@ Colours, faces and sizes are custom properties on `:root`, redefined for dark mo
 **Registers.** A figure draws from one register, never two: the SET hues for the parts of one picture, the ROLE hues for the actors of one process. What a hue means is the page's business, said once in its legend or caption. For a tint, mix a hue with the paper: `color-mix(in srgb, var(--teal) 14%, transparent)`.
 
 An inline SVG uses `currentColor`, `var(--ink-2)`, the register hues and the like for its strokes and fills, never a hex value.
-
-## The comment panel
-
-When a library is served with `folio serve` or `folio up`, every page shows a Comments button, and the top bar links to Review. The panel says who is commenting: the server knows it (`docs/spec/model.md` §12), so there is no name field. Selecting a passage offers to comment on it, and "Comment on the whole page" opens a thread with no quote. A comment is a question or a flag, saved beside the document as `<name>.annotations.json`, the same file `folio annotations` reads, and committed by the server.
-
-The panel lists every thread on the page, with its quote (or "About the whole page"), its messages and its state in plain words: waiting, resting, or closed with how (changed, kept, declined, withdrawn). A resting flag has two buttons, Keep and Change. An addressed thread shows "What changed": the passage before and after, from git. A closed thread takes a reply and can be reopened. A thread's author sees a Delete button on it; after a confirmation the thread leaves the page and the file, and the server commits the deletion, so git keeps it. Quoted passages are highlighted on the page. A link ending `#comment-<id>` opens the panel at that thread.
-
-Review, at `/content/review/`, lists every waiting question and resting flag in the library, newest first, and the home page shows one line linking to it. Its To review tab lists the pages changed since their owner last read them (`docs/spec/model.md` §12), newest first, each with a Reviewed button that the server records and commits.
-
-Where the server takes no comments (a public address without `comments.identity_header`, or a request without that header), the panel shows the threads and says why it is read-only. An exported site has no comment button and carries no annotation files, no review page, and no source's kept `original.*`; its page panel says "Comments are open where this library is served with folio serve."
-
 
 ## Theme
 

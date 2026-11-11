@@ -12,7 +12,7 @@ from conftest import edit, folio
 from folio.charter import load as load_charter
 from folio.commands import save
 from folio.errors import FolioError
-from test_comments import Server
+from test_serve import Server
 
 NOTE = "content/notes/flashattention-tiling.html"
 CONCEPT = "content/concepts/softmax/index.html"
@@ -144,21 +144,12 @@ def test_no_push_commits_without_an_upstream(sample: Path, monkeypatch: pytest.M
 
 def test_the_save_block_is_checked(sample: Path) -> None:
     charter = sample / "folio.yaml"
-    edit(charter, "checks:", "save:\n  review: drafts\n  url: https://notes.example.org\nchecks:")
+    edit(charter, "checks:", "save:\n  url: https://notes.example.org\nchecks:")
     settings = load_charter(sample).save
-    assert (settings.review, settings.url, settings.gate) == ("drafts", "https://notes.example.org", "")
-    edit(charter, "review: drafts", "review: everything")
-    with pytest.raises(FolioError, match="save.review"):
+    assert (settings.url, settings.gate) == ("https://notes.example.org", "")
+    edit(charter, "url: https://notes.example.org", "url: notes")
+    with pytest.raises(FolioError, match="save.url"):
         load_charter(sample)
-
-
-def test_under_review_a_new_document_starts_as_a_draft(sample: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    edit(sample / "folio.yaml", "checks:", "save:\n  review: drafts\nchecks:")
-    assert folio(sample, "new", "note", "rope-scaling", "--title", "RoPE scaling",
-                 "--description", "Why rotary positions stretch.", monkeypatch=monkeypatch) == 0
-    page = next((sample / "content" / "notes").glob("rope-scaling*"))
-    text = page.read_text() if page.is_file() else (page / "index.html").read_text()
-    assert 'name="status" content="draft"' in text or "status: draft" in text
 
 
 def test_a_served_page_reports_its_etag_and_it_follows_edits(sample: Path) -> None:

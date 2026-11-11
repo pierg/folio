@@ -1,6 +1,6 @@
 """`folio save`: record the library's content on its branch, checked, and push it.
 
-Content is what the library holds: its documents and their annotation files under `content/`,
+Content is what the library holds: its documents under `content/`,
 its assets, and the indices in `.folio/` regenerated from them. Everything else in the
 repository (the charter, genres, workflows, skills, code) is a change to the library or the
 project, made another way, and `save` leaves it alone and says so.
@@ -143,8 +143,6 @@ def save(start: Path, message: str | None = None, push: bool = True) -> Saved:
         if upstream:
             _pull(git, index)
         lib = library_mod.load(start)
-        if lib.charter.save.review == "after":
-            _mark_new(lib, git, top)
         indexer.write(lib)
         lib = library_mod.load(start)
         files = _changed(git, scope)
@@ -169,23 +167,6 @@ def save(start: Path, message: str | None = None, push: bool = True) -> Saved:
     raise FolioError(f"the branch kept moving: {ATTEMPTS} attempts to push were refused; nothing was pushed")
 
 
-def _mark_new(lib: library_mod.Library, git: Git, top: Path) -> None:
-    """Under `save.review: after`, put on the To review list each document recorded for the first time."""
-    from .. import reviews
-    from ..site.identity import local
-
-    head = git.run("ls-tree", "-r", "-z", "--name-only", "HEAD")
-    tracked = {p for p in head.stdout.split("\0") if p} if head.returncode == 0 else set()
-    author = local(lib.root).name or "agent"
-    for doc in lib.documents:
-        try:
-            rel = (lib.root / doc.key).resolve().relative_to(top).as_posix()
-        except ValueError:
-            continue
-        if rel not in tracked:
-            reviews.mark_new(lib, doc, author)
-
-
 def _pages(lib: library_mod.Library, top: Path, staged: list[str]) -> list[tuple[str, str, str]]:
     """The documents a save touches: id, status and address (under the charter's `save.url`)."""
     base = lib.charter.save.url
@@ -196,9 +177,6 @@ def _pages(lib: library_mod.Library, top: Path, staged: list[str]) -> list[tuple
             key = rel.relative_to(lib.root.resolve()).as_posix()
         except ValueError:
             continue
-        if key.endswith(".annotations.json"):
-            key = key[: -len(".annotations.json")]
-            key = next((p for p in lib.by_path if p.rsplit(".", 1)[0] == key), key)
         df = lib.by_path.get(key)
         if df is None or df.doc is None or df.doc.id in seen:
             continue

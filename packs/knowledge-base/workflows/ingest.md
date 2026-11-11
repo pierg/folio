@@ -24,7 +24,7 @@ You hand over one work to keep; you get a verified source with the original besi
 8. **Give it its place.** Run `folio map add <map> <reading> --section "<heading>" [--after <doc>]`: one home map, under the heading where a newcomer would read it. Add `--reason "..."` only when one line on why to follow it says more than the reading's description. The source takes no row: it is cited, and the reading's `source` field links it.
 9. **Record it.** Through the write skill, which runs `folio journal add --title "Ingested <title>" --description "<one line on the work>" --body ".." --about <source>,<reading>`. The entry has no kind; it shows on both documents.
 10. **Run the gate.** `folio index`, then `folio check` passes.
-11. **Commit.** Add exactly: the documents written, their annotation files (`<stem>.annotations.json`), `.folio/`, and the kept original. Never `git add -A`.
+11. **Commit.** Add exactly: the documents written, `.folio/`, and the kept original. Never `git add -A`.
 
 ## Stops
 

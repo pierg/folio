@@ -1,3 +1,3 @@
 """folio: a knowledge library a coding agent builds and keeps."""
 
-__version__ = "0.3.7"
+__version__ = "0.4.0"
