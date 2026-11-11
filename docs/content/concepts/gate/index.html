@@ -41,7 +41,6 @@
 .gt-pipe[data-f="life"] .gt-fam[data-f="life"],
 .gt-pipe[data-f="maps"] .gt-fam[data-f="maps"],
 .gt-pipe[data-f="ids"] .gt-fam[data-f="ids"],
-.gt-pipe[data-f="quotes"] .gt-fam[data-f="quotes"],
 .gt-pipe[data-f="rules"] .gt-fam[data-f="rules"],
 .gt-pipe[data-f="papers"] .gt-fam[data-f="papers"] { display: block; }
 
@@ -96,8 +95,7 @@ The gate is <code>folio check</code>: one offline command that names every probl
 <text x="235" y="106" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">lifecycles against git</text>
 <text x="235" y="124" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">maps and orphans</text>
 <text x="235" y="142" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">ids and indices</text>
-<text x="235" y="160" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">open questions' quotes</text>
-<text x="235" y="178" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">the packs' rules</text>
+<text x="235" y="160" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-2)">the packs' rules</text>
 <text x="235" y="198" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="var(--ink-3)">one pass, changes nothing</text>
 <rect x="370" y="40" width="100" height="54" rx="8" fill="none" stroke="var(--orange)" stroke-width="2"/>
 <text x="420" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="var(--orange)">commit</text>
@@ -127,7 +125,6 @@ The gate is <code>folio check</code>: one offline command that names every probl
 <button type="button" class="tbtn" data-f="life" aria-pressed="false">Lifecycle<small>permanent, frozen</small></button>
 <button type="button" class="tbtn" data-f="maps" aria-pressed="false">Maps<small>orphan, home-maps</small></button>
 <button type="button" class="tbtn" data-f="ids" aria-pressed="false">Ids and indices<small>unique-id, index-current</small></button>
-<button type="button" class="tbtn" data-f="quotes" aria-pressed="false">Comments<small>stale-quote</small></button>
 <button type="button" class="tbtn" data-f="rules" aria-pressed="false">Pack rules<small>uncited-number and more</small></button>
 <button type="button" class="tbtn" data-f="papers" aria-pressed="false">Papers<small>bib, figures</small></button>
 </div>
@@ -157,11 +154,6 @@ The gate is <code>folio check</code>: one offline command that names every probl
 <p class="gt-h">Ids and indices</p>
 <p>Ids are unique across the library whatever the genre, compared without regard to case, and a record id is never reused. The generated indices in <code>.folio/</code> match what <code>folio index</code> would write.</p>
 <p class="gt-line">content/notes/attention.html: error unique-id: id `attention` is also the id of content/entries/attention/index.html; ids are unique across the library, whatever their case</p>
-</div>
-<div class="gt-fam" data-f="quotes">
-<p class="gt-h">Comments</p>
-<p>An open question still quotes text that is on its page. An edit that rewrote the passage a reader asked about fails the gate until the question is answered.</p>
-<p class="gt-line">content/entries/attention-cost/index.html: error stale-quote: open thread t3 quotes text no longer on the page: `costs grow with the square of the context`</p>
 </div>
 <div class="gt-fam" data-f="rules">
 <p class="gt-h">Pack rules</p>

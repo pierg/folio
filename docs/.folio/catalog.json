@@ -271,7 +271,7 @@
       "url": "/content/entries/why-metadata-first/"
     },
     {
-      "description": "By the end you have a library in your project, a few linked documents, and a way to review them.",
+      "description": "By the end you have a library in your project, a few linked documents, and maps that keep them in order.",
       "field_order": [],
       "fields": {},
       "genre": "guide",
@@ -303,24 +303,6 @@
           "path": "content/guides/getting-started/03-organising.html",
           "title": "Organising",
           "url": "/content/guides/getting-started/03-organising.html"
-        },
-        {
-          "description": "You leave knowing how to question a passage on the page, what the agent's flags mean, and how your comments get answered.",
-          "name": "reviewing-comments",
-          "number": 4,
-          "part": "chapter",
-          "path": "content/guides/getting-started/04-reviewing-comments.html",
-          "title": "Reviewing comments",
-          "url": "/content/guides/getting-started/04-reviewing-comments.html"
-        },
-        {
-          "description": "You leave knowing how to let others comment on a library served from a machine you share, and how each comment reaches git.",
-          "name": "deployed-comments",
-          "number": 5,
-          "part": "chapter",
-          "path": "content/guides/getting-started/05-deployed-comments.html",
-          "title": "Comments on a deployed library",
-          "url": "/content/guides/getting-started/05-deployed-comments.html"
         }
       ],
       "path": "content/guides/getting-started/index.html",
@@ -825,6 +807,41 @@
       "url": "/content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
     },
     {
+      "description": "folio 0.4.0 removed reader comments and the To review list, so the docs now describe six skills and a read-only server.",
+      "field_order": [
+        "date",
+        "kind",
+        "about"
+      ],
+      "fields": {
+        "about": [
+          "home",
+          "getting-started",
+          "using-folio",
+          "skill",
+          "gate",
+          "pack",
+          "folio"
+        ],
+        "date": "2026-11-11",
+        "kind": "decision"
+      },
+      "genre": "journal",
+      "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+      "parts": [],
+      "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
+      "status": "live",
+      "tags": [],
+      "title": "Docs follow folio 0.4.0: no reader comments, no To review list",
+      "topics": [
+        "using-folio",
+        "concepts",
+        "reference",
+        "building-folio"
+      ],
+      "url": "/content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+    },
+    {
       "description": "The record of how folio is built and measured: the project, the questions it asks of itself, and what it found.",
       "field_order": [],
       "fields": {},
@@ -991,7 +1008,7 @@
       "url": "/content/maps/using-folio.html"
     },
     {
-      "description": "The engine, the genres, the packs and the seven skills that let a coding agent keep a knowledge library.",
+      "description": "The engine, the genres, the packs and the six skills that let a coding agent keep a knowledge library.",
       "field_order": [
         "reviewed"
       ],

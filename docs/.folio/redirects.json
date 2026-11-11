@@ -1,0 +1,6 @@
+{
+  "redirects": {
+    "content/guides/getting-started/04-reviewing-comments.html": "content/guides/getting-started/index.html",
+    "content/guides/getting-started/05-deployed-comments.html": "content/guides/getting-started/index.html"
+  }
+}

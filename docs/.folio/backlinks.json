@@ -1,6 +1,13 @@
 {
   "content/concepts/gate/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/genre/index.html",
       "content/concepts/library/index.html",
@@ -13,6 +20,7 @@
       "content/entries/why-metadata-first/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
       "content/maps/concepts.html",
       "content/projects/folio/index.html",
       "content/readings/1945-as-we-may-think-reading.html"
@@ -172,7 +180,14 @@
     "superseded_by": []
   },
   "content/concepts/pack/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/gate/index.html",
       "content/concepts/genre/index.html",
@@ -180,6 +195,7 @@
       "content/concepts/skill/index.html",
       "content/entries/one-fact-one-home/index.html",
       "content/guides/getting-started/index.html",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
       "content/maps/concepts.html",
       "content/projects/folio/index.html"
     ],
@@ -208,7 +224,6 @@
       "content/concepts/map/index.html",
       "content/entries/how-corrections-work/index.html",
       "content/entries/why-metadata-first/index.html",
-      "content/guides/getting-started/index.html",
       "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
       "content/maps/concepts.html"
     ],
@@ -223,7 +238,14 @@
     "superseded_by": []
   },
   "content/concepts/skill/index.html": {
-    "about": [],
+    "about": [
+      {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      }
+    ],
     "cited_by": [
       "content/concepts/gate/index.html",
       "content/concepts/journal/index.html",
@@ -232,6 +254,7 @@
       "content/concepts/pack/index.html",
       "content/guides/getting-started/index.html",
       "content/index.html",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
       "content/maps/concepts.html",
       "content/projects/folio/index.html"
     ],
@@ -317,6 +340,12 @@
   "content/guides/getting-started/index.html": {
     "about": [
       {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      },
+      {
         "date": "2026-10-04",
         "id": "2026-10-04-comments-are-committed-by-the-server",
         "kind": "decision",
@@ -327,6 +356,7 @@
       "content/concepts/map/index.html",
       "content/index.html",
       "content/journal/2026/2026-10-04-comments-are-committed-by-the-server.md",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
       "content/maps/using-folio.html"
     ],
     "cites": [
@@ -336,7 +366,6 @@
       "content/concepts/library/index.html",
       "content/concepts/map/index.html",
       "content/concepts/pack/index.html",
-      "content/concepts/permanent-record/index.html",
       "content/concepts/skill/index.html"
     ],
     "fields": {},
@@ -346,6 +375,12 @@
   },
   "content/index.html": {
     "about": [
+      {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      },
       {
         "date": "2026-10-04",
         "id": "2026-10-04-the-library-shares-the-repository-s-skills",
@@ -361,7 +396,8 @@
     ],
     "cited_by": [
       "content/journal/2026/2026-10-04-library-set-up.md",
-      "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md"
+      "content/journal/2026/2026-10-04-the-library-shares-the-repository-s-skills.md",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
     ],
     "cites": [
       "content/concepts/gate/index.html",
@@ -587,6 +623,23 @@
     "retracted_by": [],
     "superseded_by": []
   },
+  "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md": {
+    "about": [],
+    "cited_by": [],
+    "cites": [
+      "content/concepts/gate/index.html",
+      "content/concepts/pack/index.html",
+      "content/concepts/skill/index.html",
+      "content/guides/getting-started/index.html",
+      "content/index.html",
+      "content/maps/using-folio.html",
+      "content/projects/folio/index.html"
+    ],
+    "fields": {},
+    "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+    "retracted_by": [],
+    "superseded_by": []
+  },
   "content/maps/building-folio.html": {
     "about": [
       {
@@ -666,6 +719,12 @@
   "content/maps/using-folio.html": {
     "about": [
       {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      },
+      {
         "date": "2026-10-20",
         "id": "2026-10-20-every-page-has-one-place-on",
         "kind": "decision",
@@ -687,7 +746,8 @@
     "cited_by": [
       "content/journal/2026/2026-10-04-added-how-folio-is-built-as.md",
       "content/journal/2026/2026-10-04-home-maps-set.md",
-      "content/journal/2026/2026-10-20-every-page-has-one-place-on.md"
+      "content/journal/2026/2026-10-20-every-page-has-one-place-on.md",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
     ],
     "cites": [
       "content/entries/how-corrections-work/index.html",
@@ -707,6 +767,12 @@
   "content/projects/folio/index.html": {
     "about": [
       {
+        "date": "2026-11-11",
+        "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+        "kind": "decision",
+        "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+      },
+      {
         "date": "2026-10-03",
         "id": "2026-10-03-paper-versions-are-snapshots",
         "kind": "decision",
@@ -716,6 +782,7 @@
     "cited_by": [
       "content/concepts/map/index.html",
       "content/journal/2026/2026-10-03-paper-versions-are-snapshots.md",
+      "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
       "content/maps/building-folio.html",
       "content/maps/using-folio.html"
     ],

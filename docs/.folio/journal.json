@@ -1,6 +1,25 @@
 [
   {
     "about": [
+      "home",
+      "getting-started",
+      "using-folio",
+      "skill",
+      "gate",
+      "pack",
+      "folio"
+    ],
+    "date": "2026-11-11",
+    "description": "folio 0.4.0 removed reader comments and the To review list, so the docs now describe six skills and a read-only server.",
+    "id": "2026-11-11-docs-follow-folio-0-4-0-no-reader",
+    "kind": "decision",
+    "path": "content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md",
+    "tags": [],
+    "title": "Docs follow folio 0.4.0: no reader comments, no To review list",
+    "url": "/content/journal/2026/2026-11-11-docs-follow-folio-0-4-0-no-reader.md"
+  },
+  {
+    "about": [
       "map",
       "using-folio"
     ],

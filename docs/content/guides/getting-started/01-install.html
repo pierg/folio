@@ -131,7 +131,7 @@ main .gs-in-tree > li { display: grid; grid-template-columns: minmax(0, 1.15fr) 
 <section class="gs-sec">
 <h2 id="prompt">Hand your agent the setup prompt</h2>
 <p>folio is installed by your agent, not by you. Open your coding agent in the project where the library should live, and paste the setup prompt from <a href="https://github.com/pierg/folio/blob/main/SETUP.md">SETUP.md</a>.</p>
-<p>The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up <a class="defn-link" href="/content/concepts/skill/">skill</a>. A skill is a written procedure the agent reads before it acts. Set-up is the first of seven.</p>
+<p>The prompt tells the agent to install the engine, confirm it runs, and then follow the set-up <a class="defn-link" href="/content/concepts/skill/">skill</a>. A skill is a written procedure the agent reads before it acts. Set-up is the first of six.</p>
 </section>
 <section class="gs-sec">
 <h2 id="pip">Or install the engine yourself</h2>
@@ -200,7 +200,7 @@ pip install folio-kb</code></pre>
 <li class="gs-frame">
 <p class="gs-k">Step 2 · Create the library</p>
 <pre><code>folio init docs --name "Field notes" --purpose "What we learned building the importer"</code></pre>
-<p>One command writes the charter, the home page, the asset folders, a <code>.gitignore</code> and the generated indices, and copies the seven skills to the project's root. The home page takes its title from the name.</p>
+<p>One command writes the charter, the home page, the asset folders, a <code>.gitignore</code> and the generated indices, and copies the six skills to the project's root. The home page takes its title from the name.</p>
 </li>
 <li class="gs-frame">
 <p class="gs-k">Step 3 · Finish the charter</p>
@@ -226,11 +226,11 @@ folio check</code></pre>
 </ol>
 </div>
 
-<figure class="gs-fig gs-stick" aria-label="The project after set-up: the seven skills at the project's root, and in docs the charter, the home page, the first journal entry, the asset folders and the committed indices.">
+<figure class="gs-fig gs-stick" aria-label="The project after set-up: the six skills at the project's root, and in docs the charter, the home page, the first journal entry, the asset folders and the committed indices.">
 <p class="gs-k">Your project</p>
 <ol class="gs-in-tree">
 <li><span>your-project/</span><span class="gs-in-note"></span></li>
-<li data-from="2"><span class="gs-in-d1">.agents/skills/</span><span class="gs-in-note">the seven skills, at the project's root</span></li>
+<li data-from="2"><span class="gs-in-d1">.agents/skills/</span><span class="gs-in-note">the six skills, at the project's root</span></li>
 <li data-from="2"><span class="gs-in-d1">.claude/skills</span><span class="gs-in-note">a link to them</span></li>
 <li data-from="2"><span class="gs-in-d1">docs/</span><span class="gs-in-note">the library</span></li>
 <li data-from="2" data-now="2 3"><span class="gs-in-d2">folio.yaml</span><span class="gs-in-note">the charter: name, purpose, reader, packs</span></li>

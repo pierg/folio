@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/shell/folio.css">
 <script src="/shell/folio.js" defer></script>
 <style>
-/* A designed concept: the seven skills around the one command they call. Every word is in the markup; the script only picks which command is traced. */
+/* A designed concept: the six skills around the one command they call. Every word is in the markup; the script only picks which command is traced. */
 .sk-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 2.5rem; align-items: start; margin-bottom: 3rem; }
 .sk-hero > * { min-width: 0; }
 .sk-hero .defn { margin-top: .2rem; }
@@ -36,7 +36,6 @@
 .sk-fig[data-c="new"] [data-u~="new"],
 .sk-fig[data-c="map"] [data-u~="map"],
 .sk-fig[data-c="mv"] [data-u~="mv"],
-.sk-fig[data-c="ann"] [data-u~="ann"],
 .sk-fig[data-c="config"] [data-u~="config"],
 .sk-fig[data-c="export"] [data-u~="export"] { opacity: 1; }
 .sk-fig[data-c="check"] .sk-says [data-c="check"],
@@ -44,12 +43,11 @@
 .sk-fig[data-c="new"] .sk-says [data-c="new"],
 .sk-fig[data-c="map"] .sk-says [data-c="map"],
 .sk-fig[data-c="mv"] .sk-says [data-c="mv"],
-.sk-fig[data-c="ann"] .sk-says [data-c="ann"],
 .sk-fig[data-c="config"] .sk-says [data-c="config"],
 .sk-fig[data-c="export"] .sk-says [data-c="export"] { display: block; }
 
-/* the seven cards */
-.sk-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; margin-top: 1.2rem; }
+/* the six cards */
+.sk-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; margin-top: 1.2rem; }
 .sk-card { min-width: 0; padding: .75rem .85rem; border: 1px solid var(--rule); border-top: 3px solid var(--violet); border-radius: 8px; background: var(--surface); transition: opacity .2s; }
 .sk-card .sk-h { margin: 0 0 .25rem; font: 700 .92rem/1.3 var(--mono); color: var(--violet); }
 .sk-card p:not(.sk-h) { margin: 0 0 .45rem; font-size: .88rem; line-height: 1.45; color: var(--ink-2); }
@@ -94,7 +92,7 @@
 <div>
 <blockquote class="defn" id="skill">
 <span class="defn-name">Skill</span><br>
-A skill is a written procedure a coding agent follows to change a library: when to use it, its rules, its steps, when to stop, and when it is done. folio ships seven: set-up, configure, write, organise, address, publish and run.
+A skill is a written procedure a coding agent follows to change a library: when to use it, its rules, its steps, when to stop, and when it is done. folio ships six: set-up, configure, write, organise, publish and run.
 </blockquote>
 </div>
 <div>
@@ -104,9 +102,9 @@ A skill is a written procedure a coding agent follows to change a library: when 
 </section>
 
 <section class="sk-band">
-<h2>Seven skills around one command</h2>
+<h2>Six skills around one command</h2>
 <p>Every skill acts on the library through the same command. Pick a command to see which skills call it.</p>
-<figure class="sk-fig" id="sk-fig" aria-label="The folio command in the middle, with the seven skills around it, each joined to it: set-up, configure, write, organise, address, publish and run. Every skill calls folio check before it is done. Most calls are shared, such as folio journal add; a few belong to one skill, such as folio new to write and folio export to publish.">
+<figure class="sk-fig" id="sk-fig" aria-label="The folio command in the middle, with the six skills around it, each joined to it: set-up, configure, write, organise, publish and run. Every skill calls folio check before it is done. Most calls are shared, such as folio journal add; a few belong to one skill, such as folio new to write and folio export to publish.">
 <div class="sk-ctl" role="group" aria-label="Pick a command">
 <button type="button" class="tbtn" data-c="all" aria-pressed="false">Every skill</button>
 <button type="button" class="tbtn" data-c="check" aria-pressed="false"><code>check</code></button>
@@ -114,41 +112,37 @@ A skill is a written procedure a coding agent follows to change a library: when 
 <button type="button" class="tbtn" data-c="new" aria-pressed="false"><code>new</code></button>
 <button type="button" class="tbtn" data-c="map" aria-pressed="false"><code>map add</code></button>
 <button type="button" class="tbtn" data-c="mv" aria-pressed="false"><code>mv</code></button>
-<button type="button" class="tbtn" data-c="ann" aria-pressed="false"><code>annotations</code></button>
 <button type="button" class="tbtn" data-c="config" aria-pressed="false"><code>config set</code></button>
 <button type="button" class="tbtn" data-c="export" aria-pressed="false"><code>export</code></button>
 </div>
 <div class="sk-ring">
 <svg viewBox="0 0 480 320" role="img" xmlns="http://www.w3.org/2000/svg">
-<title>The seven skills, each joined to the folio command in the middle</title>
+<title>The six skills, each joined to the folio command in the middle</title>
 <g stroke="var(--ink-3)" stroke-width="1.5">
 <line class="sk-l" data-u="check journal config" x1="240" y1="160" x2="240" y2="42"/>
-<line class="sk-l" data-u="check journal config" x1="240" y1="160" x2="340" y2="90"/>
-<line class="sk-l" data-u="check journal new map ann" x1="240" y1="160" x2="365" y2="198"/>
-<line class="sk-l" data-u="check journal map mv ann" x1="240" y1="160" x2="296" y2="284"/>
-<line class="sk-l" data-u="check ann" x1="240" y1="160" x2="184" y2="284"/>
-<line class="sk-l" data-u="check journal export" x1="240" y1="160" x2="115" y2="198"/>
-<line class="sk-l" data-u="check journal" x1="240" y1="160" x2="140" y2="90"/>
+<line class="sk-l" data-u="check journal config" x1="240" y1="160" x2="357" y2="101"/>
+<line class="sk-l" data-u="check journal new map" x1="240" y1="160" x2="357" y2="219"/>
+<line class="sk-l" data-u="check journal map mv" x1="240" y1="160" x2="240" y2="278"/>
+<line class="sk-l" data-u="check journal export" x1="240" y1="160" x2="123" y2="219"/>
+<line class="sk-l" data-u="check journal" x1="240" y1="160" x2="123" y2="101"/>
 </g>
 <circle cx="240" cy="160" r="50" fill="var(--surface)" stroke="var(--orange)" stroke-width="2.5"/>
 <text x="240" y="158" text-anchor="middle" font-family="ui-monospace, monospace" font-size="19" font-weight="700" fill="var(--orange)">folio</text>
 <text x="240" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="var(--ink-3)">the command</text>
-<g class="sk-n" data-u="check journal config"><rect x="186" y="23" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="240" y="48" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">set-up</text></g>
-<g class="sk-n" data-u="check journal config"><rect x="286" y="71" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="340" y="95" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">configure</text></g>
-<g class="sk-n" data-u="check journal new map ann"><rect x="311" y="179" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="365" y="203" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">write</text></g>
-<g class="sk-n" data-u="check journal map mv ann"><rect x="242" y="265" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="296" y="289" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">organise</text></g>
-<g class="sk-n" data-u="check ann"><rect x="130" y="265" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="184" y="289" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">address</text></g>
-<g class="sk-n" data-u="check journal export"><rect x="61" y="179" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="115" y="203" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">publish</text></g>
-<g class="sk-n" data-u="check journal"><rect x="86" y="71" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="140" y="95" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">run</text></g>
+<g class="sk-n" data-u="check journal config"><rect x="186" y="23" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="240" y="47" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">set-up</text></g>
+<g class="sk-n" data-u="check journal config"><rect x="303" y="82" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="357" y="106" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">configure</text></g>
+<g class="sk-n" data-u="check journal new map"><rect x="303" y="200" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="357" y="224" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">write</text></g>
+<g class="sk-n" data-u="check journal map mv"><rect x="186" y="259" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="240" y="283" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">organise</text></g>
+<g class="sk-n" data-u="check journal export"><rect x="69" y="200" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="123" y="224" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">publish</text></g>
+<g class="sk-n" data-u="check journal"><rect x="69" y="82" width="108" height="38" rx="8" fill="var(--surface)" stroke="var(--violet)" stroke-width="2"/><text x="123" y="106" text-anchor="middle" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="var(--violet)">run</text></g>
 </svg>
 </div>
 <div class="sk-says" aria-live="polite">
 <p data-c="check"><code>folio check</code>: every skill. A change is done only when the gate passes.</p>
-<p data-c="journal"><code>folio journal add</code>: six of the seven. Each records a decision as a new entry; address answers comments instead.</p>
+<p data-c="journal"><code>folio journal add</code>: all six. Each records what it changed, and why, as a new entry.</p>
 <p data-c="new"><code>folio new</code>: write alone. Every document any skill produces goes through write.</p>
 <p data-c="map"><code>folio map add</code>: write, which puts a new document on a map, and organise, which keeps the maps current.</p>
-<p data-c="mv"><code>folio mv</code>: organise alone, with <code>promote</code> and <code>rm --to</code>, so a move keeps every link, comment and date.</p>
-<p data-c="ann"><code>folio annotations</code>: address answers threads, write reads them and leaves flags, organise checks them before a move.</p>
+<p data-c="mv"><code>folio mv</code>: organise alone, with <code>promote</code> and <code>rm --to</code>, so a move keeps every link, id and date.</p>
 <p data-c="config"><code>folio config set</code>: set-up and configure, the only two skills that write the charter.</p>
 <p data-c="export"><code>folio export</code>: publish alone, after the gate.</p>
 </div>
@@ -156,9 +150,8 @@ A skill is a written procedure a coding agent follows to change a library: when 
 <div class="sk-cards">
 <div class="sk-card" data-u="check journal config"><p class="sk-h">set-up</p><p>Installs a library once: the charter, the home page, the first journal entry.</p><ul><li><code>init</code></li><li><code>config</code></li><li><code>pack on</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
 <div class="sk-card" data-u="check journal config"><p class="sk-h">configure</p><p>Changes the charter: packs, home maps, genres, variants, workflows.</p><ul><li><code>config</code></li><li><code>pack</code></li><li><code>genre add</code></li><li><code>workflow add</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
-<div class="sk-card" data-u="check journal new map ann"><p class="sk-h">write</p><p>Adds or revises any document, in its genre's voice, and puts it on a map.</p><ul><li><code>search</code></li><li><code>new</code></li><li><code>cite</code></li><li><code>map add</code></li><li><code>annotations</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
-<div class="sk-card" data-u="check journal map mv ann"><p class="sk-h">organise</p><p>Moves, merges, promotes and retires, with every link kept; runs health passes.</p><ul><li><code>maps</code></li><li><code>map add</code></li><li><code>mv</code></li><li><code>promote</code></li><li><code>rm --to</code></li><li><code>tags</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
-<div class="sk-card" data-u="check ann"><p class="sk-h">address</p><p>Answers the comments readers left, on the page each was left on.</p><ul><li><code>annotations</code></li><li><code>genre</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal new map"><p class="sk-h">write</p><p>Adds or revises any document, in its genre's voice, and puts it on a map.</p><ul><li><code>search</code></li><li><code>new</code></li><li><code>cite</code></li><li><code>map add</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
+<div class="sk-card" data-u="check journal map mv"><p class="sk-h">organise</p><p>Moves, merges, promotes and retires, with every link kept; runs health passes.</p><ul><li><code>maps</code></li><li><code>map add</code></li><li><code>mv</code></li><li><code>promote</code></li><li><code>rm --to</code></li><li><code>tags</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
 <div class="sk-card" data-u="check journal export"><p class="sk-h">publish</p><p>Exports the static site, and builds and freezes papers.</p><ul><li><code>up</code></li><li><code>export</code></li><li><code>paper build</code></li><li><code>paper freeze</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
 <div class="sk-card" data-u="check journal"><p class="sk-h">run</p><p>Follows a workflow step by step; every document it makes goes through write.</p><ul><li><code>workflows</code></li><li><code>genre</code></li><li><code>journal add</code></li><li><code>check</code></li></ul></div>
 </div>

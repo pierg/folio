@@ -191,10 +191,10 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 
 <section class="gs-sec">
 <h2 id="change">Ask for the change, not the commands</h2>
-<p>Say "tidy the maps", "rename this page", "merge these two", "this note grew, make it an entry", or "retire this into that". The agent follows the organise skill. It moves documents only through folio's own commands, so links are rewritten, comments and dates are kept, and a committed document keeps its id while its old address redirects to the new one.</p>
+<p>Say "tidy the maps", "rename this page", "merge these two", "this note grew, make it an entry", or "retire this into that". The agent follows the organise skill. It moves documents only through folio's own commands, so links are rewritten, dates are kept, and a committed document keeps its id while its old address redirects to the new one.</p>
 <p>Follow one rename through. You ask: "rename the pinned-parser note to parser-pin". Watch the map row that lists it.</p>
 
-<figure class="gs-fig gs-step" id="gs-or-step" aria-label="A rename with folio mv in five steps: the files move together with their comments, every link to the note is rewritten, the note keeps its id and its old address redirects, and the change is staged and recorded.">
+<figure class="gs-fig gs-step" id="gs-or-step" aria-label="A rename with folio mv in five steps: the note moves to its new name, every link to the note is rewritten, the note keeps its id and its old address redirects, and the change is staged and recorded.">
 <div class="gs-ctl">
 <button type="button" class="tbtn" data-go="prev">Back</button>
 <button type="button" class="tbtn" data-go="next">Next step</button>
@@ -210,11 +210,11 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 <li class="gs-frame gs-or-frame">
 <div>
 <p class="gs-k">Step 1 · Before</p>
-<p>The note is committed, a map lists it, and a reader has left a comment on it. Three things point at its name: the map row, its comment file and its address.</p>
+<p>The note is committed and a map lists it. Two things point at its name: the map row and its address.</p>
 </div>
 <div class="gs-or-state">
 <div><b>Map row</b><code>href="/content/notes/pinned-parser.html"</code></div>
-<div><b>Files</b><span><code>pinned-parser.html</code><br><code>pinned-parser.annotations.json</code></span></div>
+<div><b>Files</b><span><code>pinned-parser.html</code></span></div>
 <div><b>Old address</b><span class="gs-or-none">none yet</span></div>
 </div>
 </li>
@@ -222,11 +222,11 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 <div>
 <p class="gs-k">Step 2 · Move the files</p>
 <pre><code>folio mv pinned-parser parser-pin</code></pre>
-<p>The note moves to its new name, and its comment file moves with it, so every thread stays on the page it was left on.</p>
+<p>The note moves to its new name, in the same folder. Nothing points at the new name yet.</p>
 </div>
 <div class="gs-or-state">
 <div><b>Map row</b><code>href="/content/notes/pinned-parser.html"</code></div>
-<div class="gs-or-chg"><b>Files</b><span><code>parser-pin.html</code><br><code>parser-pin.annotations.json</code></span></div>
+<div class="gs-or-chg"><b>Files</b><span><code>parser-pin.html</code></span></div>
 <div><b>Old address</b><span class="gs-or-none">none yet</span></div>
 </div>
 </li>
@@ -237,7 +237,7 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 </div>
 <div class="gs-or-state">
 <div class="gs-or-chg"><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
-<div><b>Files</b><span><code>parser-pin.html</code><br><code>parser-pin.annotations.json</code></span></div>
+<div><b>Files</b><span><code>parser-pin.html</code></span></div>
 <div><b>Old address</b><span class="gs-or-none">none yet</span></div>
 </div>
 </li>
@@ -248,7 +248,7 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 </div>
 <div class="gs-or-state">
 <div><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
-<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code><br><code>parser-pin.annotations.json</code></span></div>
+<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code></span></div>
 <div class="gs-or-chg"><b>Old address</b><span>redirects to the new one</span></div>
 </div>
 </li>
@@ -259,7 +259,7 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 </div>
 <div class="gs-or-state">
 <div><b>Map row</b><code>href="/content/notes/parser-pin.html"</code></div>
-<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code><br><code>parser-pin.annotations.json</code></span></div>
+<div><b>Files</b><span><code>parser-pin.html</code>, id <code>pinned-parser</code></span></div>
 <div class="gs-or-chg"><b>Journal</b><span>a decision entry: renamed, and why</span></div>
 </div>
 </li>
@@ -267,7 +267,7 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 <figcaption>The highlighted row is what the step changed. A note never committed would simply take its new name as its id, with no redirect.</figcaption>
 </figure>
 
-<figure class="gs-fig gs-pick gs-or-two" aria-label="The same rename done two ways. A plain file move leaves the map row pointing at nothing, strands the comments under the old name, and kills the old address. folio mv rewrites the row, carries the comments, keeps the id and redirects the address.">
+<figure class="gs-fig gs-pick gs-or-two" aria-label="The same rename done two ways. A plain file move leaves the map row pointing at nothing and kills the old address. folio mv rewrites the row, keeps the id and redirects the address.">
 <div class="gs-pick-ctl" role="group" aria-label="How the note was moved">
 <button type="button" class="tbtn" data-v="a" aria-pressed="false">A plain file move</button>
 <button type="button" class="tbtn" data-v="b" aria-pressed="false">folio mv</button>
@@ -276,14 +276,12 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 <table class="gs-or-bad" data-for="a">
 <caption>A plain file move</caption>
 <tr><th scope="row">Map row</th><td>points at a file that is gone</td></tr>
-<tr><th scope="row">Comments</th><td>left behind under the old name</td></tr>
 <tr><th scope="row">Old address</th><td>leads nowhere</td></tr>
 <tr><th scope="row">Gate</th><td>fails on the broken links</td></tr>
 </table>
 <table class="gs-or-good" data-for="b">
 <caption>folio mv</caption>
 <tr><th scope="row">Map row</th><td>rewritten to the new path</td></tr>
-<tr><th scope="row">Comments</th><td>moved with the page</td></tr>
 <tr><th scope="row">Old address</th><td>redirects; the id is kept</td></tr>
 <tr><th scope="row">Gate</th><td>passes</td></tr>
 </table>
@@ -293,13 +291,13 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 
 <details class="check">
 <summary>Why should the agent never move a page with a plain file move?</summary>
-<div class="ans">A plain move breaks every link to the page and loses its comments. folio's move rewrites the links and keeps the comments, the id and the dates.</div>
+<div class="ans">A plain move breaks every link to the page and kills its old address. folio's move rewrites the links, keeps the id and the dates, and redirects the old address.</div>
 </details>
 </section>
 
 <section class="gs-sec">
 <h2 id="health">Ask for a health pass</h2>
-<p>From time to time, ask "is the library healthy?". The agent runs the gate, lists documents on no map, looks for thin documents and duplicates, finds drafts left for weeks and open comments, and reports what it changed and what is left for you. Structural choices, such as a new topic or retiring something you wrote, stay yours.</p>
+<p>From time to time, ask "is the library healthy?". The agent runs the gate, lists documents on no map, looks for thin documents and duplicates, finds drafts left for weeks, and reports what it changed and what is left for you. Structural choices, such as a new topic or retiring something you wrote, stay yours.</p>
 
 <div class="gs-or-health">
 <div class="lane lane-azure">
@@ -310,7 +308,6 @@ main .gs-or-vs li { margin: 0; padding: .16rem 0; font: .84rem/1.45 var(--sans);
 <li>Thin documents fold into the one they belong to.</li>
 <li>Two homes for one fact become one.</li>
 <li>Drafts left for weeks are finished, or proposed for retirement.</li>
-<li>Open comments go to the address skill.</li>
 </ol>
 </div>
 <div class="lane lane-violet">
