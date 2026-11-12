@@ -25,6 +25,7 @@ CHECKS: tuple[CheckSpec, ...] = (
     CheckSpec("heading-size", "gate", "warning"),
     CheckSpec("home-maps", "gate", "error"),
     CheckSpec("rail-genres", "gate", "error"),
+    CheckSpec("views", "gate", "error"),
     CheckSpec("unique-id", "gate", "error"),
     CheckSpec("index-current", "gate", "error"),
     CheckSpec("require", "card", "error"),

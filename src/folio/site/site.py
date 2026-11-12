@@ -9,12 +9,15 @@ from __future__ import annotations
 import json
 import mimetypes
 import shutil
+import sys
+import traceback
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
 from .. import library as library_mod
 from .. import redirects as redirects_mod
+from .. import views as views_mod
 from ..data import shipped
 from ..documents import url_of
 from ..errors import FolioError
@@ -70,6 +73,7 @@ class Site:
         self.live = live  # served by `folio serve`, so a page follows its own file
         self.pdfs: dict[str, str] = {}  # on an export, each deck's key and the site path its PDF is written at
         self._dates: dict[str, dict[str, str]] | None = None
+        self.views = views_mod.load(lib)  # providers of pages no file holds (views.py)
 
     @classmethod
     def load(cls, root: Path, base: str = "/", live: bool = False) -> "Site":
@@ -129,6 +133,8 @@ class Site:
             "pdfs": {key: url_of(path) for key, path in sorted(self.pdfs.items())},
             "live": self.live,
             "libraries": {name: {"url": ref.url} for name, ref in sorted(lib.charter.libraries.items())},
+            "views": [{"prefix": p.prefix, "title": p.title, "home": p.home, "url": url_of(p.prefix + "/"),
+                       "rail": p.rail(strict=not self.live), "backlinks": p.backlinks(strict=not self.live)} for p in self.views],
         }
 
     # -- paths -------------------------------------------------------------
@@ -157,6 +163,7 @@ class Site:
                 yield _served(rel) if rel in lib.by_path else rel
         yield from sorted(builds)
         yield JOURNAL_VIEW
+        yield from self.view_paths()
         for name in sorted(p.name for p in (lib.root / INDEX_DIR).glob("*.json")):
             if name != "redirects.json":
                 yield f"{INDEX_DIR}/{name}"
@@ -167,12 +174,22 @@ class Site:
         for old in sorted(moved):
             yield _served(old)
 
+    def view_paths(self) -> list[str]:
+        """Every view's page, as the exported site holds it. An export is strict: a provider that fails stops it."""
+        out = []
+        for provider in self.views:
+            for inner in provider.paths(strict=not self.live):
+                inner = str(inner).strip("/")
+                out.append(f"{provider.prefix}/{inner}/index.html" if inner else f"{provider.prefix}/index.html")
+        return out
+
     def get(self, path: str) -> Response | None:
         """The content at a site path (no leading `/`), or None when nothing is there."""
         lib = self.lib
         path = path.lstrip("/")
         if path in ("", "index.html"):
-            return self._html(render.redirect(self.base + "content/"))
+            front = next((p.prefix + "/" for p in self.views if p.home), "content/")
+            return self._html(render.redirect(self.base + front))
         if path == ".nojekyll":
             return Response(b"", "text/plain")
         if path.endswith("/"):
@@ -189,8 +206,16 @@ class Site:
             return Response(json.dumps(self.site_data(), indent=1).encode(), _type(path))
         if path.startswith("shell/"):
             return self._file(shell_dir(lib) / path[len("shell/"):], path)
+        if path == f"{INDEX_DIR}/search.json" and self.views:
+            entries = json.loads((lib.root / path).read_text(encoding="utf-8")) if (lib.root / path).is_file() else []
+            for provider in self.views:
+                entries += provider.search(strict=not self.live)
+            return Response(json.dumps(entries).encode(), _type(path))
         if path.startswith(INDEX_DIR + "/") and path.endswith(".json") and path != redirects_mod.FILE:
             return self._file(lib.root / path, path)
+        found = views_mod.owner(lib, path)
+        if found is not None:
+            return self._view(*found, path)
         if path.split("/", 1)[0] not in COPIED or path.endswith(LEFTOVER):
             return None
         if path.endswith(".html"):
@@ -221,6 +246,37 @@ class Site:
                 return self._html(render.redirect(self.base.rstrip("/") + target))
         return None
 
+    def _view(self, provider, inner: str, path: str) -> Response | None:
+        """A provider's page, in the shell: its header comes from these metas, as a document's does.
+
+        Its links are rewritten like a document's, so a view works under `--base`. A provider that
+        raises gives this page a 500 and a traceback on the error stream; the rest of the site stands.
+        """
+        source = f"{provider.prefix}/{inner}".rstrip("/")
+        try:
+            view = provider.get(inner)
+            if view is None:
+                return None
+            if not path.endswith(("/", "/index.html")):
+                # a view is a folder's page, so the links it writes relative to itself resolve
+                return Response(b"", "text/html", 301, self.base + source + "/")
+            metas = {"genre": view.genre, "title": view.title, "description": view.description, "status": view.status,
+                     "folio-source": source, "folio-provider": provider.prefix, "folio-path": view.path}
+            panels = "".join(f'<section data-folio-panel="{render.html_attr(title)}">{body}</section>'
+                             for title, body in view.panels)
+            text = render.page(view.title, metas, view.main + panels, extra_head=view.head)
+        except Exception:
+            provider.failures += 1
+            sys.stderr.write(f"folio: view provider `{provider.module}` failed at /{source}/:\n{traceback.format_exc()}")
+            sys.stderr.flush()
+            text = render.page("This view failed", {"title": "This view failed", "folio-source": source,
+                                                    "folio-provider": provider.prefix},
+                               f"<p>The provider of <code>/{render.html_text(provider.prefix)}/</code> raised an error "
+                               "while drawing this page. The server's log has the traceback.</p>")
+            return Response(render.rewrite(self.lib, source + "/index.html", text, self.base).encode("utf-8"),
+                            "text/html; charset=utf-8", 500)
+        return self._page(source + "/index.html", text)
+
     def _page(self, source: str, text: str) -> Response:
         return self._html(render.rewrite(self.lib, source, text, self.base))
 
@@ -242,7 +298,7 @@ def export_site(root: Path, out: Path, base: str = "/",
                 warnings: list[str] | None = None) -> tuple[list[str], list[str]]:
     """Write the static site into `out`; return the paths written and, of them, the pages.
 
-    A page is a document's file rendered as HTML, or a view such as the journal;
+    A page is a document's file rendered as HTML, the journal, or a provider's view;
     the shell, the indices, assets and redirect stubs are not pages. Each deck's
     PDF is rendered from the written site with Chrome; without Chrome the decks
     are published without one, and `warnings` says so.
@@ -268,15 +324,18 @@ def export_site(root: Path, out: Path, base: str = "/",
     written: list[str] = []
     pages: list[str] = []
     documents = {_served(f.path) for f in site.lib.files if f.format != "latex"}
+    views = set(site.view_paths())
     for path in site.paths():
         response = site.get(path)
         if response is None:
             raise FolioError(f"export: nothing to write at {path}")
+        if response.status >= 500:
+            raise FolioError(f"export: the view at {path} failed; the traceback is above")
         dest = out / path
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(response.body)
         written.append(path)
-        if path in documents or path == JOURNAL_VIEW:
+        if path in documents or path == JOURNAL_VIEW or path in views:
             pages.append(path)
     if site.pdfs:
         written.extend(_render_pdfs(site, out, base, chrome))

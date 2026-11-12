@@ -290,14 +290,17 @@
     });
     paintTheme();
     var journalURL = href((D.site.journal || {}).url || "/content/journal/");
+    // A view that is the site's front page takes the brand link, and an empty journal is not offered beside it.
+    var homeView = (D.site.views || []).filter(function (v) { return v.home; })[0];
+    var hasJournal = !homeView || D.catalog.some(function (d) { return d.genre === "journal"; });
     var mac = /Mac|iPhone|iPad/.test(navigator.platform || "");
     return el("header", { class: "f-top" }, [
       hasRail ? el("button", { class: "f-btn f-rail-btn", type: "button", "aria-label": "Library", "aria-controls": "f-rail",
         "aria-expanded": "false", title: "Library  [", onclick: function () { setRail(!railShown()); } }, [icon("rail")]) : null,
-      el("a", { class: "f-brand", href: BASE + "content/" }, [el("span", { text: D.site.name || "Library" })]),
+      el("a", { class: "f-brand", href: homeView ? href(homeView.url) : BASE + "content/" }, [el("span", { text: D.site.name || "Library" })]),
       el("nav", { class: "f-nav", "aria-label": "Library" }, [
-        el("a", { href: journalURL, "aria-current": view === "journal" ? "page" : null },
-          [icon("journal"), el("span", { class: "f-label", text: "Journal" })]),
+        hasJournal ? el("a", { href: journalURL, "aria-current": view === "journal" ? "page" : null },
+          [icon("journal"), el("span", { class: "f-label", text: "Journal" })]) : null,
         focusControl(),
         el("button", { class: "f-btn f-search-btn", type: "button", onclick: openSearch, "aria-label": "Search" },
           [icon("search"), el("span", { class: "f-label", text: "Search" }), el("kbd", { text: mac ? "⌘K" : "Ctrl K" })]),
@@ -371,7 +374,7 @@
   }
 
   function rail(view, rel) {
-    if (!D.catalog.length) return null;
+    if (!D.catalog.length && !(D.site.views || []).length) return null;
     var info = view ? null : lookup(rel);
     var hereDoc = info ? info.doc : null;
     var herePath = info ? (info.part || info.doc).path : null;
@@ -408,10 +411,11 @@
     }
     /* A group opens as the reader last left it, or by default; and always when it holds the
        current page and no open group above already shows it. */
-    function group(key, head, docs, byDefault, fill, count) {
-      var holdsHere = !!hereDoc && docs.indexOf(hereDoc) >= 0;
+    // `holds` is for a group whose entries are not documents (a view's): whether it holds the page being read.
+    function group(key, head, docs, byDefault, fill, count, holds) {
+      var holdsHere = holds === undefined ? !!hereDoc && docs.indexOf(hereDoc) >= 0 : !!holds;
       var saved = store("rail:" + key);
-      var open = (holdsHere && !shown[hereDoc.path]) || (saved ? saved === "open" : byDefault);
+      var open = (holdsHere && (holds !== undefined || !shown[hereDoc.path])) || (saved ? saved === "open" : byDefault);
       var ul = el("ul", { class: "f-rlist", id: "f-r-" + slug(key) });
       if (fill) fill(ul); else docs.forEach(function (d) { ul.appendChild(item(d)); });
       var caret = el("button", { class: "f-caret", type: "button", "aria-expanded": String(open), "aria-controls": ul.id,
@@ -444,12 +448,46 @@
         class: current === "near" ? "f-near" : null },
         [icon(iconName), el("span", { text: label }), count ? el("span", { class: "f-count", text: String(count) }) : null])]));
     }
-    link(home ? docURL(home) : BASE + "content/", "Home", "home", !!(home && hereDoc === home));
-    link(href((D.site.journal || {}).url || "/content/journal/"), "Journal", "journal",
-      view === "journal" ? true : hereDoc && hereDoc.genre === "journal" ? "near" : false, journal.length);
-    box.appendChild(links);
+    // When a view is the site's front page, its own rail section leads and is the way home: the library's
+    // home page is then listed as the library, and a journal with no entry is not listed at all.
+    var frontView = (D.site.views || []).filter(function (v) { return v.home; })[0];
+    link(home ? docURL(home) : BASE + "content/", frontView ? "Library" : "Home", "home", !!(home && hereDoc === home));
+    if (!frontView || D.catalog.some(function (d) { return d.genre === "journal"; }))
+      link(href((D.site.journal || {}).url || "/content/journal/"), "Journal", "journal",
+        view === "journal" ? true : hereDoc && hereDoc.genre === "journal" ? "near" : false, journal.length);
+    if (!frontView) box.appendChild(links);
     if (focused()) box.appendChild(el("div", { class: "f-rfocus" }, [icon("focus"),
       el("span", null, ["Focus: ", el("strong", { text: focusNames() })]), clearFocusButton("Clear")]));
+
+    // Views: pages a provider draws from data (views.py). Each provider is a section of the rail. The one whose page is
+    // the site's front page comes first, whatever the charter's order, and the library's own links follow it. An entry
+    // with entries of its own is a group, open when it holds the page being read.
+    var viewsInOrder = (D.site.views || []).filter(function (v) { return v === frontView; })
+      .concat((D.site.views || []).filter(function (v) { return v !== frontView; }));
+    viewsInOrder.forEach(function (v) {
+      var at = location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
+      function isHere(it) { return href(it.url).replace(/\/$/, "") === at; }
+      function vitem(it) {
+        return el("li", null, [el("a", { href: href(it.url), title: it.title,
+          "aria-current": isHere(it) ? "page" : null, class: isHere(it) ? "f-here" : null }, [
+          it.status ? el("span", { class: "f-vdot", "data-t": it.tone || "", title: it.status }) : null,
+          el("span", { class: "f-rname", text: it.title })])]);
+      }
+      var plain = el("ul", { class: "f-rlist f-vplain" });
+      var kids = [];
+      (v.rail || []).forEach(function (g) {
+        if (!g.items) { plain.appendChild(vitem(g)); return; }
+        var inside = isHere(g) || g.items.some(isHere);
+        var head = el("a", { class: "f-rmap" + (isHere(g) ? " f-here" : ""), href: href(g.url), title: g.title,
+          "aria-current": isHere(g) ? "page" : null }, [
+          g.status ? el("span", { class: "f-vdot", "data-t": g.tone || "", title: g.status }) : null, g.title]);
+        kids.push(group("view:" + v.prefix + ":" + g.url, head, [], !!g.open, function (ul) {
+          g.items.forEach(function (it) { ul.appendChild(vitem(it)); });
+        }, el("span", { class: "f-count", text: String(g.items.length) }), inside));
+      });
+      section(v.title || v.prefix, (plain.childNodes.length ? [plain] : []).concat(kids));
+      if (v === frontView) box.appendChild(links);
+    });
 
     // The charter's home maps, in its order: each the documents it lists.
     var maps = [];
@@ -738,7 +776,7 @@
       metaRow.appendChild(tagBox);
     }
 
-    var source = (part || doc || {}).path;
+    var source = (part || doc || {}).path || meta("folio-path");  // a view names the file or folder it is drawn from
     if (source) eyebrow.appendChild(copyPath(source.replace(/(^|\/)index\.html$/, "$1")));
 
     var outside = doc && !isHome && !inFocus(doc);
@@ -1507,6 +1545,31 @@
           mapRows();
           outline();
         }
+        // A view supplies its own panel sections, as elements in its <main>; a document shows the views that point at it.
+        // A view may name a file or a folder anywhere in its page: the same copy control as the header's.
+        Array.prototype.forEach.call(main.querySelectorAll("[data-folio-copy]"), function (node) {
+          var btn = copyPath(node.getAttribute("data-folio-copy"));
+          btn.classList.add("f-copyinline");
+          node.parentNode.replaceChild(btn, node);
+        });
+        Array.prototype.forEach.call(main.querySelectorAll("[data-folio-panel]"), function (sec) {
+          var title = sec.getAttribute("data-folio-panel");
+          sec.removeAttribute("data-folio-panel");
+          var body = el("div", { class: "f-vpanel" });
+          while (sec.firstChild) body.appendChild(sec.firstChild);
+          sec.remove();
+          panelSection(title, body);
+        });
+        if (info) (D.site.views || []).forEach(function (v) {
+          var back = (v.backlinks || {})[info.doc.path];
+          if (!back || !back.length) return;
+          var ul = el("ul");
+          back.forEach(function (b) {
+            ul.appendChild(el("li", null, [el("a", { href: href(b.url), text: b.title }),
+              b.status ? el("span", { class: "f-vstate", text: " " + b.status }) : null]));
+          });
+          panelSection("In the " + String(v.title || v.prefix).toLowerCase(), ul, back.length);
+        });
         if (!panel.childNodes.length) { panel.remove(); document.body.classList.add("f-wide"); }
         else document.body.classList.add("f-has-panel");
       }

@@ -19,7 +19,7 @@ CHARTER = "folio.yaml"
 KEYS = (
     "folio", "name", "purpose", "reader", "voice", "packs", "home", "genres",
     "checks", "assets", "root", "theme", "journal", "search", "site_url", "libraries", "save",
-    "rail", "baseline",
+    "rail", "baseline", "views",
 )
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
@@ -32,7 +32,7 @@ _WEB_SCHEMES = {"http", "https", "mailto", "ftp", "ftps", "file", "data", "javas
                 "ws", "wss", "about", "blob", "chrome", "git", "ssh", "urn", "news", "irc", "vbscript"}
 SEVERITIES = ("error", "warning", "off")
 # Keys whose value is a list, so `config set` splits a comma-separated value.
-LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search", "rail.evidence")
+LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search", "rail.evidence", "views")
 
 DEFAULT_READER = "One reader, the owner."
 DEFAULT_VOICE = "Plain and precise."
@@ -86,6 +86,8 @@ class Charter:
     # A file, from the library, listing `<sha256>  <path>` for files rewritten once on the record: the
     # lifecycle checks read each listed file's history from the oldest version with that text. Empty: none.
     baseline: str = ""
+    # Python modules that draw pages no file holds, from data, when they are asked for (views.py).
+    views: list[str] = field(default_factory=list)
 
     @property
     def library(self) -> Path:
@@ -219,6 +221,7 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         save=_save(raw, where),
         rail_evidence=_rail_evidence(raw, where),
         baseline=_baseline(raw, where),
+        views=_str_list(raw.get("views"), "views", where),
     )
 
 

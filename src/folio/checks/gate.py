@@ -9,6 +9,7 @@ from typing import Any, Callable
 
 from .. import indexer
 from .. import links as links_mod
+from .. import views as views_mod
 from ..charter import CHARTER
 from ..documents import Document
 from ..genres import FieldSpec
@@ -42,6 +43,8 @@ def broken_link(lib: Library) -> Found:
             if link.resolved:
                 continue
             if link.kind == "href":
+                if views_mod.resolves(lib, link.raw):
+                    continue  # a view answers it
                 out.append((path, f"`{link.raw}` resolves to nothing"))
             elif link.kind == "code":
                 out.append((path, f"`{link.raw}` names no document"))
@@ -354,6 +357,14 @@ def rail_genres(lib: Library) -> Found:
     return out
 
 
+def views(lib: Library) -> Found:
+    """Every module the charter lists under `views` can be loaded here, as the server would load it."""
+    if not lib.charter.views:
+        return []
+    why = views_mod.problem(lib)
+    return [] if why is None else [(CHARTER, why)]
+
+
 def unique_id(lib: Library) -> Found:
     """Every id names one document across the whole library; a record id has its form and is never reused."""
     out = []
@@ -399,6 +410,7 @@ GATE_CHECKS: dict[str, GateCheck] = {
     "heading-size": heading_size,
     "home-maps": home_maps,
     "rail-genres": rail_genres,
+    "views": views,
     "unique-id": unique_id,
     "index-current": index_current,
 }
