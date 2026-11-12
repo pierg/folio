@@ -50,6 +50,7 @@ A Markdown record needs nothing: the site renders it as an HTML page at the same
 - **The home page**: its title is the charter's `name` and its subtitle the page's description (or the charter's `purpose`); the page carries no title of its own. Below, a card for each map the charter lists under `home.maps`, in that order, each showing that map's first rows in its own order ("and N more"), and the latest journal entries.
 - **The journal**: one timeline at `/content/journal/`, newest first, filtered by kind, tag, `about` and date. Each entry's `about` chips show the target's genre beside its title, so a source and its reading stay apart. A filter lives in the address (`?kind=decision`), so a filtered view can be linked.
 - **Search**: `/`, Ctrl K or Cmd K opens it, over `.folio/search.json`.
+- **In a view** (a page a provider draws, model §14): an element with `data-folio-copy="<path>"` becomes the header's copy-path button, in place; a `<section data-folio-panel="<title>">` in `<main>` is moved to the page panel under that title. folio writes the second from the view's `panels`.
 - **Previews**: hovering a link to a library document shows its genre, title and description.
 
 ## Components a page may write

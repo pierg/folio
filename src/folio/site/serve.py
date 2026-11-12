@@ -30,6 +30,20 @@ PDF = "/_folio/pdf"
 ETAG = "/_folio/etag"  # a page's current ETag, which the shell polls to follow edits
 
 
+# How `folio up` starts the server: by `-c`, not `-m`. `python -m folio` looks for the `folio` package
+# in the folder it is run from first, and that folder is the library, which is content, not code.
+# This drops that folder from the import path before folio is imported. It works on every Python
+# folio supports; `-P` does the same from 3.11.
+BOOTSTRAP = ("import os, sys; "
+             "sys.path[:] = [p for p in sys.path if p and os.path.abspath(p) != os.getcwd()]; "
+             "from folio.cli import main; sys.exit(main())")
+
+
+def child_command(*args: str) -> list[str]:
+    """This Python running `folio <args>`, with the folder it runs in off the import path."""
+    return [sys.executable, "-c", BOOTSTRAP, *args]
+
+
 def is_loopback(host: str) -> bool:
     """True when the address only this machine can reach: 127.0.0.1, ::1, localhost."""
     host = host.strip("[]")
@@ -98,6 +112,9 @@ class LiveSite:
             shell = shell_dir(self._site.lib).resolve()
             if self.root.resolve() not in shell.parents:
                 self._walk(shell, digest)
+        if self._site is not None:
+            for provider in self._site.views:  # what a view is drawn from lives outside the library
+                digest.update(f"{provider.prefix}\0{provider.stamp()}\n".encode())
         if self.git is not None:
             for name in ("HEAD", "logs/HEAD"):
                 try:
@@ -132,13 +149,21 @@ class LiveSite:
                 self._stamp = self.stamp() if first else stamp
             return self._site
 
+    @staticmethod
+    def _failures(site: Site) -> int:
+        """How many provider calls have failed so far: an answer built across a failure is not kept."""
+        return sum(provider.failures for provider in site.views)
+
     def site_data(self) -> dict:
         """`.folio/site.json`'s data, kept until a file changes."""
         site = self.current()
         with self._lock:
             if site is self._site and self._data is not None:
                 return dict(self._data)
+        before = self._failures(site)
         data = site.site_data()
+        if self._failures(site) != before:
+            return dict(data)  # a provider failed: its part is empty this once, and it is asked again
         with self._lock:
             if site is self._site:
                 self._data = data
@@ -150,8 +175,11 @@ class LiveSite:
         with self._lock:
             if site is self._site and path in self._pages:
                 return self._pages[path]
+        before = self._failures(site)
         response = site.get(path)
         found = None if response is None else (response, '"' + hashlib.sha1(response.body).hexdigest() + '"')
+        if (response is not None and response.status >= 500) or self._failures(site) != before:
+            return found  # a view that failed, or a search list missing a provider's part, is asked again, not kept
         with self._lock:
             if site is self._site:
                 self._pages[path] = found
@@ -303,7 +331,7 @@ def up(root: Path, port: int = PORT, host: str = HOST) -> str:
     Site.load(root)
     (root / INDEX_DIR).mkdir(exist_ok=True)  # `folio init`'s .gitignore covers the runtime files
     log = open(root / LOG_FILE, "ab")
-    command = [sys.executable, "-m", "folio", "serve", "--host", host, "--port", str(port)]
+    command = child_command("serve", "--host", host, "--port", str(port))
     proc = subprocess.Popen(
         command,
         cwd=root, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,

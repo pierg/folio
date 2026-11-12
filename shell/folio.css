@@ -878,3 +878,20 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
   background: var(--surface); color: var(--ink); font-size: .9rem; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
 .f-changed button { margin-left: .5rem; }
 
+
+/* ------------------------------------------------------------------ views
+   Pages a provider draws from data (views.py). The rail marks each entry's state with a dot. */
+.f-vdot { flex: none; width: .5rem; height: .5rem; margin-right: .1rem; border-radius: 50%; background: var(--rule-strong); align-self: center; }
+.f-vdot[data-t="ok"] { background: var(--ok); }
+.f-vdot[data-t="warn"] { background: var(--warn); }
+.f-vdot[data-t="info"] { background: var(--info); }
+.f-vdot[data-t="bad"] { background: var(--bad); }
+.f-rail .f-vplain { display: block; margin: 0 0 .35rem; padding: 0; border: 0; }
+.f-rail .f-rmap .f-vdot { display: inline-block; margin-right: .45rem; vertical-align: middle; }
+.f-vstate { color: var(--ink-3); font-size: .78rem; }
+.f-vpanel { font: 400 .84rem/1.45 var(--sans); }
+.f-copyinline { display: inline-flex; align-items: center; gap: .35rem; max-width: 100%; padding: .1rem .45rem; border: 1px solid var(--rule);
+  border-radius: 6px; background: var(--surface); color: var(--ink-3); font: 400 .78rem/1.5 var(--mono); cursor: pointer; vertical-align: middle; }
+.f-copyinline span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.f-copyinline .f-icon { width: .85rem; height: .85rem; flex: none; }
+.f-copyinline:hover, .f-copyinline:focus-visible { color: var(--ink); border-color: var(--rule-strong); }

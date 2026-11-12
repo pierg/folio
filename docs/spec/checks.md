@@ -27,6 +27,7 @@ These run on every document. No card needs to name them.
 | `heading-size` | No heading on a map holds more than 12 rows, the point where the organise skill's rebalance pass splits it. | warning |
 | `home-maps` | Every map the charter lists under `home.maps` exists and is not a `draft`. | error |
 | `rail-genres` | Every genre the charter lists under `rail.evidence` exists and is switched on: its pack is on and it is not disabled. | error |
+| `views` | Every module the charter lists under `views` can be loaded in the environment running the check, as the server would load it: it is installed there, it is not inside the library or the repository that holds it, it imports, its `provider(library_root)` returns, and its prefix is one path segment no other provider and no folio path takes. A module that is not installed is reported as that. | error |
 | `unique-id` | Every id is unique across the library, whatever the genre, compared without regard to case: slugs, record ids, and journal entry ids (their file stems). A record id is in its genre's prefix and is never reused, even after its document is retired. | error |
 | `index-current` | The generated indices in `.folio/` match what `folio index` would write. | error |
 

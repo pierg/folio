@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0 (2026-11-12)
+
+Views: a library can show pages that no file holds.
+
+- The charter's new `views:` key lists Python modules. Each one is a provider: it draws pages from data when they are asked for, such as a lab's record. folio imports the module and calls its `provider(library_root)`.
+- A provider is code, and it runs with the server's rights. A library that names one must be trusted as much as the machine that serves it. Whoever runs folio installs the provider in folio's own environment. A library cannot bring its own: a module whose file is inside the library's folder, or inside the repository that holds it, is refused before it is imported. The one exception is the running Python's own standard library and site-packages, which may sit in a `.venv` kept in the repository. So the environment that runs folio must not be writable by a pull of the served repository: a module committed into it is code on the host.
+- `folio up` starts the server without the library's folder on the import path, so a `folio/` package or any other module in a library is not run. The `folio` command never looked there. `python -m folio` typed in a library's folder is not covered, because Python looks there first: use the `folio` command, or `python -P -m folio`.
+- A provider's prefix is exactly one path segment, and not a path folio serves itself. No two providers share a prefix, and at most one asks for the front page.
+- The new `views` check: `folio check` fails when a module under `views:` is not installed where the check runs, cannot be imported, or breaks the rules above. The error names the module.
+- A provider that fails does not stop the site. A page whose provider raises answers 500, and the log has the traceback; a failing stamp keeps its last value; a failing rail, search or backlink list is left empty for that answer and asked for again on the next request. `folio export` stops instead.
+- A view is served under its provider's own path, such as `/lab/`, in the same shell as a document: the header from its title, description, genre and status, the outline from its headings, and the provider's own sections in the page panel. Its links are rewritten like a document's, so views work under `--base`, and `folio export` counts them as pages.
+- The rail shows each provider as a section, with a dot for each entry's state. Search lists the provider's entries with the library's.
+- A provider may take the site's front page. The site's name then links to it, its rail section comes first whatever the charter's order, the library's own home page is listed as "Library", and the Journal link is shown only when the library has a journal entry.
+- In a view's page, an element with `data-folio-copy="<path>"` becomes the same copy-path button the header has.
+- A document that a view points at shows the view in its panel. A link from a document to a view is checked by `broken-link`. `folio export` writes every view.
+- `folio serve` asks each provider for a stamp before a request, so a view is as current as its data.
+- The contract is in `src/folio/views.py` and in the model, §10 and §14.
+- `folio serve` no longer fails in a git repository that has no commit yet: such a library shows no dates.
+
 ## 0.4.0 (2026-11-11)
 
 Reader comments and the review list are removed. Nobody used them, and they were the largest part of the server and the shell.
