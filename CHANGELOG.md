@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.2 (2026-11-15)
+## 0.7.1 (2026-11-15)
 
 The shell gets past caches after an upgrade.
 
