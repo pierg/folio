@@ -321,7 +321,7 @@
   }
 
   /* --------------------------------------------------------- library rail */
-  /* The library on the left of every page: the charter's home maps, each with the documents
+  /* The library on the left of every page: the documents the charter pins, then the charter's home maps, each with the documents
      it lists, then every document by genre, and the evidence genres last and apart when the
      library names some. All of it comes from the catalog, the guides' nav and the site data.
      A group the reader opens or closes is remembered in this browser. */
@@ -488,6 +488,19 @@
       section(v.title || v.prefix, (plain.childNodes.length ? [plain] : []).concat(kids));
       if (v === frontView) box.appendChild(links);
     });
+
+    // Pinned: the documents the charter lists under `rail.pinned`, in its order, always open. A pinned
+    // document still shows in its map's and its genre's groups, so pinning never moves a page.
+    var pins = [];
+    (((D.site.rail || {}).pinned) || []).forEach(function (id) {
+      var doc = byId(id).filter(function (d) { return d.genre !== "journal"; })[0];
+      if (doc && pins.indexOf(doc) < 0 && (inFocus(doc) || doc === hereDoc)) pins.push(doc);
+    });
+    if (pins.length) {
+      var pinList = el("ul", { class: "f-rlist f-rpins" });
+      pins.forEach(function (d) { pinList.appendChild(item(d, { mark: true })); });
+      section("Pinned", [pinList]);
+    }
 
     // The charter's home maps, in its order: each the documents it lists.
     var maps = [];

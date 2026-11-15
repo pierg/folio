@@ -24,7 +24,7 @@ def test_the_lab_pack_keeps_protocols_and_results_apart_by_default(sample: Path)
     assert lib.charter.rail_evidence is None
     assert lib.registry.packs["lab"].evidence == ["protocol", "result"]
     assert lib.rail_evidence() == ["protocol", "result"]
-    assert Site.load(sample).site_data()["rail"] == {"evidence": ["protocol", "result"]}
+    assert Site.load(sample).site_data()["rail"]["evidence"] == ["protocol", "result"]
 
 
 def test_without_the_lab_pack_there_is_no_evidence(sample: Path) -> None:
@@ -56,7 +56,7 @@ def test_the_charter_sets_the_evidence_and_wins_over_the_packs(sample: Path) -> 
 def test_an_empty_list_keeps_every_genre_with_the_reading_genres(sample: Path) -> None:
     edit(sample / "folio.yaml", "checks:", "rail:\n  evidence: []\nchecks:")
     assert library.load_at(sample).rail_evidence() == []
-    assert Site.load(sample).site_data()["rail"] == {"evidence": []}
+    assert Site.load(sample).site_data()["rail"]["evidence"] == []
 
 
 @pytest.mark.parametrize("block", ["rail:\n", "rail: {}\n"])

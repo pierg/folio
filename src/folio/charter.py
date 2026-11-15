@@ -24,7 +24,7 @@ KEYS = (
 _HOME_KEYS = ("maps",)
 _JOURNAL_KEYS = ("kinds",)
 _SAVE_KEYS = ("gate", "url")
-_RAIL_KEYS = ("evidence",)
+_RAIL_KEYS = ("evidence", "pinned")
 _PACK_KEYS = ("name", "git", "ref")
 _LIBRARY_KEYS = ("path", "url")
 # Schemes the web already uses: a library named like one would make its links ambiguous.
@@ -32,7 +32,7 @@ _WEB_SCHEMES = {"http", "https", "mailto", "ftp", "ftps", "file", "data", "javas
                 "ws", "wss", "about", "blob", "chrome", "git", "ssh", "urn", "news", "irc", "vbscript"}
 SEVERITIES = ("error", "warning", "off")
 # Keys whose value is a list, so `config set` splits a comma-separated value.
-LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search", "rail.evidence", "views")
+LIST_KEYS = ("packs", "home.maps", "journal.kinds", "search", "rail.evidence", "rail.pinned", "views")
 
 DEFAULT_READER = "One reader, the owner."
 DEFAULT_VOICE = "Plain and precise."
@@ -83,6 +83,8 @@ class Charter:
     save: "SaveSettings" = field(default_factory=lambda: SaveSettings())
     # Genres the rail keeps apart, last, as evidence; None: the charter does not say, the packs do.
     rail_evidence: list[str] | None = None
+    # Documents, by id, the rail lists first under Pinned, in this order.
+    rail_pinned: list[str] = field(default_factory=list)
     # A file, from the library, listing `<sha256>  <path>` for files rewritten once on the record: the
     # lifecycle checks read each listed file's history from the oldest version with that text. Empty: none.
     baseline: str = ""
@@ -116,7 +118,8 @@ class Charter:
             "libraries": {n: {"path": r.path, **({"url": r.url} if r.url else {})}
                           for n, r in self.libraries.items()},
             "save": {"gate": self.save.gate, "url": self.save.url},
-            "rail": {"evidence": None if self.rail_evidence is None else list(self.rail_evidence)},
+            "rail": {"evidence": None if self.rail_evidence is None else list(self.rail_evidence),
+                     "pinned": list(self.rail_pinned)},
             "baseline": self.baseline,
         }
 
@@ -220,6 +223,7 @@ def parse(raw: dict[str, Any], path: Path) -> Charter:
         libraries=_libraries(raw, where),
         save=_save(raw, where),
         rail_evidence=_rail_evidence(raw, where),
+        rail_pinned=_rail_pinned(raw, where),
         baseline=_baseline(raw, where),
         views=_str_list(raw.get("views"), "views", where),
     )
@@ -251,6 +255,12 @@ def _rail_evidence(raw: dict[str, Any], where: str) -> list[str] | None:
     if len(set(names)) != len(names):
         raise FolioError(f"{where}: a genre is listed twice in `rail.evidence`")
     return names
+
+
+def _rail_pinned(raw: dict[str, Any], where: str) -> list[str]:
+    """`rail: {pinned: [...]}`: the documents, by id, the rail lists first (model §14)."""
+    rail = _only(raw.get("rail"), _RAIL_KEYS, "rail", where)
+    return _str_list(rail.get("pinned"), "rail.pinned", where)
 
 
 def _libraries(raw: dict[str, Any], where: str) -> dict[str, LibraryRef]:

@@ -887,6 +887,7 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-vdot[data-t="info"] { background: var(--info); }
 .f-vdot[data-t="bad"] { background: var(--bad); }
 .f-rail .f-vplain { display: block; margin: 0 0 .35rem; padding: 0; border: 0; }
+.f-rail .f-rpins { display: block; margin: 0 0 .35rem; padding: 0; border: 0; }
 .f-rail .f-rmap .f-vdot { display: inline-block; margin-right: .45rem; vertical-align: middle; }
 .f-vstate { color: var(--ink-3); font-size: .78rem; }
 .f-vpanel { font: 400 .84rem/1.45 var(--sans); }

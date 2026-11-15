@@ -125,7 +125,7 @@ class Site:
             "name": lib.charter.name,
             "purpose": lib.charter.purpose,
             "home": {"maps": list(lib.charter.home_maps)},
-            "rail": {"evidence": lib.rail_evidence()},
+            "rail": {"evidence": lib.rail_evidence(), "pinned": list(lib.charter.rail_pinned)},
             "journal": {"kinds": lib.journal_kinds(), "url": url_of(JOURNAL_VIEW)},
             "dates": {p: d for p, d in sorted(self.dates().items()) if p in known},
             "frozen": self.frozen(),
