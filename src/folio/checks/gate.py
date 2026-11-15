@@ -357,6 +357,27 @@ def rail_genres(lib: Library) -> Found:
     return out
 
 
+def rail_pinned(lib: Library) -> Found:
+    """Every id the charter pins under `rail.pinned` names one document, not a journal entry, once."""
+    out = []
+    by_key: dict[str, list[Document]] = {}
+    for doc in lib.documents:
+        by_key.setdefault(doc.id.casefold(), []).append(doc)  # ids compare without regard to case
+    seen: set[str] = set()
+    for ident in lib.charter.rail_pinned:
+        key = ident.casefold()
+        if key in seen:
+            out.append((CHARTER, f"`rail.pinned` lists `{ident}` twice"))
+            continue
+        seen.add(key)
+        docs = by_key.get(key, [])
+        if not docs:
+            out.append((CHARTER, f"`rail.pinned` names `{ident}`, which is no document; `folio search` finds ids"))
+        elif all(d.is_a("journal") for d in docs):
+            out.append((CHARTER, f"`rail.pinned` names `{ident}`, a journal entry; the journal lists those"))
+    return out
+
+
 def views(lib: Library) -> Found:
     """Every module the charter lists under `views` can be loaded here, as the server would load it."""
     if not lib.charter.views:
@@ -410,6 +431,7 @@ GATE_CHECKS: dict[str, GateCheck] = {
     "heading-size": heading_size,
     "home-maps": home_maps,
     "rail-genres": rail_genres,
+    "rail-pinned": rail_pinned,
     "views": views,
     "unique-id": unique_id,
     "index-current": index_current,

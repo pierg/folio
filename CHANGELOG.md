@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 (2026-11-15)
+
+Pinned pages: the charter can pin documents to the top of the library rail.
+
+- The charter's new `rail.pinned` key lists documents by id, such as `rail: {pinned: [start-here, R-4]}`. The rail shows them first, under Pinned, in that order, always open, each with its genre's mark. A pinned document still shows in its map's and its genre's groups, so pinning never moves a page.
+- `folio config set rail.pinned "<id>, <id>"` pins, and an empty value unpins everything. The configure skill says so.
+- The new `rail-pinned` check: `folio check` fails when a pinned id names no document, names a journal entry, or is listed twice. Ids compare without regard to case.
+
 ## 0.5.0 (2026-11-12)
 
 Views: a library can show pages that no file holds.

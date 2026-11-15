@@ -1,15 +1,15 @@
 ---
 name: configure
 description: >-
-  Change what a folio library is: its charter, genres, variants, workflows, packs,
-  home maps and check severities. Shows every change as a diff and records it as a
-  decision in the journal. Use when the user says "configure", "change the settings",
-  "switch on the lab pack", "turn off a pack", "add a genre", "add a meeting-note type",
-  "make concepts shorter", "entries should open with a verdict", "add a variant for
-  newcomers", "papers follow this style", "add a workflow", "group these into a pack",
-  "put these maps on the home page", "make this check an error", "only warn about that",
-  "change the voice", "change the theme", "search my other library too", or "who is
-  this library for".
+  Change what a folio library is: its charter, genres, variants, workflows, packs, home
+  maps, pinned pages and check severities. Shows every change as a diff and records it
+  as a decision in the journal. Use when the user says "configure", "change the
+  settings", "switch on the lab pack", "turn off a pack", "add a genre", "add a
+  meeting-note type", "make concepts shorter", "entries should open with a verdict",
+  "add a variant for newcomers", "papers follow this style", "add a workflow", "group
+  these into a pack", "put these maps on the home page", "pin this page", "unpin that",
+  "make this check an error", "only warn about that", "change the voice", "change the
+  theme", "search my other library too", or "who is this library for".
 ---
 
 # configure
@@ -43,6 +43,7 @@ Change the charter, or the genres, workflows and packs the library holds, and re
    - **A journal kind:** `folio config set journal.kinds "<a>, <b>"`, the full list of the library's own kinds. The core's and the packs' kinds need no entry.
    - **Home maps:** `folio config set home.maps "<a>, <b>"`, in reading order. Each must be an existing map that is not a `draft`; run `folio maps` to check. If one is a draft, warn the user and set it live through the write skill first.
    - **Evidence genres in the rail:** `folio config set rail.evidence "<a>, <b>"`, the genres the rail lists last, in a closed Evidence group, after the reading genres (model §14). Without it the packs decide: the lab pack keeps protocols and results apart. An empty value (`""`, written `evidence: []`) lists every genre together in the "By genre" section, by name, as before; a long map still sorts its genres in reading order, lab genres included. Each must be a genre switched on; `folio check` names any that is not (`rail-genres`).
+   - **Pinned pages in the rail:** `folio config set rail.pinned "<id>, <id>"`, the documents the rail lists first, under Pinned, in that order (model §14). Pinning keeps a page in its map and genre groups too. An empty value (`""`) unpins everything. Each id must name an existing document that is not a journal entry; `folio check` names any that does not (`rail-pinned`).
    - **The library's name:** `folio config set name "<name>"`. The home page takes its title from it, so nothing else changes.
    - **Check severity:** `folio config set checks.<check> error` or `warning`. One place per page: `folio config set checks.placement error` makes every placed page need exactly one row on one home map, under a heading. Run `folio check` first: give each page it names one place through organise (`folio map move`), then turn it on.
    - **A genre setting the charter holds** (switched off, a word limit): `folio config set genres.<name>.<key> <value>`.
