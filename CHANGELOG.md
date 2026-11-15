@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.0 (2026-11-15)
+
+A provider's rail can be a tree. A lab draws its goals, the questions under each and the steps under each question,
+with the kind and the state of each at a glance.
+
+- An entry with `items` is a group at any depth, not only one level. Every group that holds the page being read is
+  open, so the page shows in its place with its parents and its siblings.
+- An entry may carry an `id` (shown before the title), a `mark` (a letter or two for the kind of thing it is, in a
+  small square), a `sign` (a character drawn in place of the dot, in its tone's colour), `pulse: True` (the sign
+  pulses: something live), and `gone: True` (the title is struck through).
+- A group may carry a `summary`: how many of the entries under it are in each state, shown while it is closed. One
+  with `fold: True` is drawn quietly, for what was set aside.
+- Two new tones, `ink` (a neutral settled state) and `gone`.
+- An entry with a `legend` and no url is drawn at the end of the provider's section as a closed key to its signs.
+- Nothing changes for a provider that sends none of these.
+
 ## 0.6.1 (2026-11-15)
 
 Pin buttons in the rail and the page header.

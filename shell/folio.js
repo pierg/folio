@@ -533,26 +533,67 @@
       .concat((D.site.views || []).filter(function (v) { return v !== frontView; }));
     viewsInOrder.forEach(function (v) {
       var at = location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
-      function isHere(it) { return href(it.url).replace(/\/$/, "") === at; }
+      function isHere(it) { return !!it.url && href(it.url).replace(/\/$/, "") === at; }
+      function holdsHere(it) { return isHere(it) || (it.items || []).some(holdsHere); }
+      // An entry's state: a dot, or the provider's own sign, coloured by its tone; a live one pulses.
+      function sign(it, cls) {
+        if (!it.status && !it.sign) return null;
+        return el("span", { class: (cls || "f-vdot") + (it.sign ? " f-vsign" : "") + (it.pulse ? " f-vpulse" : ""), "data-t": it.tone || "",
+          title: it.status || null, "aria-label": it.status || null, text: it.sign || null });
+      }
+      // What a row shows: its mark (the kind of thing it is), its short id, its title, its state.
+      function row(it) {
+        var marked = !!(it.mark || it.id);
+        return [marked ? null : sign(it),
+          it.mark ? el("span", { class: "f-gmark f-vmark", "data-m": it.mark, title: it.kind || null, text: it.mark }) : null,
+          it.id ? el("span", { class: "f-rid", text: it.id }) : null,
+          el("span", { class: "f-rname" + (it.gone ? " f-vgone" : ""), text: it.title }),
+          marked ? sign(it, "f-vdot f-vend") : null];
+      }
       function vitem(it) {
-        return el("li", null, [el("a", { href: href(it.url), title: it.title,
-          "aria-current": isHere(it) ? "page" : null, class: isHere(it) ? "f-here" : null }, [
-          it.status ? el("span", { class: "f-vdot", "data-t": it.tone || "", title: it.status }) : null,
-          el("span", { class: "f-rname", text: it.title })])]);
+        if (it.legend) return legend(it);
+        if (it.items) return el("li", null, [vgroup(it)]);
+        return el("li", null, [el("a", { href: href(it.url), title: it.title + (it.status ? " (" + it.status + ")" : ""),
+          "aria-current": isHere(it) ? "page" : null, class: isHere(it) ? "f-here" : null }, row(it))]);
+      }
+      // A closed group says what is under it: a count per state, in the provider's signs.
+      function summary(it) {
+        if (!it.summary) return el("span", { class: "f-count", text: String(it.items.length) });
+        return el("span", { class: "f-rsum f-vsum" }, it.summary.map(function (s) {
+          return el("span", { class: "f-vcount", title: s.title || null }, [sign({ sign: s.sign, tone: s.tone, status: s.title }, "f-vdot"), String(s.count)]);
+        }));
+      }
+      // An entry with entries of its own is a group, at any depth; it is open when it holds the page being read.
+      function vgroup(g) {
+        var inside = holdsHere(g);
+        var head = g.url ? el("a", { class: "f-rmap" + (isHere(g) ? " f-here" : ""), href: href(g.url), title: g.title + (g.status ? " (" + g.status + ")" : ""),
+          "aria-current": isHere(g) ? "page" : null }, row(g))
+          : el("button", { class: "f-rname-btn" + (g.gone ? " f-vgone" : ""), type: "button", text: g.title });
+        var wrap = group("view:" + v.prefix + ":" + (g.url || g.key || g.title), head, [], !!g.open, function (ul) {
+          g.items.forEach(function (it) { ul.appendChild(vitem(it)); });
+        }, summary(g), inside);
+        wrap.classList.add("f-vgroup");
+        if (g.fold) wrap.classList.add("f-vfold");
+        return wrap;
+      }
+      // A key to the signs, closed until opened.
+      function legend(it) {
+        var det = el("details", { class: "f-vlegend" }, [el("summary", { text: it.title || "Key" })]);
+        it.legend.forEach(function (k) {
+          det.appendChild(el("p", null, [k.mark ? el("span", { class: "f-gmark f-vmark", "data-m": k.mark, text: k.mark }) : sign(k), " " + k.text]));
+        });
+        return el("li", { class: "f-vkey" }, [det]);
       }
       var plain = el("ul", { class: "f-rlist f-vplain" });
       var kids = [];
       (v.rail || []).forEach(function (g) {
+        if (g.legend) return;  // a key goes last
         if (!g.items) { plain.appendChild(vitem(g)); return; }
-        var inside = isHere(g) || g.items.some(isHere);
-        var head = el("a", { class: "f-rmap" + (isHere(g) ? " f-here" : ""), href: href(g.url), title: g.title,
-          "aria-current": isHere(g) ? "page" : null }, [
-          g.status ? el("span", { class: "f-vdot", "data-t": g.tone || "", title: g.status }) : null, g.title]);
-        kids.push(group("view:" + v.prefix + ":" + g.url, head, [], !!g.open, function (ul) {
-          g.items.forEach(function (it) { ul.appendChild(vitem(it)); });
-        }, el("span", { class: "f-count", text: String(g.items.length) }), inside));
+        kids.push(vgroup(g));
       });
-      section(v.title || v.prefix, (plain.childNodes.length ? [plain] : []).concat(kids));
+      var legends = (v.rail || []).filter(function (g) { return g.legend; });
+      var after = el("ul", { class: "f-rlist f-vplain" }, legends.map(legend));
+      section(v.title || v.prefix, (plain.childNodes.length ? [plain] : []).concat(kids).concat(legends.length ? [after] : []));
       if (v === frontView) box.appendChild(links);
     });
 
