@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.0
+## 0.7.0 (2026-11-15)
 
 A provider's rail can be a tree. A lab draws its goals, the questions under each and the steps under each question,
 with the kind and the state of each at a glance.

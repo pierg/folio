@@ -505,6 +505,7 @@
         var wrap = group("view:" + v.prefix + ":" + (g.url || g.key || g.title), head, [], !!g.open, function (ul) {
           g.items.forEach(function (it) { ul.appendChild(vitem(it)); });
         }, summary(g), inside);
+        wrap.classList.add("f-vgroup");
         if (g.fold) wrap.classList.add("f-vfold");
         return wrap;
       }

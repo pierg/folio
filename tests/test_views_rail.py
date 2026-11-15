@@ -22,7 +22,7 @@ def test_the_contract_names_every_key_the_shell_reads() -> None:
 def test_a_group_nests_at_any_depth_and_opens_on_the_page_being_read() -> None:
     assert "function holdsHere(it) { return isHere(it) || (it.items || []).some(holdsHere); }" in SHELL
     assert "if (it.items) return el(\"li\", null, [vgroup(it)]);" in SHELL  # a group inside a group is drawn the same way
-    assert ".f-rail .f-rlist .f-rgroup .f-rlist" in CSS
+    assert ".f-rail .f-rlist .f-vgroup .f-rlist" in CSS and 'wrap.classList.add("f-vgroup")' in SHELL  # the library rail keeps its own indent
 
 
 def test_a_sign_carries_its_tone_and_a_live_one_pulses_unless_motion_is_reduced() -> None:

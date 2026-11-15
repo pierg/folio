@@ -894,7 +894,7 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-rail .f-rname { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .f-vmark { min-width: 1.05rem; height: 1.05rem; font-size: .62rem; font-weight: 600; }
 /* A view's tree nests deeper than a map: each level indents a little less. */
-.f-rail .f-rlist .f-rgroup .f-rlist { margin-left: .55rem; padding-left: .25rem; }
+.f-rail .f-rlist .f-vgroup .f-rlist { margin-left: .55rem; padding-left: .25rem; }
 .f-vend { margin: 0 0 0 auto; }
 .f-vsign { width: auto; height: auto; min-width: .95rem; border-radius: 0; background: none; font: 700 .76rem/1 var(--sans);
   text-align: center; color: var(--ink-3); }
