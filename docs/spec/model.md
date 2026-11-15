@@ -295,7 +295,7 @@ Every check has a name, listed with its settings and default severity in `checks
 
 ## 14. The shell
 
-Every HTML document uses the shared shell: one stylesheet, light and dark themes, the library rail, the header drawn from metadata, the search palette, link previews, concept popovers, the page panel (outline, metadata, the generated link panels). Markdown records are rendered in the same shell.
+Every HTML document uses the shared shell: one stylesheet, light and dark themes, the library rail, the header drawn from metadata, the search palette, link previews, concept popovers, the page panel (outline, metadata, the generated link panels). Markdown records are rendered in the same shell. The site links the shell's script and stylesheet with the engine's version as a query (`/shell/folio.js?v=0.6.2`), so a cache in front of the site, such as a CDN, fetches them again after every folio upgrade.
 
 **The canvas.** Below the header, an HTML page is a free canvas: it has all the room between the library rail and the page panel, with no measure, and it lays itself out for what it must show, with figures, diagrams, interactive controls and its own grid. A page may carry its own `<style>` and `<script>` in its `<head>` or body. The canvas is a size container named `folio-canvas`, so a page adapts to its room with `@container folio-canvas (...)` queries, since the panels share the window with it. Five things stay fixed, because the library reads them:
 
