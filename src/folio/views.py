@@ -11,8 +11,15 @@ function, `provider(library_root)`, that returns an object with:
     home        True when the site's front page should be this provider's; at most one provider asks
     get(path)   a `View` for a path under the prefix (`""` is its front page), or None
     rail()      its entries in the rail: a list of {title, url, status, tone, items: [...], open}; `status` is the
-                provider's own word for the entry's state, `tone` (ok, warn, info, bad or none) colours its dot;
-                an entry with `items` is a group, and `open: True` shows it open until the reader closes it
+                provider's own word for the entry's state, `tone` (ok, warn, info, bad, ink, gone or none) colours
+                its dot; an entry with `items` is a group, at any depth, and `open: True` shows it open until the
+                reader closes it. A group is always open when it holds the page being read, however deep. Optional:
+                `id` (a short id shown before the title), `mark` (a letter or two for the kind of thing it is,
+                in a small square, with `kind` its name on hover), `sign` (a character drawn in place of the dot,
+                in the tone's colour), `pulse: True` (the sign pulses: something live), `gone: True` (the title
+                is struck through), `summary` (a group's [{sign, tone, count, title}], shown while it is closed),
+                `fold: True` (a quiet group of what is set aside), and `legend` ([{sign, tone, mark, text}], an
+                entry with no url drawn last as a closed key)
     search()    its entries in the search index, shaped like `.folio/search.json`'s
     paths()     every path it serves, for the exported site
     stamp()     a short string that changes when anything it draws from changes

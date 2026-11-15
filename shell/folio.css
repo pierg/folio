@@ -888,6 +888,38 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-vdot[data-t="bad"] { background: var(--bad); }
 .f-rail .f-vplain { display: block; margin: 0 0 .35rem; padding: 0; border: 0; }
 .f-rail .f-rpins { display: block; margin: 0 0 .35rem; padding: 0; border: 0; }
+/* A row of a view's tree: the kind of thing it is, its id, its title, and its state at the end. */
+.f-rail .f-rmap:has(> .f-vmark, > .f-rid) { display: flex; align-items: center; gap: .35rem; }
+.f-rail .f-rlist a:has(> .f-vend) { align-items: center; gap: .35rem; }
+.f-rail .f-rname { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.f-vmark { min-width: 1.05rem; height: 1.05rem; font-size: .62rem; font-weight: 600; }
+/* A view's tree nests deeper than a map: each level indents a little less. */
+.f-rail .f-rlist .f-rgroup .f-rlist { margin-left: .55rem; padding-left: .25rem; }
+.f-vend { margin: 0 0 0 auto; }
+.f-vsign { width: auto; height: auto; min-width: .95rem; border-radius: 0; background: none; font: 700 .76rem/1 var(--sans);
+  text-align: center; color: var(--ink-3); }
+.f-vdot[data-t="ink"] { background: var(--ink-2); }
+.f-vdot[data-t="gone"] { background: var(--rule); }
+.f-vsign[data-t] { background: none; }
+.f-vsign[data-t="ok"] { color: var(--ok); }
+.f-vsign[data-t="warn"] { color: var(--warn); }
+.f-vsign[data-t="info"] { color: var(--info); }
+.f-vsign[data-t="bad"] { color: var(--bad); }
+.f-vsign[data-t="ink"] { color: var(--ink); }
+.f-vpulse { animation: f-vpulse 1.6s ease-in-out infinite; }
+@keyframes f-vpulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+@media (prefers-reduced-motion: reduce) { .f-vpulse { animation: none; } }
+.f-vgone { text-decoration: line-through; color: var(--ink-3); }
+.f-rhead:has(> .f-vsum) { flex-wrap: wrap; }
+.f-vsum { display: flex; flex-wrap: wrap; gap: .2rem .6rem; }
+.f-vcount { display: inline-flex; align-items: center; gap: .2rem; font-variant-numeric: tabular-nums; }
+.f-vcount .f-vdot { margin: 0; }
+.f-vfold > .f-rhead > .f-rname-btn { font-weight: 450; font-style: italic; color: var(--ink-3); }
+.f-vkey { list-style: none; }
+.f-vlegend { margin: .7rem .55rem 0; font-size: .74rem; color: var(--ink-3); }
+.f-vlegend summary { cursor: pointer; }
+.f-vlegend p { display: flex; align-items: center; gap: .35rem; margin: .25rem 0; }
+.f-vlegend .f-vdot { margin: 0; }
 .f-rail .f-rmap .f-vdot { display: inline-block; margin-right: .45rem; vertical-align: middle; }
 .f-vstate { color: var(--ink-3); font-size: .78rem; }
 .f-vpanel { font: 400 .84rem/1.45 var(--sans); }
