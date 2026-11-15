@@ -50,7 +50,8 @@
       copy: "M9 9h11v11H9zM5 15H4V4h11v1",
       check: "M5 12.5 10 17.5 19 7",
       play: "M7 4.5v15l12-7.5z",
-      download: "M12 4v11M7 10l5 5 5-5M5 20h14"
+      download: "M12 4v11M7 10l5 5 5-5M5 20h14",
+      pin: "M9 3h6l-1 7 4 4H6l4-4zM12 14v7"
     };
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -254,7 +255,7 @@
   }
 
   /* -------------------------------------------------------------- frame */
-  var main, page, panel;
+  var main, page, panel, railArgs;
 
   function frame(view, rel) {
     main = document.querySelector("main") || el("main");
@@ -264,6 +265,7 @@
     if (!main.parentNode) document.body.appendChild(main);
     main.parentNode.insertBefore(layout, main);
     page.appendChild(main);
+    railArgs = [view, rel];
     var side = rail(view, rel);
     if (side) {
       document.body.insertBefore(el("div", { class: "f-rail-backdrop", onclick: function () { setRail(false); } }), document.body.firstChild);
@@ -373,6 +375,71 @@
       .map(function (g) { return { title: plural(g), docs: by[g] }; });
   }
 
+  /* Pins: the charter's (`rail.pinned`, the same for every reader) and the reader's own, kept in this
+     browser by the pin button in a page's header. Both are document ids; the charter's come first. */
+  function localPins() {
+    var ids = [];
+    try { ids = JSON.parse(store("pins") || "[]"); } catch (e) { ids = []; }
+    return Array.isArray(ids) ? ids.map(String) : [];
+  }
+  function charterPinned(doc) {
+    return (((D.site.rail || {}).pinned) || []).some(function (id) { return idKey(id) === idKey(doc.id); });
+  }
+  function locallyPinned(doc) {
+    return localPins().some(function (id) { return idKey(id) === idKey(doc.id); });
+  }
+  function setLocalPin(doc, on) {
+    var ids = localPins().filter(function (id) { return idKey(id) !== idKey(doc.id); });
+    if (on) ids.push(doc.id);
+    store("pins", ids.length ? JSON.stringify(ids) : null);
+    redrawRail();
+  }
+  var pinPainters = [];  // the header's pin button, repainted when a pin changes from the rail
+  /* A rail row's pin button, on its right: shown on hover, on the page being read and on a pinned page. */
+  function railPin(doc) {
+    if (doc.genre === "journal" || doc.id === "home") return null;
+    var fixed = charterPinned(doc), on = fixed || locallyPinned(doc);
+    var btn = el("button", { type: "button", class: "f-rpin", "aria-pressed": String(on),
+      title: fixed ? "Pinned for every reader in folio.yaml (rail.pinned)" : on ? "Unpin " + doc.title : "Pin " + doc.title,
+      "aria-label": (fixed ? "Pinned: " : on ? "Unpin " : "Pin ") + doc.title }, [icon("pin")]);
+    btn.disabled = fixed;
+    btn.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      setLocalPin(doc, !locallyPinned(doc));
+    });
+    return btn;
+  }
+  function redrawRail() {
+    var old = document.getElementById("f-rail");
+    if (!old || !railArgs) return;
+    var fresh = rail(railArgs[0], railArgs[1]);
+    if (!fresh) return;
+    var top = old.scrollTop;
+    old.parentNode.replaceChild(fresh, old);
+    fresh.scrollTop = top;
+    syncRail();
+    pinPainters.forEach(function (paint) { paint(); });
+  }
+  /* The header's pin button: pins or unpins the page in this browser. A page the charter pins is pinned
+     for every reader, so its button only says so. */
+  function pinButton(doc) {
+    var btn = el("button", { type: "button", class: "f-pinbtn" });
+    function paint() {
+      var fixed = charterPinned(doc), on = fixed || locallyPinned(doc);
+      btn.textContent = "";
+      btn.appendChild(icon("pin"));
+      btn.appendChild(el("span", { text: on ? "Pinned" : "Pin" }));
+      btn.setAttribute("aria-pressed", String(on));
+      btn.disabled = fixed;
+      btn.title = fixed ? "Pinned for every reader in folio.yaml (rail.pinned)"
+        : on ? "Unpin this page from the top of the library, in this browser" : "Pin this page to the top of the library, in this browser";
+    }
+    btn.addEventListener("click", function () { setLocalPin(doc, !locallyPinned(doc)); paint(); });
+    pinPainters.push(paint);
+    paint();
+    return btn;
+  }
+
   function rail(view, rel) {
     if (!D.catalog.length && !(D.site.views || []).length) return null;
     var info = view ? null : lookup(rel);
@@ -396,7 +463,7 @@
         doc.status === "draft" ? el("span", { class: "f-rdraft", title: "A draft, not yet live", text: "draft" }) : null,
         opts.start ? el("span", { class: "f-start", text: "Start" }) : null
       ]);
-      var li = el("li", null, [a]);
+      var li = el("li", { class: "f-ritem" }, [a, railPin(doc)]);
       // A guide shows its chapters while the reader is in it.
       var guide = D.nav[doc.path];
       if (cur && guide && guide.chapters && guide.chapters.length) {
@@ -530,10 +597,11 @@
       if (v === frontView) box.appendChild(links);
     });
 
-    // Pinned: the documents the charter lists under `rail.pinned`, in its order, always open. A pinned
+    // Pinned: the documents the charter lists under `rail.pinned`, in its order, then the reader's own pins
+    // from this browser, always open. A pinned
     // document still shows in its map's and its genre's groups, so pinning never moves a page.
     var pins = [];
-    (((D.site.rail || {}).pinned) || []).forEach(function (id) {
+    (((D.site.rail || {}).pinned) || []).concat(localPins()).forEach(function (id) {
       var doc = byId(id).filter(function (d) { return d.genre !== "journal"; })[0];
       if (doc && pins.indexOf(doc) < 0 && (inFocus(doc) || doc === hereDoc)) pins.push(doc);
     });
@@ -831,6 +899,7 @@
     }
 
     var source = (part || doc || {}).path || meta("folio-path");  // a view names the file or folder it is drawn from
+    if (doc && !isHome && doc.genre !== "journal" && !part) eyebrow.appendChild(pinButton(doc));
     if (source) eyebrow.appendChild(copyPath(source.replace(/(^|\/)index\.html$/, "$1")));
 
     var outside = doc && !isHome && !inFocus(doc);
