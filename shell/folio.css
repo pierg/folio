@@ -346,6 +346,14 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-eyebrow .f-copypath span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .f-eyebrow .f-copypath .f-icon { width: .9rem; height: .9rem; flex: none; }
 .f-eyebrow .f-copypath:hover, .f-eyebrow .f-copypath:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+.f-eyebrow .f-pinbtn { margin-left: auto; display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .5rem;
+  border: 1px solid var(--rule); border-radius: 6px; background: none; cursor: pointer;
+  font: 500 .74rem/1.2 var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
+.f-eyebrow .f-pinbtn .f-icon { width: .9rem; height: .9rem; flex: none; }
+.f-eyebrow .f-pinbtn:hover:not(:disabled), .f-eyebrow .f-pinbtn:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+.f-eyebrow .f-pinbtn[aria-pressed="true"] { color: var(--accent); border-color: currentColor; background: var(--accent-soft); }
+.f-eyebrow .f-pinbtn:disabled { cursor: default; }
+.f-eyebrow .f-pinbtn + .f-copypath { margin-left: 0; }
 .f-offscreen { position: fixed; left: -9999px; top: 0; opacity: 0; }
 .f-title { margin: 0; font: 600 clamp(1.85rem, 1.3rem + 2.4vw, 2.6rem)/1.12 var(--serif); letter-spacing: -.012em;
            color: var(--ink); text-wrap: balance; }
@@ -896,3 +904,15 @@ body.f-presenter > :not(.f-presenter-view) { display: none !important; }
 .f-copyinline span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .f-copyinline .f-icon { width: .85rem; height: .85rem; flex: none; }
 .f-copyinline:hover, .f-copyinline:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+/* A rail row's pin button, on its right: shown on hover, on the page being read and on a pinned page. */
+.f-rail .f-ritem { position: relative; }
+.f-rail .f-ritem > a { padding-right: 1.9rem; }
+.f-rpin { position: absolute; right: .2rem; top: .15rem; display: grid; place-items: center; width: 1.5rem; height: 1.5rem;
+  padding: 0; border: 0; border-radius: 5px; background: none; color: var(--ink-3); cursor: pointer; opacity: 0; }
+.f-rpin .f-icon { width: .85rem; height: .85rem; }
+.f-ritem:hover > .f-rpin, .f-rpin:focus-visible, .f-ritem > a.f-here + .f-rpin,
+.f-ritem > a[aria-current="page"] + .f-rpin, .f-rpin[aria-pressed="true"] { opacity: 1; }
+.f-rpin:hover:not(:disabled) { color: var(--ink); background: var(--sunk); }
+.f-rpin[aria-pressed="true"] { color: var(--accent); }
+.f-rpin:disabled { cursor: default; }
+@media (hover: none) { .f-rpin { opacity: 1; } }
