@@ -11,6 +11,7 @@ import pytest
 from conftest import found, folio
 
 from folio.errors import FolioError
+from folio import __version__
 from folio.site.site import Site, export
 
 PROVIDER = '''
@@ -131,14 +132,14 @@ def provider(root): return P()
 
 def test_a_view_takes_the_base_like_a_document(with_views: Path, tmp_path: Path) -> None:
     page = Site.load(with_views, base="/sub/").get("demo/one/").body.decode()
-    assert 'href="/sub/shell/folio.css"' in page and 'src="/sub/shell/folio.js"' in page
+    assert f'href="/sub/shell/folio.css?v={__version__}"' in page and f'src="/sub/shell/folio.js?v={__version__}"' in page
     assert 'href="/sub/demo/"' in page and 'href="/sub/content/"' in page
     assert 'href="/shell/' not in page and 'href="/demo/' not in page
     export(with_views, tmp_path / "site", base="/sub/")
     written = (tmp_path / "site/demo/one/index.html").read_text()
-    assert 'href="/sub/shell/folio.css"' in written and 'href="/sub/demo/"' in written and 'href="/sub/content/"' in written
+    assert f'href="/sub/shell/folio.css?v={__version__}"' in written and 'href="/sub/demo/"' in written and 'href="/sub/content/"' in written
     # At the root nothing is added.
-    assert 'href="/shell/folio.css"' in Site.load(with_views).get("demo/one/").body.decode()
+    assert f'href="/shell/folio.css?v={__version__}"' in Site.load(with_views).get("demo/one/").body.decode()
 
 
 def test_a_view_without_its_closing_slash_redirects(with_views: Path) -> None:

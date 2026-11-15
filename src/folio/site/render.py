@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from markdown_it import MarkdownIt
 
+from .. import __version__
 from ..frontmatter import split
 from ..links import is_external, library_ref, resolve_href
 from ..util import html_attr, html_text
@@ -77,11 +78,19 @@ def rewrite(lib: "Library", from_path: str, text: str, base: str) -> str:
             name, new = other
             return (f"{match.group(1)}{match.group(2)}{_html.escape(new, quote=True)}{match.group(2)}"
                     f' data-library="{name}"')
-        new = site_href(lib, from_path, value, base)
+        new = _versioned(site_href(lib, from_path, value, base), base)
         if new == value:
             return match.group(0)
         return f"{match.group(1)}{match.group(2)}{_html.escape(new, quote=True)}{match.group(2)}"
     return _ATTR_RE.sub(one, text)
+
+
+def _versioned(url: str, base: str) -> str:
+    """The shell's script and stylesheet carry the engine's version, so a cache in front of the site
+    (a CDN keeps .js and .css by default) fetches them again after every folio upgrade."""
+    if url in (base + SHELL_JS[1:], base + SHELL_CSS[1:]):
+        return f"{url}?v={__version__}"
+    return url
 
 
 def with_shell(text: str) -> str:

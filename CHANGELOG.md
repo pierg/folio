@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2 (2026-11-15)
+
+The shell gets past caches after an upgrade.
+
+- Served and exported pages link the shell as `/shell/folio.js?v=<version>` and `/shell/folio.css?v=<version>`. A CDN in front of a site, such as Cloudflare, keeps `.js` and `.css` files by default, so after an upgrade readers kept the old shell until the cache was purged. A new version is now a new address.
+
 ## 0.7.0 (2026-11-15)
 
 A provider's rail can be a tree. A lab draws its goals, the questions under each and the steps under each question,

@@ -13,6 +13,7 @@ from conftest import folio
 
 from folio.errors import FolioError
 from folio.site import serve
+from folio import __version__
 from folio.site.site import Site, export
 
 SRC = Path(__file__).resolve().parents[1] / "src"
@@ -45,7 +46,7 @@ def test_records_render_in_the_shell(sample: Path, tmp_path: Path) -> None:
     assert '<meta name="description" content="The slope of the RMS error against the number of points, re-folded.">' in page
     assert '<meta name="genre" content="result">' in page
     assert '<meta name="folio-source" content="content/results/R-4.md">' in page
-    assert '<link rel="stylesheet" href="/shell/folio.css">' in page
+    assert f'<link rel="stylesheet" href="/shell/folio.css?v={__version__}">' in page
     assert "<h1" not in page
     assert '<meta name="layout" content="column">' in page  # a record reads in the column; pages are canvases
     # an id in backticks links to the record it names, at its rendered page
@@ -65,8 +66,8 @@ def test_links_are_rewritten(sample: Path, tmp_path: Path) -> None:
 def test_base_path_prefixes_root_links(sample: Path, tmp_path: Path) -> None:
     export(sample, tmp_path / "site", base="/notes/")
     home = (tmp_path / "site/content/index.html").read_text()
-    assert 'href="/notes/shell/folio.css"' in home
-    assert 'src="/notes/shell/folio.js"' in home
+    assert f'href="/notes/shell/folio.css?v={__version__}"' in home
+    assert f'src="/notes/shell/folio.js?v={__version__}"' in home
     assert 'href="/notes/content/projects/attention-kernel/"' in home
     with pytest.raises(FolioError):
         export(sample, tmp_path / "other", base="notes")
@@ -164,3 +165,9 @@ def test_the_shell_carries_math_and_the_canvas(sample: Path, tmp_path: Path) -> 
     assert "container: folio-canvas / inline-size" in css and "--teal:" in css
     js = (site / "shell/folio.js").read_text()
     assert 'meta[name="math"]' in js and 'meta("layout") === "column"' in js
+
+
+def test_the_shell_carries_the_engine_version_past_caches(sample: Path) -> None:
+    page = Site.load(sample).get("content/notes/flashattention-tiling.html").body.decode()
+    assert f'src="/shell/folio.js?v={__version__}"' in page
+    assert f'href="/shell/folio.css?v={__version__}"' in page
