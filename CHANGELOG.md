@@ -2,8 +2,9 @@
 
 ## 0.6.1 (2026-11-15)
 
-A Pin button in the page header.
+Pin buttons in the rail and the page header.
 
+- Each page's row in the rail has a pin button on its right. It shows on hover, on the page being read and on a pinned page, and on a touch screen always.
 - Every document's header, except the home page's and a journal entry's, has a Pin button. It pins the page to the rail's Pinned section in this browser, after the charter's pins, and a second click unpins it. The rail redraws at once.
 - A page the charter pins under `rail.pinned` shows the button as Pinned, and it cannot be unpinned from the page.
 - Pins made with the button live only in that browser. Pins every reader sees still go in `folio.yaml`.

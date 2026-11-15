@@ -394,6 +394,21 @@
     store("pins", ids.length ? JSON.stringify(ids) : null);
     redrawRail();
   }
+  var pinPainters = [];  // the header's pin button, repainted when a pin changes from the rail
+  /* A rail row's pin button, on its right: shown on hover, on the page being read and on a pinned page. */
+  function railPin(doc) {
+    if (doc.genre === "journal" || doc.id === "home") return null;
+    var fixed = charterPinned(doc), on = fixed || locallyPinned(doc);
+    var btn = el("button", { type: "button", class: "f-rpin", "aria-pressed": String(on),
+      title: fixed ? "Pinned for every reader in folio.yaml (rail.pinned)" : on ? "Unpin " + doc.title : "Pin " + doc.title,
+      "aria-label": (fixed ? "Pinned: " : on ? "Unpin " : "Pin ") + doc.title }, [icon("pin")]);
+    btn.disabled = fixed;
+    btn.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      setLocalPin(doc, !locallyPinned(doc));
+    });
+    return btn;
+  }
   function redrawRail() {
     var old = document.getElementById("f-rail");
     if (!old || !railArgs) return;
@@ -403,6 +418,7 @@
     old.parentNode.replaceChild(fresh, old);
     fresh.scrollTop = top;
     syncRail();
+    pinPainters.forEach(function (paint) { paint(); });
   }
   /* The header's pin button: pins or unpins the page in this browser. A page the charter pins is pinned
      for every reader, so its button only says so. */
@@ -419,6 +435,7 @@
         : on ? "Unpin this page from the top of the library, in this browser" : "Pin this page to the top of the library, in this browser";
     }
     btn.addEventListener("click", function () { setLocalPin(doc, !locallyPinned(doc)); paint(); });
+    pinPainters.push(paint);
     paint();
     return btn;
   }
@@ -446,7 +463,7 @@
         doc.status === "draft" ? el("span", { class: "f-rdraft", title: "A draft, not yet live", text: "draft" }) : null,
         opts.start ? el("span", { class: "f-start", text: "Start" }) : null
       ]);
-      var li = el("li", null, [a]);
+      var li = el("li", { class: "f-ritem" }, [a, railPin(doc)]);
       // A guide shows its chapters while the reader is in it.
       var guide = D.nav[doc.path];
       if (cur && guide && guide.chapters && guide.chapters.length) {
