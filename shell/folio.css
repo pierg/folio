@@ -346,6 +346,14 @@ img, svg, video { max-width: 100%; height: auto; }
 .f-eyebrow .f-copypath span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .f-eyebrow .f-copypath .f-icon { width: .9rem; height: .9rem; flex: none; }
 .f-eyebrow .f-copypath:hover, .f-eyebrow .f-copypath:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+.f-eyebrow .f-pinbtn { margin-left: auto; display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .5rem;
+  border: 1px solid var(--rule); border-radius: 6px; background: none; cursor: pointer;
+  font: 500 .74rem/1.2 var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
+.f-eyebrow .f-pinbtn .f-icon { width: .9rem; height: .9rem; flex: none; }
+.f-eyebrow .f-pinbtn:hover:not(:disabled), .f-eyebrow .f-pinbtn:focus-visible { color: var(--ink); border-color: var(--rule-strong); }
+.f-eyebrow .f-pinbtn[aria-pressed="true"] { color: var(--accent); border-color: currentColor; background: var(--accent-soft); }
+.f-eyebrow .f-pinbtn:disabled { cursor: default; }
+.f-eyebrow .f-pinbtn + .f-copypath { margin-left: 0; }
 .f-offscreen { position: fixed; left: -9999px; top: 0; opacity: 0; }
 .f-title { margin: 0; font: 600 clamp(1.85rem, 1.3rem + 2.4vw, 2.6rem)/1.12 var(--serif); letter-spacing: -.012em;
            color: var(--ink); text-wrap: balance; }

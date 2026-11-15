@@ -64,3 +64,9 @@ def test_a_pin_matches_its_id_without_regard_to_case(sample: Path) -> None:
 def test_the_shell_draws_a_pinned_section_from_the_site_data() -> None:
     assert "(D.site.rail || {}).pinned" in SHELL
     assert 'section("Pinned"' in SHELL
+
+
+def test_the_header_has_a_pin_button_kept_in_this_browser() -> None:
+    assert "function pinButton(doc)" in SHELL
+    assert 'store("pins"' in SHELL
+    assert "concat(localPins())" in SHELL  # the reader's pins follow the charter's in the rail
