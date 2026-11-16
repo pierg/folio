@@ -40,16 +40,22 @@ Both must pass before a change is done, and CI runs the same two commands. After
 - The generated indices in `docs/.folio/` and `tests/fixtures/sample/.folio/` are written by `folio index`, never by hand.
 - `.agents/skills` is a link to `skills/`. Edit the skill bodies in `skills/`.
 
+## Content and gate
+
+Content here means pages in the `docs/` library.
+In the folio library at `docs`, `folio save` pulls, runs the gate, commits and pushes content in one step: use it there.
+
+**Gate:** `python -m pytest -q`, then `cd docs && folio check`.
+
 <!-- ops:lanes:start (generated from the owner's central rules; change them there, not here) -->
 ## How changes reach main
 
-`main` is the only source of truth and is always clean: every commit on it passes the gate below.
+`main` is the only source of truth and is always clean: every commit on it passes the gate.
+What counts as content here, and the gate, are this file's own "Content and gate" section.
 Pull before you start; never leave work only on a machine.
 
-**Content lane.** Content here means pages in the `docs/` library.
-Commit content straight to `main`: pull, change only content, run the gate, commit, push. If the
-push is refused because `main` moved, pull with rebase and push again.
-In the folio library at `docs`, `folio save` does all of this in one step: run it there.
+**Content lane.** Commit content straight to `main`: pull, change only content, run the gate,
+commit, push. If the push is refused because `main` moved, pull with rebase and push again.
 
 **Change lane.** Everything else (code, scripts, configuration, schemas, skills, this file, CI,
 dependencies) goes through a pull request:
@@ -61,11 +67,13 @@ dependencies) goes through a pull request:
 
 If a change mixes both, it takes the change lane.
 
-**Gate:** `python -m pytest -q`, then `cd docs && folio check`.
-Run it before every push; CI also runs it on every pull request.
+Run the gate before every push; CI also runs it on every pull request.
 
-**Authorship.** Every commit is authored with the repository owner's git identity. No co-author
-line, tool or agent name, "generated with" footer or session link appears in a commit message, a
-branch name or a pull request. The pre-push hook enforces it on every push, and the `policy` check
-on every pull request.
+**Authorship.** This repository is public. Every commit is authored with the repository owner's
+git identity. No co-author line, tool or agent name, "generated with" footer or session link
+appears in a commit message, a branch name or a pull request: name a branch after the task, never
+`claude/…` or another tool's prefix. The pre-push hook (on every machine, and in cloud sessions
+from their environment's setup script) enforces it on every push, ops' land-job `pr-check.sh`
+checks a pull request's text before it is opened, and the `policy` check runs on every ready
+pull request.
 <!-- ops:lanes:end -->
