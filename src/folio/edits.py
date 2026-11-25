@@ -37,8 +37,9 @@ def find_doc(lib: "Library", ref: str, genre: str | None = None) -> Document:
         raise FolioError(f"`{ref}` names {len(docs)} documents: "
                          + ", ".join(d.key for d in docs) + "; give its path instead")
     path = ref.lstrip("/")
-    if path in lib.by_path and lib.by_path[path].doc is not None:
-        return lib.by_path[path].doc  # type: ignore[return-value]
+    for form in (path, path.rstrip("/") + "/index.html", "content/" + path, "content/" + path.rstrip("/") + "/index.html"):
+        if form in lib.by_path and lib.by_path[form].doc is not None:  # a path from the library, from `content/`, or a folder
+            return lib.by_path[form].doc  # type: ignore[return-value]
     target = resolve_href(lib.root, "content/index.html", "/" + path)
     if target is not None and target in lib.by_path and lib.by_path[target].doc is not None:
         return lib.by_path[target].doc  # type: ignore[return-value]

@@ -44,7 +44,7 @@ Pick the change, then follow its line.
 2. **Promote a document** that has outgrown its genre (for example, a short note that grew sections): `folio promote <doc> <genre>`. Then revise it in the new genre's voice through write.
 3. **Merge two documents:** pick the one to keep. Fold the other's surviving content into it through write. Then `folio rm <other> --to <kept>`.
 4. **Fold a thin definition** into the document that uses it: same as a merge. The concept card's `## Earns its page` says when a term earns its own definition document.
-5. **Retire a document:** `folio rm <doc> --to <replacement>`. Its links and address go to the replacement. It prints a `review:` line for every link whose text still names the retired document's title. Review each one, and reword through write any that no longer fits. When the subject has moved to another library the charter names under `libraries`, retire into the document there: `--to <library>:<id>`. Only a genre whose card lists `retired` can be retired. A record that was wrong stays at its address under its own states instead: a result is superseded or retracted through write.
+5. **Delete a document:** `folio rm <doc> --to <replacement>`, with `<doc>` its id or its path. Its links, address and id go to the replacement, and its files are deleted (git keeps the history); a journal entry that names it keeps leading to the replacement. It prints a `review:` line for every link whose text still names the retired document's title. Review each one, and reword through write any that no longer fits. When the subject has moved to another library the charter names under `libraries`, retire into the document there: `--to <library>:<id>`. Only a genre whose card lists `retired` can be retired. A record that was wrong stays at its address under its own states instead: a result is superseded or retracted through write.
 6. **Maps.**
    - A new map: create it through write. Rows go in with `folio map add <map> <doc> --section "<heading>" [--reason ".."] [--after <doc>]`, in the order a newcomer reads them. A page that already has its place elsewhere moves with `folio map move`; it does not get a second row.
    - Move a row to another heading or map: `folio map move <doc> --to <map>#<heading>`. The row keeps its reason, a heading that does not exist is made at the end of the map, and the page itself does not change. `--from <map>` names the row's map when several list the page.
@@ -101,7 +101,7 @@ Pick the change, then follow its line.
 - `folio map move <doc> --to <map>[#<heading>] [--from <map>]` moves a row in one step.
 - `folio mv <doc> <to>` moves a document and rewrites its links.
 - `folio promote <doc> <genre>` changes a document's genre.
-- `folio rm <doc> --to <doc>` retires a document into another, and names the links whose text to review.
+- `folio rm <doc> --to <doc>` deletes a document into another, and names the links whose text to review.
 - `folio tags [rename <old> <new>]` lists or renames tags.
 - `folio search <words>` finds duplicates.
 - `folio journal add --title ".." --description ".." --body ".." --kind decision --about <id>,..` records the change.

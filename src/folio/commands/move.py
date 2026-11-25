@@ -11,6 +11,7 @@ address is left as it is: the redirect serves it.
 from __future__ import annotations
 
 import re
+import shutil
 from pathlib import PurePosixPath
 
 from .. import library as library_mod
@@ -18,7 +19,7 @@ from .. import history, paths, redirects
 from .. import links as links_mod
 from ..checks import gate
 from ..documents import HOME_PATH, Document
-from ..edits import Plan, find_doc, locked, new_href, replace_href, set_front
+from ..edits import Plan, _git, _prune, find_doc, locked, new_href, replace_href, set_front
 from ..errors import FolioError
 from ..genres import Genre
 from ..html import Element
@@ -327,25 +328,41 @@ def rm(lib: Library, ref: str, to: str) -> list[str]:
             if dropped:
                 what += f" ({dropped} duplicate row{'s' if dropped > 1 else ''} dropped)"
         plan.write(path, text, what)
-    mf = doc.meta_file
-    if mf is None:
-        raise FolioError(f"{doc.key} holds no metadata to mark retired")
-    text = plan.text(mf.path)
-    for key, value in (("status", "retired"), ("replaced_by", replacement.id)):
-        text = set_meta(text, mf.format, key, value) if mf.format == "html" else set_front(text, key, value)
-    plan.write(mf.path, text, f"status: retired, replaced_by: {replacement.id}")
     for path, links in lib.links.items():
         owner = lib.by_path[path].doc
         if owner is not doc and any(lk.kind != "href" and doc in lk.docs for lk in links):
-            plan.notes.append(f"note: {path} still cites `{doc.id}` by id; it resolves to the retired document")
+            plan.notes.append(f"note: {path} still cites `{doc.id}` by id; it now leads to {replacement.id}")
     plan.notes.extend(_stale_link_text(lib, doc, replacement, mapping))
     before = {path for path, _ in gate.orphan(lib)}
     changes = plan.apply() + _staged_note(plan) + redirects.add(lib.root, mapping)
+    redirects.add_id(lib.root, doc.id, replacement.id)
+    changes += _delete(lib, doc) + [f"its id {doc.id} now leads to {replacement.id}"]
     after = library_mod.load_at(lib.root)
     for path, _ in gate.orphan(after):
         if path not in before:
             changes.append(f"note: {path} was reachable only through {doc.id}; it is on no map now")
     return changes
+
+
+def _delete(lib: Library, doc: Document) -> list[str]:
+    """Delete a document's files, and its folder when it is a folder of its own; git keeps its history."""
+    root = lib.root
+    address = doc.address_file.path
+    folder = address.rsplit("/", 1)[0] if address.endswith("/index.html") else None
+    others = [d for d in lib.documents if d is not doc and folder and d.key.startswith(folder + "/")]
+    gone = [folder] if folder and not others else [df.path for df in doc.files]
+    for path in gone:
+        target = root / path
+        if target.is_dir():
+            shutil.rmtree(target)
+        elif target.exists():
+            target.unlink()
+            _prune(target)
+        try:
+            _git(root, "rm", "-r", "-q", "--cached", "--ignore-unmatch", "--", path)
+        except FolioError:
+            pass  # not in git: the files are gone, and there is nothing to stage
+    return [f"deleted {path}" for path in gone]
 
 
 def _rm_elsewhere(lib: Library, doc: Document, name: str, replacement: Document, landing: str,

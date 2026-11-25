@@ -51,6 +51,8 @@ def broken_link(lib: Library) -> Found:
             elif link.kind == "library":
                 out.append((path, f"`{link.raw}` resolves to nothing in that library"))
             elif link.kind == "fcite":
+                if views_mod.cite(lib, link.raw) is not None:
+                    continue  # a view owns the id, such as a lab's card
                 out.append((path, f"\\fcite{{{link.raw}}} names no document"))
             else:
                 out.append((path, f"field `{link.field}`: `{link.raw}` names no document"))

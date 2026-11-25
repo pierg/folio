@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 (2026-11-25)
+
+Less in the way of writing: a delete deletes, a paper cites a lab's cards, and the paper's link shows the paper as it stands.
+
+- `folio rm <doc> --to <doc>` deletes the document's files instead of keeping them marked retired. Its links and address go to the replacement as before, and its id now does too: `.folio/redirects.json` gains `ids`, so a journal entry whose `about:` names the deleted document, or a backticked id, leads to the replacement and the gate passes. A journal entry never has to change for a page to go.
+- `folio rm`, `folio mv` and every command that names a document take a path in any of its forms: `content/entries/x/index.html`, `content/entries/x/` or `entries/x`.
+- A view provider may answer `cite(id)` with `{title, url}`. `\fcite{<id>}` then resolves for ids the provider owns, in the gate and in `folio paper build`, which links the id to the provider's page. A lab cites its cards, `\fcite{G1.Q2.3}`, with no comment beside a page id.
+- `folio serve` builds a paper's PDF again when its link is followed and a file it is built from changed since the last build (its folder, the assets, or the titles it cites). A source that does not compile shows its error instead of an older PDF.
+
 ## 0.7.1 (2026-11-15)
 
 The shell gets past caches after an upgrade.

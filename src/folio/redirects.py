@@ -2,7 +2,9 @@
 
 `.folio/redirects.json` holds `{"redirects": {"<old file>": "<new file>"}}`,
 both library-relative source paths (`content/notes/x.html`,
-`content/results/R-1.md`). `folio mv`, `folio promote` and `folio rm --to`
+`content/results/R-1.md`), and `"ids": {"<old id>": "<new id>"}` for documents
+`folio rm` deleted, so a citation of a deleted document's id leads to what
+replaced it. `folio mv`, `folio promote` and `folio rm --to`
 write it; `folio index` never touches it. Chains are collapsed on write, so
 every value is the file the address leads to now. The exported site serves
 each old address as a redirect to the new one, and the gate resolves a link
@@ -18,6 +20,7 @@ from .errors import FolioError
 
 FILE = ".folio/redirects.json"
 _cache: dict[Path, tuple[float, dict[str, str]]] = {}
+_ids: dict[Path, dict[str, str]] = {}
 
 
 def load(root: Path) -> dict[str, str]:
@@ -33,11 +36,31 @@ def load(root: Path) -> dict[str, str]:
     except json.JSONDecodeError as exc:
         raise FolioError(f"{FILE}: not valid JSON: {exc}") from exc
     table = data.get("redirects") if isinstance(data, dict) else None
+    ids = data.get("ids", {}) if isinstance(data, dict) else {}
     if not isinstance(table, dict) or not all(isinstance(k, str) and isinstance(v, str)
                                               for k, v in table.items()):
         raise FolioError(f'{FILE}: must be {{"redirects": {{"<old file>": "<new file>"}}}}')
+    if not isinstance(ids, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in ids.items()):
+        raise FolioError(f'{FILE}: `ids` must be {{"<old id>": "<new id>"}}')
     _cache[path] = (mtime, dict(table))
+    _ids[path] = dict(ids)
     return dict(table)
+
+
+def ids(root: Path) -> dict[str, str]:
+    """The ids of deleted documents, each with the id of the document that replaced it."""
+    load(root)
+    return dict(_ids.get(root / FILE, {}))
+
+
+def add_id(root: Path, old: str, new: str) -> None:
+    """Record that a deleted document's id now leads to another document's."""
+    table, known = load(root), ids(root)
+    for k, v in list(known.items()):
+        if v == old:
+            known[k] = new
+    known[old] = new
+    _write(root, table, known)
 
 
 def target(root: Path, path: str) -> str | None:
@@ -67,11 +90,18 @@ def add(root: Path, moves: dict[str, str], record: bool = True) -> list[str]:
         table.pop(new, None)  # an address that serves a document again is no longer redirected
     if not record and table == before:
         return []
-    path = root / FILE
-    path.parent.mkdir(exist_ok=True)
-    path.write_text(json.dumps({"redirects": dict(sorted(table.items()))}, indent=2) + "\n",
-                    encoding="utf-8")
-    _cache.pop(path, None)
+    _write(root, table, ids(root))
     if not record:
         return [f"redirected {old} -> {new}" for old, new in table.items() if before.get(old) != new]
     return [f"redirected {old} -> {new}" for old, new in moves.items() if old != new]
+
+
+def _write(root: Path, table: dict[str, str], known: dict[str, str]) -> None:
+    path = root / FILE
+    path.parent.mkdir(exist_ok=True)
+    data: dict = {"redirects": dict(sorted(table.items()))}
+    if known:
+        data["ids"] = dict(sorted(known.items()))
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    _cache.pop(path, None)
+    _ids.pop(path, None)

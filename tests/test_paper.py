@@ -167,3 +167,80 @@ def test_build_freeze_and_publish(sample: Path, monkeypatch, capsys) -> None:
     exported = json.loads((out / ".folio/catalog.json").read_text())
     paper = next(d for d in exported["documents"] if d["id"] == "tiled-attention")
     assert paper["abstract"] and len(paper["versions"]) == 2
+
+
+CITER = '''
+from folio.views import View
+class P:
+    prefix, title, home = "lab", "Lab", False
+    def get(self, path): return View(title="G1.Q2", main="<p>x</p>") if path == "G1.Q2" else None
+    def rail(self): return []
+    def search(self): return []
+    def paths(self): return ["G1.Q2"]
+    def stamp(self): return "1"
+    def backlinks(self): return {}
+    def cite(self, ident): return {"title": "Does it hold", "url": "/lab/G1.Q2/"} if ident == "G1.Q2" else None
+def provider(root): return P()
+'''
+
+
+def test_a_paper_cites_an_id_a_view_owns(sample: Path, tmp_path: Path, monkeypatch, capsys) -> None:
+    mods = tmp_path / "mods"
+    mods.mkdir()
+    (mods / "citeviews.py").write_text(CITER)
+    monkeypatch.syspath_prepend(str(mods))
+    with (sample / "folio.yaml").open("a") as f:
+        f.write("views: [citeviews]\nsite_url: https://example.org/notes/\n")
+    edit(sample / f"{PAPER}/main.tex", "Background", "Background, as \\fcite{G1.Q2} asks")
+    from folio.checks.gate import broken_link
+    lib = library.load(sample)
+    assert not [p for p in broken_link(lib) if "G1.Q2" in p[1]]
+    edit(sample / f"{PAPER}/main.tex", "as \\fcite{G1.Q2} asks", "as \\fcite{G9.Q9} asks")
+    assert [p for p in broken_link(library.load(sample)) if "G9.Q9" in p[1]]
+    if HAS_LATEXMK:
+        edit(sample / f"{PAPER}/main.tex", "\\fcite{G9.Q9}", "\\fcite{G1.Q2}")
+        assert folio(sample, "paper", "build", "tiled-attention", monkeypatch=monkeypatch) == 0
+        cites = (sample / ".folio/build/tiled-attention/folio-cites.tex").read_text()
+        assert "\\foliocite{G1.Q2}{Does it hold}{https://example.org/notes/lab/G1.Q2/}" in cites
+
+
+@needs_latex
+def test_the_served_pdf_is_built_again_when_the_source_changed(sample: Path) -> None:
+    import os
+    import threading
+    import urllib.error
+    import urllib.request
+    from http.server import ThreadingHTTPServer
+
+    from folio import paper as paper_mod
+    from folio.site.serve import handler_for
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), handler_for(sample, "127.0.0.1"))
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_address[1]}/{PAPER}/paper.pdf"
+    try:
+        # no build yet: the click builds it
+        first = urllib.request.urlopen(url).read()
+        assert first.startswith(b"%PDF")
+        lib = library.load(sample)
+        doc = next(d for d in lib.documents if d.is_a("paper"))
+        pdf = paper_mod.current_pdf(lib, doc)
+        assert pdf is not None and not paper_mod.stale(lib, doc)
+        built = pdf.stat().st_mtime
+        # unchanged: served as it is
+        urllib.request.urlopen(url).read()
+        assert pdf.stat().st_mtime == built
+        # the source changed: built again
+        main = sample / f"{PAPER}/main.tex"
+        edit(main, "Background", "Context")
+        os.utime(main, (built + 5, built + 5))
+        urllib.request.urlopen(url).read()
+        assert pdf.stat().st_mtime > built
+        # a source that does not compile shows its error, not the old PDF
+        edit(main, "Context", "Context \\undefinedcommandhere")
+        os.utime(main, (built + 50, built + 50))
+        with pytest.raises(urllib.error.HTTPError) as err:
+            urllib.request.urlopen(url)
+        assert err.value.code == 500 and b"did not compile" in err.value.read()
+    finally:
+        server.shutdown()

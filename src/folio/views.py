@@ -24,6 +24,8 @@ function, `provider(library_root)`, that returns an object with:
     paths()     every path it serves, for the exported site
     stamp()     a short string that changes when anything it draws from changes
     backlinks() for each document path, the view pages that point at it: {path: [{title, url, status}]}
+    cite(id)    optional: what a paper's `\\fcite{<id>}` of an id the provider owns names, {title, url}, or None.
+                A lab's provider answers for its card ids, so a paper cites `G1.Q2.3` as it cites a document
 
 folio draws the shell around a view exactly as it does around a document: the rail, the header from
 the view's title, description, genre and status, the outline, search. A view's own panel sections
@@ -120,6 +122,17 @@ class Provider:
 
     def backlinks(self, strict: bool = False) -> dict:
         return dict(self._call("backlinks", {}, strict))
+
+    def cite(self, ident: str) -> dict | None:
+        """{title, url} for an id the provider owns, or None; a provider with no `cite` owns none."""
+        if not hasattr(self.made, "cite"):
+            return None
+        try:
+            got = self.made.cite(ident)
+        except Exception:
+            self._failed(f"cite({ident!r})")
+            return None
+        return got if isinstance(got, dict) and got.get("url") else None
 
     def stamp(self) -> str:
         """The provider's stamp; the last one it gave when it fails, so the documents keep being served."""
@@ -298,3 +311,16 @@ def resolves(lib: "Library", href: str) -> bool:
     except Exception:
         found[0]._failed(f"get() for {href}")
         return False
+
+
+def cite(lib: "Library", ident: str) -> dict | None:
+    """{title, url} for an id a view provider owns, such as a lab's card id; None when none owns it."""
+    try:
+        providers = load(lib)
+    except FolioError:
+        return None
+    for provider in providers:
+        got = provider.cite(ident)
+        if got is not None:
+            return got
+    return None
