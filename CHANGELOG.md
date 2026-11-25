@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.1 (2026-11-25)
+
+- The paper genre says how a paper is built: a writer edits and saves `main.tex` and never compiles it or commits LaTeX's output; `folio serve` builds it when its PDF link is followed. Its card names `\fcite` of an id a view owns, as 0.8.0 allows.
+
 ## 0.8.0 (2026-11-25)
 
 Less in the way of writing: a delete deletes, a paper cites a lab's cards, and the paper's link shows the paper as it stands.

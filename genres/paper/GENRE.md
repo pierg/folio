@@ -55,13 +55,17 @@ The source, `main.tex`:
 1. A preamble that loads `graphicx` and `hyperref`, sets `\graphicspath` to the library's `assets/figures/`, and loads `folio` (`folio.sty`, which the build provides; it makes `\fcite` print nothing, or a linked id in a review build).
 2. `\title`, `\author`, then `abstract`: one `abstract` environment.
 3. Sections, in the venue's order.
-4. Citations. `\fcite{<id>}` cites a document of this library by its id, such as a concept, an entry or a result. It is for the gate and the reviewer, never for the reader: the PDF prints nothing where it stands, so the sentence must read whole without it. Write it right after the number or claim it backs, with no space before it: `closes 7 of 9 proofs\fcite{R-12}.` `\cite{<key>}` cites an outside work from `assets/refs.bib`, and is the only citation the reader sees.
+4. Citations. `\fcite{<id>}` cites a document of this library by its id, such as a concept, an entry or a result, or an id a view of the library owns, such as a lab's card `G1.Q2.3`. It is for the gate and the reviewer, never for the reader: the PDF prints nothing where it stands, so the sentence must read whole without it. Write it right after the number or claim it backs, with no space before it: `closes 7 of 9 proofs\fcite{R-12}.` `\cite{<key>}` cites an outside work from `assets/refs.bib`, and is the only citation the reader sees.
 5. Figures, each `\includegraphics` naming a file from `assets/figures/`.
 6. `bibliography`: `\bibliography` pointing at `assets/refs.bib`.
 
 The landing page, `index.html`, holds only framing, and it is optional: a paragraph or two for a reader deciding whether to open the PDF. The venue, and who the paper is for. The shell draws everything else.
 
 A version, `versions/<name>/`, holds `main.tex` and `paper.pdf` exactly as `folio paper freeze` wrote them. Nobody writes one by hand.
+
+## Building
+
+Writing a paper needs no LaTeX. Edit `main.tex` and save it with `folio save`; do not compile it, and never commit what LaTeX writes (`.aux`, `.log`, `main.pdf` and the rest). Where the library is served, `folio serve` builds the paper when its PDF link is followed and the source changed since the last build, and shows the compile error instead of an older PDF when it does not compile. `folio paper build` builds it by hand, into `.folio/build/`, which git ignores; `folio paper freeze` builds the version it keeps, so a freeze runs where LaTeX is.
 
 ## What the reader gets
 
@@ -76,7 +80,7 @@ The library is where the author checks; the paper is where the reader reads. A p
 
 ## Forbidden
 
-- A `\fcite` that does not resolve to a document id. Caught by `broken-link`, and the build fails on it.
+- A `\fcite` that resolves to no document id and to no id a view owns. Caught by `broken-link`, and the build fails on it.
 - A `\cite` key missing from `assets/refs.bib`, or a bibliography file of the paper's own. Caught by `bib`.
 - A figure from anywhere but `assets/figures/`. Caught by `figures`.
 - Any change to a committed version's folder. Caught by `permanent`.
