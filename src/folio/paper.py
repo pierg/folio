@@ -15,7 +15,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
-from . import history, paths
+from . import history, paths, views
 from .commands.create import tex_escape
 from .documents import DocFile, Document
 from .edits import find_doc
@@ -62,6 +62,21 @@ def current_pdf(lib: Library, doc: Document) -> Path | None:
     return pdf if pdf.is_file() else None
 
 
+def stale(lib: Library, doc: Document) -> bool:
+    """Whether the paper's last build is missing or older than a file it is built from: anything in its folder
+    (bar its frozen versions) or under the library's assets, or a title it cites (the catalog)."""
+    pdf = current_pdf(lib, doc)
+    if pdf is None:
+        return True
+    built = pdf.stat().st_mtime
+    folder = doc.main.abspath.parent if doc.main is not None else None
+    sources = [lib.root / INDEX_DIR / "catalog.json"]
+    for top in [folder, lib.assets_dir()]:
+        if top is not None and top.is_dir():
+            sources += [p for p in top.rglob("*") if p.is_file() and "versions" not in p.relative_to(top).parts[:1]]
+    return any(p.is_file() and p.stat().st_mtime > built for p in sources)
+
+
 def _cites_file(lib: Library, df: DocFile, ids: bool = False) -> str:
     """One `\\foliocite{id}{title}{address}` per cited id; an id that names no document fails the build."""
     lines = ["% Written by `folio paper build`. Do not edit.\n"]
@@ -74,7 +89,12 @@ def _cites_file(lib: Library, df: DocFile, ids: bool = False) -> str:
             continue
         seen.add(link.raw)
         if not link.docs:
-            missing.append(f"\\fcite{{{link.raw}}} names no document")
+            owned = views.cite(lib, link.raw)  # an id a view owns, such as a lab's card
+            if owned is None:
+                missing.append(f"\\fcite{{{link.raw}}} names no document")
+                continue
+            address = lib.charter.site_url + owned["url"] if lib.charter.site_url else ""
+            lines.append("\\foliocite{%s}{%s}{%s}\n" % (link.raw, tex_escape(str(owned.get("title") or link.raw)), _url_escape(address)))
             continue
         target = link.docs[0]
         address = ""

@@ -151,13 +151,24 @@ def _code_links(lib: "Library", df: DocFile, nodes: list[Node]) -> list[Link]:
         if el.tag != "code" or el.inside("pre"):
             continue
         text = el.text().strip()
-        if text in lib.by_id:
-            out.append(Link(df, "code", text, True, docs=list(lib.by_id[text]), element=el))
+        named = _named(lib, text)
+        if named:
+            out.append(Link(df, "code", text, True, docs=named, element=el))
             continue
         match = RECORD_ID_RE.match(text)
         if match and match.group(1) in lib.prefixes:
             out.append(Link(df, "code", text, False, element=el))
     return out
+
+
+def _named(lib: "Library", ident: str) -> list[Document]:
+    """The documents an id names: its own, or, for a document `folio rm` deleted, the one that replaced it."""
+    docs = list(lib.by_id.get(ident, []))
+    if not docs:
+        new = redirects.ids(lib.root).get(ident)
+        if new:
+            docs = list(lib.by_id.get(new, []))
+    return docs
 
 
 def links_in(lib: "Library", df: DocFile, nodes: list[Node]) -> list[Link]:
@@ -175,7 +186,7 @@ def fcites(lib: "Library", df: DocFile, latex: str) -> list[Link]:
             ident = raw.strip()
             if not ident or "{{" in ident:
                 continue
-            docs = list(lib.by_id.get(ident, []))
+            docs = _named(lib, ident)
             out.append(Link(df, "fcite", ident, bool(docs), docs=docs))
     return out
 
@@ -199,7 +210,7 @@ def field_links(lib: "Library", doc: Document) -> list[Link]:
             ident = str(raw).strip()
             if not ident:
                 continue
-            docs = list(lib.by_id.get(ident, []))
+            docs = _named(lib, ident)
             if spec.genre:
                 fitting = [d for d in docs if d.is_a(spec.genre)]
                 docs = fitting or docs

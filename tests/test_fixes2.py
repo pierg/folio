@@ -256,8 +256,8 @@ def test_search_matches_words_and_prefixes(sample: Path, monkeypatch, capsys) ->
 
 
 def test_search_lists_retired_documents_last(sample: Path, monkeypatch, capsys) -> None:
-    assert folio(sample, "rm", "self-attention", "--to", "softmax", monkeypatch=monkeypatch) == 0
-    capsys.readouterr()
+    edit(sample / "content/concepts/self-attention/index.html", '<meta name="genre" content="concept">',
+         '<meta name="genre" content="concept">\n<meta name="status" content="retired">')
     assert folio(sample, "search", "attention", "--json", monkeypatch=monkeypatch) == 0
     hits = json.loads(out_of(capsys))
     statuses = [h["status"] for h in hits]

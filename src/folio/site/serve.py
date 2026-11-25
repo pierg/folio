@@ -17,6 +17,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .. import library as library_mod
+from .. import paper as paper_mod
 from ..errors import FolioError
 from ..indexer import INDEX_DIR
 from . import pdf
@@ -195,6 +196,7 @@ def _hostname(value: str) -> str:
 
 def handler_for(root: Path, host: str = HOST) -> type[BaseHTTPRequestHandler]:
     public = not is_loopback(host)
+    building = threading.Lock()  # one paper build at a time: two clicks never run latexmk in one folder
     live = LiveSite(root)
 
     class Handler(BaseHTTPRequestHandler):
@@ -233,6 +235,33 @@ def handler_for(root: Path, host: str = HOST) -> type[BaseHTTPRequestHandler]:
             if public:
                 return True
             return is_loopback(_hostname(self.headers.get("Host") or ""))
+
+        def _paper(self, path: str) -> bool:
+            """A paper's PDF, built again first when its sources changed since the last build: the link always
+            shows the paper as it stands. A build that fails shows its error, never an older PDF."""
+            lib = live.current().lib
+            doc = next((d for d in lib.documents if d.is_a("paper") and d.key.rsplit("/", 1)[0] + "/" + paper_mod.PDF == path), None)
+            if doc is None or doc.main is None or doc.main.latex is None:
+                return False
+            with building:
+                if paper_mod.stale(lib, doc):
+                    try:
+                        paper_mod.build(lib, doc.key)
+                    except FolioError as exc:
+                        self._send(500, f"The paper did not build:\n\n{exc}\n".encode(), "text/plain; charset=utf-8")
+                        return True
+            pdf_path = paper_mod.current_pdf(lib, doc)
+            if pdf_path is None:
+                return False
+            body = pdf_path.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/pdf")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+            return True
 
         def _pdf(self, ref: str) -> None:
             """A deck as a PDF, rendered by Chrome from this server's own page, and kept until it changes."""
@@ -283,6 +312,8 @@ def handler_for(root: Path, host: str = HOST) -> type[BaseHTTPRequestHandler]:
             path = unquote(url.path).lstrip("/")
             if path == SITE_DATA:
                 self._json(200, live.site_data())
+                return
+            if path.endswith("/" + paper_mod.PDF) and self._paper(path):
                 return
             found = live.get(path)
             if found is None:

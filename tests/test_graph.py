@@ -250,13 +250,24 @@ def test_rm_retires_into_another(sample: Path, monkeypatch, capsys) -> None:
     assert "updated content/maps/attention.html: links to self-attention now go to softmax " \
            "(1 duplicate row dropped)" in out
     assert "redirected content/concepts/self-attention/index.html -> content/concepts/softmax/index.html" in out
-    retired = (sample / "content/concepts/self-attention/index.html").read_text()
-    assert '<meta name="status" content="retired">' in retired
-    assert '<meta name="replaced_by" content="softmax">' in retired
+    assert "deleted content/concepts/self-attention" in out
+    assert not (sample / "content/concepts/self-attention").exists()  # git keeps its history; the files go
+    assert json.loads((sample / ".folio/redirects.json").read_text())["ids"] == {"self-attention": "softmax"}
     attention = (sample / "content/maps/attention.html").read_text()
     assert attention.count('href="/content/concepts/softmax/"') == 1
     assert "self-attention" not in attention
     gate(sample, monkeypatch)
+
+
+def test_a_citation_of_a_deleted_document_leads_to_what_replaced_it(sample: Path, monkeypatch, capsys) -> None:
+    entry = sample / "content/journal/2026/2026-10-03-wrote-self-attention.md"
+    entry.write_text("---\ntitle: Wrote self-attention\ndescription: The concept page is up.\ngenre: journal\n"
+                     "date: 2026-10-03\nkind: decision\nabout: [self-attention]\n---\n\nWrote it.\n", encoding="utf-8")
+    assert folio(sample, "index", monkeypatch=monkeypatch) == 0
+    # a journal entry never changes, and the page it is about may still go: its `about:` leads to what replaced it
+    assert folio(sample, "rm", "content/concepts/self-attention/", "--to", "softmax", monkeypatch=monkeypatch) == 0
+    lib = library.load(sample)
+    assert [d.id for lk in lib.links[entry.relative_to(sample).as_posix()] for d in lk.docs] == ["softmax"]
 
 
 def test_rm_names_new_orphans_and_refusals(sample: Path, monkeypatch, capsys) -> None:
